@@ -54,7 +54,7 @@ const Index = () => {
                 </div>
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-gold-300 rounded-full opacity-80"></div>
               </div>
-              <h1 className="font-playfair font-bold text-gold-400 text-lg">Premium Apartments</h1>
+              <h1 className="font-playfair font-bold text-gold-400 py-0 px-0 text-xs">Premium Apartments</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               {navigation.map((item) => (
