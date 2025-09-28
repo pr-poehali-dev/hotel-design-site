@@ -180,7 +180,7 @@ const Index = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 className="text-xl font-playfair font-bold text-gold-400">{image.title}</h3>
+                    <h3 className="font-playfair font-bold text-gold-400 text-lg">{image.title}</h3>
                   </div>
                 </div>
               ))}
