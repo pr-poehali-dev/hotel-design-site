@@ -89,7 +89,7 @@ const Index = () => {
             <h2 className="text-6xl md:text-8xl font-playfair font-bold mb-6 animate-fade-in">
               Роскошь и <span className="text-gold-400">Элегантность</span>
             </h2>
-            <p className="text-xl md:text-2xl font-inter mb-8 text-gray-200 animate-fade-in-slow">
+            <p className="md:text-2xl font-inter mb-8 text-gray-200 animate-fade-in-slow text-lg">
               Погрузитесь в мир премиального комфорта в 5* комплексе Поклонная 9
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
