@@ -21,19 +21,19 @@ const Index = () => {
 
   const rooms = [
     {
-      name: 'Стандартный номер',
+      name: 'Стандартные апартаменты',
       price: '8 500 ₽',
       features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Мини-бар'],
       image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
     },
     {
-      name: 'Люкс',
+      name: 'Люкс апартаменты',
       price: '15 000 ₽',
       features: ['Отдельная гостиная', 'Джакузи', 'Вид на город', 'Завтрак включен'],
       image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
     },
     {
-      name: 'Президентский номер',
+      name: 'Президентские апартаменты',
       price: '35 000 ₽',
       features: ['Панорамный вид', 'Персональный дворецкий', 'Терраса', 'Трансфер'],
       image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
@@ -97,14 +97,14 @@ const Index = () => {
                 onClick={() => setCurrentSection('booking')}
                 className="bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold px-8 py-4 text-lg"
               >
-                Забронировать номер
+                Забронировать апартаменты
               </Button>
               <Button
                 onClick={() => setCurrentSection('rooms')}
                 variant="outline"
                 className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900 font-semibold px-8 py-4 text-lg"
               >
-                Наши номера
+                Наши апартаменты
               </Button>
             </div>
           </div>
@@ -117,10 +117,10 @@ const Index = () => {
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-5xl font-playfair font-bold text-charcoal-900 mb-4">
-                Наши <span className="text-gold-500">Номера</span>
+                Наши <span className="text-gold-500">Апартаменты</span>
               </h2>
               <p className="text-xl text-charcoal-600 font-inter max-w-2xl mx-auto">
-                Каждый номер создан для максимального комфорта и роскоши наших гостей
+                Каждые апартаменты созданы для максимального комфорта и роскоши наших гостей
               </p>
             </div>
 
@@ -166,7 +166,7 @@ const Index = () => {
                 Фото <span className="text-gold-400">Галерея</span>
               </h2>
               <p className="text-xl text-gray-300 font-inter max-w-2xl mx-auto">
-                Откройте для себя красоту и роскошь нашего отеля
+                Откройте для себя красоту и роскошь наших апартаментов
               </p>
             </div>
 
@@ -196,10 +196,10 @@ const Index = () => {
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-5xl font-playfair font-bold text-charcoal-900 mb-4">
-                  <span className="text-gold-500">Бронирование</span> Номера
+                  <span className="text-gold-500">Бронирование</span> Апартаментов
                 </h2>
                 <p className="text-xl text-charcoal-600 font-inter">
-                  Забронируйте ваш идеальный номер прямо сейчас
+                  Забронируйте ваши идеальные апартаменты прямо сейчас
                 </p>
               </div>
 
@@ -223,11 +223,11 @@ const Index = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-charcoal-700 font-semibold mb-2 font-inter">Тип номера</label>
+                    <label className="block text-charcoal-700 font-semibold mb-2 font-inter">Тип апартаментов</label>
                     <select className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all">
-                      <option>Стандартный номер - 8 500 ₽</option>
-                      <option>Люкс - 15 000 ₽</option>
-                      <option>Президентский номер - 35 000 ₽</option>
+                      <option>Стандартные апартаменты - 8 500 ₽</option>
+                      <option>Люкс апартаменты - 15 000 ₽</option>
+                      <option>Президентские апартаменты - 35 000 ₽</option>
                     </select>
                   </div>
 
@@ -280,7 +280,7 @@ const Index = () => {
                   </div>
 
                   <Button className="w-full bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-bold py-4 text-lg">
-                    Забронировать номер
+                    Забронировать апартаменты
                   </Button>
                 </form>
               </Card>
@@ -400,17 +400,17 @@ const Index = () => {
                   </div>
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold-300 rounded-full opacity-80"></div>
                 </div>
-                <h3 className="text-xl font-playfair font-bold text-gold-400">P9 Hotel</h3>
+                <h3 className="text-xl font-playfair font-bold text-gold-400">Premium Apartments</h3>
               </div>
               <p className="text-gray-300 font-inter">
-                Роскошный отель в самом сердце Москвы. Ваш комфорт - наш приоритет.
+                Премиальные апартаменты в самом сердце Москвы. Ваш комфорт - наш приоритет.
               </p>
             </div>
             
             <div>
               <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Услуги</h4>
               <ul className="space-y-2 text-gray-300 font-inter">
-                <li>Бронирование номеров</li>
+                <li>Бронирование апартаментов</li>
                 <li>Ресторан и бар</li>
                 <li>Конференц-залы</li>
                 <li>Спа и фитнес</li>
@@ -435,7 +435,7 @@ const Index = () => {
           
           <div className="border-t border-charcoal-700 mt-8 pt-8 text-center">
             <p className="text-gray-400 font-inter">
-              © 2024 Grand Palace Hotel. Все права защищены.
+              © 2024 Premium Apartments. Все права защищены.
             </p>
           </div>
         </div>
