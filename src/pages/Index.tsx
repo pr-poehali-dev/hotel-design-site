@@ -48,10 +48,13 @@ const Index = () => {
         <div className="container mx-auto px-6 py-4 relative z-10">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
-                <Icon name="Crown" size={24} className="text-charcoal-900" />
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-2xl font-playfair font-bold text-charcoal-900">P9</span>
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gold-300 rounded-full opacity-80"></div>
               </div>
-              <h1 className="text-2xl font-playfair font-bold text-gold-400">Grand Palace Hotel</h1>
+              <h1 className="text-2xl font-playfair font-bold text-gold-400">P9 Hotel</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               {navigation.map((item) => (
@@ -391,10 +394,13 @@ const Index = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
-                  <Icon name="Crown" size={24} className="text-charcoal-900" />
+                <div className="relative">
+                  <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-lg font-playfair font-bold text-charcoal-900">P9</span>
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold-300 rounded-full opacity-80"></div>
                 </div>
-                <h3 className="text-xl font-playfair font-bold text-gold-400">Grand Palace Hotel</h3>
+                <h3 className="text-xl font-playfair font-bold text-gold-400">P9 Hotel</h3>
               </div>
               <p className="text-gray-300 font-inter">
                 Роскошный отель в самом сердце Москвы. Ваш комфорт - наш приоритет.
