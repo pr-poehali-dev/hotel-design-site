@@ -81,7 +81,7 @@ const Index = () => {
         <section className="relative h-screen bg-gradient-to-r from-charcoal-900 to-charcoal-800 flex items-center justify-center overflow-hidden">
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-40"
-            style={{ backgroundImage: `url(${hotelImages[0].url})` }}
+            style={{ backgroundImage: `url(https://cdn.poehali.dev/files/e72382bc-f047-402a-98e0-e7045041f247.png)` }}
           ></div>
           <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-transparent to-charcoal-900/40"></div>
           
