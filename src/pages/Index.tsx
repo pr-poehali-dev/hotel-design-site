@@ -243,12 +243,61 @@ const Index = () => {
             <div className="grid md:grid-cols-3 gap-8">
               {rooms.map((room, index) => (
                 <Card key={index} className="overflow-hidden shadow-2xl border-0 bg-white hover:shadow-3xl transition-all duration-300 group">
-                  <div 
-                    className="h-64 bg-cover bg-center relative overflow-hidden"
-                    style={{ backgroundImage: `url(${room.image})` }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/60 to-transparent group-hover:from-charcoal-900/70 transition-all duration-300"></div>
-                    <div className="absolute bottom-4 left-4 text-white">
+                  <div className="h-64 relative overflow-hidden">
+                    {room.gallery && room.gallery.length > 0 ? (
+                      <>
+                        <div 
+                          className="h-full bg-cover bg-center transition-all duration-500"
+                          style={{ backgroundImage: `url(${room.gallery[currentImageIndex % room.gallery.length]})` }}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/60 to-transparent group-hover:from-charcoal-900/70 transition-all duration-300"></div>
+                        </div>
+                        
+                        {room.gallery.length > 1 && (
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCurrentImageIndex((prev) => (prev - 1 + room.gallery!.length) % room.gallery!.length);
+                              }}
+                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10"
+                            >
+                              <Icon name="ChevronLeft" size={24} />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCurrentImageIndex((prev) => (prev + 1) % room.gallery!.length);
+                              }}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10"
+                            >
+                              <Icon name="ChevronRight" size={24} />
+                            </button>
+                            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+                              {room.gallery.map((_, i) => (
+                                <div
+                                  key={i}
+                                  className={`w-2 h-2 rounded-full transition-all ${
+                                    i === currentImageIndex % room.gallery!.length
+                                      ? 'bg-gold-400 w-4'
+                                      : 'bg-white/50'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <div 
+                        className="h-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${room.image})` }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/60 to-transparent group-hover:from-charcoal-900/70 transition-all duration-300"></div>
+                      </div>
+                    )}
+                    
+                    <div className="absolute bottom-4 left-4 text-white z-10">
                       <h3 className="text-2xl font-playfair font-bold">{room.name}</h3>
                       <p className="text-gold-400 text-xl font-semibold">{room.price}/ночь</p>
                     </div>
