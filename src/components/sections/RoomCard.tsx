@@ -169,6 +169,43 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
               alt={room.name}
               className="w-full h-full object-contain"
             />
+            
+            {room.gallery && room.gallery.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onImageChange(-1, room.gallery!.length);
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full p-4 transition-all z-10"
+                >
+                  <Icon name="ChevronLeft" size={32} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onImageChange(1, room.gallery!.length);
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full p-4 transition-all z-10"
+                >
+                  <Icon name="ChevronRight" size={32} />
+                </button>
+                
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                  {room.gallery.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        i === currentImageIndex % room.gallery!.length
+                          ? 'bg-gold-400 w-8'
+                          : 'bg-white/60'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            
             <button
               onClick={() => setImageModalOpen(false)}
               className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full p-3 transition-all z-10"
