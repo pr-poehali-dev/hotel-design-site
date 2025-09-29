@@ -5,6 +5,8 @@ import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState('home');
+  const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const navigation = [
     { id: 'home', label: 'Главная', icon: 'Home' },
@@ -24,7 +26,24 @@ const Index = () => {
       name: 'Студия',
       price: '6 500 ₽',
       features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Кухня'],
-      image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+      image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
+      gallery: [
+        '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
+        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
+        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg',
+        'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg',
+        '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
+        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
+        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg',
+        'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg',
+        '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
+        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
+        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg',
+        'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg',
+        '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
+        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
+        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg'
+      ]
     },
     {
       name: 'Стандартные апартаменты',
