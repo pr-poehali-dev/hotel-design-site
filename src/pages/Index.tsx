@@ -3,7 +3,6 @@ import Header from '@/components/sections/Header';
 import HeroSection from '@/components/sections/HeroSection';
 import RoomsSection from '@/components/sections/RoomsSection';
 import GallerySection from '@/components/sections/GallerySection';
-import PhotoCarousel from '@/components/sections/PhotoCarousel';
 import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
 import Footer from '@/components/sections/Footer';
@@ -37,13 +36,6 @@ const Index = () => {
     { url: 'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg', title: 'Интерьер апартаментов' },
   ];
 
-  const carouselPhotos = [
-    { url: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg', title: 'Премиум студия', description: 'Роскошное пространство для комфортного отдыха' },
-    { url: 'https://cdn.poehali.dev/files/2202139f-75ce-4af1-8c7a-de66a7c2e431.jpeg', title: 'Современный интерьер', description: 'Дизайнерская мебель и техника премиум-класса' },
-    { url: 'https://cdn.poehali.dev/files/ea0dc8af-de8c-41fb-9865-7379da038018.jpeg', title: 'Панорамные виды', description: '20 этаж с видом на город' },
-    { url: 'https://cdn.poehali.dev/files/25507b39-2c9d-46be-aa9c-32d23e63323f.jpeg', title: 'Максимальный комфорт', description: 'Все для вашего идеального отдыха' },
-  ];
-
   const handleImageChange = (delta: number, galleryLength: number) => {
     setCurrentImageIndex((prev) => {
       if (delta > 0) {
@@ -65,7 +57,6 @@ const Index = () => {
       {currentSection === 'home' && (
         <>
           <HeroSection onNavigate={setCurrentSection} />
-          <PhotoCarousel photos={carouselPhotos} />
           <GallerySection hotelImages={hotelImages} />
         </>
       )}
