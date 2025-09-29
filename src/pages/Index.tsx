@@ -7,14 +7,17 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState('home');
   const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
+    if (isHovering) return;
+    
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => prev + 1);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isHovering]);
 
   const navigation = [
     { id: 'home', label: 'Главная', icon: 'Home' },
@@ -250,7 +253,12 @@ const Index = () => {
 
             <div className="grid md:grid-cols-3 gap-8">
               {rooms.map((room, index) => (
-                <Card key={index} className="overflow-hidden shadow-2xl border-0 bg-white hover:shadow-3xl transition-all duration-300 group">
+                <Card 
+                  key={index} 
+                  className="overflow-hidden shadow-2xl border-0 bg-white hover:shadow-3xl transition-all duration-300 group"
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => setIsHovering(false)}
+                >
                   <div className="h-64 relative overflow-hidden">
                     {room.gallery && room.gallery.length > 0 ? (
                       <>
