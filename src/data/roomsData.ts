@@ -39,7 +39,7 @@ export const rooms: Room[] = [
     name: 'Стандартные апартаменты',
     price: '8 500 ₽',
     features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Мини-бар'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg'
   },
   {
     name: 'Делюкс с видом',
