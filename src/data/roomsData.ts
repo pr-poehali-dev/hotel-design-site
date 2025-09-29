@@ -1,0 +1,136 @@
+export interface Room {
+  name: string;
+  price: string;
+  features: string[];
+  image: string;
+  gallery?: string[];
+  video?: string;
+}
+
+export const rooms: Room[] = [
+  {
+    name: 'Студия',
+    price: '6 500 ₽',
+    features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Кухня'],
+    image: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
+      'https://cdn.poehali.dev/files/2202139f-75ce-4af1-8c7a-de66a7c2e431.jpeg',
+      'https://cdn.poehali.dev/files/ea0dc8af-de8c-41fb-9865-7379da038018.jpeg',
+      'https://cdn.poehali.dev/files/25507b39-2c9d-46be-aa9c-32d23e63323f.jpeg',
+      'https://cdn.poehali.dev/files/5eb93d1a-6444-4e64-95a2-ea9b0a834307.jpeg',
+      'https://cdn.poehali.dev/files/0cbf887e-c8ab-412b-a372-1728ea656c15.jpeg',
+      'https://cdn.poehali.dev/files/fb93407e-b72a-4593-ae8f-d92a21e17e2d.jpeg',
+      'https://cdn.poehali.dev/files/25a0718c-903c-4139-a8de-7ecf199f8c93.jpeg'
+    ],
+    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+  },
+  {
+    name: 'Стандартные апартаменты',
+    price: '8 500 ₽',
+    features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Мини-бар'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Делюкс с видом',
+    price: '12 000 ₽',
+    features: ['Панорамные окна', 'Рабочая зона', 'Умный дом', 'Халаты и тапочки'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Люкс апартаменты',
+    price: '15 000 ₽',
+    features: ['Отдельная гостиная', 'Джакузи', 'Вид на город', 'Завтрак включен'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Семейные апартаменты',
+    price: '18 000 ₽',
+    features: ['2 спальни', 'Кухня-студия', 'Детская зона', 'Балкон'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Бизнес-люкс',
+    price: '22 000 ₽',
+    features: ['Кабинет', 'Конференц-связь', 'Экспресс check-in', 'Лаундж-доступ'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Пентхаус',
+    price: '28 000 ₽',
+    features: ['Терраса 50м²', 'Панорама 360°', 'Сауна', 'Кухня премиум'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Президентские апартаменты',
+    price: '35 000 ₽',
+    features: ['Панорамный вид', 'Персональный дворецкий', 'Терраса', 'Трансфер'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Королевский люкс',
+    price: '45 000 ₽',
+    features: ['200м² площади', 'Винный шкаф', 'Домашний кинотеатр', 'Спа-зона'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Компактная студия',
+    price: '5 500 ₽',
+    features: ['Двуспальная кровать', 'Душевая кабина', 'Wi-Fi', 'Мини-кухня'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Апартаменты с камином',
+    price: '19 000 ₽',
+    features: ['Биокамин', 'Большая гостиная', 'Вид на парк', 'Премиум-мебель'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Романтик-сюит',
+    price: '16 000 ₽',
+    features: ['Круглая кровать', 'Джакузи на двоих', 'Шампанское в подарок', 'Лепестки роз'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Панорама-люкс',
+    price: '24 000 ₽',
+    features: ['Окна от пола до потолка', 'Вид на Москва-Сити', 'Балкон 15м²', 'Телескоп'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Дизайнерские апартаменты',
+    price: '26 000 ₽',
+    features: ['Авторский дизайн', 'Арт-объекты', 'Эксклюзивная мебель', 'Умное освещение'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Спорт-люкс',
+    price: '20 000 ₽',
+    features: ['Домашний тренажерный зал', 'Йога-зона', 'Спортивное питание', 'Массажное кресло'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Эко-апартаменты',
+    price: '17 000 ₽',
+    features: ['Живая стена', 'Очистители воздуха', 'Эко-материалы', 'Зимний сад'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Гранд-сюит',
+    price: '52 000 ₽',
+    features: ['300м² площади', 'Гардеробная комната', 'Библиотека', 'Бильярдная'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Премиум с террасой',
+    price: '31 000 ₽',
+    features: ['Терраса 40м²', 'Уличная мебель', 'BBQ-зона', 'Джакузи под небом'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  },
+  {
+    name: 'Технологичный люкс',
+    price: '29 000 ₽',
+    features: ['Умный дом премиум', 'VR-зона', 'Игровая консоль', 'Soundbar премиум'],
+    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+  }
+];
