@@ -25,7 +25,13 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
             {navigation.map((item) => (
               <button
                 key={item.id}
-                onClick={() => onNavigate(item.id)}
+                onClick={() => {
+                  if (item.id === 'booking') {
+                    window.open('https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&utm_source=share_from_pms&scroll_to_rooms=1&token=07f1a&is_auto_search=0&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=0&insidePopup=0&dfrom=29-12-2025&dto=31-12-2025&adults=1', '_blank');
+                  } else {
+                    onNavigate(item.id);
+                  }
+                }}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
                   currentSection === item.id
                     ? 'bg-gold-500 text-charcoal-900 font-semibold'
