@@ -1,6 +1,15 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Room {
   name: string;
@@ -9,6 +18,7 @@ interface Room {
   image: string;
   gallery?: string[];
   video?: string;
+  description?: string;
 }
 
 interface RoomCardProps {
@@ -19,6 +29,8 @@ interface RoomCardProps {
 }
 
 const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: RoomCardProps) => {
+  const [open, setOpen] = useState(false);
+  
   return (
     <Card 
       className="overflow-hidden shadow-2xl border-0 bg-white hover:shadow-3xl transition-all duration-300 group"
@@ -108,7 +120,28 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           </div>
         )}
         
-        <Button className="w-full mt-6 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold">
+        {room.description && (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="w-full mt-6 border-gold-500 text-gold-600 hover:bg-gold-50 font-semibold">
+                <Icon name="FileText" size={18} className="mr-2" />
+                Подробнее
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-playfair text-charcoal-900">{room.name}</DialogTitle>
+              </DialogHeader>
+              <ScrollArea className="h-[70vh] pr-4">
+                <div className="prose prose-charcoal max-w-none">
+                  <p className="whitespace-pre-wrap text-charcoal-700 leading-relaxed">{room.description}</p>
+                </div>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+        )}
+        
+        <Button className="w-full mt-4 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold">
           Забронировать
         </Button>
       </div>
