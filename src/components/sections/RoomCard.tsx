@@ -32,6 +32,7 @@ interface RoomCardProps {
 
 const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: RoomCardProps) => {
   const [open, setOpen] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
   
   return (
     <Card 
@@ -43,10 +44,14 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
         {room.gallery && room.gallery.length > 0 ? (
           <>
             <div 
-              className="h-full bg-cover bg-center transition-all duration-500"
+              className="h-full bg-cover bg-center transition-all duration-500 cursor-pointer"
               style={{ backgroundImage: `url(${room.gallery[currentImageIndex % room.gallery.length]})` }}
+              onClick={() => setImageModalOpen(true)}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/60 to-transparent group-hover:from-charcoal-900/70 transition-all duration-300"></div>
+              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                <Icon name="Maximize2" size={20} />
+              </div>
             </div>
             
             {room.gallery.length > 1 && (
@@ -86,10 +91,14 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           </>
         ) : (
           <div 
-            className="h-full bg-cover bg-center"
+            className="h-full bg-cover bg-center cursor-pointer"
             style={{ backgroundImage: `url(${room.image})` }}
+            onClick={() => setImageModalOpen(true)}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/60 to-transparent group-hover:from-charcoal-900/70 transition-all duration-300"></div>
+            <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+              <Icon name="Maximize2" size={20} />
+            </div>
           </div>
         )}
         
@@ -151,6 +160,24 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           Забронировать
         </Button>
       </div>
+
+      <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0">
+          <div className="relative w-full h-[90vh]">
+            <img
+              src={room.gallery ? room.gallery[currentImageIndex % room.gallery.length] : room.image}
+              alt={room.name}
+              className="w-full h-full object-contain"
+            />
+            <button
+              onClick={() => setImageModalOpen(false)}
+              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full p-3 transition-all z-10"
+            >
+              <Icon name="X" size={24} />
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
