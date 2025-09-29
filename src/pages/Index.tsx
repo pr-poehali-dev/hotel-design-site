@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
@@ -7,6 +7,14 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState('home');
   const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => prev + 1);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const navigation = [
     { id: 'home', label: 'Главная', icon: 'Home' },
