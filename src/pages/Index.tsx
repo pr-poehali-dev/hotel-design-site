@@ -37,25 +37,7 @@ const Index = () => {
       name: 'Студия',
       price: '6 500 ₽',
       features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Кухня'],
-      image: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
-      gallery: [
-        'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
-        'https://cdn.poehali.dev/files/4a057d4f-4fa2-42de-b6a6-9618ae16a24e.jpeg',
-        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
-        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg',
-        'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg',
-        '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
-        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
-        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg',
-        'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg',
-        '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
-        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
-        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg',
-        'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg',
-        '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
-        'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
-        'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg'
-      ]
+      image: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg'
     },
     {
       name: 'Стандартные апартаменты',
