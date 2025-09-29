@@ -41,8 +41,7 @@ const Index = () => {
       gallery: [
         'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
         'https://cdn.poehali.dev/files/2202139f-75ce-4af1-8c7a-de66a7c2e431.jpeg',
-        'https://cdn.poehali.dev/files/ea0dc8af-de8c-41fb-9865-7379da038018.jpeg',
-        'https://cdn.poehali.dev/files/49d3f704-1caa-4068-b587-8351692852a7.jpeg'
+        'https://cdn.poehali.dev/files/ea0dc8af-de8c-41fb-9865-7379da038018.jpeg'
       ]
     },
     {
