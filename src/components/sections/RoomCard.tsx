@@ -19,6 +19,7 @@ interface Room {
   gallery?: string[];
   video?: string;
   description?: string;
+  bookingUrl?: string;
 }
 
 interface RoomCardProps {
@@ -141,7 +142,10 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           </Dialog>
         )}
         
-        <Button className="w-full mt-4 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold">
+        <Button 
+          className="w-full mt-4 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold"
+          onClick={() => room.bookingUrl && window.open(room.bookingUrl, '_blank')}
+        >
           Забронировать
         </Button>
       </div>
