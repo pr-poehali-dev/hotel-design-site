@@ -13,6 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Room {
   name: string;
+  subtitle?: string;
   price: string;
   features: string[];
   image: string;
@@ -94,7 +95,8 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
         
         <div className="absolute bottom-4 left-4 text-white z-10">
           <h3 className="text-2xl font-playfair font-bold">{room.name}</h3>
-          <p className="text-gold-400 text-xl font-semibold">{room.price}/ночь</p>
+          {room.subtitle && <p className="text-gray-200 text-lg font-inter">{room.subtitle}</p>}
+          <p className="text-gold-400 text-xl font-semibold mt-1">{room.price}/ночь</p>
         </div>
       </div>
       <div className="p-6">
