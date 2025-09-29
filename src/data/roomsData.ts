@@ -11,7 +11,7 @@ export interface Room {
 
 export const rooms: Room[] = [
   {
-    name: 'Студия',
+    name: 'ЕВРО ДВУШКА',
     price: '6 500 ₽',
     features: ['55 кв.м', '20 из 34 этаж', 'Для 1-4 гостей'],
     bookingUrl: 'https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&utm_source=share_from_pms&scroll_to_rooms=1&token=07f1a&is_auto_search=0&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=0&insidePopup=0&dfrom=29-12-2025&dto=31-12-2025&adults=1',
