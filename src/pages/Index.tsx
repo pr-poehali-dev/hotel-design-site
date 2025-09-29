@@ -157,56 +157,6 @@ const Index = () => {
         </section>
       )}
 
-      {/* Features Section */}
-      {currentSection === 'home' && (
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-5xl font-playfair font-bold text-charcoal-900 mb-4">
-                Почему выбирают <span className="text-gold-500">Поклонная 9</span>
-              </h2>
-              <p className="text-xl text-charcoal-600 font-inter max-w-2xl mx-auto">
-                Мы предлагаем непревзойденный уровень сервиса и комфорта для наших гостей
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-4 gap-8">
-              <div className="text-center p-6 bg-charcoal-50 rounded-xl hover:shadow-xl transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon name="MapPin" size={32} className="text-charcoal-900" />
-                </div>
-                <h3 className="text-xl font-playfair font-bold text-charcoal-900 mb-2">Премиальное расположение</h3>
-                <p className="text-charcoal-600 font-inter">В центре Москвы с видом на Поклонную гору и главные достопримечательности города</p>
-              </div>
-
-              <div className="text-center p-6 bg-charcoal-50 rounded-xl hover:shadow-xl transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon name="Shield" size={32} className="text-charcoal-900" />
-                </div>
-                <h3 className="text-xl font-playfair font-bold text-charcoal-900 mb-2">Безопасность 24/7</h3>
-                <p className="text-charcoal-600 font-inter">Круглосуточная охрана, видеонаблюдение и современная система контроля доступа</p>
-              </div>
-
-              <div className="text-center p-6 bg-charcoal-50 rounded-xl hover:shadow-xl transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon name="Sparkles" size={32} className="text-charcoal-900" />
-                </div>
-                <h3 className="text-xl font-playfair font-bold text-charcoal-900 mb-2">Премиальный сервис</h3>
-                <p className="text-charcoal-600 font-inter">Консьерж-сервис, персональный дворецкий и индивидуальный подход к каждому гостю</p>
-              </div>
-
-              <div className="text-center p-6 bg-charcoal-50 rounded-xl hover:shadow-xl transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon name="Wifi" size={32} className="text-charcoal-900" />
-                </div>
-                <h3 className="text-xl font-playfair font-bold text-charcoal-900 mb-2">Современная инфраструктура</h3>
-                <p className="text-charcoal-600 font-inter">Высокоскоростной интернет, умный дом, фитнес-центр и спа-зона</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Gallery Section */}
       {currentSection === 'home' && (
         <section className="py-20 bg-charcoal-900">
