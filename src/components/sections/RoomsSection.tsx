@@ -25,7 +25,7 @@ const RoomsSection = ({ rooms, currentImageIndex, onImageChange, onHoverChange }
             Наши <span className="text-gold-500">Апартаменты</span>
           </h2>
           <p className="text-xl text-charcoal-600 font-inter max-w-2xl mx-auto">
-            Каждые апартаменты созданы для максимального комфорта и роскоши наших гостей
+            Каждые апартаменты созданы для максимального комфорта и роскоши при Вашем проживании
           </p>
         </div>
 
