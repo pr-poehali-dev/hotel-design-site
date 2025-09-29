@@ -103,9 +103,9 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
         )}
         
         <div className="absolute bottom-4 left-4 text-white z-10">
-          <h3 className="text-xl font-playfair font-bold">{room.name}</h3>
-          {room.subtitle && <p className="text-gray-200 text-base font-inter">{room.subtitle}</p>}
-          <p className="text-gold-400 text-xl font-semibold mt-1">{room.price}/ночь</p>
+          <h3 className="text-xl font-playfair font-bold leading-tight">{room.name}</h3>
+          {room.subtitle && <p className="text-gray-200 text-base font-inter mt-1">{room.subtitle}</p>}
+          <p className="text-gold-400 text-xl font-semibold mt-2">{room.price}/ночь</p>
         </div>
       </div>
       <div className="p-6">
