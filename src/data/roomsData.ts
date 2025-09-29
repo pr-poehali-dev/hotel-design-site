@@ -12,7 +12,7 @@ export const rooms: Room[] = [
   {
     name: 'Студия',
     price: '6 500 ₽',
-    features: ['55 кв.м', '20 из 34 этаж'],
+    features: ['55 кв.м', '20 из 34 этаж', 'Для 1-4 гостей'],
     image: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
