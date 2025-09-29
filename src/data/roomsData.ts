@@ -52,7 +52,9 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/1ad8995c-15bd-4d4c-b418-bf8b8b83097c.jpeg',
       'https://cdn.poehali.dev/files/4e26459b-313e-4640-8738-385229902d00.jpeg',
       'https://cdn.poehali.dev/files/cc6e4499-82db-4622-a922-180994d2050e.jpeg',
-      'https://cdn.poehali.dev/files/2be54365-b849-4b30-a373-0fa0a834428a.JPG'
+      'https://cdn.poehali.dev/files/2be54365-b849-4b30-a373-0fa0a834428a.JPG',
+      'https://cdn.poehali.dev/files/39d9762f-e85a-4f62-b821-77933711d3b5.jpeg',
+      'https://cdn.poehali.dev/files/e690aa35-fe03-41ef-9691-09d18835e75e.JPG'
     ],
     description: `Стильные апартаменты с панорамными окнами и видом на Поклонную гору. Дизайн-студия с современной планировкой, элегантной кухней с мраморными столешницами и золотыми акцентами, просторной гостиной зоной и отдельной спальней. Кристальные люстры, качественная мебель и техника создают атмосферу роскоши и комфорта. Идеально подходит для пар и небольших семей, ценящих стиль и уют.`
   },
