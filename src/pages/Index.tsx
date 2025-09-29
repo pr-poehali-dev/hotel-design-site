@@ -14,7 +14,7 @@ const Index = () => {
   ];
 
   const hotelImages = [
-    { url: '/img/e4ac7740-0a01-4496-848f-9e7456838158.jpg', title: 'Вестибюль Поклонная 9' },
+    { url: 'https://cdn.poehali.dev/files/5b3b77a6-0cdd-45b2-bb35-254c7bf2d845.jpeg', title: 'Вестибюль Поклонная 9' },
     { url: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg', title: 'Президентский номер' },
     { url: '/img/e36c7681-539d-438b-a3fa-bead3740871b.jpg', title: 'Ресторан' },
   ];
