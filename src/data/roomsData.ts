@@ -39,24 +39,7 @@ export const rooms: Room[] = [
     name: 'Стандартные апартаменты',
     price: '8 500 ₽',
     features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Мини-бар'],
-    image: 'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg',
-    gallery: [
-      'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg',
-      '/img/a3355e01-f840-40cc-a993-c4702035d842.jpg',
-      '/img/dc4c8072-a8eb-4b46-a5c5-438959911f48.jpg',
-      '/img/ee614f31-6f93-482c-a2ac-f29bba60cdcf.jpg',
-      'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg',
-      '/img/a3355e01-f840-40cc-a993-c4702035d842.jpg',
-      '/img/dc4c8072-a8eb-4b46-a5c5-438959911f48.jpg',
-      '/img/ee614f31-6f93-482c-a2ac-f29bba60cdcf.jpg',
-      'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg',
-      '/img/a3355e01-f840-40cc-a993-c4702035d842.jpg',
-      '/img/dc4c8072-a8eb-4b46-a5c5-438959911f48.jpg',
-      '/img/ee614f31-6f93-482c-a2ac-f29bba60cdcf.jpg',
-      'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg',
-      '/img/a3355e01-f840-40cc-a993-c4702035d842.jpg',
-      '/img/dc4c8072-a8eb-4b46-a5c5-438959911f48.jpg'
-    ]
+    image: 'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg'
   },
   {
     name: 'Делюкс с видом',
