@@ -44,7 +44,8 @@ const Index = () => {
         'https://cdn.poehali.dev/files/ea0dc8af-de8c-41fb-9865-7379da038018.jpeg',
         'https://cdn.poehali.dev/files/25507b39-2c9d-46be-aa9c-32d23e63323f.jpeg',
         'https://cdn.poehali.dev/files/5eb93d1a-6444-4e64-95a2-ea9b0a834307.jpeg'
-      ]
+      ],
+      video: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
     },
     {
       name: 'Стандартные апартаменты',
@@ -316,6 +317,21 @@ const Index = () => {
                         </li>
                       ))}
                     </ul>
+                    
+                    {room.video && (
+                      <div className="mt-6">
+                        <h4 className="text-lg font-semibold text-charcoal-800 mb-3 font-playfair">Видео номера</h4>
+                        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                          <iframe
+                            src={room.video}
+                            className="absolute top-0 left-0 w-full h-full rounded-lg"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                      </div>
+                    )}
+                    
                     <Button className="w-full mt-6 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold">
                       Забронировать
                     </Button>
