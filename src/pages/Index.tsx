@@ -26,7 +26,7 @@ const Index = () => {
       name: 'Студия',
       price: '6 500 ₽',
       features: ['Двуспальная кровать', 'Кондиционер', 'Wi-Fi', 'Кухня'],
-      image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
+      image: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
       gallery: [
         '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg',
         'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg',
