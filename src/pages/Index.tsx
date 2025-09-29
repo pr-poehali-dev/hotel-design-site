@@ -16,7 +16,7 @@ const Index = () => {
   const hotelImages = [
     { url: 'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg', title: 'Вид на Поклонную гору' },
     { url: 'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg', title: 'Лобби Поклонная 9' },
-    { url: '/img/e36c7681-539d-438b-a3fa-bead3740871b.jpg', title: 'Ресторан' },
+    { url: 'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg', title: 'Интерьер апартаментов' },
   ];
 
   const rooms = [
