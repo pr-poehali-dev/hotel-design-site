@@ -38,7 +38,7 @@ export const rooms: Room[] = [
   {
     name: 'Стандартные апартаменты',
     price: '8 500 ₽',
-    features: ['103 кв.м', '11 этаж', 'Для 1-8 гостей', 'Мини-бар'],
+    features: ['103 кв.м', '11 этаж', 'Для 1-8 гостей'],
     bookingUrl: 'https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru',
     image: 'https://cdn.poehali.dev/files/6f0ed973-147a-41eb-ab38-905af974cf91.jpeg',
     gallery: [
