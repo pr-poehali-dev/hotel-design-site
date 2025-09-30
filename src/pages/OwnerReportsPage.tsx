@@ -52,18 +52,35 @@ export default function OwnerReportsPage() {
     }
   }, []);
 
-  const handleLogin = (username: string, password: string): boolean => {
-    if (username === 'admin' && password === 'admin123') {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('reportsAuth', 'true');
-      return true;
+  const handleLogin = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/246e3cd7-0cb5-4366-aa28-e94aa75b9080', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('reportsAuth', 'true');
+        sessionStorage.setItem('reportsUser', JSON.stringify(data.user));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('reportsAuth');
+    sessionStorage.removeItem('reportsUser');
   };
 
   const fetchReports = async () => {

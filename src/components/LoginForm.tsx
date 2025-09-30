@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 
 interface LoginFormProps {
-  onLogin: (username: string, password: string) => boolean;
+  onLogin: (username: string, password: string) => Promise<boolean>;
 }
 
 export default function LoginForm({ onLogin }: LoginFormProps) {
@@ -14,8 +14,9 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -24,10 +25,17 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
       return;
     }
 
-    const success = onLogin(username, password);
-    if (!success) {
-      setError('Неверный логин или пароль');
-      setPassword('');
+    setLoading(true);
+    try {
+      const success = await onLogin(username, password);
+      if (!success) {
+        setError('Неверный логин или пароль');
+        setPassword('');
+      }
+    } catch (err) {
+      setError('Ошибка подключения к серверу');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,9 +101,18 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               </div>
             )}
 
-            <Button type="submit" className="w-full gap-2">
-              <Icon name="LogIn" size={18} />
-              Войти
+            <Button type="submit" className="w-full gap-2" disabled={loading}>
+              {loading ? (
+                <>
+                  <Icon name="Loader2" className="animate-spin" size={18} />
+                  Вход...
+                </>
+              ) : (
+                <>
+                  <Icon name="LogIn" size={18} />
+                  Войти
+                </>
+              )}
             </Button>
           </form>
         </CardContent>
