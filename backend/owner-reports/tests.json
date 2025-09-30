@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Get owner reports",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "reports": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
