@@ -12,7 +12,7 @@ export interface Room {
 
 export const rooms: Room[] = [
   {
-    name: '2х комнатный',
+    name: '2х комнатный 2019',
     subtitle: 'с одной спальней',
     price: 'от 15 000 ₽',
     features: ['55 кв.м', '20 этаж', 'Для 1-4 гостей'],
