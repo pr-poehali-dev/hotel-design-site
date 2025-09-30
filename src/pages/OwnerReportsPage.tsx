@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
+import EditReportDialog from '@/components/EditReportDialog';
 
 interface OwnerReport {
   id: number;
@@ -39,25 +40,36 @@ export default function OwnerReportsPage() {
   const [filterApartment, setFilterApartment] = useState<string>('all');
   const [filterMonth, setFilterMonth] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [editingReport, setEditingReport] = useState<OwnerReport | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  const fetchReports = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9');
+      if (!response.ok) {
+        throw new Error('Ошибка загрузки данных');
+      }
+      const data = await response.json();
+      setReports(data.reports);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const response = await fetch('https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9');
-        if (!response.ok) {
-          throw new Error('Ошибка загрузки данных');
-        }
-        const data = await response.json();
-        setReports(data.reports);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchReports();
   }, []);
+
+  const handleEditReport = (report: OwnerReport) => {
+    setEditingReport(report);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveReport = () => {
+    fetchReports();
+  };
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('ru-RU').format(num);
@@ -234,9 +246,20 @@ export default function OwnerReportsPage() {
               <CardHeader className="bg-primary/5">
                 <CardTitle className="flex justify-between items-center">
                   <span>Апартамент {report.apartment_number}</span>
-                  <span className="text-2xl font-bold text-primary">
-                    {formatNumber(report.owner_payment)} ₽
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl font-bold text-primary">
+                      {formatNumber(report.owner_payment)} ₽
+                    </span>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleEditReport(report)}
+                      className="gap-2"
+                    >
+                      <Icon name="Edit" size={16} />
+                      Редактировать
+                    </Button>
+                  </div>
                 </CardTitle>
                 <CardDescription>
                   {formatDate(report.check_in_date)} — {formatDate(report.check_out_date)}
@@ -345,6 +368,13 @@ export default function OwnerReportsPage() {
           </div>
         )}
       </div>
+
+      <EditReportDialog
+        report={editingReport}
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onSave={handleSaveReport}
+      />
     </div>
   );
 }

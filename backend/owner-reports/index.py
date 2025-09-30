@@ -5,10 +5,10 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Get owner reports from database
-    Args: event - dict with httpMethod, queryStringParameters
+    Business: Get and update owner reports from database
+    Args: event - dict with httpMethod, body, queryStringParameters
           context - object with request_id attribute
-    Returns: HTTP response with reports data
+    Returns: HTTP response with reports data or update status
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -17,14 +17,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
         }
     
-    if method != 'GET':
+    if method not in ['GET', 'PUT']:
         return {
             'statusCode': 405,
             'headers': {
@@ -47,6 +47,88 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
+    
+    if method == 'PUT':
+        body_data = json.loads(event.get('body', '{}'))
+        report_id = body_data.get('id')
+        
+        if not report_id:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'Report ID is required'})
+            }
+        
+        update_query = '''
+            UPDATE owner_reports SET
+                apartment_number = %s,
+                check_in_date = %s,
+                check_out_date = %s,
+                booking_sum = %s,
+                total_sum = %s,
+                commission_percent = %s,
+                usn_percent = %s,
+                commission_before_usn = %s,
+                commission_after_usn = %s,
+                remaining_before_expenses = %s,
+                expenses_on_operations = %s,
+                average_cleaning = %s,
+                owner_payment = %s,
+                payment_date = %s,
+                hot_water = %s,
+                chemical_cleaning = %s,
+                hygiene_ср_ва = %s,
+                transportation = %s,
+                utilities = %s,
+                other = %s,
+                note_to_billing = %s,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = %s
+        '''
+        
+        cur.execute(update_query, (
+            body_data.get('apartment_number'),
+            body_data.get('check_in_date'),
+            body_data.get('check_out_date'),
+            body_data.get('booking_sum'),
+            body_data.get('total_sum'),
+            body_data.get('commission_percent'),
+            body_data.get('usn_percent'),
+            body_data.get('commission_before_usn'),
+            body_data.get('commission_after_usn'),
+            body_data.get('remaining_before_expenses'),
+            body_data.get('expenses_on_operations'),
+            body_data.get('average_cleaning'),
+            body_data.get('owner_payment'),
+            body_data.get('payment_date') or None,
+            body_data.get('hot_water'),
+            body_data.get('chemical_cleaning'),
+            body_data.get('hygiene_ср_ва'),
+            body_data.get('transportation'),
+            body_data.get('utilities'),
+            body_data.get('other'),
+            body_data.get('note_to_billing'),
+            report_id
+        ))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': True, 'message': 'Report updated successfully'})
+        }
     
     query = '''
         SELECT 
