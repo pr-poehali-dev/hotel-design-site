@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
 import EditReportDialog from '@/components/EditReportDialog';
+import LoginForm from '@/components/LoginForm';
 
 interface OwnerReport {
   id: number;
@@ -34,6 +35,7 @@ interface OwnerReport {
 }
 
 export default function OwnerReportsPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [reports, setReports] = useState<OwnerReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +44,27 @@ export default function OwnerReportsPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [editingReport, setEditingReport] = useState<OwnerReport | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const authStatus = sessionStorage.getItem('reportsAuth');
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = (username: string, password: string): boolean => {
+    if (username === 'admin' && password === 'admin123') {
+      setIsAuthenticated(true);
+      sessionStorage.setItem('reportsAuth', 'true');
+      return true;
+    }
+    return false;
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('reportsAuth');
+  };
 
   const fetchReports = async () => {
     try {
@@ -82,6 +105,10 @@ export default function OwnerReportsPage() {
       year: 'numeric'
     });
   };
+
+  if (!isAuthenticated) {
+    return <LoginForm onLogin={handleLogin} />;
+  }
 
   if (loading) {
     return (
@@ -170,7 +197,13 @@ export default function OwnerReportsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-12">Отчеты собственников</h1>
+        <div className="flex justify-between items-center mb-12">
+          <h1 className="text-4xl font-bold">Отчеты собственников</h1>
+          <Button variant="outline" onClick={handleLogout} className="gap-2">
+            <Icon name="LogOut" size={18} />
+            Выйти
+          </Button>
+        </div>
         
         <div className="mb-8 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
