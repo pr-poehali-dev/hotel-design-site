@@ -27,6 +27,7 @@ const Index = () => {
     { id: 'home', label: 'Главная', icon: 'Home' },
     { id: 'rooms', label: 'Номера', icon: 'Bed' },
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
+    { id: 'reports', label: 'Отчеты', icon: 'FileText' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
   ];
 
