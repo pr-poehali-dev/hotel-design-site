@@ -7,6 +7,8 @@ import Icon from '@/components/ui/icon';
 import * as XLSX from 'xlsx';
 import EditReportDialog from '@/components/EditReportDialog';
 import LoginForm from '@/components/LoginForm';
+import UserManagement from '@/components/UserManagement';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface OwnerReport {
   id: number;
@@ -36,6 +38,7 @@ interface OwnerReport {
 
 export default function OwnerReportsPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [reports, setReports] = useState<OwnerReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,8 +50,10 @@ export default function OwnerReportsPage() {
 
   useEffect(() => {
     const authStatus = sessionStorage.getItem('reportsAuth');
-    if (authStatus === 'true') {
+    const userStr = sessionStorage.getItem('reportsUser');
+    if (authStatus === 'true' && userStr) {
       setIsAuthenticated(true);
+      setCurrentUser(JSON.parse(userStr));
     }
   }, []);
 
@@ -66,6 +71,7 @@ export default function OwnerReportsPage() {
 
       if (data.success) {
         setIsAuthenticated(true);
+        setCurrentUser(data.user);
         sessionStorage.setItem('reportsAuth', 'true');
         sessionStorage.setItem('reportsUser', JSON.stringify(data.user));
         return true;
@@ -79,6 +85,7 @@ export default function OwnerReportsPage() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setCurrentUser(null);
     sessionStorage.removeItem('reportsAuth');
     sessionStorage.removeItem('reportsUser');
   };
@@ -211,6 +218,8 @@ export default function OwnerReportsPage() {
     XLSX.writeFile(workbook, fileName);
   };
 
+  const isAdmin = currentUser?.role === 'admin';
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-12 px-4">
       <div className="max-w-7xl mx-auto">
@@ -221,8 +230,103 @@ export default function OwnerReportsPage() {
             Выйти
           </Button>
         </div>
-        
-        <div className="mb-8 space-y-4">
+
+        {isAdmin ? (
+          <Tabs defaultValue="reports" className="w-full">
+            <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
+              <TabsTrigger value="reports">Отчеты</TabsTrigger>
+              <TabsTrigger value="users">Пользователи</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="reports">
+              <ReportsContent
+                reports={reports}
+                loading={loading}
+                error={error}
+                filterApartment={filterApartment}
+                setFilterApartment={setFilterApartment}
+                filterMonth={filterMonth}
+                setFilterMonth={setFilterMonth}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                filteredReports={filteredReports}
+                totalPayment={totalPayment}
+                exportToExcel={exportToExcel}
+                handleEditReport={handleEditReport}
+                apartments={apartments}
+                months={months}
+                formatNumber={formatNumber}
+                formatDate={formatDate}
+              />
+            </TabsContent>
+            
+            <TabsContent value="users">
+              <UserManagement adminToken={currentUser.id.toString()} />
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <ReportsContent
+            reports={reports}
+            loading={loading}
+            error={error}
+            filterApartment={filterApartment}
+            setFilterApartment={setFilterApartment}
+            filterMonth={filterMonth}
+            setFilterMonth={setFilterMonth}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            filteredReports={filteredReports}
+            totalPayment={totalPayment}
+            exportToExcel={exportToExcel}
+            handleEditReport={handleEditReport}
+            apartments={apartments}
+            months={months}
+            formatNumber={formatNumber}
+            formatDate={formatDate}
+          />
+        )}
+
+        <EditReportDialog
+          report={editingReport}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onSave={handleSaveReport}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ReportsContent({
+  reports,
+  loading,
+  error,
+  filterApartment,
+  setFilterApartment,
+  filterMonth,
+  setFilterMonth,
+  searchQuery,
+  setSearchQuery,
+  filteredReports,
+  totalPayment,
+  exportToExcel,
+  handleEditReport,
+  apartments,
+  months,
+  formatNumber,
+  formatDate
+}: any) {
+  if (loading) {
+    return <div className="text-center py-8">Загрузка...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-destructive">Ошибка: {error}</div>;
+  }
+
+  return (
+    <>
+      <div className="mb-8 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Апартамент</label>
@@ -417,14 +521,6 @@ export default function OwnerReportsPage() {
             Отчеты не найдены
           </div>
         )}
-      </div>
-
-      <EditReportDialog
-        report={editingReport}
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        onSave={handleSaveReport}
-      />
-    </div>
-  );
+      </>
+    );
 }
