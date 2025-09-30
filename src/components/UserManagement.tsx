@@ -27,6 +27,7 @@ interface User {
   full_name: string;
   role: string;
   is_active: boolean;
+  apartment_numbers?: string[];
   created_at: string | null;
 }
 
@@ -45,8 +46,10 @@ export default function UserManagement({ adminToken }: UserManagementProps) {
     password: '',
     full_name: '',
     role: 'viewer',
-    is_active: true
+    is_active: true,
+    apartment_numbers: [] as string[]
   });
+  const [apartmentInput, setApartmentInput] = useState('');
 
   const fetchUsers = async () => {
     try {
@@ -81,8 +84,10 @@ export default function UserManagement({ adminToken }: UserManagementProps) {
       password: '',
       full_name: '',
       role: 'viewer',
-      is_active: true
+      is_active: true,
+      apartment_numbers: []
     });
+    setApartmentInput('');
     setDialogOpen(true);
   };
 
@@ -93,8 +98,10 @@ export default function UserManagement({ adminToken }: UserManagementProps) {
       password: '',
       full_name: user.full_name,
       role: user.role,
-      is_active: user.is_active
+      is_active: user.is_active,
+      apartment_numbers: user.apartment_numbers || []
     });
+    setApartmentInput('');
     setDialogOpen(true);
   };
 
@@ -108,6 +115,9 @@ export default function UserManagement({ adminToken }: UserManagementProps) {
         if (formData.full_name !== editingUser.full_name) updateData.full_name = formData.full_name;
         if (formData.role !== editingUser.role) updateData.role = formData.role;
         if (formData.is_active !== editingUser.is_active) updateData.is_active = formData.is_active;
+        if (JSON.stringify(formData.apartment_numbers) !== JSON.stringify(editingUser.apartment_numbers)) {
+          updateData.apartment_numbers = formData.apartment_numbers;
+        }
 
         const response = await fetch(url, {
           method: 'PUT',
@@ -132,7 +142,8 @@ export default function UserManagement({ adminToken }: UserManagementProps) {
             username: formData.username,
             password: formData.password,
             full_name: formData.full_name,
-            role: formData.role
+            role: formData.role,
+            apartment_numbers: formData.apartment_numbers
           })
         });
 
@@ -212,6 +223,15 @@ export default function UserManagement({ adminToken }: UserManagementProps) {
                     )}
                   </CardTitle>
                   <CardDescription>@{user.username}</CardDescription>
+                  {user.apartment_numbers && user.apartment_numbers.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {user.apartment_numbers.map((apt) => (
+                        <span key={apt} className="text-xs bg-secondary px-2 py-1 rounded">
+                          Апарт. {apt}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -304,6 +324,71 @@ export default function UserManagement({ adminToken }: UserManagementProps) {
                 </SelectContent>
               </Select>
             </div>
+
+            {formData.role === 'viewer' && (
+              <div className="space-y-2">
+                <Label htmlFor="apartments">Доступные апартаменты</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="apartments"
+                    value={apartmentInput}
+                    onChange={(e) => setApartmentInput(e.target.value)}
+                    placeholder="Номер апартамента (например: 101)"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (apartmentInput.trim() && !formData.apartment_numbers.includes(apartmentInput.trim())) {
+                          setFormData({
+                            ...formData,
+                            apartment_numbers: [...formData.apartment_numbers, apartmentInput.trim()]
+                          });
+                          setApartmentInput('');
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      if (apartmentInput.trim() && !formData.apartment_numbers.includes(apartmentInput.trim())) {
+                        setFormData({
+                          ...formData,
+                          apartment_numbers: [...formData.apartment_numbers, apartmentInput.trim()]
+                        });
+                        setApartmentInput('');
+                      }
+                    }}
+                  >
+                    Добавить
+                  </Button>
+                </div>
+                {formData.apartment_numbers.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {formData.apartment_numbers.map((apt) => (
+                      <div
+                        key={apt}
+                        className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                      >
+                        <span>{apt}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({
+                              ...formData,
+                              apartment_numbers: formData.apartment_numbers.filter((a) => a !== apt)
+                            });
+                          }}
+                          className="hover:bg-primary/20 rounded-full p-0.5"
+                        >
+                          <Icon name="X" size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {editingUser && (
               <div className="flex items-center space-x-2">

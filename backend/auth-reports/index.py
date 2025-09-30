@@ -63,7 +63,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur = conn.cursor()
     
     query = '''
-        SELECT id, username, full_name, role, is_active
+        SELECT id, username, full_name, role, is_active, apartment_numbers
         FROM report_users
         WHERE username = %s AND password = %s AND is_active = TRUE
     '''
@@ -88,7 +88,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'id': user[0],
                     'username': user[1],
                     'full_name': user[2],
-                    'role': user[3]
+                    'role': user[3],
+                    'apartment_numbers': user[5] if user[5] else []
                 }
             })
         }

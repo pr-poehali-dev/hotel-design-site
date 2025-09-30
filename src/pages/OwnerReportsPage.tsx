@@ -91,8 +91,14 @@ export default function OwnerReportsPage() {
   };
 
   const fetchReports = async () => {
+    if (!currentUser) return;
+    
     try {
-      const response = await fetch('https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9');
+      const response = await fetch('https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9', {
+        headers: {
+          'X-User-Id': currentUser.id.toString()
+        }
+      });
       if (!response.ok) {
         throw new Error('Ошибка загрузки данных');
       }
@@ -106,8 +112,10 @@ export default function OwnerReportsPage() {
   };
 
   useEffect(() => {
-    fetchReports();
-  }, []);
+    if (currentUser) {
+      fetchReports();
+    }
+  }, [currentUser]);
 
   const handleEditReport = (report: OwnerReport) => {
     setEditingReport(report);

@@ -18,7 +18,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'headers': {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
@@ -47,6 +47,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
+    
+    headers = event.get('headers', {})
+    user_id = headers.get('X-User-Id') or headers.get('x-user-id')
+    
+    user_apartments = []
+    user_role = None
+    
+    if user_id:
+        cur.execute('''
+            SELECT role, apartment_numbers 
+            FROM report_users 
+            WHERE id = %s AND is_active = TRUE
+        ''', (user_id,))
+        user_data = cur.fetchone()
+        
+        if user_data:
+            user_role = user_data[0]
+            user_apartments = user_data[1] if user_data[1] else []
     
     if method == 'PUT':
         body_data = json.loads(event.get('body', '{}'))
@@ -130,36 +148,50 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'success': True, 'message': 'Report updated successfully'})
         }
     
-    query = '''
-        SELECT 
-            id,
-            apartment_number,
-            check_in_date,
-            check_out_date,
-            booking_sum,
-            total_sum,
-            commission_percent,
-            usn_percent,
-            commission_before_usn,
-            commission_after_usn,
-            remaining_before_expenses,
-            expenses_on_operations,
-            average_cleaning,
-            owner_payment,
-            payment_date,
-            hot_water,
-            chemical_cleaning,
-            hygiene_ср_ва,
-            transportation,
-            utilities,
-            other,
-            note_to_billing,
-            created_at
-        FROM owner_reports
-        ORDER BY check_in_date DESC
-    '''
+    if user_role == 'admin':
+        query = '''
+            SELECT 
+                id, apartment_number, check_in_date, check_out_date,
+                booking_sum, total_sum, commission_percent, usn_percent,
+                commission_before_usn, commission_after_usn,
+                remaining_before_expenses, expenses_on_operations,
+                average_cleaning, owner_payment, payment_date,
+                hot_water, chemical_cleaning, hygiene_ср_ва,
+                transportation, utilities, other,
+                note_to_billing, created_at
+            FROM owner_reports
+            ORDER BY check_in_date DESC
+        '''
+        cur.execute(query)
+    elif user_apartments:
+        query = '''
+            SELECT 
+                id, apartment_number, check_in_date, check_out_date,
+                booking_sum, total_sum, commission_percent, usn_percent,
+                commission_before_usn, commission_after_usn,
+                remaining_before_expenses, expenses_on_operations,
+                average_cleaning, owner_payment, payment_date,
+                hot_water, chemical_cleaning, hygiene_ср_ва,
+                transportation, utilities, other,
+                note_to_billing, created_at
+            FROM owner_reports
+            WHERE apartment_number = ANY(%s)
+            ORDER BY check_in_date DESC
+        '''
+        cur.execute(query, (user_apartments,))
+    else:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'isBase64Encoded': False,
+            'body': json.dumps({'reports': []})
+        }
     
-    cur.execute(query)
     rows = cur.fetchall()
     
     reports = []

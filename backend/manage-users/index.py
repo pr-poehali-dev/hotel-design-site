@@ -87,7 +87,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     if method == 'GET':
         cur.execute('''
-            SELECT id, username, full_name, role, is_active, created_at
+            SELECT id, username, full_name, role, is_active, apartment_numbers, created_at
             FROM report_users
             ORDER BY id
         ''')
@@ -100,7 +100,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'full_name': row[2],
                 'role': row[3],
                 'is_active': row[4],
-                'created_at': row[5].isoformat() if row[5] else None
+                'apartment_numbers': row[5] if row[5] else [],
+                'created_at': row[6].isoformat() if row[6] else None
             })
         
         cur.close()
@@ -122,6 +123,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         password = body_data.get('password')
         full_name = body_data.get('full_name')
         role = body_data.get('role', 'viewer')
+        apartment_numbers = body_data.get('apartment_numbers', [])
         
         if not username or not password or not full_name:
             cur.close()
@@ -136,10 +138,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         cur.execute('''
-            INSERT INTO report_users (username, password, full_name, role)
-            VALUES (%s, %s, %s, %s)
-            RETURNING id, username, full_name, role, is_active
-        ''', (username, password, full_name, role))
+            INSERT INTO report_users (username, password, full_name, role, apartment_numbers)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id, username, full_name, role, is_active, apartment_numbers
+        ''', (username, password, full_name, role, apartment_numbers))
         
         new_user = cur.fetchone()
         conn.commit()
@@ -160,7 +162,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'username': new_user[1],
                     'full_name': new_user[2],
                     'role': new_user[3],
-                    'is_active': new_user[4]
+                    'is_active': new_user[4],
+                    'apartment_numbers': new_user[5] if new_user[5] else []
                 }
             })
         }
@@ -172,6 +175,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         full_name = body_data.get('full_name')
         role = body_data.get('role')
         is_active = body_data.get('is_active')
+        apartment_numbers = body_data.get('apartment_numbers')
         
         if not user_id_to_update:
             cur.close()
@@ -200,6 +204,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if is_active is not None:
             updates.append('is_active = %s')
             params.append(is_active)
+        if apartment_numbers is not None:
+            updates.append('apartment_numbers = %s')
+            params.append(apartment_numbers)
         
         if not updates:
             cur.close()
@@ -218,7 +225,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             UPDATE report_users 
             SET {', '.join(updates)}
             WHERE id = %s
-            RETURNING id, username, full_name, role, is_active
+            RETURNING id, username, full_name, role, is_active, apartment_numbers
         '''
         
         cur.execute(query, params)
@@ -254,7 +261,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'username': updated_user[1],
                     'full_name': updated_user[2],
                     'role': updated_user[3],
-                    'is_active': updated_user[4]
+                    'is_active': updated_user[4],
+                    'apartment_numbers': updated_user[5] if updated_user[5] else []
                 }
             })
         }

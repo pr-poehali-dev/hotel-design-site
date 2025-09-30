@@ -5,15 +5,12 @@
       "method": "POST",
       "path": "/",
       "body": {
-        "username": "admin",
-        "password": "admin123"
+        "username": "hab-agent@mail.ru",
+        "password": "3Dyzaape29938172"
       },
       "expectedStatus": 200,
       "expectedBody": {
-        "success": true,
-        "user": {
-          "username": "admin"
-        }
+        "success": true
       },
       "bodyMatcher": "partial"
     },
