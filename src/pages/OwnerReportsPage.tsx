@@ -2,7 +2,9 @@ import { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import * as XLSX from 'xlsx';
 
 interface OwnerReport {
   id: number;
@@ -120,6 +122,39 @@ export default function OwnerReportsPage() {
     return filteredReports.reduce((sum, report) => sum + report.owner_payment, 0);
   }, [filteredReports]);
 
+  const exportToExcel = () => {
+    const excelData = filteredReports.map(report => ({
+      'Апартамент': report.apartment_number,
+      'Заселение': formatDate(report.check_in_date),
+      'Выезд': formatDate(report.check_out_date),
+      'Сумма бронирования': report.booking_sum,
+      'Итоговая сумма': report.total_sum,
+      'Комиссия %': report.commission_percent,
+      'УСН %': report.usn_percent,
+      'До комиссии УСН': report.commission_before_usn,
+      'После комиссии': report.commission_after_usn,
+      'До затрат': report.remaining_before_expenses,
+      'Затраты на эксплуатацию': report.expenses_on_operations,
+      'Уборка': report.average_cleaning,
+      'Выплата собственнику': report.owner_payment,
+      'Дата выплаты': report.payment_date ? formatDate(report.payment_date) : '',
+      'Горячая вода': report.hot_water,
+      'Химчистка': report.chemical_cleaning,
+      'Средства гигиены': report.hygiene_ср_ва,
+      'Транспорт': report.transportation,
+      'ЖКХ': report.utilities,
+      'Прочее': report.other,
+      'Примечание': report.note_to_billing || ''
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Отчеты');
+    
+    const fileName = `отчеты_собственников_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-12 px-4">
       <div className="max-w-7xl mx-auto">
@@ -180,9 +215,15 @@ export default function OwnerReportsPage() {
               <Icon name="FileText" size={20} />
               <span className="font-medium">Найдено отчетов: {filteredReports.length}</span>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Общая сумма выплат</div>
-              <div className="text-2xl font-bold text-primary">{formatNumber(totalPayment)} ₽</div>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-sm text-muted-foreground">Общая сумма выплат</div>
+                <div className="text-2xl font-bold text-primary">{formatNumber(totalPayment)} ₽</div>
+              </div>
+              <Button onClick={exportToExcel} className="gap-2">
+                <Icon name="Download" size={18} />
+                Экспорт в Excel
+              </Button>
             </div>
           </div>
         </div>
