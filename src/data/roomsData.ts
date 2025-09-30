@@ -65,7 +65,14 @@ export const rooms: Room[] = [
     name: 'Делюкс с видом',
     price: '12 000 ₽',
     features: ['Панорамные окна', 'Рабочая зона', 'Умный дом', 'Халаты и тапочки'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/a4100017-9df0-4397-92e6-d2aeaa753c75.JPG',
+    gallery: [
+      'https://cdn.poehali.dev/files/a4100017-9df0-4397-92e6-d2aeaa753c75.JPG',
+      'https://cdn.poehali.dev/files/55acead2-0496-4df8-b575-d3f72ccbffb5.JPG',
+      'https://cdn.poehali.dev/files/369f5567-94eb-40d2-a25f-40b6a0f552c8.JPG',
+      'https://cdn.poehali.dev/files/05515bb9-a2f9-4135-a141-7c3ccd443802.JPG',
+      'https://cdn.poehali.dev/files/9df72768-10ab-46ca-94e1-26d85c11b468.JPG'
+    ]
   },
   {
     name: 'Люкс апартаменты',
