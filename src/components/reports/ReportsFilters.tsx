@@ -14,6 +14,8 @@ interface ReportsFiltersProps {
   totalPayment: number;
   exportToExcel: () => void;
   exportToCSV: () => void;
+  onImport?: () => void;
+  isAdmin?: boolean;
   apartments: string[];
   months: string[];
   formatNumber: (num: number) => string;
@@ -30,6 +32,8 @@ export default function ReportsFilters({
   totalPayment,
   exportToExcel,
   exportToCSV,
+  onImport,
+  isAdmin = false,
   apartments,
   months,
   formatNumber
@@ -96,6 +100,12 @@ export default function ReportsFilters({
             <div className="text-2xl font-bold text-primary">{formatNumber(totalPayment)} ₽</div>
           </div>
           <div className="flex gap-2">
+            {isAdmin && onImport && (
+              <Button onClick={onImport} variant="secondary" className="gap-2">
+                <Icon name="Upload" size={18} />
+                Импорт
+              </Button>
+            )}
             <Button onClick={exportToExcel} className="gap-2">
               <Icon name="Download" size={18} />
               Excel

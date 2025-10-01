@@ -41,6 +41,8 @@ interface ReportsContentProps {
   totalPayment: number;
   exportToExcel: () => void;
   exportToCSV: () => void;
+  onImport?: () => void;
+  isAdmin?: boolean;
   handleEditReport: (report: OwnerReport) => void;
   apartments: string[];
   months: string[];
@@ -62,6 +64,8 @@ export default function ReportsContent({
   totalPayment,
   exportToExcel,
   exportToCSV,
+  onImport,
+  isAdmin,
   handleEditReport,
   apartments,
   months,
@@ -89,6 +93,8 @@ export default function ReportsContent({
         totalPayment={totalPayment}
         exportToExcel={exportToExcel}
         exportToCSV={exportToCSV}
+        onImport={onImport}
+        isAdmin={isAdmin}
         apartments={apartments}
         months={months}
         formatNumber={formatNumber}

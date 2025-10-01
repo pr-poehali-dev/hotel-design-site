@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 import EditReportDialog from '@/components/EditReportDialog';
 import LoginForm from '@/components/LoginForm';
 import UserManagement from '@/components/UserManagement';
+import ImportExcelDialog from '@/components/ImportExcelDialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReportsContent from '@/components/reports/ReportsContent';
 import { OwnerReport } from '@/components/reports/types';
@@ -20,6 +21,7 @@ export default function OwnerReportsPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [editingReport, setEditingReport] = useState<OwnerReport | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   useEffect(() => {
     const authStatus = sessionStorage.getItem('reportsAuth');
@@ -312,6 +314,8 @@ export default function OwnerReportsPage() {
                 totalPayment={totalPayment}
                 exportToExcel={exportToExcel}
                 exportToCSV={exportToCSV}
+                onImport={() => setImportDialogOpen(true)}
+                isAdmin={isAdmin}
                 handleEditReport={handleEditReport}
                 apartments={apartments}
                 months={months}
@@ -339,6 +343,7 @@ export default function OwnerReportsPage() {
             totalPayment={totalPayment}
             exportToExcel={exportToExcel}
             exportToCSV={exportToCSV}
+            isAdmin={false}
             handleEditReport={handleEditReport}
             apartments={apartments}
             months={months}
@@ -352,6 +357,13 @@ export default function OwnerReportsPage() {
           open={editDialogOpen}
           onOpenChange={setEditDialogOpen}
           onSave={handleSaveReport}
+        />
+
+        <ImportExcelDialog
+          open={importDialogOpen}
+          onOpenChange={setImportDialogOpen}
+          onSuccess={fetchReports}
+          adminToken={currentUser?.id.toString() || ''}
         />
       </div>
     </div>
