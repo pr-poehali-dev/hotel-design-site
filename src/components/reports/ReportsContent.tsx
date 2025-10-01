@@ -40,6 +40,7 @@ interface ReportsContentProps {
   filteredReports: OwnerReport[];
   totalPayment: number;
   exportToExcel: () => void;
+  exportToCSV: () => void;
   handleEditReport: (report: OwnerReport) => void;
   apartments: string[];
   months: string[];
@@ -60,6 +61,7 @@ export default function ReportsContent({
   filteredReports,
   totalPayment,
   exportToExcel,
+  exportToCSV,
   handleEditReport,
   apartments,
   months,
@@ -86,6 +88,7 @@ export default function ReportsContent({
         filteredReports={filteredReports}
         totalPayment={totalPayment}
         exportToExcel={exportToExcel}
+        exportToCSV={exportToCSV}
         apartments={apartments}
         months={months}
         formatNumber={formatNumber}

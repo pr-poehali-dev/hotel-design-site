@@ -13,6 +13,7 @@ interface ReportsFiltersProps {
   filteredReports: any[];
   totalPayment: number;
   exportToExcel: () => void;
+  exportToCSV: () => void;
   apartments: string[];
   months: string[];
   formatNumber: (num: number) => string;
@@ -28,6 +29,7 @@ export default function ReportsFilters({
   filteredReports,
   totalPayment,
   exportToExcel,
+  exportToCSV,
   apartments,
   months,
   formatNumber
@@ -93,10 +95,16 @@ export default function ReportsFilters({
             <div className="text-sm text-muted-foreground">Общая сумма выплат</div>
             <div className="text-2xl font-bold text-primary">{formatNumber(totalPayment)} ₽</div>
           </div>
-          <Button onClick={exportToExcel} className="gap-2">
-            <Icon name="Download" size={18} />
-            Экспорт в Excel
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={exportToExcel} className="gap-2">
+              <Icon name="Download" size={18} />
+              Excel
+            </Button>
+            <Button onClick={exportToCSV} variant="outline" className="gap-2">
+              <Icon name="FileText" size={18} />
+              CSV
+            </Button>
+          </div>
         </div>
       </div>
     </div>

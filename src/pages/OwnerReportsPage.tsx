@@ -199,6 +199,54 @@ export default function OwnerReportsPage() {
     XLSX.writeFile(workbook, fileName);
   };
 
+  const exportToCSV = () => {
+    const csvData = filteredReports.map(report => ({
+      'Апартамент': report.apartment_number,
+      'Заселение': formatDate(report.check_in_date),
+      'Выезд': formatDate(report.check_out_date),
+      'Сумма бронирования': report.booking_sum,
+      'Итоговая сумма': report.total_sum,
+      'Комиссия %': report.commission_percent,
+      'УСН %': report.usn_percent,
+      'До комиссии УСН': report.commission_before_usn,
+      'После комиссии': report.commission_after_usn,
+      'До затрат': report.remaining_before_expenses,
+      'Затраты на эксплуатацию': report.expenses_on_operations,
+      'Уборка': report.average_cleaning,
+      'Выплата собственнику': report.owner_payment,
+      'Дата выплаты': report.payment_date ? formatDate(report.payment_date) : '',
+      'Горячая вода': report.hot_water,
+      'Химчистка': report.chemical_cleaning,
+      'Средства гигиены': report.hygiene_ср_ва,
+      'Транспорт': report.transportation,
+      'ЖКХ': report.utilities,
+      'Прочее': report.other,
+      'Примечание': report.note_to_billing || ''
+    }));
+
+    const headers = Object.keys(csvData[0]);
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => headers.map(header => {
+        const value = row[header as keyof typeof row];
+        const stringValue = String(value || '');
+        return stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')
+          ? `"${stringValue.replace(/"/g, '""')}"`
+          : stringValue;
+      }).join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `отчеты_собственников_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const isAdmin = currentUser?.role === 'admin';
 
   return (
@@ -233,6 +281,7 @@ export default function OwnerReportsPage() {
                 filteredReports={filteredReports}
                 totalPayment={totalPayment}
                 exportToExcel={exportToExcel}
+                exportToCSV={exportToCSV}
                 handleEditReport={handleEditReport}
                 apartments={apartments}
                 months={months}
@@ -259,6 +308,7 @@ export default function OwnerReportsPage() {
             filteredReports={filteredReports}
             totalPayment={totalPayment}
             exportToExcel={exportToExcel}
+            exportToCSV={exportToCSV}
             handleEditReport={handleEditReport}
             apartments={apartments}
             months={months}
