@@ -100,7 +100,14 @@ export const rooms: Room[] = [
     name: 'Люкс апартаменты',
     price: '15 000 ₽',
     features: ['Отдельная гостиная', 'Джакузи', 'Вид на город', 'Завтрак включен'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/b6a25376-5125-4ebb-bfdf-9a419c0ae887.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/b6a25376-5125-4ebb-bfdf-9a419c0ae887.jpeg',
+      'https://cdn.poehali.dev/files/e56ba440-39f4-4886-9c3e-fe43fa9083b8.jpeg',
+      'https://cdn.poehali.dev/files/9890098f-54bc-44fc-ac9e-acb50d171232.jpeg',
+      'https://cdn.poehali.dev/files/0c232eed-4bc1-4b85-a615-02710ba8fb7f.jpeg',
+      'https://cdn.poehali.dev/files/28d372bc-5eaf-4523-9b09-3d919fefe8d4.jpeg'
+    ]
   },
   {
     name: 'Семейные апартаменты',
