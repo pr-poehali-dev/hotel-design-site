@@ -140,7 +140,7 @@ export const rooms: Room[] = [
   {
     name: 'Семейные апартаменты',
     price: '18 000 ₽',
-    features: ['2 спальни', 'Кухня-студия', 'Детская зона', 'Балкон'],
+    features: ['55 кв.м', '14 этаж', 'Для 1-4 гостей'],
     image: 'https://cdn.poehali.dev/files/8f879dcd-c984-4f0f-ac55-29ca3680453e.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/8f879dcd-c984-4f0f-ac55-29ca3680453e.jpeg',
