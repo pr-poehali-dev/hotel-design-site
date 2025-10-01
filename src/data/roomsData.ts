@@ -122,7 +122,7 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/3d41f3b3-04fe-48e5-b175-701d6d388673.jpeg',
       'https://cdn.poehali.dev/files/89442009-f2c5-4c70-a20e-d96925c86531.jpeg'
     ],
-    videoUrl: 'https://www.youtube.com/embed/zumJJUL_ruM',
+    video: 'https://rutube.ru/play/embed/a4e23a4b59896506ce710117cb72a3b0',
     description: `Роскошные апартаменты премиум-класса площадью 85 кв.м с панорамными окнами и дизайнерским интерьером. 
 
 Апартаменты включают:
