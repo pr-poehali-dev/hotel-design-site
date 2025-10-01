@@ -135,13 +135,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 remaining_before_expenses = parse_number(row[11] if len(row) > 11 else 0)
                 expenses_on_operations = parse_number(row[12] if len(row) > 12 else 0)
                 owner_payment = parse_number(row[13] if len(row) > 13 else 0)
+                payment_date_val = row[14] if len(row) > 14 else None
+                payment_date = None
+                if payment_date_val:
+                    try:
+                        if isinstance(payment_date_val, str):
+                            payment_date = datetime.strptime(payment_date_val, '%d.%m.%Y').date()
+                        elif hasattr(payment_date_val, 'date'):
+                            payment_date = payment_date_val.date()
+                    except:
+                        payment_date = None
+                
                 average_cleaning = parse_number(row[17] if len(row) > 17 else 0)
-                hot_water = parse_number(row[14] if len(row) > 14 else 0)
-                chemical_cleaning = parse_number(row[15] if len(row) > 15 else 0)
+                hot_water = parse_number(row[18] if len(row) > 18 else 0)
                 hygiene = parse_number(row[19] if len(row) > 19 else 0)
                 transportation = parse_number(row[20] if len(row) > 20 else 0)
-                utilities = parse_number(row[18] if len(row) > 18 else 0)
+                chemical_cleaning = parse_number(row[21] if len(row) > 21 else 0)
                 other = parse_number(row[22] if len(row) > 22 else 0)
+                utilities = 0
                 note = str(row[25]) if len(row) > 25 and row[25] else None
                 
                 reports_data.append((
@@ -158,6 +169,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     expenses_on_operations,
                     average_cleaning,
                     owner_payment,
+                    payment_date,
                     hot_water,
                     chemical_cleaning,
                     hygiene,
@@ -187,7 +199,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             (apartment_number, check_in_date, check_out_date, booking_sum, total_sum, 
              commission_percent, usn_percent, commission_before_usn, commission_after_usn,
              remaining_before_expenses, expenses_on_operations, average_cleaning, 
-             owner_payment, hot_water, chemical_cleaning, hygiene_ср_ва, 
+             owner_payment, payment_date, hot_water, chemical_cleaning, hygiene_ср_ва, 
              transportation, utilities, other, note_to_billing)
             VALUES %s
         """
