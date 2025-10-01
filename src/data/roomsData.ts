@@ -141,7 +141,14 @@ export const rooms: Room[] = [
     name: 'Семейные апартаменты',
     price: '18 000 ₽',
     features: ['2 спальни', 'Кухня-студия', 'Детская зона', 'Балкон'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/8f879dcd-c984-4f0f-ac55-29ca3680453e.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/8f879dcd-c984-4f0f-ac55-29ca3680453e.jpeg',
+      'https://cdn.poehali.dev/files/79ae4e56-62d6-4bc8-8ab5-90c626cf7162.jpeg',
+      'https://cdn.poehali.dev/files/8c684a8a-ff89-49a1-b2a0-4ff8a170da71.jpeg',
+      'https://cdn.poehali.dev/files/fcccd990-9809-4aa5-a50f-931b6863bb85.jpeg',
+      'https://cdn.poehali.dev/files/928f6dc0-1ef2-48c9-86c4-1b9ddadfce01.jpeg'
+    ]
   },
   {
     name: 'Бизнес-люкс',
