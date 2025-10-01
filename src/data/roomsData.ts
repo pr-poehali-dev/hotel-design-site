@@ -80,7 +80,7 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/086c4d9c-643a-4e33-a9e7-011f7d010238.JPG',
       'https://cdn.poehali.dev/files/2d3161e3-a849-4afb-ad6b-44677cc6bf85.JPG'
     ],
-    video: 'https://rutube.ru/play/embed/VIDEO_ID',
+    video: 'https://rutube.ru/play/embed/6814355a6755cd0221b3b2d9a3bf4992',
     description: `Премиум апартамент в 5* комплексе Поклонная 9
 Бэллман
 Личный администратор 
