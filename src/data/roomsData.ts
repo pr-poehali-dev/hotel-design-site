@@ -97,8 +97,8 @@ export const rooms: Room[] = [
 Апартамент Вам точно понравится.`
   },
   {
-    name: 'Люкс апартаменты',
-    price: '15 000 ₽',
+    name: '3х комнатный 2111',
+    price: 'от 30 000 ₽',
     features: ['85 кв.м.', '21 этаж', 'Для 1-5 гостей', '2 ванные комнаты'],
     image: 'https://cdn.poehali.dev/files/b6a25376-5125-4ebb-bfdf-9a419c0ae887.jpeg',
     gallery: [
