@@ -200,40 +200,70 @@ export default function OwnerReportsPage() {
   };
 
   const exportToCSV = () => {
-    const csvData = filteredReports.map(report => ({
-      'Апартамент': report.apartment_number,
-      'Заселение': formatDate(report.check_in_date),
-      'Выезд': formatDate(report.check_out_date),
-      'Сумма бронирования': report.booking_sum,
-      'Итоговая сумма': report.total_sum,
-      'Комиссия %': report.commission_percent,
-      'УСН %': report.usn_percent,
-      'До комиссии УСН': report.commission_before_usn,
-      'После комиссии': report.commission_after_usn,
-      'До затрат': report.remaining_before_expenses,
-      'Затраты на эксплуатацию': report.expenses_on_operations,
-      'Уборка': report.average_cleaning,
-      'Выплата собственнику': report.owner_payment,
-      'Дата выплаты': report.payment_date ? formatDate(report.payment_date) : '',
-      'Горячая вода': report.hot_water,
-      'Химчистка': report.chemical_cleaning,
-      'Средства гигиены': report.hygiene_ср_ва,
-      'Транспорт': report.transportation,
-      'ЖКХ': report.utilities,
-      'Прочее': report.other,
-      'Примечание': report.note_to_billing || ''
-    }));
+    if (filteredReports.length === 0) {
+      alert('Нет данных для экспорта');
+      return;
+    }
 
-    const headers = Object.keys(csvData[0]);
+    const headers = [
+      'Апартамент',
+      'Заселение',
+      'Выезд',
+      'Сумма бронирования',
+      'Итоговая сумма',
+      'Комиссия %',
+      'УСН %',
+      'До комиссии УСН',
+      'После комиссии',
+      'До затрат',
+      'Затраты на эксплуатацию',
+      'Уборка',
+      'Выплата собственнику',
+      'Дата выплаты',
+      'Горячая вода',
+      'Химчистка',
+      'Средства гигиены',
+      'Транспорт',
+      'ЖКХ',
+      'Прочее',
+      'Примечание'
+    ];
+
+    const rows = filteredReports.map(report => [
+      report.apartment_number,
+      formatDate(report.check_in_date),
+      formatDate(report.check_out_date),
+      report.booking_sum,
+      report.total_sum,
+      report.commission_percent,
+      report.usn_percent,
+      report.commission_before_usn,
+      report.commission_after_usn,
+      report.remaining_before_expenses,
+      report.expenses_on_operations,
+      report.average_cleaning,
+      report.owner_payment,
+      report.payment_date ? formatDate(report.payment_date) : '',
+      report.hot_water,
+      report.chemical_cleaning,
+      report.hygiene_ср_ва,
+      report.transportation,
+      report.utilities,
+      report.other,
+      report.note_to_billing || ''
+    ]);
+
+    const escapeCsvValue = (value: string | number) => {
+      const stringValue = String(value);
+      if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
+      }
+      return stringValue;
+    };
+
     const csvContent = [
-      headers.join(','),
-      ...csvData.map(row => headers.map(header => {
-        const value = row[header as keyof typeof row];
-        const stringValue = String(value || '');
-        return stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')
-          ? `"${stringValue.replace(/"/g, '""')}"`
-          : stringValue;
-      }).join(','))
+      headers.map(escapeCsvValue).join(','),
+      ...rows.map(row => row.map(escapeCsvValue).join(','))
     ].join('\n');
 
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
