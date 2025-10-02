@@ -32,16 +32,10 @@ const Footer = () => {
           </div>
           
           <div>
-            <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Социальные сети</h4>
+            <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Телеграмм</h4>
             <div className="flex space-x-4">
               <Button variant="outline" size="icon" className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900">
-                <Icon name="Facebook" size={20} />
-              </Button>
-              <Button variant="outline" size="icon" className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900">
-                <Icon name="Instagram" size={20} />
-              </Button>
-              <Button variant="outline" size="icon" className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900">
-                <Icon name="Twitter" size={20} />
+                <Icon name="Send" size={20} />
               </Button>
             </div>
           </div>
