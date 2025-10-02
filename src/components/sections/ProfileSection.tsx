@@ -1,8 +1,53 @@
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 
 const ProfileSection = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleWhatsAppAuth = () => {
+    const message = encodeURIComponent('Здравствуйте! Хочу войти в личный кабинет на сайте Premium Apartments');
+    window.open(`https://wa.me/79141965172?text=${message}`, '_blank');
+    setTimeout(() => {
+      setIsAuthenticated(true);
+    }, 2000);
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <section className="py-20 min-h-screen bg-gradient-to-br from-charcoal-900 to-charcoal-800 flex items-center justify-center">
+        <div className="container mx-auto px-6">
+          <Card className="max-w-md mx-auto p-10 bg-white shadow-2xl border-0 text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Icon name="Lock" size={40} className="text-white" />
+            </div>
+            
+            <h2 className="text-3xl font-playfair font-bold text-charcoal-900 mb-4">
+              Вход в личный кабинет
+            </h2>
+            
+            <p className="text-charcoal-600 font-inter mb-8">
+              Для доступа к личному кабинету свяжитесь с нами через WhatsApp
+            </p>
+            
+            <FizzyButton 
+              onClick={handleWhatsAppAuth}
+              className="w-full bg-green-500 hover:bg-green-600 mb-4"
+              icon={<Icon name="MessageCircle" size={20} />}
+            >
+              Войти через WhatsApp
+            </FizzyButton>
+            
+            <p className="text-sm text-charcoal-500 font-inter">
+              Мы отправим вам ссылку для входа в личный кабинет
+            </p>
+          </Card>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20 min-h-screen bg-gradient-to-br from-charcoal-900 to-charcoal-800">
       <div className="container mx-auto px-6">
