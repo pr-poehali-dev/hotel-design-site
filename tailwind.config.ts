@@ -163,6 +163,10 @@ export default {
 				'fade-in-slow': 'fade-in-slow 0.8s ease-out',
 				'scale-in': 'scale-in 0.3s ease-out',
 				'shimmer': 'shimmer 2s infinite'
+			},
+			perspective: {
+				'1000': '1000px',
+				'2000': '2000px'
 			}
 		}
 	},
