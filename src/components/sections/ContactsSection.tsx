@@ -75,41 +75,46 @@ const ContactsSection = () => {
 
           <Card className="p-8 bg-white shadow-2xl border-0">
             <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-6">Связаться с нами</h3>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-charcoal-700 font-semibold mb-2 font-inter">Имя</label>
-                <input 
-                  type="text" 
-                  className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all"
-                  placeholder="Ваше имя"
-                />
-              </div>
+            <div className="space-y-4">
+              <p className="text-charcoal-600 font-inter mb-6">
+                Напишите нам в WhatsApp для быстрой связи
+              </p>
               
-              <div>
-                <label className="block text-charcoal-700 font-semibold mb-2 font-inter">Email</label>
-                <input 
-                  type="email" 
-                  className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all"
-                  placeholder="your@email.com"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-charcoal-700 font-semibold mb-2 font-inter">Сообщение</label>
-                <textarea 
-                  rows={4}
-                  className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all resize-none"
-                  placeholder="Ваше сообщение..."
-                ></textarea>
-              </div>
-              
-              <FizzyButton 
-                className="w-full"
-                icon={<Icon name="Send" size={18} />}
+              <a 
+                href="https://wa.me/79141965172"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Отправить сообщение
-              </FizzyButton>
-            </form>
+                <FizzyButton 
+                  className="w-full bg-green-500 hover:bg-green-600"
+                  icon={<Icon name="MessageCircle" size={18} />}
+                >
+                  Написать в WhatsApp
+                </FizzyButton>
+              </a>
+              
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-charcoal-200"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white text-charcoal-500 font-inter">или</span>
+                </div>
+              </div>
+              
+              <a 
+                href="mailto:hab-agent@mail.ru"
+                className="block"
+              >
+                <FizzyButton 
+                  className="w-full"
+                  variant="secondary"
+                  icon={<Icon name="Mail" size={18} />}
+                >
+                  Написать на Email
+                </FizzyButton>
+              </a>
+            </div>
           </Card>
         </div>
       </div>
