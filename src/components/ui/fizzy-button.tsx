@@ -11,9 +11,19 @@ export interface FizzyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonE
 const FizzyButton = React.forwardRef<HTMLButtonElement, FizzyButtonProps>(
   ({ className, children, icon, variant = "primary", ...props }, ref) => {
     const [isChecked, setIsChecked] = React.useState(false);
+    const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+    React.useEffect(() => {
+      audioRef.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZVRE5WK7q7aZWFApAmuPxxXMpBzGDzPPagDoFJHfH8N+QPgkVXrTp66hVFApGn+DyQGwhBTOGzvLVhzkGHm+/7+OZURE5WK7q7aZWFApAmOPyx3MoBzOEzPPagDoFJHfH8N+QPgkVXrTp66hVFApFnuDyQGwhBTKHzvPVhzkGHm+/7+OZURE5Wa7q7aZWFApAl+Pyx3MoBzOEzPPagDoFJHfH8N+QPgkVXrTp66hVFApFnuDyv2wiBDKHzvLVhzoGHm+/7+OZVRE5Wa7q7aZWFApAl+Pyx3MoBzKEzPPagDoFJHfH8N+QPggVXrTp66hVFApFnuDyv2wiBDKHzvLVhzoGHm+/7+OZVRE5Wa7q7aZWFApAl+Pyx3MoBzKEzPPagDoFJHfH8N+QPggVXrTp66hVFApFnuDyv2wiBDKHzvLVhzoGHm+/7+OZVRE5Wa7q7aZWFApAl+Pyx3MoBzKEzPPagDoFJHfH8N+QPggVXrTp66hVFApFnuDyv2wiBDKHzvLVhzoGHm+/7+OZVRE5Wa7q7aZWFApAl+Pyx3MoBzKEzPPagDoFJHfH8N+QPggVXrTp66hVFApFnuDyv2wiBDKHzvLVhzoGHm+/7+OZVRE5Wa7q7aZWFApAl+Pyx3MoBzKEzPPagDoFJHfH8N+QPggVXrTp66hVFA==');
+      audioRef.current.volume = 0.3;
+    }, []);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsChecked(true);
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(() => {});
+      }
       setTimeout(() => setIsChecked(false), 2000);
       props.onClick?.(e);
     };
