@@ -38,29 +38,64 @@ const VideoSliderSection = () => {
 
   const slides = [
     {
-      image: 'https://cdn.poehali.dev/files/5df8e629-1f9d-47b4-9f53-139fb374bf0d.png',
-      title: 'Фасад комплекса',
-      description: 'Архитектурная элегантность Поклонной 9'
+      image: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
+      title: '2х комнатный 2019',
+      description: '55 кв.м роскоши на 20 этаже'
     },
     {
-      image: 'https://cdn.poehali.dev/files/0e0aad4f-4840-442c-bf90-561499ee3c16.jpeg',
-      title: 'Панорамный вид',
-      description: 'Незабываемые виды на столицу'
+      image: 'https://cdn.poehali.dev/files/2202139f-75ce-4af1-8c7a-de66a7c2e431.jpeg',
+      title: 'Современный интерьер',
+      description: 'Техника премиум-класса'
     },
     {
-      image: 'https://cdn.poehali.dev/files/ef1cdf6d-1ae1-4f13-a118-c82e9a55c278.jpeg',
-      title: 'Вечерняя иллюминация',
-      description: 'Элитный жилой комплекс премиум-класса'
+      image: 'https://cdn.poehali.dev/files/ea0dc8af-de8c-41fb-9865-7379da038018.jpeg',
+      title: 'Панорамные виды',
+      description: 'Вид на Поклонную гору'
     },
     {
-      image: 'https://cdn.poehali.dev/files/507edb80-c558-4558-adf5-46732b17631e.jpg',
-      title: 'Современный дизайн',
-      description: 'Золотые акценты и стильная архитектура'
+      image: 'https://cdn.poehali.dev/files/25507b39-2c9d-46be-aa9c-32d23e63323f.jpeg',
+      title: 'Максимальный комфорт',
+      description: 'PS5, телескоп, массажное кресло'
     },
     {
-      image: 'https://cdn.poehali.dev/files/ccdc571a-4af9-4618-87fb-7900b09688ad.jpeg',
-      title: 'Интерьеры',
-      description: 'Роскошь в каждой детали'
+      image: 'https://cdn.poehali.dev/files/5eb93d1a-6444-4e64-95a2-ea9b0a834307.jpeg',
+      title: 'Элегантная спальня',
+      description: 'King-size кровать и уют'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/0cbf887e-c8ab-412b-a372-1728ea656c15.jpeg',
+      title: 'Кухня премиум',
+      description: 'Кварцевые столешницы'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/fb93407e-b72a-4593-ae8f-d92a21e17e2d.jpeg',
+      title: 'Дизайнерская ванная',
+      description: 'Роскошь в деталях'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/25a0718c-903c-4139-a8de-7ecf199f8c93.jpeg',
+      title: 'Гостиная зона',
+      description: 'Пространство для отдыха'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/87d169bb-157e-4520-9001-2f8b94f6a3ae.jpeg',
+      title: 'Уютная атмосфера',
+      description: 'Идеально для проживания'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/76fbc7c3-2929-4fb3-85f5-103fd1973b3b.jpeg',
+      title: 'Вид из окна',
+      description: 'Панорама столицы'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/a59d5960-d38b-4f76-a57c-516000294c8a.jpeg',
+      title: 'Функциональность',
+      description: 'Все для комфорта'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/f6a7bb29-e74b-49b7-8609-4258aac8472d.jpeg',
+      title: 'Детали интерьера',
+      description: 'Премиум качество'
     }
   ];
 
@@ -71,10 +106,10 @@ const VideoSliderSection = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-playfair font-bold text-white mb-4">
-            Фото <span className="text-gold-400">Галерея</span>
+            Наши <span className="text-gold-400">Апартаменты</span>
           </h2>
           <p className="text-xl text-gray-300 font-inter max-w-2xl mx-auto">
-            Откройте для себя красоту и роскошь комплекса Поклонная 9
+            2х комнатный 2019 — премиум студия с максимальной комплектацией
           </p>
         </div>
 
