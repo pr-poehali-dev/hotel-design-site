@@ -1,4 +1,5 @@
 import Icon from '@/components/ui/icon';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 
 interface HeaderProps {
   navigation: Array<{ id: string; label: string; icon: string }>;
@@ -22,9 +23,9 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
             <h1 className="font-playfair font-bold text-gold-400 py-0 px-0 text-xs">Premium Apartments</h1>
           </div>
           <div className="flex items-center space-x-4">
-            <nav className="hidden md:flex space-x-8">
+            <nav className="hidden md:flex space-x-2">
               {navigation.map((item) => (
-                <button
+                <FizzyButton
                   key={item.id}
                   onClick={() => {
                     if (item.id === 'booking') {
@@ -35,15 +36,12 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
                       onNavigate(item.id);
                     }
                   }}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
-                    currentSection === item.id
-                      ? 'bg-gold-500 text-charcoal-900 font-semibold'
-                      : 'hover:bg-charcoal-800 text-white'
-                  }`}
+                  variant={currentSection === item.id ? 'primary' : 'secondary'}
+                  icon={<Icon name={item.icon as any} size={16} />}
+                  className="text-sm"
                 >
-                  <Icon name={item.icon as any} size={18} />
-                  <span className="font-inter">{item.label}</span>
-                </button>
+                  {item.label}
+                </FizzyButton>
               ))}
             </nav>
           </div>
