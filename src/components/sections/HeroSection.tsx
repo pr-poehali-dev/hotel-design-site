@@ -11,24 +11,24 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
 
   const slides = [
     {
-      image: 'https://cdn.poehali.dev/files/533d48be-31a4-4b8d-b67f-6e54f57ea44a.jpeg',
+      image: 'https://cdn.poehali.dev/files/5df8e629-1f9d-47b4-9f53-139fb374bf0d.png',
       title: 'Премиум студия',
       subtitle: '55 кв.м роскоши на 20 этаже'
     },
     {
-      image: 'https://cdn.poehali.dev/files/2202139f-75ce-4af1-8c7a-de66a7c2e431.jpeg',
-      title: 'Современный дизайн',
-      subtitle: 'Техника премиум-класса и массажное кресло'
-    },
-    {
-      image: 'https://cdn.poehali.dev/files/ea0dc8af-de8c-41fb-9865-7379da038018.jpeg',
+      image: 'https://cdn.poehali.dev/files/0e0aad4f-4840-442c-bf90-561499ee3c16.jpeg',
       title: 'Панорамные виды',
-      subtitle: 'Элитный комплекс Поклонная 9'
+      subtitle: 'Виды на город и Поклонную гору'
     },
     {
-      image: 'https://cdn.poehali.dev/files/25507b39-2c9d-46be-aa9c-32d23e63323f.jpeg',
-      title: 'Максимальный комфорт',
-      subtitle: 'PS5, телескоп и 5★ обслуживание'
+      image: 'https://cdn.poehali.dev/files/ef1cdf6d-1ae1-4f13-a118-c82e9a55c278.jpeg',
+      title: 'Элитный комплекс',
+      subtitle: 'Поклонная 9 - архитектурный шедевр'
+    },
+    {
+      image: 'https://cdn.poehali.dev/files/507edb80-c558-4558-adf5-46732b17631e.jpg',
+      title: 'Современная архитектура',
+      subtitle: 'Элегантность и стиль'
     }
   ];
 

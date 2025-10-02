@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/sections/Header';
 import HeroSection from '@/components/sections/HeroSection';
 import RoomsSection from '@/components/sections/RoomsSection';
-import GallerySection from '@/components/sections/GallerySection';
+import VideoSliderSection from '@/components/sections/VideoSliderSection';
 import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
 import Footer from '@/components/sections/Footer';
@@ -58,7 +58,7 @@ const Index = () => {
       {currentSection === 'home' && (
         <>
           <HeroSection onNavigate={setCurrentSection} />
-          <GallerySection hotelImages={hotelImages} />
+          <VideoSliderSection />
         </>
       )}
 
