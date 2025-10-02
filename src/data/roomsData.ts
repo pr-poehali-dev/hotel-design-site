@@ -175,7 +175,14 @@ export const rooms: Room[] = [
     name: 'Бизнес-люкс',
     price: '22 000 ₽',
     features: ['Кабинет', 'Конференц-связь', 'Экспресс check-in', 'Лаундж-доступ'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
+      'https://cdn.poehali.dev/files/6d6e87bb-c40b-411d-9988-44f3e38c5b7a.jpeg',
+      'https://cdn.poehali.dev/files/c36c278e-8900-41c5-9b44-fc6ad2225212.jpeg',
+      'https://cdn.poehali.dev/files/159536dd-b067-4ba8-9b03-1f9bb92180cd.jpeg',
+      'https://cdn.poehali.dev/files/f4e945c1-d9bc-4c70-9c52-5b0380ecaa50.jpeg'
+    ]
   },
   {
     name: 'Пентхаус',
