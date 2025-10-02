@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import ReportsTable from '@/components/ReportsTable';
 import BookingDialog from '@/components/BookingDialog';
@@ -6,8 +6,19 @@ import { BookingRecord } from '@/types/booking';
 import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 
+const STORAGE_KEY = 'premium_apartments_bookings';
+
 const ReportsPage = () => {
-  const [bookings, setBookings] = useState<BookingRecord[]>([
+  const [bookings, setBookings] = useState<BookingRecord[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved bookings', e);
+      }
+    }
+    return [
     {
       id: '1',
       checkIn: '2025-03-01',
@@ -60,10 +71,15 @@ const ReportsPage = () => {
       other: 0,
       otherNote: '',
     },
-  ]);
+  ];
+  });
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBooking, setEditingBooking] = useState<BookingRecord | undefined>();
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+  }, [bookings]);
 
   const handleAddBooking = () => {
     setEditingBooking(undefined);

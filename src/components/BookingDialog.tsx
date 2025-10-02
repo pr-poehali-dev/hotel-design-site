@@ -194,8 +194,14 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
                   className="w-full px-4 py-2 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
                 >
                   <option value={0}>0% (прямая бронь)</option>
+                  <option value={5}>5%</option>
+                  <option value={10}>10%</option>
                   <option value={15}>15%</option>
+                  <option value={18}>18%</option>
+                  <option value={20}>20%</option>
+                  <option value={23}>23%</option>
                   <option value={25}>25%</option>
+                  <option value={30}>30%</option>
                 </select>
               </div>
             </div>
