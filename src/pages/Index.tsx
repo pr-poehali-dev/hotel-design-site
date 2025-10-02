@@ -56,10 +56,7 @@ const Index = () => {
       />
 
       {currentSection === 'home' && (
-        <>
-          <HeroSection onNavigate={setCurrentSection} />
-          <VideoSliderSection />
-        </>
+        <HeroSection onNavigate={setCurrentSection} />
       )}
 
       {currentSection === 'rooms' && (
