@@ -40,6 +40,18 @@ const ContactsSection = () => {
               </div>
               
               <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                  <Icon name="MessageCircle" size={24} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-charcoal-900 font-inter">WhatsApp</h4>
+                  <a href="https://wa.me/79141965172" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-700 transition-colors">
+                    +7 914 196 51 72
+                  </a>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gold-500 rounded-lg flex items-center justify-center">
                   <Icon name="Mail" size={24} className="text-charcoal-900" />
                 </div>
