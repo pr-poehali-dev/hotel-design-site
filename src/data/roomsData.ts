@@ -176,7 +176,7 @@ export const rooms: Room[] = [
   {
     name: 'Бизнес-люкс',
     price: '22 000 ₽',
-    features: ['Кабинет', 'Конференц-связь', 'Экспресс check-in', 'Лаундж-доступ'],
+    features: ['67 кв.м', '28 этаж', 'Для 1-6 гостей'],
     image: 'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
