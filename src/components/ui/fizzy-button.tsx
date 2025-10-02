@@ -81,7 +81,7 @@ const FizzyButton = React.forwardRef<HTMLButtonElement, FizzyButtonProps>(
         {trails.map(trail => (
           <div
             key={trail.id}
-            className="fizzy-trail"
+            className={cn("fizzy-trail", variant === "secondary" && "fizzy-trail-secondary")}
             style={{
               left: `${trail.x}px`,
               top: `${trail.y}px`,
