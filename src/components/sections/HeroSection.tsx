@@ -13,7 +13,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
     {
       image: 'https://cdn.poehali.dev/files/5df8e629-1f9d-47b4-9f53-139fb374bf0d.png',
       title: 'Премиум студия',
-      subtitle: '55 кв.м роскоши на 20 этаже'
+      subtitle: 'От 55 до 150 кв.м роскоши на Поклонной'
     },
     {
       image: 'https://cdn.poehali.dev/files/0e0aad4f-4840-442c-bf90-561499ee3c16.jpeg',
