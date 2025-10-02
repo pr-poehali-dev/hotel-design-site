@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FizzyButton } from '@/components/ui/fizzy-button';
+import { BubbleButton } from '@/components/ui/bubble-button';
 import Icon from '@/components/ui/icon';
 
 interface HeroSectionProps {
@@ -91,19 +91,19 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
           {slides[currentSlide].subtitle}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
-          <FizzyButton
+          <BubbleButton
             onClick={() => window.open('https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&utm_source=share_from_pms&scroll_to_rooms=1&token=07f1a&is_auto_search=0&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=0&insidePopup=0&dfrom=29-12-2025&dto=31-12-2025&adults=1', '_blank')}
             icon={<Icon name="Calendar" size={20} />}
           >
             Забронировать апартаменты
-          </FizzyButton>
-          <FizzyButton
+          </BubbleButton>
+          <BubbleButton
             onClick={() => onNavigate('rooms')}
             variant="secondary"
             icon={<Icon name="Bed" size={20} />}
           >
             Наши апартаменты
-          </FizzyButton>
+          </BubbleButton>
         </div>
       </div>
 
