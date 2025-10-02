@@ -25,7 +25,7 @@ const ContactsSection = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-charcoal-900 font-inter">Адрес</h4>
-                  <p className="text-charcoal-600">ул. Тверская, 12, Москва, 125009</p>
+                  <p className="text-charcoal-600">г.Москва ул. Поклонная дом 9</p>
                 </div>
               </div>
               
