@@ -5,31 +5,14 @@ const Footer = () => {
   return (
     <footer className="bg-charcoal-900 text-white py-12">
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-lg font-playfair font-bold text-charcoal-900">P9</span>
-                </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold-300 rounded-full opacity-80"></div>
-              </div>
-              <h3 className="text-xl font-playfair font-bold text-gold-400">Premium Apartments</h3>
-            </div>
-            <p className="text-gray-300 font-inter">
-              Премиальные апартаменты в самом сердце Москвы. Ваш комфорт - наш приоритет.
-            </p>
-          </div>
-          
-          <div>
-            <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Телеграмм</h4>
-            <div className="flex space-x-4">
-              <a href="https://t.me/apartamentsmsk" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="icon" className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900">
-                  <Icon name="Send" size={20} />
-                </Button>
-              </a>
-            </div>
+        <div className="text-center">
+          <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Телеграмм</h4>
+          <div className="flex justify-center">
+            <a href="https://t.me/apartamentsmsk" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="icon" className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900">
+                <Icon name="Send" size={20} />
+              </Button>
+            </a>
           </div>
         </div>
         
