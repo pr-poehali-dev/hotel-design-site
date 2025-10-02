@@ -156,6 +156,7 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/c0ec9815-9ef8-4ee3-b858-ab582a399297.jpeg',
       'https://cdn.poehali.dev/files/fa995feb-6e2f-41f3-a86e-cc48e1bba0a8.jpeg'
     ],
+    video: 'https://rutube.ru/play/embed/1d5d5c67e7fcccf057e2ecfcabe050e2',
     description: `Современные апартаменты площадью 55 кв.м с продуманной планировкой для комфортного семейного проживания.
 
 Апартаменты включают:
