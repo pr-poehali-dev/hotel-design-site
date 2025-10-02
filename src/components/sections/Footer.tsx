@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="bg-charcoal-900 text-white py-12">
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           <div>
             <div className="flex items-center space-x-3 mb-4">
               <div className="relative">
@@ -19,16 +19,6 @@ const Footer = () => {
             <p className="text-gray-300 font-inter">
               Премиальные апартаменты в самом сердце Москвы. Ваш комфорт - наш приоритет.
             </p>
-          </div>
-          
-          <div>
-            <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Услуги</h4>
-            <ul className="space-y-2 text-gray-300 font-inter">
-              <li>Бронирование апартаментов</li>
-              <li>Ресторан и бар</li>
-              <li>Конференц-залы</li>
-              <li>Спа и фитнес</li>
-            </ul>
           </div>
           
           <div>
