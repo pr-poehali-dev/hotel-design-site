@@ -23,7 +23,7 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
           </div>
           <div className="flex items-center space-x-4">
             <a
-              href="https://t.me/your_telegram_channel"
+              href="https://t.me/apartamentsmsk"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 hover:bg-charcoal-800 text-white"
