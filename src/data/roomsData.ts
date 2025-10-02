@@ -195,6 +195,7 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/d8dd2596-aa06-4ef1-be1f-449adabf73cc.jpeg',
       'https://cdn.poehali.dev/files/8194b645-15a6-47e8-a842-60d3e44a14a4.jpeg'
     ],
+    video: 'https://rutube.ru/play/embed/ee4bef7920b0c623328ffcb825fe8ec9',
     description: `Элегантные апартаменты бизнес-класса площадью 67 кв.м на 28 этаже с панорамными окнами и современным дизайном.
 
 Апартаменты включают:
