@@ -1,0 +1,44 @@
+.glow-icon-link {
+  position: relative;
+  display: block;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  line-height: 63px;
+  background: #333;
+  border-radius: 50%;
+  font-size: 30px;
+  color: #666;
+  transition: 0.5s;
+  text-decoration: none;
+}
+
+.glow-icon-link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--glow-color, #ffee10);
+  transition: 0.5s;
+  transform: scale(0.9);
+  z-index: -1;
+}
+
+.glow-icon-link:hover::before {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px var(--glow-color, #ffee10);
+}
+
+.glow-icon-link:hover {
+  color: var(--glow-color, #ffee10);
+  box-shadow: 0 0 5px var(--glow-color, #ffee10);
+  text-shadow: 0 0 5px var(--glow-color, #ffee10);
+}
+
+.glow-icon-link svg {
+  vertical-align: middle;
+  margin-top: -3px;
+}

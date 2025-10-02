@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { GlowIconButton } from '@/components/ui/glow-icon-button';
 
 const Footer = () => {
   return (
@@ -8,11 +8,11 @@ const Footer = () => {
         <div className="text-center">
           <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Телеграмм</h4>
           <div className="flex justify-center">
-            <a href="https://t.me/apartamentsmsk" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" size="icon" className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900">
-                <Icon name="Send" size={20} />
-              </Button>
-            </a>
+            <GlowIconButton 
+              href="https://t.me/apartamentsmsk"
+              icon={<Icon name="Send" size={24} />}
+              glowColor="#ffee10"
+            />
           </div>
         </div>
         
