@@ -22,15 +22,6 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
             <h1 className="font-playfair font-bold text-gold-400 py-0 px-0 text-xs">Premium Apartments</h1>
           </div>
           <div className="flex items-center space-x-4">
-            <a
-              href="https://t.me/apartamentsmsk"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 hover:bg-charcoal-800 text-white"
-            >
-              <Icon name="Send" size={18} />
-              <span className="font-inter hidden sm:inline">Telegram</span>
-            </a>
             <nav className="hidden md:flex space-x-8">
               {navigation.map((item) => (
                 <button
