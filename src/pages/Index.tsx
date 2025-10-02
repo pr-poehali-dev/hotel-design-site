@@ -5,6 +5,7 @@ import RoomsSection from '@/components/sections/RoomsSection';
 import VideoSliderSection from '@/components/sections/VideoSliderSection';
 import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
+import ProfileSection from '@/components/sections/ProfileSection';
 import Footer from '@/components/sections/Footer';
 import { rooms } from '@/data/roomsData';
 
@@ -27,6 +28,7 @@ const Index = () => {
     { id: 'home', label: 'Главная', icon: 'Home' },
     { id: 'rooms', label: 'Апартаменты', icon: 'Bed' },
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
+    { id: 'profile', label: 'Личный кабинет', icon: 'User' },
     { id: 'reports', label: 'Отчеты', icon: 'FileText' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
   ];
@@ -69,6 +71,8 @@ const Index = () => {
       )}
 
       {currentSection === 'booking' && <BookingSection />}
+
+      {currentSection === 'profile' && <ProfileSection />}
 
       {currentSection === 'contacts' && <ContactsSection />}
 
