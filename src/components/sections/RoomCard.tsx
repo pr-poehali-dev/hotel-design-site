@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import { useState } from 'react';
 import {
@@ -153,12 +154,13 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           </Dialog>
         )}
         
-        <Button 
-          className="w-full mt-4 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold"
+        <FizzyButton 
+          className="w-full mt-4"
           onClick={() => room.bookingUrl && window.open(room.bookingUrl, '_blank')}
+          icon={<Icon name="Calendar" size={18} />}
         >
           Забронировать
-        </Button>
+        </FizzyButton>
       </div>
 
       <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>

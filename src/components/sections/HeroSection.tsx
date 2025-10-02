@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 
 interface HeroSectionProps {
@@ -91,19 +91,19 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
           {slides[currentSlide].subtitle}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
-          <Button
+          <FizzyButton
             onClick={() => window.open('https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&utm_source=share_from_pms&scroll_to_rooms=1&token=07f1a&is_auto_search=0&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=0&insidePopup=0&dfrom=29-12-2025&dto=31-12-2025&adults=1', '_blank')}
-            className="bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold px-8 py-4 text-lg"
+            icon={<Icon name="Calendar" size={20} />}
           >
             Забронировать апартаменты
-          </Button>
-          <Button
+          </FizzyButton>
+          <FizzyButton
             onClick={() => onNavigate('rooms')}
-            variant="outline"
-            className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-charcoal-900 font-semibold px-8 py-4 text-lg"
+            variant="secondary"
+            icon={<Icon name="Bed" size={20} />}
           >
             Наши апартаменты
-          </Button>
+          </FizzyButton>
         </div>
       </div>
 

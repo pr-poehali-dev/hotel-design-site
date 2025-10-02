@@ -1,0 +1,356 @@
+@keyframes particleUp {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    top: -100%;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    background-color: hsl(var(--primary));
+  }
+  50% {
+    background-color: hsl(var(--primary) / 0.8);
+  }
+}
+
+.fizzy-button-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.fizzy-checkbox {
+  display: none;
+}
+
+.fizzy-button {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.1s;
+}
+
+.fizzy-button:active {
+  transform: scale(0.95);
+}
+
+.fizzy-button-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.fizzy-button.secondary .fizzy-button-inner {
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+
+.fizzy-button:hover .fizzy-button-inner {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.fizzy-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.125rem;
+  transition: transform 0.3s ease;
+  z-index: 2;
+}
+
+.fizzy-text {
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.fizzy-tick-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  z-index: 3;
+  transition: opacity 0.3s ease;
+}
+
+.fizzy-tick {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: hsl(var(--primary-foreground));
+}
+
+.fizzy-checkbox:checked ~ .fizzy-button .fizzy-text {
+  opacity: 0;
+}
+
+.fizzy-checkbox:checked ~ .fizzy-button .fizzy-icon {
+  transform: scale(0);
+}
+
+.fizzy-checkbox:checked ~ .fizzy-button .fizzy-tick-wrapper {
+  opacity: 1;
+}
+
+.fizzy-checkbox:checked ~ .fizzy-button .fizzy-button-inner {
+  animation: glow 0.5s ease-in-out;
+}
+
+.fizzy-quad {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fizzy-spot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: hsl(var(--primary-foreground));
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fizzy-checkbox:checked ~ .fizzy-button .fizzy-spot {
+  animation: particleUp 1s ease-out;
+  animation-fill-mode: both;
+}
+
+.fizzy-spot:nth-child(1) {
+  left: 5%;
+  animation-delay: 0s;
+}
+.fizzy-spot:nth-child(2) {
+  left: 10%;
+  animation-delay: 0.02s;
+}
+.fizzy-spot:nth-child(3) {
+  left: 15%;
+  animation-delay: 0.04s;
+}
+.fizzy-spot:nth-child(4) {
+  left: 20%;
+  animation-delay: 0.06s;
+}
+.fizzy-spot:nth-child(5) {
+  left: 25%;
+  animation-delay: 0.08s;
+}
+.fizzy-spot:nth-child(6) {
+  left: 30%;
+  animation-delay: 0.1s;
+}
+.fizzy-spot:nth-child(7) {
+  left: 35%;
+  animation-delay: 0.12s;
+}
+.fizzy-spot:nth-child(8) {
+  left: 40%;
+  animation-delay: 0.14s;
+}
+.fizzy-spot:nth-child(9) {
+  left: 45%;
+  animation-delay: 0.16s;
+}
+.fizzy-spot:nth-child(10) {
+  left: 50%;
+  animation-delay: 0.18s;
+}
+.fizzy-spot:nth-child(11) {
+  left: 55%;
+  animation-delay: 0.2s;
+}
+.fizzy-spot:nth-child(12) {
+  left: 60%;
+  animation-delay: 0.22s;
+}
+.fizzy-spot:nth-child(13) {
+  left: 65%;
+  animation-delay: 0.24s;
+}
+.fizzy-spot:nth-child(14) {
+  left: 70%;
+  animation-delay: 0.26s;
+}
+.fizzy-spot:nth-child(15) {
+  left: 75%;
+  animation-delay: 0.28s;
+}
+.fizzy-spot:nth-child(16) {
+  left: 80%;
+  animation-delay: 0.3s;
+}
+.fizzy-spot:nth-child(17) {
+  left: 85%;
+  animation-delay: 0.32s;
+}
+.fizzy-spot:nth-child(18) {
+  left: 90%;
+  animation-delay: 0.34s;
+}
+.fizzy-spot:nth-child(19) {
+  left: 95%;
+  animation-delay: 0.36s;
+}
+.fizzy-spot:nth-child(20) {
+  left: 8%;
+  animation-delay: 0.38s;
+}
+.fizzy-spot:nth-child(21) {
+  left: 12%;
+  animation-delay: 0.4s;
+}
+.fizzy-spot:nth-child(22) {
+  left: 18%;
+  animation-delay: 0.42s;
+}
+.fizzy-spot:nth-child(23) {
+  left: 22%;
+  animation-delay: 0.44s;
+}
+.fizzy-spot:nth-child(24) {
+  left: 28%;
+  animation-delay: 0.46s;
+}
+.fizzy-spot:nth-child(25) {
+  left: 32%;
+  animation-delay: 0.48s;
+}
+.fizzy-spot:nth-child(26) {
+  left: 38%;
+  animation-delay: 0.5s;
+}
+.fizzy-spot:nth-child(27) {
+  left: 42%;
+  animation-delay: 0.52s;
+}
+.fizzy-spot:nth-child(28) {
+  left: 48%;
+  animation-delay: 0.54s;
+}
+.fizzy-spot:nth-child(29) {
+  left: 52%;
+  animation-delay: 0.56s;
+}
+.fizzy-spot:nth-child(30) {
+  left: 58%;
+  animation-delay: 0.58s;
+}
+.fizzy-spot:nth-child(31) {
+  left: 62%;
+  animation-delay: 0.6s;
+}
+.fizzy-spot:nth-child(32) {
+  left: 68%;
+  animation-delay: 0.62s;
+}
+.fizzy-spot:nth-child(33) {
+  left: 72%;
+  animation-delay: 0.64s;
+}
+.fizzy-spot:nth-child(34) {
+  left: 78%;
+  animation-delay: 0.66s;
+}
+.fizzy-spot:nth-child(35) {
+  left: 82%;
+  animation-delay: 0.68s;
+}
+.fizzy-spot:nth-child(36) {
+  left: 88%;
+  animation-delay: 0.7s;
+}
+.fizzy-spot:nth-child(37) {
+  left: 92%;
+  animation-delay: 0.72s;
+}
+.fizzy-spot:nth-child(38) {
+  left: 7%;
+  animation-delay: 0.74s;
+}
+.fizzy-spot:nth-child(39) {
+  left: 13%;
+  animation-delay: 0.76s;
+}
+.fizzy-spot:nth-child(40) {
+  left: 17%;
+  animation-delay: 0.78s;
+}
+.fizzy-spot:nth-child(41) {
+  left: 23%;
+  animation-delay: 0.8s;
+}
+.fizzy-spot:nth-child(42) {
+  left: 27%;
+  animation-delay: 0.82s;
+}
+.fizzy-spot:nth-child(43) {
+  left: 33%;
+  animation-delay: 0.84s;
+}
+.fizzy-spot:nth-child(44) {
+  left: 37%;
+  animation-delay: 0.86s;
+}
+.fizzy-spot:nth-child(45) {
+  left: 43%;
+  animation-delay: 0.88s;
+}
+.fizzy-spot:nth-child(46) {
+  left: 47%;
+  animation-delay: 0.9s;
+}
+.fizzy-spot:nth-child(47) {
+  left: 53%;
+  animation-delay: 0.92s;
+}
+.fizzy-spot:nth-child(48) {
+  left: 57%;
+  animation-delay: 0.94s;
+}
+.fizzy-spot:nth-child(49) {
+  left: 63%;
+  animation-delay: 0.96s;
+}
+.fizzy-spot:nth-child(50) {
+  left: 67%;
+  animation-delay: 0.98s;
+}
+.fizzy-spot:nth-child(51) {
+  left: 73%;
+  animation-delay: 1s;
+}
+.fizzy-spot:nth-child(52) {
+  left: 77%;
+  animation-delay: 1.02s;
+}

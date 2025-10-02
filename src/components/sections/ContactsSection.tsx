@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 
 const ContactsSection = () => {
@@ -91,9 +91,12 @@ const ContactsSection = () => {
                 ></textarea>
               </div>
               
-              <Button className="w-full bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-bold py-3">
+              <FizzyButton 
+                className="w-full"
+                icon={<Icon name="Send" size={18} />}
+              >
                 Отправить сообщение
-              </Button>
+              </FizzyButton>
             </form>
           </Card>
         </div>
