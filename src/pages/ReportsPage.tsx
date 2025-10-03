@@ -30,6 +30,7 @@ const ReportsPage = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBooking, setEditingBooking] = useState<BookingRecord | undefined>();
   const [loading, setLoading] = useState(false);
+  const [commissionRate, setCommissionRate] = useState<number>(20);
 
   const loadBookings = async () => {
     setLoading(true);
@@ -323,6 +324,8 @@ Premium Apartments`;
             onEditBooking={handleEditBooking}
             onDeleteBooking={handleDeleteBooking}
             onSendReport={handleSendReport}
+            managementCommissionRate={commissionRate}
+            onCommissionRateChange={setCommissionRate}
           />
         ) : null}
       </main>
