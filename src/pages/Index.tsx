@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Header from '@/components/sections/Header';
 import HeroSection from '@/components/sections/HeroSection';
 import RoomsSection from '@/components/sections/RoomsSection';
@@ -13,16 +13,6 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState('home');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-
-  useEffect(() => {
-    if (isHovering) return;
-    
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => prev + 1);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [isHovering]);
 
   const navigation = [
     { id: 'home', label: 'Главная', icon: 'Home' },
