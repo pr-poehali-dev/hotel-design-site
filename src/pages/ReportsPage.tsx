@@ -322,12 +322,13 @@ Premium Apartments`;
         ) : selectedApartment ? (
           <ReportsTable
             bookings={bookings}
-            onAddBooking={handleAddBooking}
-            onEditBooking={handleEditBooking}
-            onDeleteBooking={handleDeleteBooking}
+            onAddBooking={selectedMonth === 'current' ? handleAddBooking : undefined}
+            onEditBooking={selectedMonth === 'current' ? handleEditBooking : undefined}
+            onDeleteBooking={selectedMonth === 'current' ? handleDeleteBooking : undefined}
             onSendReport={handleSendReport}
+            readOnly={selectedMonth !== 'current'}
             managementCommissionRate={commissionRate}
-            onCommissionRateChange={setCommissionRate}
+            onCommissionRateChange={selectedMonth === 'current' ? setCommissionRate : undefined}
           />
         ) : null}
       </main>
