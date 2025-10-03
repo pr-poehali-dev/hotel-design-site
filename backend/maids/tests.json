@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "Get all maids",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Create new maid",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Анна Иванова",
+        "phone": "+7 (999) 555-55-55",
+        "rate_per_cleaning": 1800
+      },
+      "expectedStatus": 201
+    },
+    {
+      "name": "OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}

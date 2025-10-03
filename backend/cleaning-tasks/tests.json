@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "name": "Get all cleaning tasks",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Create new cleaning task",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "apartment_id": "301",
+        "cleaning_date": "2025-10-05",
+        "cleaning_type": "checkout",
+        "notes": "Тестовая задача"
+      },
+      "expectedStatus": 201
+    },
+    {
+      "name": "OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
