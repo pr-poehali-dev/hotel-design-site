@@ -142,7 +142,7 @@ const ReportsTable = ({
       </div>
 
       <Card className="p-6 bg-gradient-to-br from-gold-50 to-white border-gold-200">
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           <div>
             <p className="text-sm text-charcoal-600 font-inter">Общая сумма</p>
             <p className="text-2xl font-bold text-charcoal-900">{totals.totalAmount.toLocaleString('ru')} ₽</p>
@@ -159,6 +159,21 @@ const ReportsTable = ({
             <p className="text-sm text-charcoal-600 font-inter">Количество броней</p>
             <p className="text-2xl font-bold text-charcoal-900">{bookings.length}</p>
           </div>
+          {onCommissionRateChange && (
+            <div>
+              <p className="text-sm text-charcoal-600 font-inter mb-2">Комиссия управления</p>
+              <select
+                value={managementCommissionRate}
+                onChange={(e) => onCommissionRateChange(Number(e.target.value))}
+                className="w-full px-4 py-2 border-2 border-gold-400 rounded-lg bg-white text-charcoal-900 font-bold text-xl focus:border-gold-600 focus:ring-2 focus:ring-gold-200 hover:bg-gold-50 transition-colors cursor-pointer"
+              >
+                <option value={0}>0%</option>
+                <option value={15}>15%</option>
+                <option value={20}>20%</option>
+                <option value={25}>25%</option>
+              </select>
+            </div>
+          )}
         </div>
       </Card>
 
