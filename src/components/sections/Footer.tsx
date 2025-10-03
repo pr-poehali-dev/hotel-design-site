@@ -17,13 +17,22 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-charcoal-700 mt-8 pt-8 text-center space-y-4">
-          <a 
-            href="/reports" 
-            className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
-          >
-            <Icon name="FileText" size={16} />
-            Отчетность
-          </a>
+          <div className="flex justify-center gap-6">
+            <a 
+              href="/reports" 
+              className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
+            >
+              <Icon name="FileText" size={16} />
+              Отчетность
+            </a>
+            <a 
+              href="/owner-login" 
+              className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
+            >
+              <Icon name="LogIn" size={16} />
+              Вход для собственников
+            </a>
+          </div>
           <p className="text-gray-400 font-inter">
             © 2024 Premium Apartments. Все права защищены.
           </p>
