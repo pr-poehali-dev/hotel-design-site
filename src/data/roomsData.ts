@@ -217,7 +217,7 @@ export const rooms: Room[] = [
   {
     name: 'Президентские апартаменты',
     price: '35 000 ₽',
-    features: ['Панорамный вид', 'Персональный дворецкий', 'Терраса', 'Трансфер'],
+    features: ['76 кв.м', '21 этаж', 'Для 1-7 гостей'],
     image: 'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
