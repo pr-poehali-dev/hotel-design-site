@@ -108,7 +108,7 @@ const ReportsTable = ({
           Отчетность по бронированиям
         </h2>
         <div className="flex gap-3 items-center">
-          {!readOnly && onCommissionRateChange && (
+          {onCommissionRateChange && (
             <div className="flex items-center gap-2">
               <label className="text-sm font-inter text-charcoal-700">Комиссия управления:</label>
               <select
@@ -123,7 +123,7 @@ const ReportsTable = ({
               </select>
             </div>
           )}
-          {!readOnly && <div className="flex gap-3">
+          {!readOnly && onAddBooking && <div className="flex gap-3">
             <FizzyButton
               onClick={exportToExcel}
               variant="secondary"
