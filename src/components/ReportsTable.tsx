@@ -183,8 +183,6 @@ const ReportsTable = ({
             <tr>
               <th className="px-4 py-3 text-left text-sm font-semibold">Заселение</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">Выезд</th>
-              <th className="px-4 py-3 text-right text-sm font-semibold">Ранний заезд</th>
-              <th className="px-4 py-3 text-right text-sm font-semibold">Поздний выезд</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Паркинг</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Сумма проживания</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Итого</th>
@@ -205,8 +203,6 @@ const ReportsTable = ({
               >
                 <td className="px-4 py-3 text-sm">{booking.checkIn}</td>
                 <td className="px-4 py-3 text-sm">{booking.checkOut}</td>
-                <td className="px-4 py-3 text-sm text-right">{booking.earlyCheckIn.toLocaleString('ru')}</td>
-                <td className="px-4 py-3 text-sm text-right">{booking.lateCheckOut.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right">{booking.parking.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right">{booking.accommodationAmount.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right font-semibold">{booking.totalAmount.toLocaleString('ru')}</td>
@@ -245,7 +241,7 @@ const ReportsTable = ({
           </tbody>
           <tfoot className="bg-gradient-to-r from-charcoal-800 to-charcoal-900 text-white font-bold">
             <tr>
-              <td colSpan={6} className="px-4 py-4 text-right">ИТОГО:</td>
+              <td colSpan={4} className="px-4 py-4 text-right">ИТОГО:</td>
               <td className="px-4 py-4 text-right">{totals.totalAmount.toLocaleString('ru')} ₽</td>
               <td colSpan={3}></td>
               <td className="px-4 py-4 text-right">{totals.operatingExpenses.toLocaleString('ru')} ₽</td>
