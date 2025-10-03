@@ -1,0 +1,38 @@
+{
+  "tests": [
+    {
+      "name": "Register new owner",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "register",
+        "name": "Иван Тестовый",
+        "email": "test@example.com",
+        "phone": "+7 999 123 45 67",
+        "password": "testpass123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login with credentials",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "login",
+        "email": "test@example.com",
+        "password": "testpass123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "token": "string",
+        "ownerId": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

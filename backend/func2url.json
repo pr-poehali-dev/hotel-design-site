@@ -1,4 +1,8 @@
 {
+  "owner-apartments": "https://functions.poehali.dev/a953ccdd-84a4-476d-8c34-d7df2687b9ff",
+  "owner-auth": "https://functions.poehali.dev/0b8a0b4d-6cf0-4bc5-8a77-6860120e85fe",
+  "cleaning-tasks": "https://functions.poehali.dev/99d2ce80-9193-4d8f-8090-9b74aaa01a73",
+  "maids": "https://functions.poehali.dev/42e7ec99-c6f4-42fe-93a5-c7334cddee7f",
   "monthly-reports": "https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e",
   "owners": "https://functions.poehali.dev/03cef8fb-0be9-49db-bf4a-2867e6e483e5",
   "auth": "https://functions.poehali.dev/d27dcc7d-f9e0-4fba-8bcc-90b222d398cb",
