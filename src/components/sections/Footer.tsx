@@ -30,7 +30,7 @@ const Footer = () => {
               className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
             >
               <Icon name="LogIn" size={16} />
-              Вход для собственников
+              Вход для инвесторов
             </a>
           </div>
           <p className="text-gray-400 font-inter">
