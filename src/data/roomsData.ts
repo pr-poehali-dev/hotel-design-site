@@ -13,7 +13,6 @@ export interface Room {
 export const rooms: Room[] = [
   {
     name: '2х комнатный 2019',
-    subtitle: 'с одной спальней',
     price: 'от 15 000 ₽',
     features: ['55 кв.м', '20 этаж', 'Для 1-4 гостей'],
     bookingUrl: 'https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&utm_source=share_from_pms&scroll_to_rooms=1&token=07f1a&is_auto_search=0&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=0&insidePopup=0&dfrom=29-12-2025&dto=31-12-2025&adults=1',
@@ -36,8 +35,7 @@ export const rooms: Room[] = [
     description: `Премиум апартамент дизайн студия (гостиная совмещена с кухней + отдельная спальня + постирочная комната) с максимальной комплектацией для комфортного проживания (PS5 игровая консоль с 2 геймпадами и свежими дисками, телескоп для просмотра в космос, массажное кресло с функцией гравитации и более 50 программ) в элитном апарт доме с 5* обслуживанием и индивидуальным лифтом на этаж. Стиральная машинка с функцией сушки, 2 смарт тв, высокоскоростной wi-fi, постельное белье, средства гигиены, паровой утюг, сейф, цифровой замок. Все столешницы из кварца. Проживанием в апартаменте Вы точно останетесь довольны. Предназначен для цивилизованного проживания.`
   },
   {
-    name: '3х комнатный 1116',
-    subtitle: 'с двумя спальнями',
+    name: '3х комнатный',
     price: 'от 30 000 ₽',
     features: ['103 кв.м', '11 этаж', 'Для 1-8 гостей'],
     bookingUrl: 'https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&scroll_to_rooms=1&is_auto_search=1&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=&insidePopup=0&exval=dev5765_B%7Cdev1185_A%7Cdev10318_B&dfrom=30-09-2025&dto=01-10-2025&adults=2',
@@ -63,8 +61,7 @@ export const rooms: Room[] = [
 Мастер спальня со своим с/у, 2 с/у, современный камин, игровая консоль PS5, Яндекс станция Алиса, 3 СМАРТ ТВ.`
   },
   {
-    name: '2х комнатный 2119',
-    subtitle: 'с одной спальней',
+    name: '2х комнатный',
     price: 'от 15 000 ₽',
     features: ['55 кв.м', '21 этаж', 'Для 1-3 гостей'],
     image: 'https://cdn.poehali.dev/files/a4100017-9df0-4397-92e6-d2aeaa753c75.JPG',
