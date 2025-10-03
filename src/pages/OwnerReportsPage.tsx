@@ -13,6 +13,7 @@ export default function OwnerReportsPage() {
   const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string } | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<string>('current');
   const [monthlyReports, setMonthlyReports] = useState<any[]>([]);
+  const [commissionRate, setCommissionRate] = useState<number>(20);
 
   useEffect(() => {
     const token = localStorage.getItem('ownerToken');
@@ -139,6 +140,8 @@ export default function OwnerReportsPage() {
               onEdit={() => {}}
               onDelete={() => {}}
               readOnly={true}
+              managementCommissionRate={commissionRate}
+              onCommissionRateChange={setCommissionRate}
             />
           )}
         </Card>
