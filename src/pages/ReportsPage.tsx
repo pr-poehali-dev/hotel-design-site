@@ -160,6 +160,13 @@ Premium Apartments`;
                 ))}
               </select>
               <FizzyButton
+                onClick={() => window.location.href = '/owners'}
+                variant="secondary"
+                icon={<Icon name="Users" size={18} />}
+              >
+                Собственники
+              </FizzyButton>
+              <FizzyButton
                 onClick={() => window.location.href = '/'}
                 variant="secondary"
                 icon={<Icon name="Home" size={18} />}

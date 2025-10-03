@@ -7,13 +7,14 @@ import * as XLSX from 'xlsx';
 
 interface ReportsTableProps {
   bookings: BookingRecord[];
-  onAddBooking: () => void;
-  onEditBooking: (booking: BookingRecord) => void;
-  onDeleteBooking: (id: string) => void;
-  onSendReport: (booking: BookingRecord) => void;
+  onAddBooking?: () => void;
+  onEditBooking?: (booking: BookingRecord) => void;
+  onDeleteBooking?: (id: string) => void;
+  onSendReport?: (booking: BookingRecord) => void;
+  readOnly?: boolean;
 }
 
-const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, onSendReport }: ReportsTableProps) => {
+const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, onSendReport, readOnly = false }: ReportsTableProps) => {
   const calculateTotals = () => {
     return bookings.reduce((acc, booking) => ({
       totalAmount: acc.totalAmount + booking.totalAmount,
@@ -77,7 +78,7 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
         <h2 className="text-3xl font-playfair font-bold text-charcoal-900">
           Отчетность по бронированиям
         </h2>
-        <div className="flex gap-3">
+        {!readOnly && <div className="flex gap-3">
           <FizzyButton
             onClick={exportToExcel}
             variant="secondary"
@@ -91,7 +92,7 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
           >
             Добавить бронь
           </FizzyButton>
-        </div>
+        </div>}
       </div>
 
       <Card className="p-6 bg-gradient-to-br from-gold-50 to-white border-gold-200">
@@ -138,8 +139,8 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
             {bookings.map((booking, index) => (
               <tr 
                 key={booking.id}
-                className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gold-50 transition-colors cursor-pointer`}
-                onClick={() => onEditBooking(booking)}
+                className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} ${!readOnly ? 'hover:bg-gold-50 cursor-pointer' : ''} transition-colors`}
+                onClick={() => !readOnly && onEditBooking?.(booking)}
               >
                 <td className="px-4 py-3 text-sm">{booking.checkIn}</td>
                 <td className="px-4 py-3 text-sm">{booking.checkOut}</td>
@@ -155,11 +156,11 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
                 <td className="px-4 py-3 text-sm text-right font-bold text-green-600 bg-green-50">{booking.ownerFunds.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex gap-2 justify-center items-center">
-                    {booking.guestEmail && (
+                    {!readOnly && booking.guestEmail && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onSendReport(booking);
+                          onSendReport?.(booking);
                         }}
                         className="text-gold-600 hover:text-gold-800 transition-colors"
                         title="Отправить отчет гостю"
@@ -167,15 +168,15 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
                         <Icon name="Send" size={18} />
                       </button>
                     )}
-                    <button
+                    {!readOnly && <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        onDeleteBooking(booking.id);
+                        onDeleteBooking?.(booking.id);
                       }}
                       className="text-red-600 hover:text-red-800 transition-colors"
                     >
                       <Icon name="Trash2" size={18} />
-                    </button>
+                    </button>}
                   </div>
                 </td>
               </tr>
