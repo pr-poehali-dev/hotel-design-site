@@ -235,6 +235,7 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/54013a71-c053-4837-bc0a-b807930fbb06.jpeg',
       'https://cdn.poehali.dev/files/ef0a0004-2d70-46af-9ad7-cf9d57285ed1.jpeg'
     ],
+    video: 'https://rutube.ru/play/embed/200aa95020d84bb70203b27ec338d779',
     description: `Роскошные апартаменты премиум-класса площадью 76 кв.м на 21 этаже с минималистичным светлым интерьером и панорамными окнами.
 
 Апартаменты включают:
