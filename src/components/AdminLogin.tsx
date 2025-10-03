@@ -8,15 +8,16 @@ interface AdminLoginProps {
 }
 
 const AdminLogin = ({ onLogin }: AdminLoginProps) => {
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'premium2019') {
+    if (login === 'hab-agent@mail.ru' && password === '3Dyzaape29938172') {
       onLogin();
     } else {
-      setError('Неверный пароль');
+      setError('Неверный логин или пароль');
       setTimeout(() => setError(''), 3000);
     }
   };
@@ -39,12 +40,22 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
+              type="text"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              placeholder="Логин"
+              className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all"
+              autoFocus
+            />
+          </div>
+          
+          <div>
+            <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Введите пароль"
+              placeholder="Пароль"
               className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all"
-              autoFocus
             />
           </div>
           
