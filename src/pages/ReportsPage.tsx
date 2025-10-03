@@ -6,6 +6,7 @@ import AdminLogin from '@/components/AdminLogin';
 import { BookingRecord } from '@/types/booking';
 import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
+import { bookingsAPI } from '@/api/bookings';
 
 const AUTH_KEY = 'premium_admin_auth';
 
@@ -29,101 +30,27 @@ const ReportsPage = () => {
   });
   
   const [selectedApartment, setSelectedApartment] = useState('2019');
-  
-  const getStorageKey = (apartmentId: string) => `premium_apartments_bookings_${apartmentId}`;
-  
-  const [bookings, setBookings] = useState<BookingRecord[]>(() => {
-    const saved = localStorage.getItem(getStorageKey(selectedApartment));
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse saved bookings', e);
-      }
-    }
-    return [
-    {
-      id: '1',
-      checkIn: '2025-03-01',
-      checkOut: '2025-03-02',
-      earlyCheckIn: 0,
-      lateCheckOut: 0,
-      parking: 0,
-      accommodationAmount: 22000,
-      totalAmount: 22000,
-      aggregatorCommission: 0,
-      taxAndBankCommission: 1540,
-      remainderBeforeManagement: 22000,
-      managementCommission: 4400,
-      remainderBeforeExpenses: 17600,
-      operatingExpenses: 6000,
-      ownerFunds: 11600,
-      paymentToOwner: 0,
-      paymentDate: '',
-      maid: 2000,
-      laundry: 500,
-      hygiene: 3000,
-      transport: 0,
-      compliment: 500,
-      other: 0,
-      otherNote: '',
-      guestName: '',
-      guestEmail: '',
-      guestPhone: '',
-      showToGuest: false,
-    },
-    {
-      id: '2',
-      checkIn: '2025-03-04',
-      checkOut: '2025-03-06',
-      earlyCheckIn: 0,
-      lateCheckOut: 0,
-      parking: 0,
-      accommodationAmount: 25200,
-      totalAmount: 25200,
-      aggregatorCommission: 15,
-      taxAndBankCommission: 1764,
-      remainderBeforeManagement: 21420,
-      managementCommission: 4284,
-      remainderBeforeExpenses: 17136,
-      operatingExpenses: 3000,
-      ownerFunds: 14136,
-      paymentToOwner: 0,
-      paymentDate: '',
-      maid: 2000,
-      laundry: 500,
-      hygiene: 0,
-      transport: 0,
-      compliment: 500,
-      other: 0,
-      otherNote: '',
-      guestName: '',
-      guestEmail: '',
-      guestPhone: '',
-      showToGuest: false,
-    },
-  ];
-  });
+  const [bookings, setBookings] = useState<BookingRecord[]>([]);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBooking, setEditingBooking] = useState<BookingRecord | undefined>();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem(getStorageKey(selectedApartment), JSON.stringify(bookings));
-  }, [bookings, selectedApartment]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem(getStorageKey(selectedApartment));
-    if (saved) {
-      try {
-        setBookings(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse saved bookings', e);
-        setBookings([]);
-      }
-    } else {
+  const loadBookings = async () => {
+    setLoading(true);
+    try {
+      const data = await bookingsAPI.getBookings(selectedApartment);
+      setBookings(data);
+    } catch (error) {
+      console.error('Failed to load bookings:', error);
       setBookings([]);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    loadBookings();
   }, [selectedApartment]);
 
   const handleLogin = () => {
@@ -150,17 +77,36 @@ const ReportsPage = () => {
     setDialogOpen(true);
   };
 
-  const handleSaveBooking = (booking: BookingRecord) => {
-    if (editingBooking) {
-      setBookings(bookings.map(b => b.id === booking.id ? booking : b));
-    } else {
-      setBookings([...bookings, booking]);
+  const handleSaveBooking = async (booking: BookingRecord) => {
+    setLoading(true);
+    try {
+      const bookingWithApartment = { ...booking, apartmentId: selectedApartment };
+      if (editingBooking) {
+        await bookingsAPI.updateBooking(bookingWithApartment);
+      } else {
+        await bookingsAPI.createBooking(bookingWithApartment);
+      }
+      await loadBookings();
+    } catch (error) {
+      console.error('Failed to save booking:', error);
+      alert('Ошибка при сохранении бронирования');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDeleteBooking = (id: string) => {
+  const handleDeleteBooking = async (id: string) => {
     if (confirm('Удалить это бронирование?')) {
-      setBookings(bookings.filter(b => b.id !== id));
+      setLoading(true);
+      try {
+        await bookingsAPI.deleteBooking(id, selectedApartment);
+        await loadBookings();
+      } catch (error) {
+        console.error('Failed to delete booking:', error);
+        alert('Ошибка при удалении бронирования');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

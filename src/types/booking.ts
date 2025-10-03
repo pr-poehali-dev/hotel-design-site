@@ -1,5 +1,6 @@
 export interface BookingRecord {
   id: string;
+  apartmentId?: string;
   checkIn: string;
   checkOut: string;
   earlyCheckIn: number;
