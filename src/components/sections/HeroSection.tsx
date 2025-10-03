@@ -120,6 +120,102 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
           />
         ))}
       </div>
+
+      <div className="absolute bottom-0 left-0 right-0 bg-charcoal-900/60 backdrop-blur-sm py-6 overflow-hidden">
+        <div className="animate-scroll-left whitespace-nowrap">
+          <span className="inline-flex items-center gap-8 text-white font-inter text-lg">
+            <span className="flex items-center gap-2">
+              <Icon name="Eye" size={20} className="text-gold-400" />
+              ВИДОВЫЕ АПАРТАМЕНТЫ
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="UtensilsCrossed" size={20} className="text-gold-400" />
+              ПОЛНОЦЕННЫЕ КУХНИ
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Gamepad2" size={20} className="text-gold-400" />
+              ИГРОВЫЕ КОНСОЛИ PS5
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Dumbbell" size={20} className="text-gold-400" />
+              ФИТНЕС
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Sparkles" size={20} className="text-gold-400" />
+              СПА
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="CarFront" size={20} className="text-gold-400" />
+              ПОДЗЕМНЫЙ ПАРКИНГ
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="UserCheck" size={20} className="text-gold-400" />
+              ЛИЧНЫЙ АДМИНИСТРАТОР
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="BellRing" size={20} className="text-gold-400" />
+              БЭЛЛМАН
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Package" size={20} className="text-gold-400" />
+              КАМЕРА ХРАНЕНИЯ
+            </span>
+            <span className="text-gold-400 mx-8">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Eye" size={20} className="text-gold-400" />
+              ВИДОВЫЕ АПАРТАМЕНТЫ
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="UtensilsCrossed" size={20} className="text-gold-400" />
+              ПОЛНОЦЕННЫЕ КУХНИ
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Gamepad2" size={20} className="text-gold-400" />
+              ИГРОВЫЕ КОНСОЛИ PS5
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Dumbbell" size={20} className="text-gold-400" />
+              ФИТНЕС
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Sparkles" size={20} className="text-gold-400" />
+              СПА
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="CarFront" size={20} className="text-gold-400" />
+              ПОДЗЕМНЫЙ ПАРКИНГ
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="UserCheck" size={20} className="text-gold-400" />
+              ЛИЧНЫЙ АДМИНИСТРАТОР
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="BellRing" size={20} className="text-gold-400" />
+              БЭЛЛМАН
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Package" size={20} className="text-gold-400" />
+              КАМЕРА ХРАНЕНИЯ
+            </span>
+          </span>
+        </div>
+      </div>
     </section>
   );
 };
