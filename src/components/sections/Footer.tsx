@@ -23,7 +23,7 @@ const Footer = () => {
               className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
             >
               <Icon name="FileText" size={16} />
-              Отчетность
+              Системный вход
             </a>
             <a 
               href="/owner-login" 
