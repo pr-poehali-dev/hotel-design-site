@@ -215,7 +215,7 @@ export const rooms: Room[] = [
     image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
   },
   {
-    name: 'Президентские апартаменты',
+    name: '3х комнатные апартаменты 2111',
     price: '35 000 ₽',
     features: ['76 кв.м', '21 этаж', 'Для 1-7 гостей'],
     image: 'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
