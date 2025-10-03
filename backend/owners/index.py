@@ -5,8 +5,8 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage apartment owners (CRUD operations and get info by apartment ID)
-    Args: event with httpMethod, body, params (apartment_id from path)
+    Business: Manage apartment owners (CRUD operations including delete)
+    Args: event with httpMethod, body, queryStringParameters (apartment_id)
     Returns: HTTP response with owner data
     '''
     method: str = event.get('httpMethod', 'GET')
@@ -16,7 +16,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
@@ -100,6 +100,30 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 "INSERT INTO apartment_owners (apartment_id, owner_email, owner_name) VALUES (%s, %s, %s) "
                 "ON CONFLICT (apartment_id) DO UPDATE SET owner_email = EXCLUDED.owner_email, owner_name = EXCLUDED.owner_name",
                 (apartment_id, owner_email, owner_name)
+            )
+            conn.commit()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': True})
+            }
+        
+        if method == 'DELETE':
+            query_params = event.get('queryStringParameters', {}) or {}
+            apartment_id = query_params.get('apartment_id')
+            
+            if not apartment_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'apartment_id is required'})
+                }
+            
+            cursor.execute(
+                "DELETE FROM apartment_owners WHERE apartment_id = %s",
+                (apartment_id,)
             )
             conn.commit()
             

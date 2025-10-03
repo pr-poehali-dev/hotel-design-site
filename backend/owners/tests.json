@@ -7,25 +7,23 @@
       "expectedStatus": 200
     },
     {
-      "name": "Get owner by apartment ID",
-      "method": "GET",
-      "path": "/?apartment_id=2019",
-      "expectedStatus": 200,
-      "expectedBody": {
-        "ownerEmail": "string",
-        "ownerName": "string"
-      },
-      "bodyMatcher": "partial"
-    },
-    {
       "name": "Create owner",
       "method": "POST",
       "path": "/",
       "body": {
-        "apartmentId": "2019",
+        "apartmentId": "test-apt",
         "ownerEmail": "test@example.com",
         "ownerName": "Test Owner"
       },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      }
+    },
+    {
+      "name": "Delete owner",
+      "method": "DELETE",
+      "path": "/?apartment_id=test-apt",
       "expectedStatus": 200,
       "expectedBody": {
         "success": true

@@ -10,26 +10,19 @@ import { bookingsAPI } from '@/api/bookings';
 
 const AUTH_KEY = 'premium_admin_auth';
 
-const APARTMENTS = [
-  { id: '2019', name: 'Апартамент 2019' },
-  { id: '2119', name: 'Апартамент 2119' },
-  { id: '2817', name: 'Апартамент 2817' },
-  { id: '1116', name: 'Апартамент 1116' },
-  { id: '1522', name: 'Апартамент 1522' },
-  { id: '1401', name: 'Апартамент 1401' },
-  { id: '2111', name: 'Апартамент 2111' },
-  { id: '2110', name: 'Апартамент 2110' },
-  { id: '1311', name: 'Апартамент 1311' },
-  { id: '906', name: 'Апартамент 906' },
-  { id: '816', name: 'Апартамент 816' },
-];
+interface Owner {
+  apartmentId: string;
+  ownerEmail: string;
+  ownerName: string;
+}
 
 const ReportsPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem(AUTH_KEY) === 'true';
   });
   
-  const [selectedApartment, setSelectedApartment] = useState('2019');
+  const [owners, setOwners] = useState<Owner[]>([]);
+  const [selectedApartment, setSelectedApartment] = useState('');
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>('current');
   const [monthlyReports, setMonthlyReports] = useState<any[]>([]);
@@ -63,9 +56,32 @@ const ReportsPage = () => {
     }
   };
 
+  const loadOwners = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/03cef8fb-0be9-49db-bf4a-2867e6e483e5');
+      if (response.ok) {
+        const data = await response.json();
+        setOwners(data);
+        if (data.length > 0 && !selectedApartment) {
+          setSelectedApartment(data[0].apartmentId);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load owners:', error);
+    }
+  };
+
   useEffect(() => {
-    loadBookings();
-    loadMonthlyReports();
+    if (isAuthenticated) {
+      loadOwners();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (selectedApartment) {
+      loadBookings();
+      loadMonthlyReports();
+    }
   }, [selectedApartment]);
 
   useEffect(() => {
@@ -227,9 +243,15 @@ Premium Apartments`;
                 onChange={(e) => setSelectedApartment(e.target.value)}
                 className="px-4 py-2 bg-charcoal-800 border border-gold-500/30 text-white rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 font-inter"
               >
-                {APARTMENTS.map(apt => (
-                  <option key={apt.id} value={apt.id}>{apt.name}</option>
-                ))}
+                {owners.length === 0 ? (
+                  <option value="">Загрузка...</option>
+                ) : (
+                  owners.map(owner => (
+                    <option key={owner.apartmentId} value={owner.apartmentId}>
+                      Апартамент {owner.apartmentId}
+                    </option>
+                  ))
+                )}
               </select>
               <select
                 value={selectedMonth}
@@ -280,13 +302,29 @@ Premium Apartments`;
       </header>
 
       <main className="container mx-auto px-6 py-12">
-        <ReportsTable
-          bookings={bookings}
-          onAddBooking={handleAddBooking}
-          onEditBooking={handleEditBooking}
-          onDeleteBooking={handleDeleteBooking}
-          onSendReport={handleSendReport}
-        />
+        {owners.length === 0 ? (
+          <Card className="p-12 text-center">
+            <Icon name="Users" size={48} className="mx-auto mb-4 text-gray-400" />
+            <h2 className="text-2xl font-bold mb-2">Нет собственников</h2>
+            <p className="text-gray-600 mb-4">
+              Добавьте собственников в разделе управления для просмотра отчетов
+            </p>
+            <FizzyButton
+              onClick={() => window.location.href = '/owners'}
+              icon={<Icon name="Plus" size={18} />}
+            >
+              Добавить собственника
+            </FizzyButton>
+          </Card>
+        ) : selectedApartment ? (
+          <ReportsTable
+            bookings={bookings}
+            onAddBooking={handleAddBooking}
+            onEditBooking={handleEditBooking}
+            onDeleteBooking={handleDeleteBooking}
+            onSendReport={handleSendReport}
+          />
+        ) : null}
       </main>
 
       <BookingDialog
