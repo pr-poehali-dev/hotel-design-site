@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import ReportsTable from '@/components/ReportsTable';
 import { BookingRecord } from '@/types/booking';
@@ -7,11 +7,22 @@ import { bookingsAPI } from '@/api/bookings';
 
 export default function OwnerReportsPage() {
   const { apartmentId } = useParams<{ apartmentId: string }>();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string } | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<string>('current');
   const [monthlyReports, setMonthlyReports] = useState<any[]>([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('ownerToken');
+    const ownerId = localStorage.getItem('ownerId');
+    
+    if (!token || !ownerId) {
+      navigate('/owner-login');
+      return;
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const loadData = async () => {
