@@ -12,14 +12,42 @@ interface ReportsTableProps {
   onDeleteBooking?: (id: string) => void;
   onSendReport?: (booking: BookingRecord) => void;
   readOnly?: boolean;
+  managementCommissionRate?: number;
+  onCommissionRateChange?: (rate: number) => void;
 }
 
-const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, onSendReport, readOnly = false }: ReportsTableProps) => {
+const ReportsTable = ({ 
+  bookings, 
+  onAddBooking, 
+  onEditBooking, 
+  onDeleteBooking, 
+  onSendReport, 
+  readOnly = false,
+  managementCommissionRate = 20,
+  onCommissionRateChange
+}: ReportsTableProps) => {
+  
+  const recalculateBooking = (booking: BookingRecord, rate: number) => {
+    const commissionAmount = Math.round(booking.remainderBeforeManagement * (rate / 100));
+    const remainderBeforeExpenses = booking.remainderBeforeManagement - commissionAmount;
+    const ownerFunds = remainderBeforeExpenses - booking.operatingExpenses;
+    
+    return {
+      ...booking,
+      managementCommission: commissionAmount,
+      remainderBeforeExpenses,
+      ownerFunds
+    };
+  };
+
+  const recalculatedBookings = bookings.map(b => recalculateBooking(b, managementCommissionRate));
+
   const calculateTotals = () => {
-    return bookings.reduce((acc, booking) => ({
+    return recalculatedBookings.reduce((acc, booking) => ({
       totalAmount: acc.totalAmount + booking.totalAmount,
       ownerFunds: acc.ownerFunds + booking.ownerFunds,
       operatingExpenses: acc.operatingExpenses + booking.operatingExpenses,
+      managementCommission: acc.managementCommission + booking.managementCommission,
       maid: acc.maid + booking.maid,
       laundry: acc.laundry + booking.laundry,
       hygiene: acc.hygiene + booking.hygiene,
@@ -30,6 +58,7 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
       totalAmount: 0,
       ownerFunds: 0,
       operatingExpenses: 0,
+      managementCommission: 0,
       maid: 0,
       laundry: 0,
       hygiene: 0,
@@ -40,7 +69,7 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
   };
 
   const exportToExcel = () => {
-    const exportData = bookings.map(b => ({
+    const exportData = recalculatedBookings.map(b => ({
       'Заселение': b.checkIn,
       'Выезд': b.checkOut,
       'Ранний заезд': b.earlyCheckIn,
@@ -51,7 +80,7 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
       'Комиссия агрегатора %': b.aggregatorCommission,
       'УСН и комисс банка': b.taxAndBankCommission,
       'Остаток до комиссии': b.remainderBeforeManagement,
-      'Комиссия управление 20%': b.managementCommission,
+      [`Комиссия управление ${managementCommissionRate}%`]: b.managementCommission,
       'Остаток до затрат': b.remainderBeforeExpenses,
       'Затраты на эксплуатацию': b.operatingExpenses,
       'Средства для собственника': b.ownerFunds,
@@ -78,21 +107,38 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
         <h2 className="text-3xl font-playfair font-bold text-charcoal-900">
           Отчетность по бронированиям
         </h2>
-        {!readOnly && <div className="flex gap-3">
-          <FizzyButton
-            onClick={exportToExcel}
-            variant="secondary"
-            icon={<Icon name="Download" size={18} />}
-          >
-            Экспорт в Excel
-          </FizzyButton>
-          <FizzyButton
-            onClick={onAddBooking}
-            icon={<Icon name="Plus" size={18} />}
-          >
-            Добавить бронь
-          </FizzyButton>
-        </div>}
+        <div className="flex gap-3 items-center">
+          {!readOnly && onCommissionRateChange && (
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-inter text-charcoal-700">Комиссия управления:</label>
+              <select
+                value={managementCommissionRate}
+                onChange={(e) => onCommissionRateChange(Number(e.target.value))}
+                className="px-3 py-2 border border-charcoal-300 rounded-lg bg-white text-charcoal-900 font-inter text-sm focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
+              >
+                <option value={0}>0%</option>
+                <option value={15}>15%</option>
+                <option value={20}>20%</option>
+                <option value={25}>25%</option>
+              </select>
+            </div>
+          )}
+          {!readOnly && <div className="flex gap-3">
+            <FizzyButton
+              onClick={exportToExcel}
+              variant="secondary"
+              icon={<Icon name="Download" size={18} />}
+            >
+              Экспорт в Excel
+            </FizzyButton>
+            <FizzyButton
+              onClick={onAddBooking}
+              icon={<Icon name="Plus" size={18} />}
+            >
+              Добавить бронь
+            </FizzyButton>
+          </div>}
+        </div>
       </div>
 
       <Card className="p-6 bg-gradient-to-br from-gold-50 to-white border-gold-200">
@@ -129,18 +175,18 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, 
               <th className="px-4 py-3 text-right text-sm font-semibold">Итого</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Комис. агрег. %</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Остаток до упр.</th>
-              <th className="px-4 py-3 text-right text-sm font-semibold">Комис. упр. 20%</th>
+              <th className="px-4 py-3 text-right text-sm font-semibold">Комис. упр. {managementCommissionRate}%</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Затраты эксп.</th>
               <th className="px-4 py-3 text-right text-sm font-semibold bg-gold-600">Собственнику</th>
               <th className="px-4 py-3 text-center text-sm font-semibold">Действия</th>
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking, index) => (
+            {recalculatedBookings.map((booking, index) => (
               <tr 
                 key={booking.id}
                 className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} ${!readOnly ? 'hover:bg-gold-50 cursor-pointer' : ''} transition-colors`}
-                onClick={() => !readOnly && onEditBooking?.(booking)}
+                onClick={() => !readOnly && onEditBooking?.(bookings[index])}
               >
                 <td className="px-4 py-3 text-sm">{booking.checkIn}</td>
                 <td className="px-4 py-3 text-sm">{booking.checkOut}</td>
