@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import ReportsTable from '@/components/ReportsTable';
 import BookingDialog from '@/components/BookingDialog';
+import AdminLogin from '@/components/AdminLogin';
 import { BookingRecord } from '@/types/booking';
 import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 
 const STORAGE_KEY = 'premium_apartments_bookings';
+const AUTH_KEY = 'premium_admin_auth';
 
 const ReportsPage = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem(AUTH_KEY) === 'true';
+  });
   const [bookings, setBookings] = useState<BookingRecord[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -44,6 +49,10 @@ const ReportsPage = () => {
       compliment: 500,
       other: 0,
       otherNote: '',
+      guestName: '',
+      guestEmail: '',
+      guestPhone: '',
+      showToGuest: false,
     },
     {
       id: '2',
@@ -70,6 +79,10 @@ const ReportsPage = () => {
       compliment: 500,
       other: 0,
       otherNote: '',
+      guestName: '',
+      guestEmail: '',
+      guestPhone: '',
+      showToGuest: false,
     },
   ];
   });
@@ -80,6 +93,20 @@ const ReportsPage = () => {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
   }, [bookings]);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem(AUTH_KEY, 'true');
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem(AUTH_KEY);
+  };
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={handleLogin} />;
+  }
 
   const handleAddBooking = () => {
     setEditingBooking(undefined);
@@ -123,13 +150,22 @@ const ReportsPage = () => {
                 <p className="text-sm text-gray-400 font-inter">Поклонная 9 - апартамент 2019</p>
               </div>
             </div>
-            <FizzyButton
-              onClick={() => window.location.href = '/'}
-              variant="secondary"
-              icon={<Icon name="Home" size={18} />}
-            >
-              На главную
-            </FizzyButton>
+            <div className="flex gap-3">
+              <FizzyButton
+                onClick={() => window.location.href = '/'}
+                variant="secondary"
+                icon={<Icon name="Home" size={18} />}
+              >
+                На главную
+              </FizzyButton>
+              <FizzyButton
+                onClick={handleLogout}
+                variant="secondary"
+                icon={<Icon name="LogOut" size={18} />}
+              >
+                Выйти
+              </FizzyButton>
+            </div>
           </div>
         </div>
       </header>

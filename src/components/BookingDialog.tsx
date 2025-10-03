@@ -27,6 +27,10 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
     compliment: 500,
     other: 0,
     otherNote: '',
+    guestName: '',
+    guestEmail: '',
+    guestPhone: '',
+    showToGuest: false,
   });
 
   useEffect(() => {
@@ -98,6 +102,10 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
       compliment: formData.compliment || 0,
       other: formData.other || 0,
       otherNote: formData.otherNote || '',
+      guestName: formData.guestName || '',
+      guestEmail: formData.guestEmail || '',
+      guestPhone: formData.guestPhone || '',
+      showToGuest: formData.showToGuest || false,
     };
 
     onSave(newBooking);
@@ -303,6 +311,62 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="border-t-2 border-charcoal-100 pt-6 mt-6">
+            <h3 className="font-semibold text-charcoal-900 font-inter flex items-center gap-2 mb-4">
+              <Icon name="Users" size={18} />
+              Привязка к гостю
+            </h3>
+            
+            <div className="grid md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-semibold text-charcoal-700 mb-1">Имя гостя</label>
+                <input
+                  type="text"
+                  value={formData.guestName}
+                  onChange={(e) => setFormData({...formData, guestName: e.target.value})}
+                  className="w-full px-4 py-2 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
+                  placeholder="Иван Иванов"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-charcoal-700 mb-1">Email гостя</label>
+                <input
+                  type="email"
+                  value={formData.guestEmail}
+                  onChange={(e) => setFormData({...formData, guestEmail: e.target.value})}
+                  className="w-full px-4 py-2 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
+                  placeholder="guest@example.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-charcoal-700 mb-1">Телефон гостя</label>
+                <input
+                  type="tel"
+                  value={formData.guestPhone}
+                  onChange={(e) => setFormData({...formData, guestPhone: e.target.value})}
+                  className="w-full px-4 py-2 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
+                  placeholder="+7 XXX XXX XX XX"
+                />
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3 bg-gold-50 border border-gold-200 rounded-lg p-4">
+              <input
+                type="checkbox"
+                id="showToGuest"
+                checked={formData.showToGuest}
+                onChange={(e) => setFormData({...formData, showToGuest: e.target.checked})}
+                className="w-5 h-5 text-gold-600 border-charcoal-300 rounded focus:ring-gold-500"
+              />
+              <label htmlFor="showToGuest" className="text-sm font-semibold text-charcoal-900 cursor-pointer">
+                <Icon name="Eye" size={16} className="inline mr-2" />
+                Показывать этот отчет гостю в личном кабинете
+              </label>
             </div>
           </div>
 

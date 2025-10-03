@@ -1,16 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
+import { BookingRecord } from '@/types/booking';
 
 const ProfileSection = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [guestEmail, setGuestEmail] = useState('');
+  const [guestBookings, setGuestBookings] = useState<BookingRecord[]>([]);
+
+  useEffect(() => {
+    if (isAuthenticated && guestEmail) {
+      const allBookings = localStorage.getItem('premium_apartments_bookings');
+      if (allBookings) {
+        try {
+          const bookings: BookingRecord[] = JSON.parse(allBookings);
+          const filtered = bookings.filter(
+            b => b.showToGuest && (b.guestEmail === guestEmail || b.guestPhone === guestEmail)
+          );
+          setGuestBookings(filtered);
+        } catch (e) {
+          console.error('Failed to load bookings', e);
+        }
+      }
+    }
+  }, [isAuthenticated, guestEmail]);
 
   const handleWhatsAppAuth = () => {
     const message = encodeURIComponent('Здравствуйте! Хочу войти в личный кабинет на сайте Premium Apartments');
     window.open(`https://wa.me/79141965172?text=${message}`, '_blank');
     setTimeout(() => {
-      setIsAuthenticated(true);
+      const email = prompt('Введите ваш email или телефон для входа:');
+      if (email) {
+        setGuestEmail(email);
+        setIsAuthenticated(true);
+      }
     }, 2000);
   };
 
@@ -110,36 +134,65 @@ const ProfileSection = () => {
           </Card>
 
           <Card className="p-8 bg-white shadow-2xl border-0">
-            <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-6">Мои бронирования</h3>
+            <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-6">Мои отчеты и бронирования</h3>
             
             <div className="space-y-4">
-              <div className="p-4 border border-charcoal-200 rounded-lg hover:border-gold-400 transition-colors">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h4 className="font-semibold text-charcoal-900 font-inter">Премиум студия</h4>
-                    <p className="text-sm text-charcoal-600">55 кв.м</p>
+              {guestBookings.length > 0 ? (
+                guestBookings.map((booking) => (
+                  <div key={booking.id} className="p-5 border-2 border-gold-200 rounded-lg bg-gradient-to-br from-gold-50 to-white">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h4 className="font-semibold text-charcoal-900 font-inter text-lg">
+                          {booking.guestName || 'Бронирование'}
+                        </h4>
+                        <div className="flex items-center gap-2 text-sm text-charcoal-600 mt-1">
+                          <Icon name="Calendar" size={16} />
+                          <span>{new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}</span>
+                        </div>
+                      </div>
+                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                        Подтверждено
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gold-200">
+                      <div>
+                        <p className="text-xs text-charcoal-600">Сумма проживания</p>
+                        <p className="font-bold text-charcoal-900">{booking.accommodationAmount.toLocaleString('ru')} ₽</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-charcoal-600">Итого к оплате</p>
+                        <p className="font-bold text-gold-600">{booking.totalAmount.toLocaleString('ru')} ₽</p>
+                      </div>
+                    </div>
+                    
+                    {booking.earlyCheckIn > 0 && (
+                      <div className="mt-3 text-sm text-charcoal-600">
+                        <Icon name="Clock" size={14} className="inline mr-1" />
+                        Ранний заезд: +{booking.earlyCheckIn.toLocaleString('ru')} ₽
+                      </div>
+                    )}
+                    {booking.lateCheckOut > 0 && (
+                      <div className="mt-1 text-sm text-charcoal-600">
+                        <Icon name="Clock" size={14} className="inline mr-1" />
+                        Поздний выезд: +{booking.lateCheckOut.toLocaleString('ru')} ₽
+                      </div>
+                    )}
+                    {booking.parking > 0 && (
+                      <div className="mt-1 text-sm text-charcoal-600">
+                        <Icon name="Car" size={14} className="inline mr-1" />
+                        Паркинг: +{booking.parking.toLocaleString('ru')} ₽
+                      </div>
+                    )}
                   </div>
-                  <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-                    Активно
-                  </span>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <Icon name="FileText" size={48} className="text-charcoal-300 mx-auto mb-3" />
+                  <p className="text-charcoal-500 font-inter">У вас пока нет отчетов</p>
+                  <p className="text-sm text-charcoal-400 mt-2">Отчеты появятся здесь после того, как администратор их назначит</p>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-charcoal-600 mb-3">
-                  <Icon name="Calendar" size={16} />
-                  <span>29.12.2025 - 31.12.2025</span>
-                </div>
-                <FizzyButton 
-                  variant="secondary"
-                  className="w-full text-sm"
-                  icon={<Icon name="Eye" size={16} />}
-                >
-                  Подробнее
-                </FizzyButton>
-              </div>
-
-              <div className="text-center py-8">
-                <Icon name="Calendar" size={48} className="text-charcoal-300 mx-auto mb-3" />
-                <p className="text-charcoal-500 font-inter">Нет активных бронирований</p>
-              </div>
+              )}
 
               <FizzyButton 
                 onClick={() => window.open('https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&utm_source=share_from_pms&scroll_to_rooms=1&token=07f1a&is_auto_search=0&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=0&insidePopup=0&dfrom=29-12-2025&dto=31-12-2025&adults=1', '_blank')}

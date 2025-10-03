@@ -23,6 +23,10 @@ export interface BookingRecord {
   compliment: number;
   other: number;
   otherNote: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  guestName?: string;
+  showToGuest: boolean;
 }
 
 export interface MonthlyReport {
