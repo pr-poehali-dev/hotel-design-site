@@ -181,8 +181,7 @@ const ReportsTable = ({
         <table className="w-full border-collapse bg-white shadow-lg rounded-lg overflow-hidden">
           <thead className="bg-gradient-to-r from-charcoal-800 to-charcoal-900 text-white">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold">Заселение</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">Выезд</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold">Период</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Паркинг</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Сумма проживания</th>
               <th className="px-4 py-3 text-right text-sm font-semibold">Итого</th>
@@ -201,8 +200,7 @@ const ReportsTable = ({
                 className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} ${!readOnly ? 'hover:bg-gold-50 cursor-pointer' : ''} transition-colors`}
                 onClick={() => !readOnly && onEditBooking?.(bookings[index])}
               >
-                <td className="px-4 py-3 text-sm">{booking.checkIn}</td>
-                <td className="px-4 py-3 text-sm">{booking.checkOut}</td>
+                <td className="px-4 py-3 text-sm whitespace-nowrap">{booking.checkIn} — {booking.checkOut}</td>
                 <td className="px-4 py-3 text-sm text-right">{booking.parking.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right">{booking.accommodationAmount.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right font-semibold">{booking.totalAmount.toLocaleString('ru')}</td>
@@ -241,7 +239,7 @@ const ReportsTable = ({
           </tbody>
           <tfoot className="bg-gradient-to-r from-charcoal-800 to-charcoal-900 text-white font-bold">
             <tr>
-              <td colSpan={4} className="px-4 py-4 text-right">ИТОГО:</td>
+              <td colSpan={3} className="px-4 py-4 text-right">ИТОГО:</td>
               <td className="px-4 py-4 text-right">{totals.totalAmount.toLocaleString('ru')} ₽</td>
               <td colSpan={3}></td>
               <td className="px-4 py-4 text-right">{totals.operatingExpenses.toLocaleString('ru')} ₽</td>
