@@ -10,9 +10,10 @@ interface ReportsTableProps {
   onAddBooking: () => void;
   onEditBooking: (booking: BookingRecord) => void;
   onDeleteBooking: (id: string) => void;
+  onSendReport: (booking: BookingRecord) => void;
 }
 
-const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking }: ReportsTableProps) => {
+const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking, onSendReport }: ReportsTableProps) => {
   const calculateTotals = () => {
     return bookings.reduce((acc, booking) => ({
       totalAmount: acc.totalAmount + booking.totalAmount,
@@ -153,15 +154,29 @@ const ReportsTable = ({ bookings, onAddBooking, onEditBooking, onDeleteBooking }
                 <td className="px-4 py-3 text-sm text-right text-orange-600">{booking.operatingExpenses.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right font-bold text-green-600 bg-green-50">{booking.ownerFunds.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-center">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteBooking(booking.id);
-                    }}
-                    className="text-red-600 hover:text-red-800 transition-colors"
-                  >
-                    <Icon name="Trash2" size={18} />
-                  </button>
+                  <div className="flex gap-2 justify-center items-center">
+                    {booking.guestEmail && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSendReport(booking);
+                        }}
+                        className="text-gold-600 hover:text-gold-800 transition-colors"
+                        title="Отправить отчет гостю"
+                      >
+                        <Icon name="Send" size={18} />
+                      </button>
+                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteBooking(booking.id);
+                      }}
+                      className="text-red-600 hover:text-red-800 transition-colors"
+                    >
+                      <Icon name="Trash2" size={18} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

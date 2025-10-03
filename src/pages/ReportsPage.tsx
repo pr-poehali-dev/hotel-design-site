@@ -164,6 +164,27 @@ const ReportsPage = () => {
     }
   };
 
+  const handleSendReport = (booking: BookingRecord) => {
+    if (!booking.guestEmail) {
+      alert('Не указан email гостя');
+      return;
+    }
+    
+    const subject = `Отчет по бронированию ${booking.checkIn} - ${booking.checkOut}`;
+    const body = `Здравствуйте, ${booking.guestName || 'Уважаемый гость'}!
+
+Направляем вам отчет по бронированию:
+
+Период: ${booking.checkIn} - ${booking.checkOut}
+Сумма проживания: ${booking.accommodationAmount.toLocaleString('ru')} ₽
+Итоговая сумма: ${booking.totalAmount.toLocaleString('ru')} ₽
+${booking.earlyCheckIn > 0 ? `Ранний заезд: ${booking.earlyCheckIn.toLocaleString('ru')} ₽\n` : ''}${booking.lateCheckOut > 0 ? `Поздний выезд: ${booking.lateCheckOut.toLocaleString('ru')} ₽\n` : ''}${booking.parking > 0 ? `Паркинг: ${booking.parking.toLocaleString('ru')} ₽\n` : ''}
+С уважением,
+Premium Apartments`;
+
+    window.location.href = `mailto:${booking.guestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-50 to-white">
       <header className="bg-charcoal-900 text-white shadow-2xl relative overflow-hidden">
@@ -217,6 +238,7 @@ const ReportsPage = () => {
           onAddBooking={handleAddBooking}
           onEditBooking={handleEditBooking}
           onDeleteBooking={handleDeleteBooking}
+          onSendReport={handleSendReport}
         />
       </main>
 
