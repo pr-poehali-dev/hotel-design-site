@@ -1,0 +1,31 @@
+{
+  "tests": [
+    {
+      "name": "Get monthly reports for apartment",
+      "method": "GET",
+      "path": "/?apartment_id=2019",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Create monthly report",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "apartmentId": "2019",
+        "reportMonth": "2024-10",
+        "reportData": [
+          {
+            "id": "test1",
+            "totalAmount": 25000,
+            "ownerFunds": 15000,
+            "operatingExpenses": 5000
+          }
+        ]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      }
+    }
+  ]
+}

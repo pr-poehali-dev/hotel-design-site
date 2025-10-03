@@ -31,6 +31,8 @@ const ReportsPage = () => {
   
   const [selectedApartment, setSelectedApartment] = useState('2019');
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<string>('current');
+  const [monthlyReports, setMonthlyReports] = useState<any[]>([]);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBooking, setEditingBooking] = useState<BookingRecord | undefined>();
@@ -49,9 +51,45 @@ const ReportsPage = () => {
     }
   };
 
+  const loadMonthlyReports = async () => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e?apartment_id=${selectedApartment}`);
+      if (response.ok) {
+        const data = await response.json();
+        setMonthlyReports(data);
+      }
+    } catch (error) {
+      console.error('Failed to load monthly reports:', error);
+    }
+  };
+
   useEffect(() => {
     loadBookings();
+    loadMonthlyReports();
   }, [selectedApartment]);
+
+  useEffect(() => {
+    const loadSelectedMonth = async () => {
+      if (selectedMonth === 'current') {
+        loadBookings();
+      } else {
+        setLoading(true);
+        try {
+          const response = await fetch(`https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e?apartment_id=${selectedApartment}&month=${selectedMonth}`);
+          if (response.ok) {
+            const data = await response.json();
+            setBookings(data.reportData || []);
+          }
+        } catch (error) {
+          console.error('Failed to load archived report:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    
+    loadSelectedMonth();
+  }, [selectedMonth]);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -110,6 +148,40 @@ const ReportsPage = () => {
     }
   };
 
+  const handleArchiveMonth = async () => {
+    const now = new Date();
+    const reportMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    
+    if (!confirm(`Архивировать текущие данные за ${new Date(reportMonth + '-01').toLocaleDateString('ru', { year: 'numeric', month: 'long' })}?`)) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apartmentId: selectedApartment,
+          reportMonth,
+          reportData: bookings
+        })
+      });
+      
+      if (response.ok) {
+        alert('Отчет за месяц успешно архивирован!');
+        await loadMonthlyReports();
+      } else {
+        alert('Ошибка при архивировании отчета');
+      }
+    } catch (error) {
+      console.error('Failed to archive month:', error);
+      alert('Ошибка при архивировании отчета');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSendReport = (booking: BookingRecord) => {
     if (!booking.guestEmail) {
       alert('Не указан email гостя');
@@ -159,6 +231,28 @@ Premium Apartments`;
                   <option key={apt.id} value={apt.id}>{apt.name}</option>
                 ))}
               </select>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="px-4 py-2 bg-charcoal-800 border border-gold-500/30 text-white rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 font-inter"
+              >
+                <option value="current">Текущий период</option>
+                {monthlyReports.map(report => (
+                  <option key={report.reportMonth} value={report.reportMonth}>
+                    {new Date(report.reportMonth + '-01').toLocaleDateString('ru', { year: 'numeric', month: 'long' })}
+                  </option>
+                ))}
+              </select>
+              {selectedMonth === 'current' && (
+                <FizzyButton
+                  onClick={handleArchiveMonth}
+                  variant="secondary"
+                  icon={<Icon name="Archive" size={18} />}
+                  disabled={loading || bookings.length === 0}
+                >
+                  Архивировать месяц
+                </FizzyButton>
+              )}
               <FizzyButton
                 onClick={() => window.location.href = '/owners'}
                 variant="secondary"
