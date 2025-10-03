@@ -9,6 +9,7 @@ export interface BookingRecord {
   accommodationAmount: number;
   totalAmount: number;
   aggregatorCommission: number;
+  managementCommissionRate?: number;
   taxAndBankCommission: number;
   remainderBeforeManagement: number;
   managementCommission: number;
