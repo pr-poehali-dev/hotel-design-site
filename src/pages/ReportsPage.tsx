@@ -33,6 +33,11 @@ const ReportsPage = () => {
   const [commissionRate, setCommissionRate] = useState<number>(20);
 
   const loadBookings = async () => {
+    if (!selectedApartment) {
+      console.log('loadBookings: no apartment selected');
+      return;
+    }
+    
     setLoading(true);
     try {
       const data = await bookingsAPI.getBookings(selectedApartment);
