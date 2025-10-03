@@ -20,7 +20,6 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
     parking: 0,
     accommodationAmount: 0,
     aggregatorCommission: 0,
-    managementCommissionRate: 20,
     maid: 2000,
     laundry: 500,
     hygiene: 0,
@@ -48,10 +47,9 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
       (formData.parking || 0);
     
     const aggregatorCommissionAmount = totalAmount * ((formData.aggregatorCommission || 0) / 100);
-    const taxAndBankCommission = totalAmount * 0.07;
+    const taxAndBankCommission = totalAmount * 0.07; // 7% УСН и комиссия банка
     const remainderBeforeManagement = totalAmount - aggregatorCommissionAmount;
-    const managementCommissionRate = formData.managementCommissionRate ?? 20;
-    const managementCommission = remainderBeforeManagement * (managementCommissionRate / 100);
+    const managementCommission = remainderBeforeManagement * 0.20; // 20% комиссия управления
     const remainderBeforeExpenses = remainderBeforeManagement - managementCommission;
     
     const operatingExpenses = 
@@ -89,7 +87,6 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
       accommodationAmount: formData.accommodationAmount || 0,
       totalAmount: calculated.totalAmount,
       aggregatorCommission: formData.aggregatorCommission || 0,
-      managementCommissionRate: formData.managementCommissionRate || 20,
       taxAndBankCommission: calculated.taxAndBankCommission,
       remainderBeforeManagement: calculated.remainderBeforeManagement,
       managementCommission: calculated.managementCommission,
@@ -234,20 +231,6 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
                     placeholder="%"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-charcoal-700 mb-1">Комиссия за управление %</label>
-                <select
-                  value={formData.managementCommissionRate || 20}
-                  onChange={(e) => setFormData({...formData, managementCommissionRate: Number(e.target.value)})}
-                  className="w-full px-4 py-2 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
-                >
-                  <option value={0}>0%</option>
-                  <option value={15}>15%</option>
-                  <option value={20}>20%</option>
-                  <option value={25}>25%</option>
-                </select>
               </div>
             </div>
 

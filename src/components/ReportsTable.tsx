@@ -27,12 +27,6 @@ const ReportsTable = ({
   onCommissionRateChange
 }: ReportsTableProps) => {
   
-  console.log('ReportsTable render:', {
-    readOnly,
-    hasOnCommissionRateChange: !!onCommissionRateChange,
-    managementCommissionRate
-  });
-  
   const recalculateBooking = (booking: BookingRecord, rate: number) => {
     const commissionAmount = Math.round(booking.remainderBeforeManagement * (rate / 100));
     const remainderBeforeExpenses = booking.remainderBeforeManagement - commissionAmount;
