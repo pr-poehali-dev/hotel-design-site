@@ -229,7 +229,11 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/60b80d11-de23-4533-8958-3bf46a2a098a.jpeg',
       'https://cdn.poehali.dev/files/c9968bf1-8547-4115-a678-0726ff774f85.jpeg',
       'https://cdn.poehali.dev/files/bd5fdc7c-cb00-431b-9715-4e09a7bd3998.jpeg',
-      'https://cdn.poehali.dev/files/358da28c-efe3-4fde-b31a-2a256dd14b42.jpeg'
+      'https://cdn.poehali.dev/files/358da28c-efe3-4fde-b31a-2a256dd14b42.jpeg',
+      'https://cdn.poehali.dev/files/3dad09c8-5bd1-4117-8b6f-aee3123a861b.jpeg',
+      'https://cdn.poehali.dev/files/d761df66-d1a8-4b8b-8b94-13c44b21af39.jpeg',
+      'https://cdn.poehali.dev/files/54013a71-c053-4837-bc0a-b807930fbb06.jpeg',
+      'https://cdn.poehali.dev/files/ef0a0004-2d70-46af-9ad7-cf9d57285ed1.jpeg'
     ]
   },
   {
