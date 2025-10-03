@@ -218,7 +218,14 @@ export const rooms: Room[] = [
     name: 'Президентские апартаменты',
     price: '35 000 ₽',
     features: ['Панорамный вид', 'Персональный дворецкий', 'Терраса', 'Трансфер'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
+      'https://cdn.poehali.dev/files/aeed5340-295b-42b1-bede-8efac66a2424.jpeg',
+      'https://cdn.poehali.dev/files/f1874c77-794e-4466-88a4-383c02cf5c38.jpeg',
+      'https://cdn.poehali.dev/files/af9f1e67-0f68-4ebe-837a-73e4d6192cb7.jpeg',
+      'https://cdn.poehali.dev/files/39fd798b-0421-4bd3-9976-bd5b091868ae.jpeg'
+    ]
   },
   {
     name: 'Королевский люкс',
