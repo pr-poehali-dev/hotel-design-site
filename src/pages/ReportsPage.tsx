@@ -87,6 +87,8 @@ const ReportsPage = () => {
 
   useEffect(() => {
     const loadSelectedMonth = async () => {
+      if (!selectedApartment) return;
+      
       if (selectedMonth === 'current') {
         loadBookings();
       } else {
@@ -106,7 +108,7 @@ const ReportsPage = () => {
     };
     
     loadSelectedMonth();
-  }, [selectedMonth]);
+  }, [selectedMonth, selectedApartment]);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
