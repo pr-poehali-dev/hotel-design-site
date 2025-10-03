@@ -258,7 +258,14 @@ export const rooms: Room[] = [
     name: 'Компактная студия',
     price: '5 500 ₽',
     features: ['Двуспальная кровать', 'Душевая кабина', 'Wi-Fi', 'Мини-кухня'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/e4d338dd-73ef-4be0-bde4-9fb69a695b70.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/e4d338dd-73ef-4be0-bde4-9fb69a695b70.jpeg',
+      'https://cdn.poehali.dev/files/a03fe005-5511-4a8e-9b95-eb8f221985d8.jpeg',
+      'https://cdn.poehali.dev/files/b33c912c-a7c7-4f0a-b08c-b76d12a7dbc1.jpeg',
+      'https://cdn.poehali.dev/files/3314f479-8753-4105-ad1c-bc72dfc7fdc9.jpeg',
+      'https://cdn.poehali.dev/files/55206ca1-254a-44c3-87f9-45858b235ca6.jpeg'
+    ]
   },
   {
     name: 'Апартаменты с камином',
