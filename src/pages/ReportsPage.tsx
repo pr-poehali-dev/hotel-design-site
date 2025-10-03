@@ -7,15 +7,33 @@ import { BookingRecord } from '@/types/booking';
 import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 
-const STORAGE_KEY = 'premium_apartments_bookings';
 const AUTH_KEY = 'premium_admin_auth';
+
+const APARTMENTS = [
+  { id: '2019', name: 'Апартамент 2019' },
+  { id: '2119', name: 'Апартамент 2119' },
+  { id: '2817', name: 'Апартамент 2817' },
+  { id: '1116', name: 'Апартамент 1116' },
+  { id: '1522', name: 'Апартамент 1522' },
+  { id: '1401', name: 'Апартамент 1401' },
+  { id: '2111', name: 'Апартамент 2111' },
+  { id: '2110', name: 'Апартамент 2110' },
+  { id: '1311', name: 'Апартамент 1311' },
+  { id: '906', name: 'Апартамент 906' },
+  { id: '816', name: 'Апартамент 816' },
+];
 
 const ReportsPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem(AUTH_KEY) === 'true';
   });
+  
+  const [selectedApartment, setSelectedApartment] = useState('2019');
+  
+  const getStorageKey = (apartmentId: string) => `premium_apartments_bookings_${apartmentId}`;
+  
   const [bookings, setBookings] = useState<BookingRecord[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(getStorageKey(selectedApartment));
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -91,8 +109,22 @@ const ReportsPage = () => {
   const [editingBooking, setEditingBooking] = useState<BookingRecord | undefined>();
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-  }, [bookings]);
+    localStorage.setItem(getStorageKey(selectedApartment), JSON.stringify(bookings));
+  }, [bookings, selectedApartment]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(getStorageKey(selectedApartment));
+    if (saved) {
+      try {
+        setBookings(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to parse saved bookings', e);
+        setBookings([]);
+      }
+    } else {
+      setBookings([]);
+    }
+  }, [selectedApartment]);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -147,10 +179,19 @@ const ReportsPage = () => {
               </div>
               <div>
                 <h1 className="font-playfair font-bold text-2xl text-gold-400">Premium Apartments</h1>
-                <p className="text-sm text-gray-400 font-inter">Поклонная 9 - апартамент 2019</p>
+                <p className="text-sm text-gray-400 font-inter">Поклонная 9</p>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-center">
+              <select
+                value={selectedApartment}
+                onChange={(e) => setSelectedApartment(e.target.value)}
+                className="px-4 py-2 bg-charcoal-800 border border-gold-500/30 text-white rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 font-inter"
+              >
+                {APARTMENTS.map(apt => (
+                  <option key={apt.id} value={apt.id}>{apt.name}</option>
+                ))}
+              </select>
               <FizzyButton
                 onClick={() => window.location.href = '/'}
                 variant="secondary"
