@@ -57,7 +57,7 @@ const Footer = () => {
                   className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
                   <Icon name="ClipboardList" size={14} />
-                  Система горничных
+                  Система клинеров
                 </a>
               </div>
             </div>

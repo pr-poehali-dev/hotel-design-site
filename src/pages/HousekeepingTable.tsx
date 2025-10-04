@@ -112,7 +112,7 @@ const HousekeepingTable = () => {
                 icon={<Icon name="Users" size={20} />}
                 variant="secondary"
               >
-                {isManagingHousekeepers ? 'Закрыть' : 'Управление горничными'}
+                {isManagingHousekeepers ? 'Закрыть' : 'Управление клинерами'}
               </FizzyButton>
               <FizzyButton
                 onClick={() => setShowPaymentsReport(!showPaymentsReport)}

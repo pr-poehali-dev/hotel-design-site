@@ -18,7 +18,7 @@ const HousekeepersManager = ({
 }: HousekeepersManagerProps) => {
   return (
     <div className="mb-6 bg-charcoal-800 rounded-xl p-6 border border-gray-700">
-      <h3 className="text-xl font-semibold text-white mb-4">Управление горничными</h3>
+      <h3 className="text-xl font-semibold text-white mb-4">Управление клинерами</h3>
       
       <div className="flex gap-3 mb-4">
         <input
@@ -26,7 +26,7 @@ const HousekeepersManager = ({
           value={newHousekeeperName}
           onChange={(e) => setNewHousekeeperName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && onAddHousekeeper()}
-          placeholder="Имя горничной"
+          placeholder="Имя клинера"
           className="flex-1 px-4 py-2 bg-charcoal-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-gold-500"
         />
         <FizzyButton

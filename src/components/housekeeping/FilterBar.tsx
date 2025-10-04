@@ -62,13 +62,13 @@ const FilterBar = ({
           </div>
 
           <div>
-            <label className="text-gray-400 text-sm mb-2 block">Горничная</label>
+            <label className="text-gray-400 text-sm mb-2 block">Клинер</label>
             <select
               value={selectedHousekeeper}
               onChange={(e) => setSelectedHousekeeper(e.target.value)}
               className="bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
             >
-              <option value="all">Все горничные</option>
+              <option value="all">Все клинеры</option>
               {housekeepers.map(hk => (
                 <option key={hk} value={hk}>{hk}</option>
               ))}

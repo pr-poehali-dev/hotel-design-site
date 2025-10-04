@@ -82,13 +82,13 @@ const AddRoomForm = ({ newRoom, setNewRoom, housekeepers, onSave, onCancel }: Ad
           />
         </div>
         <div>
-          <label className="text-gray-400 text-sm mb-2 block">Горничная</label>
+          <label className="text-gray-400 text-sm mb-2 block">Клинер</label>
           <select
             value={newRoom.assignedTo}
             onChange={(e) => setNewRoom({ ...newRoom, assignedTo: e.target.value })}
             className="w-full bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
           >
-            <option value="">Не назначена</option>
+            <option value="">Не назначен</option>
             {housekeepers.map(hk => (
               <option key={hk} value={hk}>{hk}</option>
             ))}

@@ -93,7 +93,7 @@ const PaymentsReport = ({ rooms }: PaymentsReportProps) => {
           <table className="w-full">
             <thead className="bg-charcoal-900">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">Горничная</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">Клинер</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">Апартаментов</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">Выплачено</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">К оплате</th>
