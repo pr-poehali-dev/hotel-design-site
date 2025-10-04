@@ -12,6 +12,7 @@ import OwnerReportsPage from "./pages/OwnerReportsPage";
 import OwnerLoginPage from "./pages/OwnerLoginPage";
 import OwnerRegisterPage from "./pages/OwnerRegisterPage";
 import OwnerDashboardPage from "./pages/OwnerDashboardPage";
+import HousekeepingTable from "./pages/HousekeepingTable";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/owner-login" element={<OwnerLoginPage />} />
           <Route path="/owner-register" element={<OwnerRegisterPage />} />
           <Route path="/owner-dashboard" element={<OwnerDashboardPage />} />
+          <Route path="/housekeeping" element={<HousekeepingTable />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
