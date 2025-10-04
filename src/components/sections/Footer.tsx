@@ -16,33 +16,71 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="border-t border-charcoal-700 mt-8 pt-8 text-center space-y-4">
-          <div className="flex justify-center gap-6 flex-wrap">
-            <a 
-              href="/reports" 
-              className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
-            >
-              <Icon name="FileText" size={16} />
-              Системный вход
-            </a>
-            <a 
-              href="/owner-login" 
-              className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
-            >
-              <Icon name="LogIn" size={16} />
-              Вход для инвесторов
-            </a>
-            <a 
-              href="/housekeeping" 
-              className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors text-sm font-inter"
-            >
-              <Icon name="ClipboardList" size={16} />
-              Горничные
-            </a>
+        <div className="border-t border-charcoal-700 mt-8 pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center md:text-left">
+              <h5 className="text-gold-400 font-playfair font-semibold mb-3">Для гостей</h5>
+              <div className="space-y-2">
+                <a 
+                  href="#" 
+                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  Бронирование
+                </a>
+                <a 
+                  href="#" 
+                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  Апартаменты
+                </a>
+                <a 
+                  href="#" 
+                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  Контакты
+                </a>
+              </div>
+            </div>
+
+            <div className="text-center md:text-left">
+              <h5 className="text-gold-400 font-playfair font-semibold mb-3">Для партнёров</h5>
+              <div className="space-y-2">
+                <a 
+                  href="/owner-login" 
+                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  <Icon name="LogIn" size={14} />
+                  Вход для инвесторов
+                </a>
+                <a 
+                  href="/housekeeping" 
+                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  <Icon name="ClipboardList" size={14} />
+                  Система горничных
+                </a>
+              </div>
+            </div>
+
+            <div className="text-center md:text-left">
+              <h5 className="text-gold-400 font-playfair font-semibold mb-3">Администрирование</h5>
+              <div className="space-y-2">
+                <a 
+                  href="/reports" 
+                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  <Icon name="FileText" size={14} />
+                  Системный вход
+                </a>
+              </div>
+            </div>
           </div>
-          <p className="text-gray-400 font-inter">
-            © 2024 Premium Apartments. Все права защищены.
-          </p>
+
+          <div className="text-center pt-6 border-t border-charcoal-800">
+            <p className="text-gray-500 font-inter text-sm">
+              © 2024 Premium Apartments. Все права защищены.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
