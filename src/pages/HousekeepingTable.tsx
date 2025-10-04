@@ -7,13 +7,29 @@ import FilterBar from '@/components/housekeeping/FilterBar';
 import AddRoomForm from '@/components/housekeeping/AddRoomForm';
 import RoomsTable from '@/components/housekeeping/RoomsTable';
 import HistoryPanel from '@/components/housekeeping/HistoryPanel';
+import LoginForm from '@/components/auth/LoginForm';
 
 interface HistoryEntry {
   date: string;
   rooms: Room[];
 }
 
+interface User {
+  username: string;
+  role: 'admin' | 'housekeeper';
+}
+
+const USERS = [
+  { username: 'admin', password: 'admin123', role: 'admin' as const },
+  { username: 'maria', password: 'maria123', role: 'housekeeper' as const },
+  { username: 'elena', password: 'elena123', role: 'housekeeper' as const },
+  { username: 'olga', password: 'olga123', role: 'housekeeper' as const },
+  { username: 'anna', password: 'anna123', role: 'housekeeper' as const },
+];
+
 const HousekeepingTable = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loginError, setLoginError] = useState('');
   const [rooms, setRooms] = useState<Room[]>([
     {
       id: '1',
@@ -85,7 +101,35 @@ const HousekeepingTable = () => {
   const [isManagingHousekeepers, setIsManagingHousekeepers] = useState(false);
   const [newHousekeeperName, setNewHousekeeperName] = useState('');
 
+  const handleLogin = (username: string, password: string) => {
+    const foundUser = USERS.find(
+      u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
+    );
+    
+    if (foundUser) {
+      setUser({ username: foundUser.username, role: foundUser.role });
+      setLoginError('');
+      localStorage.setItem('housekeeping_user', JSON.stringify({ username: foundUser.username, role: foundUser.role }));
+    } else {
+      setLoginError('Неверный логин или пароль');
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('housekeeping_user');
+  };
+
   useEffect(() => {
+    const savedUser = localStorage.getItem('housekeeping_user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error('Error loading user:', e);
+      }
+    }
+
     const savedHousekeepers = localStorage.getItem('housekeepers_list');
     if (savedHousekeepers) {
       try {
@@ -259,41 +303,61 @@ const HousekeepingTable = () => {
     inspection: rooms.filter(r => r.status === 'inspection').length
   };
 
+  if (!user) {
+    return <LoginForm onLogin={handleLogin} error={loginError} />;
+  }
+
+  const isAdmin = user.role === 'admin';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
             <h1 className="text-4xl font-playfair font-bold text-white mb-2">
               Таблица уборки апартаментов
             </h1>
             <p className="text-gray-400 font-inter">Управление статусами номеров</p>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="px-3 py-1 bg-gold-600 text-white text-sm rounded-full font-semibold">
+                {isAdmin ? 'Администратор' : 'Горничная'}: {user.username}
+              </span>
+            </div>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-400">Сегодня</p>
-            <p className="text-xl font-semibold text-white">{new Date().toLocaleDateString('ru-RU')}</p>
+            <p className="text-xl font-semibold text-white mb-2">{new Date().toLocaleDateString('ru-RU')}</p>
+            <FizzyButton
+              onClick={handleLogout}
+              variant="secondary"
+              icon={<Icon name="LogOut" size={18} />}
+            >
+              Выйти
+            </FizzyButton>
           </div>
         </div>
 
         <StatsCards stats={stats} />
 
-        <div className="mb-6 flex gap-3 flex-wrap">
-          <FizzyButton
-            onClick={saveToHistory}
-            icon={<Icon name="Save" size={20} />}
-          >
-            Сохранить в историю
-          </FizzyButton>
-          <FizzyButton
-            onClick={() => setIsManagingHousekeepers(!isManagingHousekeepers)}
-            icon={<Icon name="Users" size={20} />}
-            variant="secondary"
-          >
-            {isManagingHousekeepers ? 'Закрыть' : 'Управление горничными'}
-          </FizzyButton>
-        </div>
+        {isAdmin && (
+          <div className="mb-6 flex gap-3 flex-wrap">
+            <FizzyButton
+              onClick={saveToHistory}
+              icon={<Icon name="Save" size={20} />}
+            >
+              Сохранить в историю
+            </FizzyButton>
+            <FizzyButton
+              onClick={() => setIsManagingHousekeepers(!isManagingHousekeepers)}
+              icon={<Icon name="Users" size={20} />}
+              variant="secondary"
+            >
+              {isManagingHousekeepers ? 'Закрыть' : 'Управление горничными'}
+            </FizzyButton>
+          </div>
+        )}
 
-        {isManagingHousekeepers && (
+        {isAdmin && isManagingHousekeepers && (
           <div className="mb-6 bg-charcoal-800 rounded-xl p-6 border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Управление горничными</h3>
             
@@ -334,11 +398,13 @@ const HousekeepingTable = () => {
           </div>
         )}
 
-        <HistoryPanel
-          history={history}
-          onLoadHistory={loadFromHistory}
-          onDeleteHistory={deleteFromHistory}
-        />
+        {isAdmin && (
+          <HistoryPanel
+            history={history}
+            onLoadHistory={loadFromHistory}
+            onDeleteHistory={deleteFromHistory}
+          />
+        )}
 
         <FilterBar
           filter={filter}
@@ -346,10 +412,10 @@ const HousekeepingTable = () => {
           selectedHousekeeper={selectedHousekeeper}
           setSelectedHousekeeper={setSelectedHousekeeper}
           housekeepers={housekeepers}
-          onAddRoom={() => setIsAddingRoom(true)}
+          onAddRoom={isAdmin ? () => setIsAddingRoom(true) : undefined}
         />
 
-        {isAddingRoom && (
+        {isAdmin && isAddingRoom && (
           <AddRoomForm
             newRoom={newRoom}
             setNewRoom={setNewRoom}
@@ -365,10 +431,11 @@ const HousekeepingTable = () => {
           editingRoomId={editingRoomId}
           onUpdateStatus={updateRoomStatus}
           onAssignHousekeeper={assignHousekeeper}
-          onStartEdit={startEditRoom}
+          onStartEdit={isAdmin ? startEditRoom : () => {}}
           onSaveEdit={saveEditRoom}
           onUpdateField={updateRoomField}
-          onDelete={deleteRoom}
+          onDelete={isAdmin ? deleteRoom : () => {}}
+          isAdmin={isAdmin}
         />
 
         <div className="mt-6 flex justify-center">

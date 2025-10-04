@@ -8,7 +8,7 @@ interface FilterBarProps {
   selectedHousekeeper: string;
   setSelectedHousekeeper: (housekeeper: string) => void;
   housekeepers: string[];
-  onAddRoom: () => void;
+  onAddRoom?: () => void;
 }
 
 const FilterBar = ({ 
@@ -75,14 +75,16 @@ const FilterBar = ({
             </select>
           </div>
         </div>
-        <div>
-          <FizzyButton
-            onClick={onAddRoom}
-            icon={<Icon name="Plus" size={20} />}
-          >
-            Добавить апартамент
-          </FizzyButton>
-        </div>
+        {onAddRoom && (
+          <div>
+            <FizzyButton
+              onClick={onAddRoom}
+              icon={<Icon name="Plus" size={20} />}
+            >
+              Добавить апартамент
+            </FizzyButton>
+          </div>
+        )}
       </div>
     </div>
   );

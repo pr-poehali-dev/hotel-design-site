@@ -11,6 +11,7 @@ interface RoomsTableProps {
   onSaveEdit: () => void;
   onUpdateField: (roomId: string, field: keyof Room, value: any) => void;
   onDelete: (roomId: string) => void;
+  isAdmin: boolean;
 }
 
 const RoomsTable = ({
@@ -22,7 +23,8 @@ const RoomsTable = ({
   onStartEdit,
   onSaveEdit,
   onUpdateField,
-  onDelete
+  onDelete,
+  isAdmin
 }: RoomsTableProps) => {
   return (
     <div className="bg-charcoal-800 rounded-xl overflow-hidden border border-gray-700">
@@ -55,6 +57,7 @@ const RoomsTable = ({
                 onSaveEdit={onSaveEdit}
                 onUpdateField={onUpdateField}
                 onDelete={onDelete}
+                isAdmin={isAdmin}
               />
             ))}
           </tbody>

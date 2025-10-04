@@ -12,6 +12,7 @@ interface RoomRowProps {
   onSaveEdit: () => void;
   onUpdateField: (roomId: string, field: keyof Room, value: any) => void;
   onDelete: (roomId: string) => void;
+  isAdmin: boolean;
 }
 
 const RoomRow = ({
@@ -23,7 +24,8 @@ const RoomRow = ({
   onStartEdit,
   onSaveEdit,
   onUpdateField,
-  onDelete
+  onDelete,
+  isAdmin
 }: RoomRowProps) => {
   const isEditing = editingRoomId === room.id;
 
@@ -189,22 +191,26 @@ const RoomRow = ({
         )}
       </td>
       <td className="px-4 py-4">
-        <div className="flex gap-2 items-center justify-center">
-          <button
-            onClick={() => onStartEdit(room.id)}
-            className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
-            title="Редактировать"
-          >
-            <Icon name="Pencil" size={18} />
-          </button>
-          <button
-            onClick={() => onDelete(room.id)}
-            className="p-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
-            title="Удалить"
-          >
-            <Icon name="Trash2" size={18} />
-          </button>
-        </div>
+        {isAdmin ? (
+          <div className="flex gap-2 items-center justify-center">
+            <button
+              onClick={() => onStartEdit(room.id)}
+              className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+              title="Редактировать"
+            >
+              <Icon name="Pencil" size={18} />
+            </button>
+            <button
+              onClick={() => onDelete(room.id)}
+              className="p-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+              title="Удалить"
+            >
+              <Icon name="Trash2" size={18} />
+            </button>
+          </div>
+        ) : (
+          <span className="text-gray-500 text-sm">—</span>
+        )}
       </td>
     </tr>
   );
