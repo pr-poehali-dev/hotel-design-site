@@ -9,6 +9,8 @@ export interface Room {
   checkIn: string;
   priority: 'high' | 'normal' | 'low';
   notes: string;
+  payment?: number;
+  paymentStatus?: 'paid' | 'unpaid';
 }
 
 export interface RoomStats {

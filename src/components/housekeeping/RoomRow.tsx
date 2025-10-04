@@ -147,6 +147,41 @@ const RoomRow = ({
           <span className="truncate block">{room.notes || '—'}</span>
         )}
       </td>
+      <td className="px-6 py-4 text-gray-300 text-sm">
+        {isEditing ? (
+          <input
+            type="number"
+            value={room.payment || 0}
+            onChange={(e) => onUpdateField(room.id, 'payment', parseFloat(e.target.value) || 0)}
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-24"
+            placeholder="0"
+            min="0"
+          />
+        ) : (
+          <span className="font-semibold">{room.payment || 0} ₽</span>
+        )}
+      </td>
+      <td className="px-6 py-4">
+        {isEditing ? (
+          <select
+            value={room.paymentStatus || 'unpaid'}
+            onChange={(e) => onUpdateField(room.id, 'paymentStatus', e.target.value)}
+            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+          >
+            <option value="unpaid">Не оплачено</option>
+            <option value="paid">Оплачено</option>
+          </select>
+        ) : (
+          <span
+            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-semibold ${
+              room.paymentStatus === 'paid' ? 'bg-green-600' : 'bg-red-600'
+            }`}
+          >
+            <Icon name={room.paymentStatus === 'paid' ? 'CheckCircle' : 'XCircle'} size={14} />
+            {room.paymentStatus === 'paid' ? 'Оплачено' : 'Не оплачено'}
+          </span>
+        )}
+      </td>
       <td className="px-4 py-4">
         {isEditing ? (
           <div className="flex gap-1 flex-wrap">

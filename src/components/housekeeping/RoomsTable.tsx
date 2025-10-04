@@ -40,7 +40,9 @@ const RoomsTable = ({
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Заезд</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Последняя уборка</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Примечания</th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Статус</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Выплата</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Статус оплаты</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Действия</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 whitespace-nowrap">Управление</th>
             </tr>
           </thead>

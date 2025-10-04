@@ -12,7 +12,9 @@ const INITIAL_ROOMS: Room[] = [
     checkOut: '12:00',
     checkIn: '15:00',
     priority: 'high',
-    notes: ''
+    notes: '',
+    payment: 0,
+    paymentStatus: 'unpaid'
   },
   {
     id: '2',
@@ -24,7 +26,9 @@ const INITIAL_ROOMS: Room[] = [
     checkOut: '',
     checkIn: '16:00',
     priority: 'normal',
-    notes: ''
+    notes: '',
+    payment: 500,
+    paymentStatus: 'unpaid'
   },
   {
     id: '3',
@@ -36,7 +40,9 @@ const INITIAL_ROOMS: Room[] = [
     checkOut: '11:00',
     checkIn: '14:00',
     priority: 'high',
-    notes: 'Требуется дополнительное белье'
+    notes: 'Требуется дополнительное белье',
+    payment: 700,
+    paymentStatus: 'paid'
   },
   {
     id: '4',
@@ -48,7 +54,9 @@ const INITIAL_ROOMS: Room[] = [
     checkOut: '',
     checkIn: '',
     priority: 'normal',
-    notes: ''
+    notes: '',
+    payment: 500,
+    paymentStatus: 'unpaid'
   }
 ];
 
@@ -63,7 +71,9 @@ export const useRooms = () => {
     checkOut: '',
     checkIn: '',
     priority: 'normal',
-    notes: ''
+    notes: '',
+    payment: 0,
+    paymentStatus: 'unpaid'
   });
 
   useEffect(() => {
@@ -111,7 +121,9 @@ export const useRooms = () => {
       checkOut: newRoom.checkOut || '',
       checkIn: newRoom.checkIn || '',
       priority: newRoom.priority || 'normal',
-      notes: newRoom.notes || ''
+      notes: newRoom.notes || '',
+      payment: newRoom.payment || 0,
+      paymentStatus: newRoom.paymentStatus || 'unpaid'
     };
     
     setRooms([...rooms, room]);
@@ -123,7 +135,9 @@ export const useRooms = () => {
       checkOut: '',
       checkIn: '',
       priority: 'normal',
-      notes: ''
+      notes: '',
+      payment: 0,
+      paymentStatus: 'unpaid'
     });
   };
 

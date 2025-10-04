@@ -60,7 +60,7 @@ const AddRoomForm = ({ newRoom, setNewRoom, housekeepers, onSave, onCancel }: Ad
           </select>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
         <div>
           <label className="text-gray-400 text-sm mb-2 block">Время выезда</label>
           <input
@@ -92,6 +92,28 @@ const AddRoomForm = ({ newRoom, setNewRoom, housekeepers, onSave, onCancel }: Ad
             {housekeepers.map(hk => (
               <option key={hk} value={hk}>{hk}</option>
             ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-gray-400 text-sm mb-2 block">Выплата (₽)</label>
+          <input
+            type="number"
+            value={newRoom.payment || 0}
+            onChange={(e) => setNewRoom({ ...newRoom, payment: parseFloat(e.target.value) || 0 })}
+            className="w-full bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
+            placeholder="500"
+            min="0"
+          />
+        </div>
+        <div>
+          <label className="text-gray-400 text-sm mb-2 block">Статус оплаты</label>
+          <select
+            value={newRoom.paymentStatus || 'unpaid'}
+            onChange={(e) => setNewRoom({ ...newRoom, paymentStatus: e.target.value as 'paid' | 'unpaid' })}
+            className="w-full bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
+          >
+            <option value="unpaid">Не оплачено</option>
+            <option value="paid">Оплачено</option>
           </select>
         </div>
       </div>
