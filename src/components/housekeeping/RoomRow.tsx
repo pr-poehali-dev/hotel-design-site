@@ -88,16 +88,22 @@ const RoomRow = ({
         )}
       </td>
       <td className="px-6 py-4">
-        <select
-          value={room.assignedTo}
-          onChange={(e) => onAssignHousekeeper(room.id, e.target.value)}
-          className="bg-charcoal-700 text-white px-3 py-1 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
-        >
-          <option value="">Не назначена</option>
-          {housekeepers.map(hk => (
-            <option key={hk} value={hk}>{hk}</option>
-          ))}
-        </select>
+        {isEditing ? (
+          <select
+            value={room.assignedTo}
+            onChange={(e) => onUpdateField(room.id, 'assignedTo', e.target.value)}
+            className="bg-charcoal-700 text-white px-3 py-1 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+          >
+            <option value="">Не назначена</option>
+            {housekeepers.map(hk => (
+              <option key={hk} value={hk}>{hk}</option>
+            ))}
+          </select>
+        ) : (
+          <span className="text-gray-300">
+            {room.assignedTo || '—'}
+          </span>
+        )}
       </td>
       <td className="px-6 py-4 text-gray-300 text-sm">
         {isEditing ? (
