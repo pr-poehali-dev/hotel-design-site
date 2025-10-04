@@ -81,7 +81,24 @@ const HousekeepingTable = () => {
     notes: ''
   });
 
-  const housekeepers = ['Мария', 'Елена', 'Ольга', 'Анна'];
+  const [housekeepers, setHousekeepers] = useState<string[]>(['Мария', 'Елена', 'Ольга', 'Анна']);
+  const [isManagingHousekeepers, setIsManagingHousekeepers] = useState(false);
+  const [newHousekeeperName, setNewHousekeeperName] = useState('');
+
+  useEffect(() => {
+    const savedHousekeepers = localStorage.getItem('housekeepers_list');
+    if (savedHousekeepers) {
+      try {
+        setHousekeepers(JSON.parse(savedHousekeepers));
+      } catch (e) {
+        console.error('Error loading housekeepers:', e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('housekeepers_list', JSON.stringify(housekeepers));
+  }, [housekeepers]);
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('housekeeping_history');
@@ -137,6 +154,28 @@ const HousekeepingTable = () => {
     const newHistory = history.filter(h => h.date !== date);
     setHistory(newHistory);
     localStorage.setItem('housekeeping_history', JSON.stringify(newHistory));
+  };
+
+  const addHousekeeper = () => {
+    if (!newHousekeeperName.trim()) {
+      alert('Введите имя горничной');
+      return;
+    }
+    if (housekeepers.includes(newHousekeeperName.trim())) {
+      alert('Эта горничная уже в списке');
+      return;
+    }
+    setHousekeepers([...housekeepers, newHousekeeperName.trim()]);
+    setNewHousekeeperName('');
+  };
+
+  const deleteHousekeeper = (name: string) => {
+    if (confirm(`Удалить горничную "${name}" из списка?`)) {
+      setHousekeepers(housekeepers.filter(h => h !== name));
+      setRooms(rooms.map(room => 
+        room.assignedTo === name ? { ...room, assignedTo: '' } : room
+      ));
+    }
   };
 
   const updateRoomStatus = (roomId: string, newStatus: Room['status']) => {
@@ -238,14 +277,62 @@ const HousekeepingTable = () => {
 
         <StatsCards stats={stats} />
 
-        <div className="mb-6 flex gap-3">
+        <div className="mb-6 flex gap-3 flex-wrap">
           <FizzyButton
             onClick={saveToHistory}
             icon={<Icon name="Save" size={20} />}
           >
             Сохранить в историю
           </FizzyButton>
+          <FizzyButton
+            onClick={() => setIsManagingHousekeepers(!isManagingHousekeepers)}
+            icon={<Icon name="Users" size={20} />}
+            variant="secondary"
+          >
+            {isManagingHousekeepers ? 'Закрыть' : 'Управление горничными'}
+          </FizzyButton>
         </div>
+
+        {isManagingHousekeepers && (
+          <div className="mb-6 bg-charcoal-800 rounded-xl p-6 border border-gray-700">
+            <h3 className="text-xl font-semibold text-white mb-4">Управление горничными</h3>
+            
+            <div className="flex gap-3 mb-4">
+              <input
+                type="text"
+                value={newHousekeeperName}
+                onChange={(e) => setNewHousekeeperName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addHousekeeper()}
+                placeholder="Имя горничной"
+                className="flex-1 px-4 py-2 bg-charcoal-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-gold-500"
+              />
+              <FizzyButton
+                onClick={addHousekeeper}
+                icon={<Icon name="Plus" size={20} />}
+              >
+                Добавить
+              </FizzyButton>
+            </div>
+
+            <div className="space-y-2">
+              {housekeepers.map((housekeeper) => (
+                <div
+                  key={housekeeper}
+                  className="flex items-center justify-between bg-charcoal-700 p-4 rounded-lg border border-gray-600"
+                >
+                  <span className="text-white font-semibold">{housekeeper}</span>
+                  <button
+                    onClick={() => deleteHousekeeper(housekeeper)}
+                    className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                    title="Удалить"
+                  >
+                    <Icon name="Trash2" size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <HistoryPanel
           history={history}
