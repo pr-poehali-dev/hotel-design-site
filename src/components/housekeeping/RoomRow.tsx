@@ -1,6 +1,6 @@
 import Icon from '@/components/ui/icon';
 import { Room } from './types';
-import { getStatusColor, getStatusText, getPriorityIcon } from './utils';
+import { getStatusColor, getStatusText } from './utils';
 
 interface RoomRowProps {
   room: Room;
@@ -52,7 +52,7 @@ const RoomRow = ({
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            {getPriorityIcon(room.priority)}
+            {room.priority === 'high' && <Icon name="AlertCircle" size={20} className="text-red-500" />}
             <span className="text-white font-semibold text-lg">{room.number}</span>
           </div>
         )}

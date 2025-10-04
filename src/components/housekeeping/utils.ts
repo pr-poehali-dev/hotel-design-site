@@ -1,4 +1,3 @@
-import Icon from '@/components/ui/icon';
 import { Room } from './types';
 
 export const getStatusColor = (status: Room['status']) => {
@@ -29,11 +28,4 @@ export const getStatusText = (status: Room['status']) => {
     default:
       return status;
   }
-};
-
-export const getPriorityIcon = (priority: Room['priority']) => {
-  if (priority === 'high') {
-    return <Icon name="AlertCircle" size={20} className="text-red-500" />;
-  }
-  return null;
 };
