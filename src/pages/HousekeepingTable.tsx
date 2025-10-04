@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import { Room } from '@/components/housekeeping/types';
@@ -6,6 +6,12 @@ import StatsCards from '@/components/housekeeping/StatsCards';
 import FilterBar from '@/components/housekeeping/FilterBar';
 import AddRoomForm from '@/components/housekeeping/AddRoomForm';
 import RoomsTable from '@/components/housekeeping/RoomsTable';
+import HistoryPanel from '@/components/housekeeping/HistoryPanel';
+
+interface HistoryEntry {
+  date: string;
+  rooms: Room[];
+}
 
 const HousekeepingTable = () => {
   const [rooms, setRooms] = useState<Room[]>([
@@ -63,6 +69,7 @@ const HousekeepingTable = () => {
   const [selectedHousekeeper, setSelectedHousekeeper] = useState<string>('all');
   const [isAddingRoom, setIsAddingRoom] = useState(false);
   const [editingRoomId, setEditingRoomId] = useState<string | null>(null);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [newRoom, setNewRoom] = useState<Partial<Room>>({
     number: '',
     floor: 1,
@@ -75,6 +82,62 @@ const HousekeepingTable = () => {
   });
 
   const housekeepers = ['Мария', 'Елена', 'Ольга', 'Анна'];
+
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('housekeeping_history');
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error('Error loading history:', e);
+      }
+    }
+
+    const savedRooms = localStorage.getItem('housekeeping_current');
+    if (savedRooms) {
+      try {
+        setRooms(JSON.parse(savedRooms));
+      } catch (e) {
+        console.error('Error loading rooms:', e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('housekeeping_current', JSON.stringify(rooms));
+  }, [rooms]);
+
+  const saveToHistory = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const existingIndex = history.findIndex(h => h.date === today);
+    
+    let newHistory: HistoryEntry[];
+    if (existingIndex >= 0) {
+      newHistory = [...history];
+      newHistory[existingIndex] = { date: today, rooms: [...rooms] };
+    } else {
+      newHistory = [...history, { date: today, rooms: [...rooms] }];
+    }
+    
+    newHistory.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    setHistory(newHistory);
+    localStorage.setItem('housekeeping_history', JSON.stringify(newHistory));
+    alert('Данные сохранены в историю!');
+  };
+
+  const loadFromHistory = (entry: HistoryEntry) => {
+    if (confirm(`Загрузить данные за ${new Date(entry.date).toLocaleDateString('ru-RU')}?`)) {
+      setRooms([...entry.rooms]);
+      alert('Данные загружены!');
+    }
+  };
+
+  const deleteFromHistory = (date: string) => {
+    const newHistory = history.filter(h => h.date !== date);
+    setHistory(newHistory);
+    localStorage.setItem('housekeeping_history', JSON.stringify(newHistory));
+  };
 
   const updateRoomStatus = (roomId: string, newStatus: Room['status']) => {
     setRooms(rooms.map(room => 
@@ -174,6 +237,21 @@ const HousekeepingTable = () => {
         </div>
 
         <StatsCards stats={stats} />
+
+        <div className="mb-6 flex gap-3">
+          <FizzyButton
+            onClick={saveToHistory}
+            icon={<Icon name="Save" size={20} />}
+          >
+            Сохранить в историю
+          </FizzyButton>
+        </div>
+
+        <HistoryPanel
+          history={history}
+          onLoadHistory={loadFromHistory}
+          onDeleteHistory={deleteFromHistory}
+        />
 
         <FilterBar
           filter={filter}
