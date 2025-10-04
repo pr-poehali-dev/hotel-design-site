@@ -18,3 +18,19 @@ export interface RoomStats {
   inProgress: number;
   inspection: number;
 }
+
+export interface HistoryEntry {
+  date: string;
+  rooms: Room[];
+}
+
+export interface User {
+  username: string;
+  role: 'admin' | 'housekeeper';
+}
+
+export interface StoredUser {
+  username: string;
+  password: string;
+  role: 'admin' | 'housekeeper';
+}
