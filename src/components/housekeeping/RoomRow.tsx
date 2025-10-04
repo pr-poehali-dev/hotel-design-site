@@ -139,9 +139,9 @@ const RoomRow = ({
           <span className="truncate block">{room.notes || '—'}</span>
         )}
       </td>
-      <td className="px-6 py-4">
+      <td className="px-4 py-4">
         {isEditing ? (
-          <div className="flex gap-2">
+          <div className="flex gap-1 flex-wrap">
             <button
               onClick={() => onSaveEdit()}
               className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
@@ -151,52 +151,50 @@ const RoomRow = ({
             </button>
           </div>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-1 flex-wrap">
             {room.status !== 'in-progress' && (
               <button
                 onClick={() => onUpdateStatus(room.id, 'in-progress')}
-                className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
+                className="p-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition-colors"
                 title="Начать уборку"
               >
-                <Icon name="Play" size={16} />
+                <Icon name="Play" size={14} />
               </button>
             )}
             {room.status !== 'clean' && (
               <button
                 onClick={() => onUpdateStatus(room.id, 'clean')}
-                className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
-                title="Отметить как чистое"
+                className="p-1.5 bg-green-500 hover:bg-green-600 text-white rounded transition-colors"
+                title="Чисто"
               >
-                <Icon name="Check" size={16} />
+                <Icon name="Check" size={14} />
               </button>
             )}
             {room.status !== 'dirty' && (
               <button
                 onClick={() => onUpdateStatus(room.id, 'dirty')}
-                className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
-                title="Отметить как грязное"
+                className="p-1.5 bg-red-500 hover:bg-red-600 text-white rounded transition-colors"
+                title="Грязно"
               >
-                <Icon name="X" size={16} />
+                <Icon name="X" size={14} />
               </button>
             )}
           </div>
         )}
       </td>
-      <td className="px-6 py-4">
-        <div className="flex gap-2 items-center justify-end whitespace-nowrap">
-          {!isEditing && (
-            <button
-              onClick={() => onStartEdit(room.id)}
-              className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors shadow-lg"
-              title="Редактировать"
-            >
-              <Icon name="Edit" size={18} />
-            </button>
-          )}
+      <td className="px-4 py-4">
+        <div className="flex gap-2 items-center justify-center">
+          <button
+            onClick={() => onStartEdit(room.id)}
+            className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+            title="Редактировать"
+          >
+            <Icon name="Pencil" size={18} />
+          </button>
           <button
             onClick={() => onDelete(room.id)}
-            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-lg"
-            title="Удалить апартамент"
+            className="p-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+            title="Удалить"
           >
             <Icon name="Trash2" size={18} />
           </button>
