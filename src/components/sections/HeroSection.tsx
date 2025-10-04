@@ -168,6 +168,11 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
               <Icon name="Package" size={20} className="text-gold-400" />
               КАМЕРА ХРАНЕНИЯ
             </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Shirt" size={20} className="text-gold-400" />
+              ПРАЧЕЧНАЯ/ХИМЧИСТКА/ГЛАЖКА/СТИРКА
+            </span>
             <span className="text-gold-400 mx-8">•</span>
             <span className="flex items-center gap-2">
               <Icon name="Eye" size={20} className="text-gold-400" />
@@ -212,6 +217,11 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
             <span className="flex items-center gap-2">
               <Icon name="Package" size={20} className="text-gold-400" />
               КАМЕРА ХРАНЕНИЯ
+            </span>
+            <span className="text-gold-400">•</span>
+            <span className="flex items-center gap-2">
+              <Icon name="Shirt" size={20} className="text-gold-400" />
+              ПРАЧЕЧНАЯ/ХИМЧИСТКА/ГЛАЖКА/СТИРКА
             </span>
           </span>
         </div>
