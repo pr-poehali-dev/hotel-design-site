@@ -10,6 +10,7 @@ import LoginForm from '@/components/auth/LoginForm';
 import UserManagement from '@/components/auth/UserManagement';
 import HousekeepersManager from '@/components/housekeeping/HousekeepersManager';
 import PageHeader from '@/components/housekeeping/PageHeader';
+import PaymentsReport from '@/components/housekeeping/PaymentsReport';
 import { useAuth } from '@/hooks/useAuth';
 import { useRooms } from '@/hooks/useRooms';
 import { useHousekeepers } from '@/hooks/useHousekeepers';
@@ -61,6 +62,7 @@ const HousekeepingTable = () => {
   const [selectedHousekeeper, setSelectedHousekeeper] = useState<string>('all');
   const [isAddingRoom, setIsAddingRoom] = useState(false);
   const [isManagingHousekeepers, setIsManagingHousekeepers] = useState(false);
+  const [showPaymentsReport, setShowPaymentsReport] = useState(false);
 
   const filteredRooms = rooms.filter(room => {
     const statusMatch = filter === 'all' || room.status === filter;
@@ -112,6 +114,13 @@ const HousekeepingTable = () => {
               >
                 {isManagingHousekeepers ? 'Закрыть' : 'Управление горничными'}
               </FizzyButton>
+              <FizzyButton
+                onClick={() => setShowPaymentsReport(!showPaymentsReport)}
+                icon={<Icon name="Wallet" size={20} />}
+                variant="secondary"
+              >
+                {showPaymentsReport ? 'Скрыть' : 'Отчёт по выплатам'}
+              </FizzyButton>
             </div>
           </>
         )}
@@ -132,6 +141,10 @@ const HousekeepingTable = () => {
             onLoadHistory={loadFromHistory}
             onDeleteHistory={deleteFromHistory}
           />
+        )}
+
+        {isAdmin && showPaymentsReport && (
+          <PaymentsReport rooms={rooms} />
         )}
 
         <FilterBar
