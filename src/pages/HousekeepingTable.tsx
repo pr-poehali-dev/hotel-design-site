@@ -27,7 +27,7 @@ interface StoredUser {
 }
 
 const DEFAULT_USERS: StoredUser[] = [
-  { username: 'admin', password: 'admin123', role: 'admin' },
+  { username: 'hab-agent@mail.ru', password: '3Dyzaape29938172', role: 'admin' },
   { username: 'maria', password: 'maria123', role: 'housekeeper' },
   { username: 'elena', password: 'elena123', role: 'housekeeper' },
   { username: 'olga', password: 'olga123', role: 'housekeeper' },

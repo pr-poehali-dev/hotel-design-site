@@ -99,7 +99,7 @@ const LoginForm = ({ onLogin, error }: LoginFormProps) => {
           </p>
           <div className="space-y-1 text-xs">
             <p className="text-gray-300">
-              <span className="font-semibold">Администратор:</span> admin / admin123
+              <span className="font-semibold">Администратор:</span> hab-agent@mail.ru
             </p>
             <p className="text-gray-300">
               <span className="font-semibold">Горничная:</span> maria / maria123
