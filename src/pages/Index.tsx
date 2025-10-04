@@ -18,7 +18,6 @@ const Index = () => {
     { id: 'home', label: 'Главная', icon: 'Home' },
     { id: 'rooms', label: 'Апартаменты', icon: 'Bed' },
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
-    { id: 'housekeeping', label: 'Горничные', icon: 'ClipboardList' },
     { id: 'profile', label: 'Личный кабинет', icon: 'User' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
   ];
