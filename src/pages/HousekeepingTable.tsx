@@ -70,6 +70,7 @@ const HousekeepingTable = () => {
   const [filter, setFilter] = useState<'all' | 'clean' | 'dirty' | 'in-progress' | 'inspection'>('all');
   const [selectedHousekeeper, setSelectedHousekeeper] = useState<string>('all');
   const [isAddingRoom, setIsAddingRoom] = useState(false);
+  const [editingRoomId, setEditingRoomId] = useState<string | null>(null);
   const [newRoom, setNewRoom] = useState<Partial<Room>>({
     number: '',
     floor: 1,
@@ -171,6 +172,20 @@ const HousekeepingTable = () => {
     if (confirm('Вы уверены, что хотите удалить этот апартамент?')) {
       setRooms(rooms.filter(room => room.id !== roomId));
     }
+  };
+
+  const startEditRoom = (roomId: string) => {
+    setEditingRoomId(roomId);
+  };
+
+  const saveEditRoom = () => {
+    setEditingRoomId(null);
+  };
+
+  const updateRoomField = (roomId: string, field: keyof Room, value: any) => {
+    setRooms(rooms.map(room => 
+      room.id === roomId ? { ...room, [field]: value } : room
+    ));
   };
 
   const filteredRooms = rooms.filter(room => {
@@ -416,18 +431,64 @@ const HousekeepingTable = () => {
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {filteredRooms.map(room => (
-                  <tr key={room.id} className="hover:bg-charcoal-700 transition-colors">
+                  <tr key={room.id} className={`transition-colors ${
+                    editingRoomId === room.id ? 'bg-gold-900/20' : 'hover:bg-charcoal-700'
+                  }`}>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        {getPriorityIcon(room.priority)}
-                        <span className="text-white font-semibold text-lg">{room.number}</span>
-                      </div>
+                      {editingRoomId === room.id ? (
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={room.priority}
+                            onChange={(e) => updateRoomField(room.id, 'priority', e.target.value)}
+                            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-24"
+                          >
+                            <option value="normal">Обычный</option>
+                            <option value="high">Высокий</option>
+                            <option value="low">Низкий</option>
+                          </select>
+                          <input
+                            type="text"
+                            value={room.number}
+                            onChange={(e) => updateRoomField(room.id, 'number', e.target.value)}
+                            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 font-semibold w-20"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          {getPriorityIcon(room.priority)}
+                          <span className="text-white font-semibold text-lg">{room.number}</span>
+                        </div>
+                      )}
                     </td>
-                    <td className="px-6 py-4 text-gray-300">{room.floor}</td>
+                    <td className="px-6 py-4 text-gray-300">
+                      {editingRoomId === room.id ? (
+                        <input
+                          type="number"
+                          value={room.floor}
+                          onChange={(e) => updateRoomField(room.id, 'floor', parseInt(e.target.value))}
+                          className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 w-16"
+                        />
+                      ) : (
+                        room.floor
+                      )}
+                    </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-sm font-semibold ${getStatusColor(room.status)}`}>
-                        {getStatusText(room.status)}
-                      </span>
+                      {editingRoomId === room.id ? (
+                        <select
+                          value={room.status}
+                          onChange={(e) => updateRoomField(room.id, 'status', e.target.value)}
+                          className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+                        >
+                          <option value="dirty">Грязно</option>
+                          <option value="clean">Чисто</option>
+                          <option value="in-progress">В процессе</option>
+                          <option value="inspection">Проверка</option>
+                        </select>
+                      ) : (
+                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-sm font-semibold ${getStatusColor(room.status)}`}>
+                          {getStatusText(room.status)}
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <select
@@ -441,49 +502,108 @@ const HousekeepingTable = () => {
                         ))}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-gray-300 text-sm">{room.checkOut || '—'}</td>
-                    <td className="px-6 py-4 text-gray-300 text-sm">{room.checkIn || '—'}</td>
+                    <td className="px-6 py-4 text-gray-300 text-sm">
+                      {editingRoomId === room.id ? (
+                        <input
+                          type="text"
+                          value={room.checkOut}
+                          onChange={(e) => updateRoomField(room.id, 'checkOut', e.target.value)}
+                          className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-20"
+                          placeholder="12:00"
+                        />
+                      ) : (
+                        room.checkOut || '—'
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-gray-300 text-sm">
+                      {editingRoomId === room.id ? (
+                        <input
+                          type="text"
+                          value={room.checkIn}
+                          onChange={(e) => updateRoomField(room.id, 'checkIn', e.target.value)}
+                          className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-20"
+                          placeholder="15:00"
+                        />
+                      ) : (
+                        room.checkIn || '—'
+                      )}
+                    </td>
                     <td className="px-6 py-4 text-gray-300 text-sm">{room.lastCleaned}</td>
-                    <td className="px-6 py-4 text-gray-400 text-sm max-w-xs truncate">{room.notes || '—'}</td>
+                    <td className="px-6 py-4 text-gray-400 text-sm max-w-xs">
+                      {editingRoomId === room.id ? (
+                        <input
+                          type="text"
+                          value={room.notes}
+                          onChange={(e) => updateRoomField(room.id, 'notes', e.target.value)}
+                          className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-full"
+                          placeholder="Примечания..."
+                        />
+                      ) : (
+                        <span className="truncate block">{room.notes || '—'}</span>
+                      )}
+                    </td>
                     <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        {room.status !== 'in-progress' && (
+                      {editingRoomId === room.id ? (
+                        <div className="flex gap-2">
                           <button
-                            onClick={() => updateRoomStatus(room.id, 'in-progress')}
-                            className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
-                            title="Начать уборку"
-                          >
-                            <Icon name="Play" size={16} />
-                          </button>
-                        )}
-                        {room.status !== 'clean' && (
-                          <button
-                            onClick={() => updateRoomStatus(room.id, 'clean')}
+                            onClick={() => saveEditRoom()}
                             className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
-                            title="Отметить как чистое"
+                            title="Сохранить"
                           >
                             <Icon name="Check" size={16} />
                           </button>
-                        )}
-                        {room.status !== 'dirty' && (
-                          <button
-                            onClick={() => updateRoomStatus(room.id, 'dirty')}
-                            className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
-                            title="Отметить как грязное"
-                          >
-                            <Icon name="X" size={16} />
-                          </button>
-                        )}
-                      </div>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          {room.status !== 'in-progress' && (
+                            <button
+                              onClick={() => updateRoomStatus(room.id, 'in-progress')}
+                              className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
+                              title="Начать уборку"
+                            >
+                              <Icon name="Play" size={16} />
+                            </button>
+                          )}
+                          {room.status !== 'clean' && (
+                            <button
+                              onClick={() => updateRoomStatus(room.id, 'clean')}
+                              className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                              title="Отметить как чистое"
+                            >
+                              <Icon name="Check" size={16} />
+                            </button>
+                          )}
+                          {room.status !== 'dirty' && (
+                            <button
+                              onClick={() => updateRoomStatus(room.id, 'dirty')}
+                              className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                              title="Отметить как грязное"
+                            >
+                              <Icon name="X" size={16} />
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => deleteRoom(room.id)}
-                        className="p-2 bg-charcoal-700 hover:bg-red-600 text-gray-400 hover:text-white rounded-lg transition-colors"
-                        title="Удалить апартамент"
-                      >
-                        <Icon name="Trash2" size={16} />
-                      </button>
+                      <div className="flex gap-2">
+                        {editingRoomId !== room.id && (
+                          <button
+                            onClick={() => startEditRoom(room.id)}
+                            className="p-2 bg-charcoal-700 hover:bg-gold-600 text-gray-400 hover:text-white rounded-lg transition-colors"
+                            title="Редактировать"
+                          >
+                            <Icon name="Edit" size={16} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => deleteRoom(room.id)}
+                          className="p-2 bg-charcoal-700 hover:bg-red-600 text-gray-400 hover:text-white rounded-lg transition-colors"
+                          title="Удалить апартамент"
+                        >
+                          <Icon name="Trash2" size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
