@@ -8,6 +8,7 @@ import AddRoomForm from '@/components/housekeeping/AddRoomForm';
 import RoomsTable from '@/components/housekeeping/RoomsTable';
 import HistoryPanel from '@/components/housekeeping/HistoryPanel';
 import LoginForm from '@/components/auth/LoginForm';
+import UserManagement from '@/components/auth/UserManagement';
 
 interface HistoryEntry {
   date: string;
@@ -19,17 +20,24 @@ interface User {
   role: 'admin' | 'housekeeper';
 }
 
-const USERS = [
-  { username: 'admin', password: 'admin123', role: 'admin' as const },
-  { username: 'maria', password: 'maria123', role: 'housekeeper' as const },
-  { username: 'elena', password: 'elena123', role: 'housekeeper' as const },
-  { username: 'olga', password: 'olga123', role: 'housekeeper' as const },
-  { username: 'anna', password: 'anna123', role: 'housekeeper' as const },
+interface StoredUser {
+  username: string;
+  password: string;
+  role: 'admin' | 'housekeeper';
+}
+
+const DEFAULT_USERS: StoredUser[] = [
+  { username: 'admin', password: 'admin123', role: 'admin' },
+  { username: 'maria', password: 'maria123', role: 'housekeeper' },
+  { username: 'elena', password: 'elena123', role: 'housekeeper' },
+  { username: 'olga', password: 'olga123', role: 'housekeeper' },
+  { username: 'anna', password: 'anna123', role: 'housekeeper' },
 ];
 
 const HousekeepingTable = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loginError, setLoginError] = useState('');
+  const [users, setUsers] = useState<StoredUser[]>(DEFAULT_USERS);
   const [rooms, setRooms] = useState<Room[]>([
     {
       id: '1',
@@ -102,7 +110,7 @@ const HousekeepingTable = () => {
   const [newHousekeeperName, setNewHousekeeperName] = useState('');
 
   const handleLogin = (username: string, password: string) => {
-    const foundUser = USERS.find(
+    const foundUser = users.find(
       u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
     );
     
@@ -115,12 +123,46 @@ const HousekeepingTable = () => {
     }
   };
 
+  const handleAddUser = (newUser: StoredUser) => {
+    const updatedUsers = [...users, newUser];
+    setUsers(updatedUsers);
+    localStorage.setItem('housekeeping_users', JSON.stringify(updatedUsers));
+  };
+
+  const handleDeleteUser = (username: string) => {
+    const updatedUsers = users.filter(u => u.username !== username);
+    setUsers(updatedUsers);
+    localStorage.setItem('housekeeping_users', JSON.stringify(updatedUsers));
+  };
+
+  const handleUpdateUser = (oldUsername: string, updatedUser: StoredUser) => {
+    const updatedUsers = users.map(u => 
+      u.username === oldUsername ? updatedUser : u
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem('housekeeping_users', JSON.stringify(updatedUsers));
+    
+    if (user && user.username === oldUsername) {
+      setUser({ username: updatedUser.username, role: updatedUser.role });
+      localStorage.setItem('housekeeping_user', JSON.stringify({ username: updatedUser.username, role: updatedUser.role }));
+    }
+  };
+
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('housekeeping_user');
   };
 
   useEffect(() => {
+    const savedUsers = localStorage.getItem('housekeeping_users');
+    if (savedUsers) {
+      try {
+        setUsers(JSON.parse(savedUsers));
+      } catch (e) {
+        console.error('Error loading users:', e);
+      }
+    }
+
     const savedUser = localStorage.getItem('housekeeping_user');
     if (savedUser) {
       try {
@@ -340,21 +382,30 @@ const HousekeepingTable = () => {
         <StatsCards stats={stats} />
 
         {isAdmin && (
-          <div className="mb-6 flex gap-3 flex-wrap">
-            <FizzyButton
-              onClick={saveToHistory}
-              icon={<Icon name="Save" size={20} />}
-            >
-              Сохранить в историю
-            </FizzyButton>
-            <FizzyButton
-              onClick={() => setIsManagingHousekeepers(!isManagingHousekeepers)}
-              icon={<Icon name="Users" size={20} />}
-              variant="secondary"
-            >
-              {isManagingHousekeepers ? 'Закрыть' : 'Управление горничными'}
-            </FizzyButton>
-          </div>
+          <>
+            <UserManagement
+              users={users}
+              onAddUser={handleAddUser}
+              onDeleteUser={handleDeleteUser}
+              onUpdateUser={handleUpdateUser}
+            />
+
+            <div className="mb-6 flex gap-3 flex-wrap">
+              <FizzyButton
+                onClick={saveToHistory}
+                icon={<Icon name="Save" size={20} />}
+              >
+                Сохранить в историю
+              </FizzyButton>
+              <FizzyButton
+                onClick={() => setIsManagingHousekeepers(!isManagingHousekeepers)}
+                icon={<Icon name="Users" size={20} />}
+                variant="secondary"
+              >
+                {isManagingHousekeepers ? 'Закрыть' : 'Управление горничными'}
+              </FizzyButton>
+            </div>
+          </>
         )}
 
         {isAdmin && isManagingHousekeepers && (
