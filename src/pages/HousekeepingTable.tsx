@@ -58,7 +58,7 @@ const HousekeepingTable = () => {
     deleteFromHistory,
   } = useHistory(rooms, setRooms);
 
-  const [filter, setFilter] = useState<'all' | 'clean' | 'dirty' | 'in-progress' | 'inspection'>('all');
+  const [filter, setFilter] = useState<'all' | 'clean' | 'dirty' | 'in-progress' | 'inspection' | 'turnover' | 'occupied'>('all');
   const [selectedHousekeeper, setSelectedHousekeeper] = useState<string>('all');
   const [isAddingRoom, setIsAddingRoom] = useState(false);
   const [isManagingHousekeepers, setIsManagingHousekeepers] = useState(false);
@@ -75,7 +75,9 @@ const HousekeepingTable = () => {
     clean: rooms.filter(r => r.status === 'clean').length,
     dirty: rooms.filter(r => r.status === 'dirty').length,
     inProgress: rooms.filter(r => r.status === 'in-progress').length,
-    inspection: rooms.filter(r => r.status === 'inspection').length
+    inspection: rooms.filter(r => r.status === 'inspection').length,
+    turnover: rooms.filter(r => r.status === 'turnover').length,
+    occupied: rooms.filter(r => r.status === 'occupied').length
   };
 
   if (!user) {

@@ -45,6 +45,8 @@ const AddRoomForm = ({ newRoom, setNewRoom, housekeepers, onSave, onCancel }: Ad
             <option value="clean">Чисто</option>
             <option value="in-progress">В процессе</option>
             <option value="inspection">Проверка</option>
+            <option value="turnover">Текучка</option>
+            <option value="occupied">Живут</option>
           </select>
         </div>
         <div>

@@ -58,6 +58,22 @@ const FilterBar = ({
               >
                 Чисто
               </button>
+              <button
+                onClick={() => setFilter('turnover')}
+                className={`px-4 py-2 rounded-lg font-inter transition-all ${
+                  filter === 'turnover' ? 'bg-blue-500 text-white' : 'bg-charcoal-700 text-gray-300 hover:bg-charcoal-600'
+                }`}
+              >
+                Текучка
+              </button>
+              <button
+                onClick={() => setFilter('occupied')}
+                className={`px-4 py-2 rounded-lg font-inter transition-all ${
+                  filter === 'occupied' ? 'bg-purple-500 text-white' : 'bg-charcoal-700 text-gray-300 hover:bg-charcoal-600'
+                }`}
+              >
+                Живут
+              </button>
             </div>
           </div>
 

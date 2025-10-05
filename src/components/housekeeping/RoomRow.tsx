@@ -82,6 +82,8 @@ const RoomRow = ({
             <option value="clean">Чисто</option>
             <option value="in-progress">В процессе</option>
             <option value="inspection">Проверка</option>
+            <option value="turnover">Текучка</option>
+            <option value="occupied">Живут</option>
           </select>
         ) : (
           <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-sm font-semibold ${getStatusColor(room.status)}`}>

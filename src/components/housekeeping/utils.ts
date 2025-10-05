@@ -10,6 +10,10 @@ export const getStatusColor = (status: Room['status']) => {
       return 'bg-yellow-500';
     case 'inspection':
       return 'bg-blue-500';
+    case 'turnover':
+      return 'bg-cyan-500';
+    case 'occupied':
+      return 'bg-purple-500';
     default:
       return 'bg-gray-500';
   }
@@ -25,6 +29,10 @@ export const getStatusText = (status: Room['status']) => {
       return 'В процессе';
     case 'inspection':
       return 'Проверка';
+    case 'turnover':
+      return 'Текучка';
+    case 'occupied':
+      return 'Живут';
     default:
       return status;
   }
