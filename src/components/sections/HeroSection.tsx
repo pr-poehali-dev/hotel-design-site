@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
+import BnovoBookingWidget from '@/components/BnovoBookingWidget';
 
 interface HeroSectionProps {
   onNavigate: (section: string) => void;
@@ -8,6 +9,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onNavigate }: HeroSectionProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showBookingWidget, setShowBookingWidget] = useState(false);
 
   const slides = [
     {
@@ -92,7 +94,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
           <FizzyButton
-            onClick={() => window.open('https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&utm_source=share_from_pms&scroll_to_rooms=1&token=07f1a&is_auto_search=0&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=0&insidePopup=0&dfrom=29-12-2025&dto=31-12-2025&adults=1', '_blank')}
+            onClick={() => setShowBookingWidget(true)}
             icon={<Icon name="Calendar" size={20} />}
           >
             Забронировать апартаменты
@@ -226,6 +228,10 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
           </span>
         </div>
       </div>
+
+      {showBookingWidget && (
+        <BnovoBookingWidget onClose={() => setShowBookingWidget(false)} />
+      )}
     </section>
   );
 };
