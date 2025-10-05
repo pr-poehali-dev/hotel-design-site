@@ -24,7 +24,7 @@ const PromotionsSection = () => {
   const promotions: Promotion[] = [
     {
       id: '2',
-      title: 'Приведи гостей и получи 10% вознаграждение',
+      title: 'Приведи гостей\nи получи 10% вознаграждение',
       description: '',
       discount: '10%',
       icon: 'Users',
@@ -170,7 +170,7 @@ const PromotionsSection = () => {
                 <Icon name={promo.icon as any} size={32} className="text-white" />
               </div>
 
-              <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-2">
+              <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-2 whitespace-pre-line">
                 {promo.title}
               </h3>
 
