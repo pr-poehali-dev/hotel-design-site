@@ -6,6 +6,7 @@ import VideoSliderSection from '@/components/sections/VideoSliderSection';
 import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
 import ProfileSection from '@/components/sections/ProfileSection';
+import PromotionsSection from '@/components/sections/PromotionsSection';
 import Footer from '@/components/sections/Footer';
 import FallingLeaves from '@/components/effects/FallingLeaves';
 import { rooms } from '@/data/roomsData';
@@ -18,6 +19,7 @@ const Index = () => {
   const navigation = [
     { id: 'home', label: 'Главная', icon: 'Home' },
     { id: 'rooms', label: 'Апартаменты', icon: 'Bed' },
+    { id: 'promotions', label: 'Акции', icon: 'Gift' },
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
     { id: 'profile', label: 'Личный кабинет', icon: 'User' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
@@ -60,6 +62,8 @@ const Index = () => {
           onHoverChange={setIsHovering}
         />
       )}
+
+      {currentSection === 'promotions' && <PromotionsSection />}
 
       {currentSection === 'booking' && <BookingSection />}
 
