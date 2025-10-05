@@ -200,10 +200,12 @@ const PromotionsSection = () => {
                 <div className={`bg-gradient-to-r ${promo.color} text-white px-4 py-2 rounded-lg font-bold`}>
                   {promo.discount}
                 </div>
-                <button className="flex items-center gap-2 text-gold-600 font-semibold hover:gap-3 transition-all">
-                  Подробнее
-                  <Icon name="ArrowRight" size={18} />
-                </button>
+                {promo.id !== '3' && (
+                  <button className="flex items-center gap-2 text-gold-600 font-semibold hover:gap-3 transition-all">
+                    Подробнее
+                    <Icon name="ArrowRight" size={18} />
+                  </button>
+                )}
               </div>
             </div>
 
