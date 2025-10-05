@@ -79,7 +79,7 @@ const PromotionsSection = () => {
   ];
 
   useEffect(() => {
-    const targetDate = new Date('2025-10-31T23:59:59').getTime();
+    const targetDate = new Date('2025-10-10T23:59:59').getTime();
 
     const timer = setInterval(() => {
       const now = new Date().getTime();
