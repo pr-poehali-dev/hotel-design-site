@@ -21,8 +21,13 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
               onNavigate('home');
             }}
           >
-            <Icon name="Building2" size={32} className="text-gold-400" />
-            <h1 className="font-playfair font-bold text-gold-400 text-2xl">InnStyle</h1>
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-2xl font-playfair font-bold text-charcoal-900">P9</span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gold-300 rounded-full opacity-80"></div>
+            </div>
+            <h1 className="font-playfair font-bold text-gold-400 py-0 px-0 text-xs">Premium Apartments</h1>
           </a>
           <div className="flex items-center space-x-4">
             <nav className="hidden md:flex space-x-2">
