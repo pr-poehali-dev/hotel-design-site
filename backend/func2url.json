@@ -1,4 +1,5 @@
 {
+  "send-guest-email": "https://functions.poehali.dev/a48834f9-9efc-4f7c-90aa-3b6cb5ab8089",
   "owner-apartments": "https://functions.poehali.dev/a953ccdd-84a4-476d-8c34-d7df2687b9ff",
   "owner-auth": "https://functions.poehali.dev/0b8a0b4d-6cf0-4bc5-8a77-6860120e85fe",
   "cleaning-tasks": "https://functions.poehali.dev/99d2ce80-9193-4d8f-8090-9b74aaa01a73",

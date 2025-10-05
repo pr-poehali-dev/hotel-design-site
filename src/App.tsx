@@ -15,6 +15,7 @@ import OwnerDashboardPage from "./pages/OwnerDashboardPage";
 import HousekeepingTable from "./pages/HousekeepingTable";
 import CheckInInstructionsPage from "./pages/CheckInInstructionsPage";
 import GuestDashboardPage from "./pages/GuestDashboardPage";
+import BookingsManagementPage from "./pages/BookingsManagementPage";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/housekeeping" element={<HousekeepingTable />} />
           <Route path="/check-in-instructions" element={<CheckInInstructionsPage />} />
           <Route path="/guest-dashboard" element={<GuestDashboardPage />} />
+          <Route path="/bookings" element={<BookingsManagementPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
