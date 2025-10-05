@@ -280,7 +280,7 @@ export const rooms: Room[] = [
   },
   {
     name: '2х комнатный 906',
-    price: 'от 18 000 ₽',
+    price: 'от 16 000 ₽',
     features: ['62 кв.м', '9 этаж', 'Для 1-4 гостей'],
     image: 'https://cdn.poehali.dev/files/6c3840e0-1758-453e-bc73-a2d331c5e2af.jpeg',
     gallery: [
