@@ -34,7 +34,7 @@ const PromotionsSection = () => {
     {
       id: '3',
       title: 'Неделя = подарок',
-      description: 'При проживании от 7 ночей - Повышенный комплимент при заселении и Поздний выезд без доплат',
+      description: 'При проживании от 7 ночей:\nПовышенный комплимент при заселении\nи Поздний выезд без доплат',
       discount: 'Подарок',
       icon: 'Gift',
       type: 'limited',
@@ -159,7 +159,7 @@ const PromotionsSection = () => {
                 {promo.title}
               </h3>
 
-              <p className="text-gray-600 mb-4 min-h-[60px]">
+              <p className="text-gray-600 mb-4 min-h-[60px] whitespace-pre-line">
                 {promo.description}
               </p>
 
