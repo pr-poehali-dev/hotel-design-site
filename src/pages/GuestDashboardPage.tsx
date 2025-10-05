@@ -137,8 +137,19 @@ const GuestDashboardPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="bg-gradient-to-r from-gold-500 to-gold-600 text-white py-8 shadow-lg">
         <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl font-bold font-playfair mb-2">Личный кабинет гостя</h1>
-          <p className="text-gold-100">Вся информация о вашем бронировании</p>
+          <div className="flex items-center gap-4 mb-4">
+            <a 
+              href="/" 
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              <Icon name="Building2" size={32} className="text-white" />
+              <span className="text-2xl font-playfair font-bold">InnStyle</span>
+            </a>
+          </div>
+          <div className="border-t border-white/20 pt-4">
+            <h1 className="text-2xl font-bold font-playfair mb-1">Личный кабинет гостя</h1>
+            <p className="text-gold-100 text-sm">Вся информация о вашем бронировании</p>
+          </div>
         </div>
       </div>
 

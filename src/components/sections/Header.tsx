@@ -13,15 +13,17 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
       <div className="absolute inset-0 bg-gradient-to-r from-gold-500/10 to-transparent"></div>
       <div className="container mx-auto px-6 py-4 relative z-10">
         <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-2xl font-playfair font-bold text-charcoal-900">P9</span>
-              </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gold-300 rounded-full opacity-80"></div>
-            </div>
-            <h1 className="font-playfair font-bold text-gold-400 py-0 px-0 text-xs">Premium Apartments</h1>
-          </div>
+          <a 
+            href="/" 
+            className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate('home');
+            }}
+          >
+            <Icon name="Building2" size={32} className="text-gold-400" />
+            <h1 className="font-playfair font-bold text-gold-400 text-2xl">InnStyle</h1>
+          </a>
           <div className="flex items-center space-x-4">
             <nav className="hidden md:flex space-x-2">
               {navigation.map((item) => (
