@@ -22,24 +22,42 @@ const PdfUploadSection = ({
   onPdfUpload,
   onRemovePdf,
 }: PdfUploadSectionProps) => {
+  const handleButtonClick = () => {
+    document.getElementById('pdf-upload-input')?.click();
+  };
+
   return (
     <div className="space-y-2">
       <Label>PDF документы</Label>
       <div className="space-y-3">
         <div className="flex gap-2">
-          <Input
+          <input
+            id="pdf-upload-input"
             type="file"
-            accept=".pdf"
+            accept=".pdf,application/pdf"
             onChange={onPdfUpload}
             disabled={isUploading}
-            className="flex-1"
+            className="hidden"
           />
-          {isUploading && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Icon name="Loader2" size={18} className="animate-spin" />
-              Загрузка...
-            </div>
-          )}
+          <Button
+            type="button"
+            onClick={handleButtonClick}
+            disabled={isUploading}
+            variant="outline"
+            className="flex-1"
+          >
+            {isUploading ? (
+              <>
+                <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                Загрузка...
+              </>
+            ) : (
+              <>
+                <Icon name="FileUp" size={18} className="mr-2" />
+                Загрузить PDF с компьютера
+              </>
+            )}
+          </Button>
         </div>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

@@ -22,24 +22,42 @@ const ImageUploadSection = ({
   onImageUpload,
   onRemoveImage,
 }: ImageUploadSectionProps) => {
+  const handleButtonClick = () => {
+    document.getElementById('image-upload-input')?.click();
+  };
+
   return (
     <div className="space-y-2">
       <Label>Фотографии</Label>
       <div className="space-y-3">
         <div className="flex gap-2">
-          <Input
+          <input
+            id="image-upload-input"
             type="file"
             accept="image/*"
             onChange={onImageUpload}
             disabled={isUploadingImage}
-            className="flex-1"
+            className="hidden"
           />
-          {isUploadingImage && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Icon name="Loader2" size={18} className="animate-spin" />
-              Загрузка...
-            </div>
-          )}
+          <Button
+            type="button"
+            onClick={handleButtonClick}
+            disabled={isUploadingImage}
+            variant="outline"
+            className="flex-1"
+          >
+            {isUploadingImage ? (
+              <>
+                <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                Загрузка...
+              </>
+            ) : (
+              <>
+                <Icon name="Upload" size={18} className="mr-2" />
+                Загрузить изображение с компьютера
+              </>
+            )}
+          </Button>
         </div>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
