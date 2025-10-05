@@ -91,14 +91,43 @@ const BookingsManagementPage = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-gold-500 to-gold-600 text-white py-8 shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold font-playfair mb-2">Управление бронированиями</h1>
               <p className="text-gold-100">Отправка инструкций гостям</p>
             </div>
-            <Button variant="outline" className="text-white border-white hover:bg-white/10">
-              <Icon name="Plus" size={18} className="mr-2" />
-              Новое бронирование
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                className="text-white border-white hover:bg-white/10"
+                onClick={() => window.location.href = '/'}
+              >
+                <Icon name="Home" size={18} className="mr-2" />
+                На главную
+              </Button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button 
+              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white"
+              onClick={() => window.location.href = '/bookings'}
+            >
+              <Icon name="Calendar" size={18} className="mr-2" />
+              Управление бронями
+            </Button>
+            <Button 
+              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white"
+              onClick={() => window.location.href = '/check-in-instructions'}
+            >
+              <Icon name="FileText" size={18} className="mr-2" />
+              Создать инструкции
+            </Button>
+            <Button 
+              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white"
+              onClick={() => window.location.href = '/guest-dashboard'}
+            >
+              <Icon name="Eye" size={18} className="mr-2" />
+              Посмотреть как видит гость
             </Button>
           </div>
         </div>

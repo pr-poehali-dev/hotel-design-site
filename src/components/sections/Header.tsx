@@ -34,6 +34,8 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
                       window.location.href = '/reports';
                     } else if (item.id === 'housekeeping') {
                       window.location.href = '/housekeeping';
+                    } else if (item.id === 'bookings-admin') {
+                      window.location.href = '/bookings';
                     } else {
                       onNavigate(item.id);
                     }
