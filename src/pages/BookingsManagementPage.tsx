@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import ManageInstructionsDialog from '@/components/bookings/ManageInstructionsDialog';
 
 interface Booking {
   id: string;
@@ -32,6 +33,7 @@ const BookingsManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [managingInstructions, setManagingInstructions] = useState<{ apartmentId: string; guestName: string } | null>(null);
   const navigate = useNavigate();
 
   // Проверка авторизации - временно отключена для доступа
@@ -268,7 +270,16 @@ const BookingsManagementPage = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
+                    <Button 
+                      variant="default" 
+                      size="sm"
+                      className="bg-gold-500 hover:bg-gold-600"
+                      onClick={() => setManagingInstructions({ apartmentId: booking.apartment_id, guestName: booking.guest_name })}
+                    >
+                      <Icon name="FileText" size={16} className="mr-2" />
+                      Инструкции
+                    </Button>
                     <SendGuestEmailButton
                       bookingId={booking.id}
                       apartmentId={booking.apartment_id}
@@ -408,6 +419,16 @@ const BookingsManagementPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Диалог управления инструкциями */}
+      {managingInstructions && (
+        <ManageInstructionsDialog
+          open={!!managingInstructions}
+          onOpenChange={(open) => !open && setManagingInstructions(null)}
+          apartmentId={managingInstructions.apartmentId}
+          guestName={managingInstructions.guestName}
+        />
+      )}
     </div>
   );
 };
