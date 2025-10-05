@@ -41,15 +41,7 @@ const PromotionsSection = () => {
       endDate: '2025-10-31',
       color: 'from-purple-500 to-pink-500'
     },
-    {
-      id: '6',
-      title: 'Карта гостя',
-      description: 'Накапливайте баллы за каждое бронирование. 10 баллов = 1 бесплатная ночь!',
-      discount: 'Кэшбэк',
-      icon: 'CreditCard',
-      type: 'new',
-      color: 'from-indigo-500 to-violet-500'
-    }
+
   ];
 
   useEffect(() => {
