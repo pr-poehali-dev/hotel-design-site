@@ -236,14 +236,22 @@ Premium Apartments`;
         <div className="container mx-auto px-6 py-6 relative z-10">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <div className="relative">
+              <div 
+                className="relative cursor-pointer transition-transform hover:scale-105"
+                onClick={() => navigate('/')}
+              >
                 <div className="w-14 h-14 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
                   <span className="text-2xl font-playfair font-bold text-charcoal-900">P9</span>
                 </div>
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-gold-300 rounded-full opacity-80"></div>
               </div>
               <div>
-                <h1 className="font-playfair font-bold text-2xl text-gold-400">Premium Apartments</h1>
+                <h1 
+                  className="font-playfair font-bold text-2xl text-gold-400 cursor-pointer hover:text-gold-300 transition-colors"
+                  onClick={() => navigate('/')}
+                >
+                  Premium Apartments
+                </h1>
                 <p className="text-sm text-gray-400 font-inter">Поклонная 9</p>
               </div>
             </div>
