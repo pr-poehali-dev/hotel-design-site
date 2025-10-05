@@ -20,7 +20,6 @@ const Index = () => {
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
     { id: 'profile', label: 'Личный кабинет', icon: 'User' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
-    { id: 'bookings-admin', label: 'Управление', icon: 'Settings' },
   ];
 
   const hotelImages = [
