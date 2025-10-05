@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
+import TicketOrderModal from '@/components/modals/TicketOrderModal';
 
 interface Activity {
   id: string;
@@ -15,6 +16,8 @@ interface Activity {
 
 const CulturalActivitiesSection = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const activities: Activity[] = [
     {
@@ -188,7 +191,13 @@ const CulturalActivitiesSection = () => {
                 <div className="text-2xl font-bold text-charcoal-900">
                   {activity.price}
                 </div>
-                <button className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all group">
+                <button 
+                  onClick={() => {
+                    setSelectedActivity(activity);
+                    setIsModalOpen(true);
+                  }}
+                  className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all group"
+                >
                   Заказать
                   <Icon name="ArrowRight" size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -232,6 +241,17 @@ const CulturalActivitiesSection = () => {
           </div>
         </div>
       </div>
+
+      {selectedActivity && (
+        <TicketOrderModal
+          activity={selectedActivity}
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedActivity(null);
+          }}
+        />
+      )}
     </div>
   );
 };
