@@ -23,7 +23,6 @@ const Index = () => {
     { id: 'home', label: 'Главная', icon: 'Home' },
     { id: 'rooms', label: 'Апартаменты', icon: 'Bed' },
     { id: 'promotions', label: 'Акции', icon: 'Gift' },
-    { id: 'culture', label: 'Афиша', icon: 'Ticket' },
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
     { id: 'profile', label: 'Личный кабинет', icon: 'User' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
