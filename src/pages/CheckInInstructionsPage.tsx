@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select';
 import ImageUploadSection from '@/components/check-in/ImageUploadSection';
 import PdfUploadSection from '@/components/check-in/PdfUploadSection';
+import VideoUploadSection from '@/components/check-in/VideoUploadSection';
 import InstructionFormFields from '@/components/check-in/InstructionFormFields';
 import AdditionalInfoFields from '@/components/check-in/AdditionalInfoFields';
 import { useCheckInInstructions } from '@/hooks/useCheckInInstructions';
@@ -35,6 +36,7 @@ const CheckInInstructionsPage = () => {
   const [selectedApartment, setSelectedApartment] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
   
   const { formData, isLoading, updateField, saveInstructions, setFormData } = 
     useCheckInInstructions(selectedApartment);
@@ -103,6 +105,23 @@ const CheckInInstructionsPage = () => {
     e.target.value = '';
   };
 
+  const handleAddVideo = () => {
+    if (videoUrl.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        videos: [...(prev.videos || []), videoUrl.trim()],
+      }));
+      setVideoUrl('');
+    }
+  };
+
+  const handleRemoveVideo = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      videos: prev.videos?.filter((_, i) => i !== index) || [],
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await saveInstructions();
@@ -169,6 +188,14 @@ const CheckInInstructionsPage = () => {
                 onAddPdf={handleAddPdf}
                 onPdfUpload={handlePdfUpload}
                 onRemovePdf={handleRemovePdf}
+              />
+
+              <VideoUploadSection
+                videos={formData.videos || []}
+                videoUrl={videoUrl}
+                onVideoUrlChange={setVideoUrl}
+                onAddVideo={handleAddVideo}
+                onRemoveVideo={handleRemoveVideo}
               />
 
               <AdditionalInfoFields

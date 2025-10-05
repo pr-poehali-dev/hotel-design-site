@@ -5,6 +5,7 @@ export interface CheckInInstruction {
   description?: string;
   images: string[];
   pdf_files?: string[];
+  videos?: string[];
   instruction_text?: string;
   important_notes?: string;
   contact_info?: string;
