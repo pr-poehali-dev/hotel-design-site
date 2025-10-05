@@ -1,10 +1,32 @@
 import Icon from '@/components/ui/icon';
 import { GlowIconButton } from '@/components/ui/glow-icon-button';
+import { FizzyButton } from '@/components/ui/fizzy-button';
+import BnovoBookingWidget from '@/components/BnovoBookingWidget';
+import { useState } from 'react';
 
 const Footer = () => {
+  const [showBookingWidget, setShowBookingWidget] = useState(false);
+
   return (
     <footer className="bg-charcoal-900 text-white py-12">
       <div className="container mx-auto px-6">
+        <div className="mb-12 text-center">
+          <div className="bg-gradient-to-r from-gold-500/20 to-gold-600/20 border border-gold-500/30 rounded-2xl p-8">
+            <h3 className="text-3xl font-playfair font-bold text-gold-400 mb-3">
+              Готовы забронировать?
+            </h3>
+            <p className="text-gray-300 mb-6 font-inter">
+              Лучшие апартаменты премиум-класса ждут вас
+            </p>
+            <FizzyButton
+              onClick={() => setShowBookingWidget(true)}
+              icon={<Icon name="Calendar" size={20} />}
+              className="inline-flex"
+            >
+              Забронировать сейчас
+            </FizzyButton>
+          </div>
+        </div>
         <div className="text-center">
           <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Телеграмм</h4>
           <div className="flex justify-center">
@@ -90,6 +112,10 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      {showBookingWidget && (
+        <BnovoBookingWidget onClose={() => setShowBookingWidget(false)} />
+      )}
     </footer>
   );
 };
