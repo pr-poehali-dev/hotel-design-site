@@ -111,10 +111,10 @@ const PromotionsSection = () => {
           <span className="font-playfair font-bold">Специальные предложения</span>
         </div>
         <h2 className="text-4xl font-playfair font-bold text-charcoal-900 mb-4">
-          Розыгрыши и акции для гостей
+          Специальные предложения
         </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Мы ценим каждого гостя! Участвуйте в акциях и получайте приятные бонусы и подарки
+          Мы ценим каждого гостя и предлагаем приятные бонусы и подарки
         </p>
       </div>
 
