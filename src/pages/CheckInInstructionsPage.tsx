@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 
 const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
+const UPLOAD_URL = 'https://functions.poehali.dev/dfff5e5a-a1f7-4528-b522-fac2b98407f8';
 
 interface CheckInInstruction {
   id: string;
@@ -37,6 +38,8 @@ const CheckInInstructionsPage = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [formData, setFormData] = useState<Partial<CheckInInstruction>>({
     title: '',
     description: '',
@@ -147,6 +150,164 @@ const CheckInInstructionsPage = () => {
     }));
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Проверка типа файла
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: 'Ошибка',
+        description: 'Можно загружать только изображения',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Проверка размера (максимум 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'Ошибка',
+        description: 'Размер изображения не должен превышать 5MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = async () => {
+        const base64 = reader.result?.toString().split(',')[1];
+        
+        const response = await fetch(UPLOAD_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            file: base64,
+            fileName: file.name,
+            fileType: file.type,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setFormData(prev => ({
+            ...prev,
+            images: [...(prev.images || []), result.url],
+          }));
+          
+          toast({
+            title: 'Успешно',
+            description: 'Изображение загружено',
+          });
+        } else {
+          throw new Error(result.error || 'Ошибка загрузки');
+        }
+      };
+
+      reader.onerror = () => {
+        throw new Error('Ошибка чтения файла');
+      };
+    } catch (error) {
+      console.error('Ошибка загрузки:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить изображение',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploadingImage(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Проверка типа файла
+    if (file.type !== 'application/pdf') {
+      toast({
+        title: 'Ошибка',
+        description: 'Можно загружать только PDF файлы',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Проверка размера (максимум 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: 'Ошибка',
+        description: 'Размер файла не должен превышать 10MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      // Конвертируем файл в base64
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = async () => {
+        const base64 = reader.result?.toString().split(',')[1];
+        
+        const response = await fetch(UPLOAD_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            file: base64,
+            fileName: file.name,
+            fileType: file.type,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setFormData(prev => ({
+            ...prev,
+            pdf_files: [...(prev.pdf_files || []), result.url],
+          }));
+          
+          toast({
+            title: 'Успешно',
+            description: 'PDF файл загружен',
+          });
+        } else {
+          throw new Error(result.error || 'Ошибка загрузки');
+        }
+      };
+
+      reader.onerror = () => {
+        throw new Error('Ошибка чтения файла');
+      };
+    } catch (error) {
+      console.error('Ошибка загрузки:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить файл',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploading(false);
+      // Очищаем input
+      e.target.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -212,6 +373,10 @@ const CheckInInstructionsPage = () => {
         <Card>
           <CardHeader>
             <CardTitle>Создать инструкцию</CardTitle>
+            <p className="text-sm text-gray-500 mt-2">
+              <Icon name="Info" size={16} className="inline mr-1" />
+              Вы можете загружать файлы с компьютера или добавлять по ссылке
+            </p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -254,16 +419,41 @@ const CheckInInstructionsPage = () => {
 
               <div className="space-y-2">
                 <Label>Фотографии</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="Вставьте ссылку на изображение"
-                  />
-                  <Button type="button" onClick={handleAddImage}>
-                    <Icon name="Plus" size={18} className="mr-2" />
-                    Добавить
-                  </Button>
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={isUploadingImage}
+                      className="flex-1"
+                    />
+                    {isUploadingImage && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Icon name="Loader2" size={18} className="animate-spin" />
+                        Загрузка...
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-white px-2 text-gray-500">или</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="Вставьте ссылку на изображение"
+                    />
+                    <Button type="button" onClick={handleAddImage}>
+                      <Icon name="Plus" size={18} className="mr-2" />
+                      Добавить
+                    </Button>
+                  </div>
                 </div>
                 {formData.images && formData.images.length > 0 && (
                   <div className="grid grid-cols-3 gap-4 mt-4">
@@ -291,16 +481,41 @@ const CheckInInstructionsPage = () => {
 
               <div className="space-y-2">
                 <Label>PDF документы</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={pdfUrl}
-                    onChange={(e) => setPdfUrl(e.target.value)}
-                    placeholder="Вставьте ссылку на PDF файл"
-                  />
-                  <Button type="button" onClick={handleAddPdf}>
-                    <Icon name="Plus" size={18} className="mr-2" />
-                    Добавить
-                  </Button>
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <Input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                      className="flex-1"
+                    />
+                    {isUploading && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Icon name="Loader2" size={18} className="animate-spin" />
+                        Загрузка...
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-white px-2 text-gray-500">или</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={pdfUrl}
+                      onChange={(e) => setPdfUrl(e.target.value)}
+                      placeholder="Вставьте ссылку на PDF файл"
+                    />
+                    <Button type="button" onClick={handleAddPdf}>
+                      <Icon name="Plus" size={18} className="mr-2" />
+                      Добавить
+                    </Button>
+                  </div>
                 </div>
                 {formData.pdf_files && formData.pdf_files.length > 0 && (
                   <div className="space-y-2 mt-4">
