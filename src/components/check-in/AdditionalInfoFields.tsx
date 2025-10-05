@@ -1,6 +1,7 @@
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { CheckInInstruction } from '@/types/checkin';
+import Icon from '@/components/ui/icon';
 
 interface AdditionalInfoFieldsProps {
   formData: Partial<CheckInInstruction>;
@@ -10,8 +11,20 @@ interface AdditionalInfoFieldsProps {
 const AdditionalInfoFields = ({ formData, onFieldChange }: AdditionalInfoFieldsProps) => {
   return (
     <>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+        <p className="text-sm text-blue-900 flex items-start">
+          <Icon name="Info" size={16} className="mr-2 mt-0.5 flex-shrink-0" />
+          <span>
+            Все поля ниже попадут во вкладку "Инструкция" в личном кабинете гостя. Заполните нужные разделы.
+          </span>
+        </p>
+      </div>
+
       <div className="space-y-2">
-        <Label htmlFor="instruction">Инструкция по заселению</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="instruction">Инструкция по заселению</Label>
+          <span className="text-xs text-gray-500">→ Раздел "Как добраться"</span>
+        </div>
         <Textarea
           id="instruction"
           value={formData.instruction_text}
@@ -22,7 +35,10 @@ const AdditionalInfoFields = ({ formData, onFieldChange }: AdditionalInfoFieldsP
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="important">Важная информация</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="important">Важная информация</Label>
+          <span className="text-xs text-gray-500">→ Желтый блок с предупреждением</span>
+        </div>
         <Textarea
           id="important"
           value={formData.important_notes}
@@ -33,7 +49,10 @@ const AdditionalInfoFields = ({ formData, onFieldChange }: AdditionalInfoFieldsP
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contact">Контактная информация</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="contact">Контактная информация</Label>
+          <span className="text-xs text-gray-500">→ Вкладка "Контакты"</span>
+        </div>
         <Textarea
           id="contact"
           value={formData.contact_info}
@@ -44,7 +63,10 @@ const AdditionalInfoFields = ({ formData, onFieldChange }: AdditionalInfoFieldsP
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="wifi">Wi-Fi информация</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="wifi">Wi-Fi информация</Label>
+          <span className="text-xs text-gray-500">→ Раздел "Wi-Fi"</span>
+        </div>
         <Textarea
           id="wifi"
           value={formData.wifi_info}
@@ -55,7 +77,10 @@ const AdditionalInfoFields = ({ formData, onFieldChange }: AdditionalInfoFieldsP
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="parking">Информация о парковке</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="parking">Информация о парковке</Label>
+          <span className="text-xs text-gray-500">→ Раздел "Парковка"</span>
+        </div>
         <Textarea
           id="parking"
           value={formData.parking_info}
@@ -66,7 +91,10 @@ const AdditionalInfoFields = ({ formData, onFieldChange }: AdditionalInfoFieldsP
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="rules">Правила проживания</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="rules">Правила проживания</Label>
+          <span className="text-xs text-gray-500">→ Вкладка "Правила"</span>
+        </div>
         <Textarea
           id="rules"
           value={formData.house_rules}

@@ -28,7 +28,13 @@ const PdfUploadSection = ({
 
   return (
     <div className="space-y-2">
-      <Label>PDF документы</Label>
+      <div className="flex items-center justify-between">
+        <Label>PDF документы</Label>
+        <span className="text-xs text-gray-500 flex items-center">
+          <Icon name="ArrowRight" size={14} className="mr-1" />
+          Появятся во вкладке "Документы" у гостя
+        </span>
+      </div>
       <div className="space-y-3">
         <div className="flex gap-2">
           <input

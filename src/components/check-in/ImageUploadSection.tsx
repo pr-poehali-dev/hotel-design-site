@@ -28,7 +28,13 @@ const ImageUploadSection = ({
 
   return (
     <div className="space-y-2">
-      <Label>Фотографии</Label>
+      <div className="flex items-center justify-between">
+        <Label>Фотографии</Label>
+        <span className="text-xs text-gray-500 flex items-center">
+          <Icon name="ArrowRight" size={14} className="mr-1" />
+          Появятся во вкладке "Фото" у гостя
+        </span>
+      </div>
       <div className="space-y-3">
         <div className="flex gap-2">
           <input

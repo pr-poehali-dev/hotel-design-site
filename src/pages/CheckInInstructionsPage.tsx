@@ -134,18 +134,66 @@ const CheckInInstructionsPage = () => {
           <h1 className="text-3xl font-bold text-charcoal-900 font-playfair mb-2">
             Инструкции по заселению
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             Добавьте фото, описание и инструкции для гостей
           </p>
+          
+          <Card className="bg-gradient-to-r from-gold-50 to-blue-50 border-gold-200">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-8">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center">
+                      <Icon name="Upload" size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">1. Загрузите</p>
+                      <p className="text-xs text-gray-600">Фото, PDF, текст</p>
+                    </div>
+                  </div>
+                  <Icon name="ArrowRight" size={24} className="text-gray-400" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                      <Icon name="Save" size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">2. Сохраните</p>
+                      <p className="text-xs text-gray-600">Данные в базу</p>
+                    </div>
+                  </div>
+                  <Icon name="ArrowRight" size={24} className="text-gray-400" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                      <Icon name="User" size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">3. Гость увидит</p>
+                      <p className="text-xs text-gray-600">В личном кабинете</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Создать инструкцию</CardTitle>
-            <p className="text-sm text-gray-500 mt-2">
-              <Icon name="Info" size={16} className="inline mr-1" />
-              Вы можете загружать файлы с компьютера или добавлять по ссылке
-            </p>
+            <div className="space-y-2 mt-3">
+              <p className="text-sm text-gray-500">
+                <Icon name="Info" size={16} className="inline mr-1" />
+                Вы можете загружать файлы с компьютера или добавлять по ссылке
+              </p>
+              <div className="bg-gold-50 border border-gold-200 rounded-lg p-3">
+                <p className="text-sm text-gold-900 flex items-start">
+                  <Icon name="Eye" size={16} className="mr-2 mt-0.5 flex-shrink-0" />
+                  <span>
+                    Все загруженные фото, PDF документы и инструкции автоматически появятся в личном кабинете гостя
+                  </span>
+                </p>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -216,6 +264,14 @@ const CheckInInstructionsPage = () => {
                       Сохранить инструкцию
                     </>
                   )}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  onClick={() => window.open('/guest-dashboard', '_blank')}
+                >
+                  <Icon name="Eye" size={18} className="mr-2" />
+                  Предпросмотр
                 </Button>
                 <Button type="button" variant="outline" onClick={() => window.history.back()}>
                   <Icon name="ArrowLeft" size={18} className="mr-2" />
