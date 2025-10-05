@@ -288,7 +288,7 @@ export const rooms: Room[] = [
     price: 'от 25 000 ₽',
     features: ['103 кв.м.', '8 этаж', 'Для 1-6 гостей'],
     image: 'https://cdn.poehali.dev/files/e4d338dd-73ef-4be0-bde4-9fb69a695b70.jpeg',
-    video: 'https://rutube.ru/video/private/c9906210eb879cd9705a0ac9ba69e079/?p=P2P3wZ5RV_jgTZKkup487g',
+    video: 'https://rutube.ru/play/embed/c9906210eb879cd9705a0ac9ba69e079',
     gallery: [
       'https://cdn.poehali.dev/files/e4d338dd-73ef-4be0-bde4-9fb69a695b70.jpeg',
       'https://cdn.poehali.dev/files/a03fe005-5511-4a8e-9b95-eb8f221985d8.jpeg',
