@@ -61,7 +61,19 @@ const INITIAL_ROOMS: Room[] = [
 ];
 
 export const useRooms = () => {
-  const [rooms, setRooms] = useState<Room[]>(INITIAL_ROOMS);
+  const [rooms, setRooms] = useState<Room[]>(() => {
+    const savedRooms = localStorage.getItem('housekeeping_current');
+    if (savedRooms) {
+      try {
+        return JSON.parse(savedRooms);
+      } catch (e) {
+        console.error('Error loading rooms:', e);
+        return INITIAL_ROOMS;
+      }
+    }
+    return INITIAL_ROOMS;
+  });
+  
   const [editingRoomId, setEditingRoomId] = useState<string | null>(null);
   const [newRoom, setNewRoom] = useState<Partial<Room>>({
     number: '',
@@ -75,17 +87,6 @@ export const useRooms = () => {
     payment: 0,
     paymentStatus: 'unpaid'
   });
-
-  useEffect(() => {
-    const savedRooms = localStorage.getItem('housekeeping_current');
-    if (savedRooms) {
-      try {
-        setRooms(JSON.parse(savedRooms));
-      } catch (e) {
-        console.error('Error loading rooms:', e);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('housekeeping_current', JSON.stringify(rooms));

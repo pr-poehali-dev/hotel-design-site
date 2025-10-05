@@ -2,19 +2,20 @@ import { useState, useEffect } from 'react';
 import { Room } from '@/components/housekeeping/types';
 
 export const useHousekeepers = (rooms: Room[], setRooms: (rooms: Room[]) => void) => {
-  const [housekeepers, setHousekeepers] = useState<string[]>(['Мария', 'Елена', 'Ольга', 'Анна']);
-  const [newHousekeeperName, setNewHousekeeperName] = useState('');
-
-  useEffect(() => {
+  const [housekeepers, setHousekeepers] = useState<string[]>(() => {
     const savedHousekeepers = localStorage.getItem('housekeepers_list');
     if (savedHousekeepers) {
       try {
-        setHousekeepers(JSON.parse(savedHousekeepers));
+        return JSON.parse(savedHousekeepers);
       } catch (e) {
         console.error('Error loading housekeepers:', e);
+        return ['Мария', 'Елена', 'Ольга', 'Анна'];
       }
     }
-  }, []);
+    return ['Мария', 'Елена', 'Ольга', 'Анна'];
+  });
+  
+  const [newHousekeeperName, setNewHousekeeperName] = useState('');
 
   useEffect(() => {
     localStorage.setItem('housekeepers_list', JSON.stringify(housekeepers));

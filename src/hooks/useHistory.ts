@@ -2,18 +2,18 @@ import { useState, useEffect } from 'react';
 import { Room, HistoryEntry } from '@/components/housekeeping/types';
 
 export const useHistory = (rooms: Room[], setRooms: (rooms: Room[]) => void) => {
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
-
-  useEffect(() => {
+  const [history, setHistory] = useState<HistoryEntry[]>(() => {
     const savedHistory = localStorage.getItem('housekeeping_history');
     if (savedHistory) {
       try {
-        setHistory(JSON.parse(savedHistory));
+        return JSON.parse(savedHistory);
       } catch (e) {
         console.error('Error loading history:', e);
+        return [];
       }
     }
-  }, []);
+    return [];
+  });
 
   const saveToHistory = () => {
     const today = new Date().toISOString().split('T')[0];

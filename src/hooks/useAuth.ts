@@ -10,29 +10,33 @@ export const DEFAULT_USERS: StoredUser[] = [
 ];
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loginError, setLoginError] = useState('');
-  const [users, setUsers] = useState<StoredUser[]>(DEFAULT_USERS);
-
-  useEffect(() => {
-    const savedUsers = localStorage.getItem('housekeeping_users');
-    if (savedUsers) {
-      try {
-        setUsers(JSON.parse(savedUsers));
-      } catch (e) {
-        console.error('Error loading users:', e);
-      }
-    }
-
+  const [user, setUser] = useState<User | null>(() => {
     const savedUser = localStorage.getItem('housekeeping_user');
     if (savedUser) {
       try {
-        setUser(JSON.parse(savedUser));
+        return JSON.parse(savedUser);
       } catch (e) {
         console.error('Error loading user:', e);
+        return null;
       }
     }
-  }, []);
+    return null;
+  });
+  
+  const [loginError, setLoginError] = useState('');
+  
+  const [users, setUsers] = useState<StoredUser[]>(() => {
+    const savedUsers = localStorage.getItem('housekeeping_users');
+    if (savedUsers) {
+      try {
+        return JSON.parse(savedUsers);
+      } catch (e) {
+        console.error('Error loading users:', e);
+        return DEFAULT_USERS;
+      }
+    }
+    return DEFAULT_USERS;
+  });
 
   const handleLogin = (username: string, password: string) => {
     const foundUser = users.find(
