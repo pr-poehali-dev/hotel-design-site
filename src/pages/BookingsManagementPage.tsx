@@ -22,13 +22,13 @@ const BookingsManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Проверка авторизации
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem('adminAuthenticated');
-    if (!isAuthenticated) {
-      navigate('/admin-login');
-    }
-  }, [navigate]);
+  // Проверка авторизации - временно отключена для доступа
+  // useEffect(() => {
+  //   const isAuthenticated = localStorage.getItem('adminAuthenticated');
+  //   if (!isAuthenticated) {
+  //     navigate('/admin-login');
+  //   }
+  // }, [navigate]);
 
   useEffect(() => {
     const mockBookings: Booking[] = [
