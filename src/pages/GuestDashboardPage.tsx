@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
+const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
+
 interface Booking {
   id: string;
   apartment_id: string;
@@ -33,36 +35,58 @@ const GuestDashboardPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const mockBooking: Booking = {
-      id: '1',
-      apartment_id: '816',
-      check_in: '2025-10-10',
-      check_out: '2025-10-15',
-      guest_name: 'Иван Иванов',
-      guest_email: 'ivan@example.com',
-      guest_phone: '+7 900 123-45-67',
-    };
+    const loadData = async () => {
+      // Mock бронирование (позже можно заменить на реальный API)
+      const mockBooking: Booking = {
+        id: '1',
+        apartment_id: '816',
+        check_in: '2025-10-10',
+        check_out: '2025-10-15',
+        guest_name: 'Иван Иванов',
+        guest_email: 'ivan@example.com',
+        guest_phone: '+7 900 123-45-67',
+      };
 
-    const mockInstruction: CheckInInstruction = {
-      title: 'Добро пожаловать в апартаменты 816!',
-      description: 'Премиум апартаменты на 13 этаже с панорамным видом',
-      images: [],
-      instruction_text: `1. Подъезд находится со стороны парка
-2. Войдите в главный вход, поднимитесь на 8 этаж
-3. Апартаменты 816 находятся справа от лифта
-4. Используйте код 1234 для входа`,
-      important_notes: 'Тихий час с 22:00 до 08:00. Курение запрещено.',
-      contact_info: 'Телефон администратора: +7 900 000-00-00\nEmail: info@poklonnaya9.ru',
-      wifi_info: 'Сеть: Poklonnaya_Guest_816\nПароль: welcome2025',
-      parking_info: 'Бесплатная парковка на подземном уровне -1. Въезд с торца здания.',
-      house_rules: '• Не курить в помещении\n• Не шуметь после 22:00\n• Максимум 4 гостя\n• Домашние животные запрещены',
-    };
-
-    setTimeout(() => {
       setBooking(mockBooking);
-      setInstruction(mockInstruction);
+
+      // Загружаем инструкции из базы данных
+      try {
+        const response = await fetch(`${API_URL}?apartment_id=${mockBooking.apartment_id}`);
+        const data = await response.json();
+        
+        if (data) {
+          setInstruction({
+            title: data.title || 'Добро пожаловать!',
+            description: data.description,
+            images: data.images || [],
+            instruction_text: data.instruction_text,
+            important_notes: data.important_notes,
+            contact_info: data.contact_info,
+            wifi_info: data.wifi_info,
+            parking_info: data.parking_info,
+            house_rules: data.house_rules,
+          });
+        } else {
+          // Если инструкций нет, показываем заглушку
+          setInstruction({
+            title: 'Добро пожаловать!',
+            description: 'Инструкции по заселению скоро будут добавлены',
+            images: [],
+          });
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки инструкций:', error);
+        setInstruction({
+          title: 'Добро пожаловать!',
+          description: 'Инструкции по заселению скоро будут добавлены',
+          images: [],
+        });
+      }
+
       setLoading(false);
-    }, 500);
+    };
+
+    loadData();
   }, []);
 
   if (loading) {

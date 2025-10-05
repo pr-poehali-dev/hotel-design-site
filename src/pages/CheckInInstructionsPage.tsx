@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+
+const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
 
 interface CheckInInstruction {
   id: string;
@@ -32,6 +34,7 @@ const CheckInInstructionsPage = () => {
   const { toast } = useToast();
   const [selectedApartment, setSelectedApartment] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<CheckInInstruction>>({
     title: '',
     description: '',
@@ -43,6 +46,54 @@ const CheckInInstructionsPage = () => {
     parking_info: '',
     house_rules: '',
   });
+
+  // Загрузка инструкций при выборе апартамента
+  useEffect(() => {
+    if (selectedApartment) {
+      loadInstructions(selectedApartment);
+    } else {
+      resetForm();
+    }
+  }, [selectedApartment]);
+
+  const loadInstructions = async (apartmentId: string) => {
+    try {
+      const response = await fetch(`${API_URL}?apartment_id=${apartmentId}`);
+      const data = await response.json();
+      
+      if (data) {
+        setFormData({
+          title: data.title || '',
+          description: data.description || '',
+          images: data.images || [],
+          instruction_text: data.instruction_text || '',
+          important_notes: data.important_notes || '',
+          contact_info: data.contact_info || '',
+          wifi_info: data.wifi_info || '',
+          parking_info: data.parking_info || '',
+          house_rules: data.house_rules || '',
+        });
+      } else {
+        resetForm();
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки инструкций:', error);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      images: [],
+      instruction_text: '',
+      important_notes: '',
+      contact_info: '',
+      wifi_info: '',
+      parking_info: '',
+      house_rules: '',
+    });
+  };
 
   const apartments = [
     { id: '2019', name: '2х комнатный 2019' },
@@ -86,24 +137,41 @@ const CheckInInstructionsPage = () => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const instructionData = {
         apartment_id: selectedApartment,
         ...formData,
       };
 
-      console.log('Saving instruction:', instructionData);
-      
-      toast({
-        title: 'Успешно сохранено',
-        description: 'Инструкция по заселению обновлена',
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(instructionData),
       });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: 'Успешно сохранено',
+          description: 'Инструкция по заселению обновлена',
+        });
+      } else {
+        throw new Error(result.message || 'Ошибка сохранения');
+      }
     } catch (error) {
+      console.error('Ошибка:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось сохранить инструкцию',
         variant: 'destructive',
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -266,9 +334,18 @@ const CheckInInstructionsPage = () => {
               </div>
 
               <div className="flex gap-4">
-                <Button type="submit" className="flex-1">
-                  <Icon name="Save" size={18} className="mr-2" />
-                  Сохранить инструкцию
+                <Button type="submit" className="flex-1" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                      Сохранение...
+                    </>
+                  ) : (
+                    <>
+                      <Icon name="Save" size={18} className="mr-2" />
+                      Сохранить инструкцию
+                    </>
+                  )}
                 </Button>
                 <Button type="button" variant="outline" onClick={() => window.history.back()}>
                   <Icon name="ArrowLeft" size={18} className="mr-2" />

@@ -1,0 +1,18 @@
+{
+  "tests": [
+    {
+      "name": "Get all instructions",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get instruction by apartment_id",
+      "method": "GET",
+      "path": "/?apartment_id=2019",
+      "expectedStatus": 200
+    }
+  ]
+}
