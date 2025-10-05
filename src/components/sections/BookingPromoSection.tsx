@@ -67,13 +67,18 @@ const BookingPromoSection = () => {
             <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center transition-all duration-1000 delay-700 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}>
-              <FizzyButton
-                onClick={() => setShowBookingWidget(true)}
-                icon={<Icon name="Sparkles" size={20} />}
-                className="text-lg px-8 py-6"
-              >
-                Забронировать сейчас
-              </FizzyButton>
+              <div className="relative">
+                <div className={`absolute inset-0 bg-gold-400 rounded-full blur-xl opacity-50 ${
+                  isVisible ? 'animate-pulse' : ''
+                }`}></div>
+                <FizzyButton
+                  onClick={() => setShowBookingWidget(true)}
+                  icon={<Icon name="Sparkles" size={20} />}
+                  className="text-lg px-8 py-6 relative z-10 shadow-2xl shadow-gold-500/50"
+                >
+                  Забронировать сейчас
+                </FizzyButton>
+              </div>
               
               <a 
                 href="https://t.me/apartamentsmsk"
