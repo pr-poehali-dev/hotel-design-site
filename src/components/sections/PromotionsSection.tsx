@@ -42,15 +42,6 @@ const PromotionsSection = () => {
       color: 'from-purple-500 to-pink-500'
     },
     {
-      id: '5',
-      title: 'Отзыв = скидка',
-      description: 'Оставьте развернутый отзыв и получите промокод на 20% скидку при следующем бронировании',
-      discount: '20%',
-      icon: 'MessageSquare',
-      type: 'hot',
-      color: 'from-amber-500 to-yellow-500'
-    },
-    {
       id: '6',
       title: 'Карта гостя',
       description: 'Накапливайте баллы за каждое бронирование. 10 баллов = 1 бесплатная ночь!',
