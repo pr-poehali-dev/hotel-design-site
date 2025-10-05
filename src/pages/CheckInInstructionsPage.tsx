@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -33,6 +34,8 @@ const apartments = [
 ];
 
 const CheckInInstructionsPage = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [selectedApartment, setSelectedApartment] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
@@ -42,6 +45,13 @@ const CheckInInstructionsPage = () => {
     useCheckInInstructions(selectedApartment);
   
   const { uploadImage, uploadPdf, isUploadingImage, isUploadingPdf } = useFileUpload();
+
+  useEffect(() => {
+    const apartmentFromUrl = searchParams.get('apartment');
+    if (apartmentFromUrl) {
+      setSelectedApartment(apartmentFromUrl);
+    }
+  }, [searchParams]);
 
   const handleAddImage = () => {
     if (imageUrl.trim()) {
@@ -131,12 +141,23 @@ const CheckInInstructionsPage = () => {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-charcoal-900 font-playfair mb-2">
-            Инструкции по заселению
-          </h1>
-          <p className="text-gray-600 mb-4">
-            Добавьте фото, описание и инструкции для гостей
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-charcoal-900 font-playfair mb-2">
+                Инструкции по заселению
+              </h1>
+              <p className="text-gray-600">
+                Добавьте фото, описание и инструкции для гостей
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/instructions-list')}
+            >
+              <Icon name="List" size={18} className="mr-2" />
+              Все инструкции
+            </Button>
+          </div>
           
           <Card className="bg-gradient-to-r from-gold-50 to-blue-50 border-gold-200">
             <CardContent className="pt-6">

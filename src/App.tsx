@@ -14,6 +14,7 @@ import OwnerRegisterPage from "./pages/OwnerRegisterPage";
 import OwnerDashboardPage from "./pages/OwnerDashboardPage";
 import HousekeepingTable from "./pages/HousekeepingTable";
 import CheckInInstructionsPage from "./pages/CheckInInstructionsPage";
+import InstructionsListPage from "./pages/InstructionsListPage";
 import GuestDashboardPage from "./pages/GuestDashboardPage";
 import BookingsManagementPage from "./pages/BookingsManagementPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/owner-dashboard" element={<OwnerDashboardPage />} />
           <Route path="/housekeeping" element={<HousekeepingTable />} />
           <Route path="/check-in-instructions" element={<CheckInInstructionsPage />} />
+          <Route path="/instructions-list" element={<InstructionsListPage />} />
           <Route path="/guest-dashboard" element={<GuestDashboardPage />} />
           <Route path="/admin-login" element={<AdminLoginPage />} />
           <Route path="/bookings" element={<BookingsManagementPage />} />

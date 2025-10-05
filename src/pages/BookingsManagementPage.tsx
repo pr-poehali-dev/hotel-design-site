@@ -162,13 +162,20 @@ const BookingsManagementPage = () => {
               </Button>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Button 
               className="bg-white/10 hover:bg-white/20 border border-white/20 text-white"
               onClick={() => window.location.href = '/bookings'}
             >
               <Icon name="Calendar" size={18} className="mr-2" />
               Управление бронями
+            </Button>
+            <Button 
+              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white"
+              onClick={() => window.location.href = '/instructions-list'}
+            >
+              <Icon name="List" size={18} className="mr-2" />
+              Все инструкции
             </Button>
             <Button 
               className="bg-white/10 hover:bg-white/20 border border-white/20 text-white"
