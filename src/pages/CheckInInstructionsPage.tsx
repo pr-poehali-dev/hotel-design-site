@@ -142,13 +142,22 @@ const CheckInInstructionsPage = () => {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-charcoal-900 font-playfair mb-2">
-                Инструкции по заселению
-              </h1>
-              <p className="text-gray-600">
-                Добавьте фото, описание и инструкции для гостей
-              </p>
+            <div className="flex items-center gap-4">
+              <a 
+                href="/" 
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                <Icon name="Building2" size={32} className="text-gold-600" />
+                <span className="text-2xl font-playfair font-bold text-charcoal-900">InnStyle</span>
+              </a>
+              <div className="border-l border-gray-300 pl-4">
+                <h1 className="text-2xl font-bold text-charcoal-900 font-playfair">
+                  Инструкции по заселению
+                </h1>
+                <p className="text-gray-600 text-sm">
+                  Добавьте фото, описание и инструкции для гостей
+                </p>
+              </div>
             </div>
             <Button
               variant="outline"

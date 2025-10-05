@@ -32,9 +32,9 @@ interface InstructionSummary {
 }
 
 const InstructionsListPage = () => {
+  const navigate = useNavigate();
   const [instructions, setInstructions] = useState<InstructionSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadAllInstructions();
@@ -115,9 +115,18 @@ const InstructionsListPage = () => {
       <div className="bg-gradient-to-r from-gold-500 to-gold-600 text-white py-8 shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold font-playfair mb-2">Все инструкции</h1>
-              <p className="text-gold-100">Управление инструкциями по апартаментам</p>
+            <div className="flex items-center gap-4">
+              <a 
+                href="/" 
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                <Icon name="Building2" size={32} className="text-white" />
+                <span className="text-2xl font-playfair font-bold">InnStyle</span>
+              </a>
+              <div className="border-l border-white/30 pl-4 ml-2">
+                <h1 className="text-2xl font-bold font-playfair">Все инструкции</h1>
+                <p className="text-gold-100 text-sm">Управление инструкциями по апартаментам</p>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button 
@@ -127,14 +136,6 @@ const InstructionsListPage = () => {
               >
                 <Icon name="ArrowLeft" size={18} className="mr-2" />
                 Назад к бронированиям
-              </Button>
-              <Button 
-                variant="outline" 
-                className="text-white border-white hover:bg-white/10"
-                onClick={() => navigate('/')}
-              >
-                <Icon name="Home" size={18} className="mr-2" />
-                На главную
               </Button>
             </div>
           </div>

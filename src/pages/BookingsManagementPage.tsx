@@ -138,19 +138,20 @@ const BookingsManagementPage = () => {
       <div className="bg-gradient-to-r from-gold-500 to-gold-600 text-white py-8 shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold font-playfair mb-2">Управление бронированиями</h1>
-              <p className="text-gold-100">Отправка инструкций гостям</p>
+            <div className="flex items-center gap-4">
+              <a 
+                href="/" 
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                <Icon name="Building2" size={32} className="text-white" />
+                <span className="text-2xl font-playfair font-bold">InnStyle</span>
+              </a>
+              <div className="border-l border-white/30 pl-4 ml-2">
+                <h1 className="text-2xl font-bold font-playfair">Управление бронированиями</h1>
+                <p className="text-gold-100 text-sm">Отправка инструкций гостям</p>
+              </div>
             </div>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                className="text-white border-white hover:bg-white/10"
-                onClick={() => window.location.href = '/'}
-              >
-                <Icon name="Home" size={18} className="mr-2" />
-                На главную
-              </Button>
               <Button 
                 variant="outline" 
                 className="text-white border-white hover:bg-white/10"
