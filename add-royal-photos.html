@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление фото - Королевский люкс</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #d4af37;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #b8941f;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .photos img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏰 Добавление фотографий для "Королевский люкс"</h1>
+        <p>Будет добавлено 5 фотографий апартамента</p>
+        
+        <div class="photos">
+            <img src="https://cdn.poehali.dev/files/dbbf9895-f726-4c36-8672-b5c99568e0fe.jpeg" alt="Фото 1">
+            <img src="https://cdn.poehali.dev/files/945e677e-0e89-42e7-bf3c-291f320b0699.jpeg" alt="Фото 2">
+            <img src="https://cdn.poehali.dev/files/ba08d769-4c80-4ded-aace-d7a717cda713.jpeg" alt="Фото 3">
+            <img src="https://cdn.poehali.dev/files/eacdac51-50f9-44ec-84b3-f2b6f38290ad.jpeg" alt="Фото 4">
+            <img src="https://cdn.poehali.dev/files/f9cfe618-33d7-4198-8b92-6c53ad245ce5.jpeg" alt="Фото 5">
+        </div>
+        
+        <button id="addPhotos" onclick="addPhotos()">Добавить фотографии</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
+        const APARTMENT_ID = 'royal';
+        
+        const photos = [
+            'https://cdn.poehali.dev/files/dbbf9895-f726-4c36-8672-b5c99568e0fe.jpeg',
+            'https://cdn.poehali.dev/files/945e677e-0e89-42e7-bf3c-291f320b0699.jpeg',
+            'https://cdn.poehali.dev/files/ba08d769-4c80-4ded-aace-d7a717cda713.jpeg',
+            'https://cdn.poehali.dev/files/eacdac51-50f9-44ec-84b3-f2b6f38290ad.jpeg',
+            'https://cdn.poehali.dev/files/f9cfe618-33d7-4198-8b92-6c53ad245ce5.jpeg'
+        ];
+
+        async function addPhotos() {
+            const button = document.getElementById('addPhotos');
+            const status = document.getElementById('status');
+            
+            button.disabled = true;
+            status.className = 'status loading';
+            status.textContent = 'Загрузка текущих данных...';
+            
+            try {
+                // Получаем текущие данные
+                const response = await fetch(`${API_URL}?apartment_id=${APARTMENT_ID}`);
+                const currentData = await response.json();
+                
+                // Объединяем существующие фото с новыми (избегаем дубликатов)
+                const existingPhotos = currentData?.images || [];
+                const allPhotos = [...new Set([...existingPhotos, ...photos])];
+                
+                status.textContent = `Сохранение ${allPhotos.length} фотографий...`;
+                
+                // Сохраняем обновлённые данные
+                const saveResponse = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        apartment_id: APARTMENT_ID,
+                        title: currentData?.title || 'Королевский люкс',
+                        description: currentData?.description || '',
+                        images: allPhotos,
+                        pdf_files: currentData?.pdf_files || [],
+                        videos: currentData?.videos || [],
+                        instruction_text: currentData?.instruction_text || '',
+                        important_notes: currentData?.important_notes || '',
+                        contact_info: currentData?.contact_info || '',
+                        wifi_info: currentData?.wifi_info || '',
+                        parking_info: currentData?.parking_info || '',
+                        house_rules: currentData?.house_rules || ''
+                    })
+                });
+                
+                const result = await saveResponse.json();
+                
+                if (result.success) {
+                    status.className = 'status success';
+                    status.textContent = `✅ Успешно! Добавлено ${allPhotos.length} фотографий в галерею "Королевский люкс"`;
+                } else {
+                    throw new Error(result.message || 'Ошибка сохранения');
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ Ошибка: ${error.message}`;
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
