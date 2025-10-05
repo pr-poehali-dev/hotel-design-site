@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import ReportsTable from '@/components/ReportsTable';
 import BookingDialog from '@/components/BookingDialog';
@@ -17,6 +18,7 @@ interface Owner {
 }
 
 const ReportsPage = () => {
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem(AUTH_KEY) === 'true';
   });
@@ -284,14 +286,14 @@ Premium Apartments`;
                 </FizzyButton>
               )}
               <FizzyButton
-                onClick={() => window.location.href = '/owners'}
+                onClick={() => navigate('/owners')}
                 variant="secondary"
                 icon={<Icon name="Users" size={18} />}
               >
                 Собственники
               </FizzyButton>
               <FizzyButton
-                onClick={() => window.location.href = '/'}
+                onClick={() => navigate('/')}
                 variant="secondary"
                 icon={<Icon name="Home" size={18} />}
               >
@@ -318,7 +320,7 @@ Premium Apartments`;
               Добавьте собственников в разделе управления для просмотра отчетов
             </p>
             <FizzyButton
-              onClick={() => window.location.href = '/owners'}
+              onClick={() => navigate('/owners')}
               icon={<Icon name="Plus" size={18} />}
             >
               Добавить собственника
