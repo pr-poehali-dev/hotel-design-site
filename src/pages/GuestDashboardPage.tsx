@@ -178,12 +178,26 @@ const GuestDashboardPage = () => {
                 <p className="text-gray-700 mb-3">
                   У вас {bookingsCount} {bookingsCount === 1 ? 'бронирование' : bookingsCount < 5 ? 'бронирования' : 'бронирований'}
                 </p>
-                <div className="inline-block bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-2xl font-bold px-6 py-2 rounded-xl shadow-lg">
+                <div className="inline-block bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-2xl font-bold px-6 py-2 rounded-xl shadow-lg mb-4">
                   +10% к акциям
                 </div>
-                <p className="text-sm text-gray-600 mt-3">
-                  До статуса "Амбассадор" осталось {10 - bookingsCount} {10 - bookingsCount === 1 ? 'бронирование' : 'бронирований'}
-                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Прогресс до статуса "Амбассадор"</span>
+                    <span className="font-semibold text-charcoal-900">{bookingsCount}/10</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className="bg-gradient-to-r from-gold-500 to-gold-600 h-full rounded-full transition-all duration-500 relative overflow-hidden"
+                      style={{ width: `${(bookingsCount / 10) * 100}%` }}
+                    >
+                      <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Осталось {10 - bookingsCount} {10 - bookingsCount === 1 ? 'бронирование' : 'бронирований'} до +15% к акциям
+                  </p>
+                </div>
               </div>
               <div className="flex-shrink-0">
                 <a
