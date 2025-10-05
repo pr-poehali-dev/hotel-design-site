@@ -212,7 +212,14 @@ export const rooms: Room[] = [
     name: 'Пентхаус',
     price: '28 000 ₽',
     features: ['Терраса 50м²', 'Панорама 360°', 'Сауна', 'Кухня премиум'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/3aa03ad6-b466-43c8-a2d0-f3306e62bd71.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/3aa03ad6-b466-43c8-a2d0-f3306e62bd71.jpeg',
+      'https://cdn.poehali.dev/files/7d3b01b3-e0c2-41c6-9263-735eb63ee573.jpeg',
+      'https://cdn.poehali.dev/files/18cfc0b4-a790-4f5d-b8de-72cddf3bc403.jpeg',
+      'https://cdn.poehali.dev/files/785f9ac7-aa4e-4776-bed6-58e9a0d8e9f7.jpeg',
+      'https://cdn.poehali.dev/files/f33a8a29-e295-4c2f-8226-020d78a7e345.jpeg'
+    ]
   },
   {
     name: '3х комнатный 2111',
