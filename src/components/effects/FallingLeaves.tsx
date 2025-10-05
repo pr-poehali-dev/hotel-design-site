@@ -8,15 +8,27 @@ interface Leaf {
   size: number;
   rotation: number;
   swayAmount: number;
+  color: string;
+  strokeColor: string;
 }
 
 const FallingLeaves = () => {
   const [leaves, setLeaves] = useState<Leaf[]>([]);
 
+  const leafColors = [
+    { fill: '#EAB308', stroke: '#A16207' },
+    { fill: '#F59E0B', stroke: '#92400E' },
+    { fill: '#DC2626', stroke: '#7F1D1D' },
+    { fill: '#D97706', stroke: '#92400E' },
+    { fill: '#EA580C', stroke: '#9A3412' },
+    { fill: '#B45309', stroke: '#78350F' },
+  ];
+
   useEffect(() => {
     const generateLeaves = () => {
       const newLeaves: Leaf[] = [];
       for (let i = 0; i < 8; i++) {
+        const colorPair = leafColors[Math.floor(Math.random() * leafColors.length)];
         newLeaves.push({
           id: i,
           left: Math.random() * 100,
@@ -25,6 +37,8 @@ const FallingLeaves = () => {
           size: 20 + Math.random() * 15,
           rotation: Math.random() * 360,
           swayAmount: 30 + Math.random() * 40,
+          color: colorPair.fill,
+          strokeColor: colorPair.stroke,
         });
       }
       setLeaves(newLeaves);
@@ -61,31 +75,31 @@ const FallingLeaves = () => {
               fill="none"
               style={{
                 transform: `rotate(${leaf.rotation}deg)`,
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))',
               }}
             >
               <path
                 d="M12 2C12 2 7 6 7 12C7 15.866 9.134 19 12 19C14.866 19 17 15.866 17 12C17 6 12 2 12 2Z"
-                fill="#D97706"
-                opacity="0.9"
+                fill={leaf.color}
+                opacity="0.95"
               />
               <path
                 d="M12 2C12 2 8.5 5 8.5 10C8.5 13 10 16 12 16"
-                stroke="#92400E"
+                stroke={leaf.strokeColor}
                 strokeWidth="0.5"
-                opacity="0.6"
+                opacity="0.7"
               />
               <path
                 d="M12 5L14 8"
-                stroke="#92400E"
+                stroke={leaf.strokeColor}
                 strokeWidth="0.5"
-                opacity="0.4"
+                opacity="0.5"
               />
               <path
                 d="M12 9L10 12"
-                stroke="#92400E"
+                stroke={leaf.strokeColor}
                 strokeWidth="0.5"
-                opacity="0.4"
+                opacity="0.5"
               />
             </svg>
           </div>
