@@ -24,9 +24,9 @@ const PromotionsSection = () => {
   const promotions: Promotion[] = [
     {
       id: '2',
-      title: 'Приведи друга',
-      description: 'Поделитесь ссылкой на апартаменты с другом. При его первом бронировании вы оба получите скидку 15% на текущее и следующее проживание. Количество приглашений не ограничено!',
-      discount: '15%',
+      title: 'Приведи гостей и получи 10% вознаграждение',
+      description: '',
+      discount: '10%',
       icon: 'Users',
       type: 'new',
       color: 'from-blue-500 to-cyan-500'
