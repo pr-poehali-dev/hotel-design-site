@@ -34,6 +34,7 @@ const GuestDashboardPage = () => {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [instruction, setInstruction] = useState<CheckInInstruction | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bookingsCount, setBookingsCount] = useState(3);
 
   useEffect(() => {
     const loadData = async () => {
@@ -159,6 +160,44 @@ const GuestDashboardPage = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <Card className="bg-gradient-to-br from-gold-50 to-gold-100 border-t-4 border-t-gold-500">
+          <CardHeader>
+            <CardTitle className="text-2xl font-playfair">Ваш статус в программе лояльности</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="flex-shrink-0">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
+                  <Icon name="Award" size={48} className="text-white" />
+                </div>
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-3xl font-playfair font-bold text-charcoal-900 mb-2">
+                  Постоянник
+                </h3>
+                <p className="text-gray-700 mb-3">
+                  У вас {bookingsCount} {bookingsCount === 1 ? 'бронирование' : bookingsCount < 5 ? 'бронирования' : 'бронирований'}
+                </p>
+                <div className="inline-block bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-2xl font-bold px-6 py-2 rounded-xl shadow-lg">
+                  +10% к акциям
+                </div>
+                <p className="text-sm text-gray-600 mt-3">
+                  До статуса "Амбассадор" осталось {10 - bookingsCount} {10 - bookingsCount === 1 ? 'бронирование' : 'бронирований'}
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <a
+                  href="/loyalty-program"
+                  className="inline-flex items-center gap-2 bg-white text-gold-600 px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow border-2 border-gold-500"
+                >
+                  <Icon name="Trophy" size={18} />
+                  Подробнее о программе
+                </a>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="border-t-4 border-t-gold-500">
           <CardHeader>
             <div className="flex items-center justify-between">
