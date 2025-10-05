@@ -196,29 +196,8 @@ const PromotionsSection = () => {
         ))}
       </div>
 
-      <div className="mt-12 grid md:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-gold-50 to-gold-100 rounded-2xl p-8 text-center">
-          <Icon name="Bell" size={48} className="text-gold-600 mx-auto mb-4" />
-          <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-3">
-            Не пропустите новые акции!
-          </h3>
-          <p className="text-gray-700 mb-6">
-            Подпишитесь на рассылку и узнавайте первыми о специальных предложениях
-          </p>
-          <div className="flex gap-3">
-            <input
-              type="email"
-              placeholder="Ваш email"
-              className="flex-1 px-4 py-3 rounded-lg border-2 border-gold-300 focus:border-gold-500 focus:outline-none"
-            />
-            <button className="bg-gradient-to-r from-gold-500 to-gold-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow flex items-center gap-2">
-              <Icon name="Send" size={18} />
-              Подписаться
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 text-center">
+      <div className="mt-12">
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 text-center max-w-2xl mx-auto">
           <Icon name="Ticket" size={48} className="text-purple-600 mx-auto mb-4" />
           <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-3">
             Уже есть промокод?
