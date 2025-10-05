@@ -7,34 +7,33 @@ const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770
 export const useCheckInInstructions = (apartmentId: string) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const hasLoadedRef = useRef(false);
-  const [formData, setFormData] = useState<Partial<CheckInInstruction>>(() => {
-    const saved = localStorage.getItem(`checkin_draft_${apartmentId}`);
-    if (saved && apartmentId) {
-      return JSON.parse(saved);
-    }
-    return {
-      title: '',
-      description: '',
-      images: [],
-      pdf_files: [],
-      videos: [],
-      instruction_text: '',
-      important_notes: '',
-      contact_info: '',
-      wifi_info: '',
-      parking_info: '',
-      house_rules: '',
-    };
+  const lastLoadedApartmentRef = useRef<string>('');
+  const [formData, setFormData] = useState<Partial<CheckInInstruction>>({
+    title: '',
+    description: '',
+    images: [],
+    pdf_files: [],
+    videos: [],
+    instruction_text: '',
+    important_notes: '',
+    contact_info: '',
+    wifi_info: '',
+    parking_info: '',
+    house_rules: '',
   });
 
   useEffect(() => {
-    if (apartmentId && !hasLoadedRef.current) {
-      loadInstructions(apartmentId);
-      hasLoadedRef.current = true;
+    if (apartmentId && apartmentId !== lastLoadedApartmentRef.current) {
+      const saved = localStorage.getItem(`checkin_draft_${apartmentId}`);
+      if (saved) {
+        setFormData(JSON.parse(saved));
+        lastLoadedApartmentRef.current = apartmentId;
+      } else {
+        loadInstructions(apartmentId);
+      }
     } else if (!apartmentId) {
       resetForm();
-      hasLoadedRef.current = false;
+      lastLoadedApartmentRef.current = '';
     }
   }, [apartmentId]);
 
@@ -49,8 +48,8 @@ export const useCheckInInstructions = (apartmentId: string) => {
       const response = await fetch(`${API_URL}?apartment_id=${id}`);
       const data = await response.json();
       
-      if (data) {
-        setFormData({
+      if (data && data.apartment_id) {
+        const loadedData = {
           title: data.title || '',
           description: data.description || '',
           images: data.images || [],
@@ -62,12 +61,17 @@ export const useCheckInInstructions = (apartmentId: string) => {
           wifi_info: data.wifi_info || '',
           parking_info: data.parking_info || '',
           house_rules: data.house_rules || '',
-        });
+        };
+        setFormData(loadedData);
+        lastLoadedApartmentRef.current = id;
       } else {
         resetForm();
+        lastLoadedApartmentRef.current = id;
       }
     } catch (error) {
       console.error('Ошибка загрузки инструкций:', error);
+      resetForm();
+      lastLoadedApartmentRef.current = id;
     }
   };
 

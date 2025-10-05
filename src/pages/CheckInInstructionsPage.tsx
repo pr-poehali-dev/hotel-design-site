@@ -200,7 +200,13 @@ const CheckInInstructionsPage = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Создать инструкцию</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Создать инструкцию</CardTitle>
+              <div className="flex items-center gap-2 text-sm text-green-600">
+                <Icon name="Save" size={16} />
+                <span>Черновик сохраняется автоматически</span>
+              </div>
+            </div>
             <div className="space-y-2 mt-3">
               <p className="text-sm text-gray-500">
                 <Icon name="Info" size={16} className="inline mr-1" />
@@ -211,6 +217,14 @@ const CheckInInstructionsPage = () => {
                   <Icon name="Eye" size={16} className="mr-2 mt-0.5 flex-shrink-0" />
                   <span>
                     Все загруженные фото, PDF документы и инструкции автоматически появятся в личном кабинете гостя
+                  </span>
+                </p>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-sm text-blue-900 flex items-start">
+                  <Icon name="AlertCircle" size={16} className="mr-2 mt-0.5 flex-shrink-0" />
+                  <span>
+                    Нажмите "Сохранить инструкцию" внизу страницы, чтобы данные появились у гостя
                   </span>
                 </p>
               </div>
