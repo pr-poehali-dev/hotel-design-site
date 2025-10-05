@@ -107,7 +107,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
         </div>
       </div>
 
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-3 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
@@ -121,7 +121,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
         ))}
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-charcoal-900/60 backdrop-blur-sm py-6 overflow-hidden">
+      <div className="absolute bottom-0 left-0 right-0 bg-charcoal-900/60 backdrop-blur-sm py-8 overflow-hidden">
         <div className="animate-scroll-left whitespace-nowrap">
           <span className="inline-flex items-center gap-8 text-white font-inter text-lg">
             <span className="flex items-center gap-2">
