@@ -89,6 +89,7 @@ export const useRooms = () => {
   });
 
   useEffect(() => {
+    console.log('🔄 useRooms: Saving to localStorage', new Date().toLocaleTimeString());
     localStorage.setItem('housekeeping_current', JSON.stringify(rooms));
   }, [rooms]);
 
