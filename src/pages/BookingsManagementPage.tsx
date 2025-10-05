@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -19,6 +20,15 @@ interface Booking {
 const BookingsManagementPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // Проверка авторизации
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('adminAuthenticated');
+    if (!isAuthenticated) {
+      navigate('/admin-login');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const mockBookings: Booking[] = [
@@ -104,6 +114,17 @@ const BookingsManagementPage = () => {
               >
                 <Icon name="Home" size={18} className="mr-2" />
                 На главную
+              </Button>
+              <Button 
+                variant="outline" 
+                className="text-white border-white hover:bg-white/10"
+                onClick={() => {
+                  localStorage.removeItem('adminAuthenticated');
+                  navigate('/admin-login');
+                }}
+              >
+                <Icon name="LogOut" size={18} className="mr-2" />
+                Выход
               </Button>
             </div>
           </div>

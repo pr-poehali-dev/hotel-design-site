@@ -73,7 +73,7 @@ const Footer = () => {
                   Системный вход
                 </a>
                 <a 
-                  href="/bookings" 
+                  href="/admin-login" 
                   className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
                   <Icon name="Settings" size={14} className="inline mr-1" />
