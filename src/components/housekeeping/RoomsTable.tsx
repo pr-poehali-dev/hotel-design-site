@@ -27,7 +27,6 @@ const RoomsTable = memo(({
   onDelete,
   isAdmin
 }: RoomsTableProps) => {
-  console.log('🔄 RoomsTable render', new Date().toLocaleTimeString());
   return (
     <div className="bg-charcoal-800 rounded-xl overflow-hidden border border-gray-700">
       <div className="overflow-x-auto">

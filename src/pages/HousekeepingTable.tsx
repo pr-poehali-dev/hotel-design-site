@@ -86,7 +86,7 @@ const HousekeepingTable = () => {
     return <LoginForm onLogin={handleLogin} error={loginError} />;
   }
 
-  const isAdmin = user.role === 'admin';
+  const isAdmin = user?.role === 'admin' || false;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 py-8 px-4">
