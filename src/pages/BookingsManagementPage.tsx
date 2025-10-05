@@ -5,6 +5,16 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import SendGuestEmailButton from '@/components/housekeeping/SendGuestEmailButton';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Booking {
   id: string;
@@ -20,6 +30,8 @@ interface Booking {
 const BookingsManagementPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Проверка авторизации - временно отключена для доступа
@@ -87,6 +99,28 @@ const BookingsManagementPage = () => {
     } else {
       return <Badge variant="outline">Завершено</Badge>;
     }
+  };
+
+  const handleDelete = (id: string) => {
+    setBookings(bookings.filter(b => b.id !== id));
+    setDeleteConfirm(null);
+  };
+
+  const handleEdit = (booking: Booking) => {
+    setEditingBooking(booking);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingBooking) {
+      setBookings(bookings.map(b => 
+        b.id === editingBooking.id ? editingBooking : b
+      ));
+      setEditingBooking(null);
+    }
+  };
+
+  const handleOpenGuestDashboard = (bookingId: string) => {
+    navigate(`/guest-dashboard?booking=${bookingId}`);
   };
 
   if (loading) {
@@ -234,9 +268,29 @@ const BookingsManagementPage = () => {
                       guestEmail={booking.guest_email}
                       guestName={booking.guest_name}
                     />
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleOpenGuestDashboard(booking.id)}
+                    >
                       <Icon name="ExternalLink" size={16} className="mr-2" />
                       Открыть кабинет
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleEdit(booking)}
+                    >
+                      <Icon name="Edit" size={16} className="mr-2" />
+                      Редактировать
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => setDeleteConfirm(booking.id)}
+                    >
+                      <Icon name="Trash2" size={16} className="mr-2" />
+                      Удалить
                     </Button>
                   </div>
                 </div>
@@ -245,6 +299,108 @@ const BookingsManagementPage = () => {
           ))}
         </div>
       </div>
+
+      {/* Диалог редактирования */}
+      <Dialog open={!!editingBooking} onOpenChange={() => setEditingBooking(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Редактировать бронирование</DialogTitle>
+            <DialogDescription>
+              Измените данные бронирования и нажмите "Сохранить"
+            </DialogDescription>
+          </DialogHeader>
+          {editingBooking && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="guest_name">Имя гостя</Label>
+                  <Input
+                    id="guest_name"
+                    value={editingBooking.guest_name}
+                    onChange={(e) => setEditingBooking({...editingBooking, guest_name: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="apartment_id">Номер апартамента</Label>
+                  <Input
+                    id="apartment_id"
+                    value={editingBooking.apartment_id}
+                    onChange={(e) => setEditingBooking({...editingBooking, apartment_id: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="check_in">Дата заезда</Label>
+                  <Input
+                    id="check_in"
+                    type="date"
+                    value={editingBooking.check_in}
+                    onChange={(e) => setEditingBooking({...editingBooking, check_in: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="check_out">Дата выезда</Label>
+                  <Input
+                    id="check_out"
+                    type="date"
+                    value={editingBooking.check_out}
+                    onChange={(e) => setEditingBooking({...editingBooking, check_out: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guest_email">Email гостя</Label>
+                <Input
+                  id="guest_email"
+                  type="email"
+                  value={editingBooking.guest_email}
+                  onChange={(e) => setEditingBooking({...editingBooking, guest_email: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guest_phone">Телефон гостя</Label>
+                <Input
+                  id="guest_phone"
+                  value={editingBooking.guest_phone}
+                  onChange={(e) => setEditingBooking({...editingBooking, guest_phone: e.target.value})}
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingBooking(null)}>
+              Отмена
+            </Button>
+            <Button onClick={handleSaveEdit}>
+              Сохранить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог подтверждения удаления */}
+      <Dialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Удалить бронирование?</DialogTitle>
+            <DialogDescription>
+              Это действие нельзя отменить. Бронирование будет удалено безвозвратно.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteConfirm(null)}>
+              Отмена
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => deleteConfirm && handleDelete(deleteConfirm)}
+            >
+              Удалить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
