@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { CheckInInstruction } from '@/types/checkin';
 
@@ -7,27 +7,42 @@ const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770
 export const useCheckInInstructions = (apartmentId: string) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<Partial<CheckInInstruction>>({
-    title: '',
-    description: '',
-    images: [],
-    pdf_files: [],
-    videos: [],
-    instruction_text: '',
-    important_notes: '',
-    contact_info: '',
-    wifi_info: '',
-    parking_info: '',
-    house_rules: '',
+  const hasLoadedRef = useRef(false);
+  const [formData, setFormData] = useState<Partial<CheckInInstruction>>(() => {
+    const saved = localStorage.getItem(`checkin_draft_${apartmentId}`);
+    if (saved && apartmentId) {
+      return JSON.parse(saved);
+    }
+    return {
+      title: '',
+      description: '',
+      images: [],
+      pdf_files: [],
+      videos: [],
+      instruction_text: '',
+      important_notes: '',
+      contact_info: '',
+      wifi_info: '',
+      parking_info: '',
+      house_rules: '',
+    };
   });
 
   useEffect(() => {
-    if (apartmentId) {
+    if (apartmentId && !hasLoadedRef.current) {
       loadInstructions(apartmentId);
-    } else {
+      hasLoadedRef.current = true;
+    } else if (!apartmentId) {
       resetForm();
+      hasLoadedRef.current = false;
     }
   }, [apartmentId]);
+
+  useEffect(() => {
+    if (apartmentId) {
+      localStorage.setItem(`checkin_draft_${apartmentId}`, JSON.stringify(formData));
+    }
+  }, [formData, apartmentId]);
 
   const loadInstructions = async (id: string) => {
     try {
@@ -101,6 +116,7 @@ export const useCheckInInstructions = (apartmentId: string) => {
       const result = await response.json();
 
       if (result.success) {
+        localStorage.removeItem(`checkin_draft_${apartmentId}`);
         toast({
           title: 'Успешно сохранено',
           description: 'Инструкция по заселению обновлена',
