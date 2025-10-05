@@ -25,19 +25,7 @@ const Footer = () => {
                   href="#" 
                   className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
-                  Бронирование
-                </a>
-                <a 
-                  href="#" 
-                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
-                >
-                  Апартаменты
-                </a>
-                <a 
-                  href="#" 
-                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
-                >
-                  Контакты
+                  Афиша досуга
                 </a>
               </div>
             </div>
