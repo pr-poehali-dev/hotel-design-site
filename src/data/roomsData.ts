@@ -282,7 +282,14 @@ export const rooms: Room[] = [
     name: '2х комнатный 906',
     price: '45 000 ₽',
     features: ['200м² площади', 'Винный шкаф', 'Домашний кинотеатр', 'Спа-зона'],
-    image: '/img/d744d6a9-bc23-4f6c-b13a-4481e9bdac3d.jpg'
+    image: 'https://cdn.poehali.dev/files/6c3840e0-1758-453e-bc73-a2d331c5e2af.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/files/6c3840e0-1758-453e-bc73-a2d331c5e2af.jpeg',
+      'https://cdn.poehali.dev/files/57eaed2b-e0ce-406d-8ddc-0c34a04fa78c.jpeg',
+      'https://cdn.poehali.dev/files/4b575036-9929-4dce-bc15-3102f3337404.jpeg',
+      'https://cdn.poehali.dev/files/c33fd2a6-b0de-4060-a57a-e53a2bf7062c.jpeg',
+      'https://cdn.poehali.dev/files/a352fb3c-8650-4fdf-8a93-30507db8c015.jpeg'
+    ]
   },
   {
     name: '3х комнатный 816',
