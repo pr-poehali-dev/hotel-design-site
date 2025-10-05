@@ -125,10 +125,13 @@ const ApartmentsSlider = ({ onNavigate }: ApartmentsSliderProps) => {
         <div className="text-center mt-12">
           <button
             onClick={() => onNavigate('rooms')}
-            className="group inline-flex items-center gap-3 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-gold-500/50"
+            className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-charcoal-900 font-bold px-10 py-5 rounded-full transition-all duration-300 hover:scale-105 shadow-2xl hover:shadow-gold-500/60 overflow-hidden"
           >
-            <span>Смотреть все апартаменты</span>
-            <Icon name="ArrowRight" size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
+            <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <Icon name="Home" size={24} className="relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+            <span className="relative z-10 text-lg">Смотреть все апартаменты</span>
+            <Icon name="ArrowRight" size={24} className="relative z-10 group-hover:translate-x-2 transition-transform duration-300" />
+            <span className="absolute -right-8 top-1/2 -translate-y-1/2 w-16 h-16 bg-gold-300/30 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></span>
           </button>
         </div>
       </div>
