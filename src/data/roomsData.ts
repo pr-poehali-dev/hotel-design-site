@@ -285,7 +285,7 @@ export const rooms: Room[] = [
   },
   {
     name: '3х комнатный 816',
-    price: '5 500 ₽',
+    price: 'от 25 000 ₽',
     features: ['103 кв.м.', '8 этаж', 'Для 1-6 гостей'],
     image: 'https://cdn.poehali.dev/files/e4d338dd-73ef-4be0-bde4-9fb69a695b70.jpeg',
     gallery: [
