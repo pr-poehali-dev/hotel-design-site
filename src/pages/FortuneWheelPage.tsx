@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
+const BACKEND_URL = 'https://functions.poehali.dev/be4ae96b-1632-41de-99c3-c942febf4b4d';
+
 const FortuneWheelPage = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState<string | null>(null);
+  const [promoCode, setPromoCode] = useState<string | null>(null);
   const [showQRInfo, setShowQRInfo] = useState(false);
+  const [guestEmail, setGuestEmail] = useState('');
+  const [guestName, setGuestName] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const prizes = [
     { label: '5%', color: 'from-blue-400 to-blue-600', angle: 0 },
@@ -18,11 +24,18 @@ const FortuneWheelPage = () => {
     { label: '50%', color: 'from-gold-400 to-gold-600', angle: 315 },
   ];
 
-  const handleSpin = () => {
+  const handleSpin = async () => {
     if (isSpinning) return;
+    
+    if (!guestEmail) {
+      setError('Пожалуйста, укажите email');
+      return;
+    }
 
     setIsSpinning(true);
     setResult(null);
+    setPromoCode(null);
+    setError(null);
 
     const spins = 5;
     const randomDegree = Math.floor(Math.random() * 360);
@@ -30,11 +43,38 @@ const FortuneWheelPage = () => {
     
     setRotation(totalRotation);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       setIsSpinning(false);
       const finalAngle = totalRotation % 360;
       const prizeIndex = Math.floor((360 - finalAngle + 22.5) / 45) % 8;
+      const discountPercent = parseInt(prizes[prizeIndex].label);
       setResult(prizes[prizeIndex].label);
+      
+      try {
+        const response = await fetch(BACKEND_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            guest_email: guestEmail,
+            guest_name: guestName,
+            discount_percent: discountPercent,
+            booking_id: null
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          setPromoCode(data.promo_code);
+        } else {
+          setError(data.error || 'Ошибка сохранения результата');
+        }
+      } catch (err) {
+        console.error('Error saving spin result:', err);
+        setError('Не удалось сохранить результат');
+      }
     }, 4000);
   };
 
@@ -76,6 +116,39 @@ const FortuneWheelPage = () => {
               <p className="text-gray-600">
                 Вращайте колесо и получите персональную скидку
               </p>
+            </div>
+
+            <div className="mb-6 space-y-3">
+              <div>
+                <label className="block text-sm font-semibold text-charcoal-900 mb-1">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  value={guestEmail}
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-gold-500 focus:outline-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-charcoal-900 mb-1">
+                  Имя (необязательно)
+                </label>
+                <input
+                  type="text"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  placeholder="Ваше имя"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-gold-500 focus:outline-none"
+                />
+              </div>
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
             </div>
 
             <div className="relative w-80 h-80 mx-auto mb-8">
@@ -120,12 +193,17 @@ const FortuneWheelPage = () => {
               </div>
             </div>
 
-            {result && (
+            {result && promoCode && (
               <div className="bg-gradient-to-r from-gold-500 to-gold-600 text-white rounded-2xl p-6 text-center animate-bounce">
                 <Icon name="Trophy" size={48} className="mx-auto mb-3" />
                 <h3 className="text-3xl font-playfair font-bold mb-2">Поздравляем!</h3>
-                <p className="text-2xl font-bold">Вы выиграли скидку {result}!</p>
-                <p className="text-sm mt-2 text-white/90">Промокод отправлен на вашу почту</p>
+                <p className="text-2xl font-bold mb-3">Вы выиграли скидку {result}!</p>
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3 inline-block">
+                  <p className="text-xs uppercase tracking-wider mb-1 text-white/80">Ваш промокод:</p>
+                  <p className="text-2xl font-mono font-bold">{promoCode}</p>
+                </div>
+                <p className="text-sm mt-3 text-white/90">Промокод также отправлен на {guestEmail}</p>
+                <p className="text-xs mt-1 text-white/70">Действителен 180 дней</p>
               </div>
             )}
 

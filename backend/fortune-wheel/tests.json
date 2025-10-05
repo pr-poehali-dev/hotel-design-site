@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Get user spins history",
+      "method": "GET",
+      "path": "/?email=newuser@example.com",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "total": 0
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Reject invalid discount percent",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "guest_email": "test@example.com",
+        "discount_percent": 99
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
