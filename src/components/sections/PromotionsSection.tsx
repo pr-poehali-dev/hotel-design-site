@@ -98,9 +98,16 @@ const PromotionsSection = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-16">
       <div className="text-center mb-12">
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
           Мы ценим каждого гостя и предлагаем приятные бонусы и подарки
         </p>
+        <a
+          href="/loyalty-program"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow"
+        >
+          <Icon name="Trophy" size={20} />
+          Программа лояльности
+        </a>
       </div>
 
       {!isExpired && (

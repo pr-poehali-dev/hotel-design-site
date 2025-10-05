@@ -20,6 +20,7 @@ import BookingsManagementPage from "./pages/BookingsManagementPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import FortuneWheelPage from "./pages/FortuneWheelPage";
 import MyPromoCodesPage from "./pages/MyPromoCodesPage";
+import LoyaltyProgram from "./pages/LoyaltyProgram";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/bookings" element={<BookingsManagementPage />} />
           <Route path="/fortune-wheel" element={<FortuneWheelPage />} />
           <Route path="/my-promo-codes" element={<MyPromoCodesPage />} />
+          <Route path="/loyalty-program" element={<LoyaltyProgram />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
