@@ -209,7 +209,7 @@ export const rooms: Room[] = [
 Светлый интерьер в бежево-серых тонах с классическими молдингами, золотыми акцентами и дизайнерскими светильниками создает атмосферу утонченной роскоши. Идеально подходит для деловых поездок и семейного отдыха.`
   },
   {
-    name: 'Пентхаус',
+    name: '2х комнатный 1311',
     price: '28 000 ₽',
     features: ['Терраса 50м²', 'Панорама 360°', 'Сауна', 'Кухня премиум'],
     image: 'https://cdn.poehali.dev/files/3aa03ad6-b466-43c8-a2d0-f3306e62bd71.jpeg',
@@ -223,7 +223,10 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/e8a5637e-1c61-415e-b54c-60342d7cde1f.jpeg',
       'https://cdn.poehali.dev/files/07666ce2-bafa-4f55-bbbe-ee2e71f973ce.jpeg',
       'https://cdn.poehali.dev/files/f2dee957-4e9c-4e5f-a361-12ff0a2cd29a.jpeg',
-      'https://cdn.poehali.dev/files/9f1a7d6a-dd82-4067-a743-01a51baea1fc.jpeg'
+      'https://cdn.poehali.dev/files/9f1a7d6a-dd82-4067-a743-01a51baea1fc.jpeg',
+      'https://cdn.poehali.dev/files/9c5fd6f7-cf64-418b-915e-7b6fd29919a9.jpeg',
+      'https://cdn.poehali.dev/files/0a1e44a0-1527-4d9c-97d9-8606c618a060.jpeg',
+      'https://cdn.poehali.dev/files/53963eb0-646a-4c7e-8f45-dd083ee7b06f.jpeg'
     ]
   },
   {
