@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Room } from '@/components/housekeeping/types';
 
 const INITIAL_ROOMS: Room[] = [
@@ -92,21 +92,21 @@ export const useRooms = () => {
     localStorage.setItem('housekeeping_current', JSON.stringify(rooms));
   }, [rooms]);
 
-  const updateRoomStatus = (roomId: string, newStatus: Room['status']) => {
-    setRooms(rooms.map(room => 
+  const updateRoomStatus = useCallback((roomId: string, newStatus: Room['status']) => {
+    setRooms(prevRooms => prevRooms.map(room => 
       room.id === roomId 
         ? { ...room, status: newStatus, lastCleaned: newStatus === 'clean' ? new Date().toLocaleString('ru-RU') : room.lastCleaned }
         : room
     ));
-  };
+  }, []);
 
-  const assignHousekeeper = (roomId: string, housekeeper: string) => {
-    setRooms(rooms.map(room => 
+  const assignHousekeeper = useCallback((roomId: string, housekeeper: string) => {
+    setRooms(prevRooms => prevRooms.map(room => 
       room.id === roomId ? { ...room, assignedTo: housekeeper } : room
     ));
-  };
+  }, []);
 
-  const addRoom = () => {
+  const addRoom = useCallback(() => {
     if (!newRoom.number) {
       alert('Введите номер апартамента');
       return;
@@ -127,7 +127,7 @@ export const useRooms = () => {
       paymentStatus: newRoom.paymentStatus || 'unpaid'
     };
     
-    setRooms([...rooms, room]);
+    setRooms(prevRooms => [...prevRooms, room]);
     setNewRoom({
       number: '',
       floor: 1,
@@ -140,27 +140,27 @@ export const useRooms = () => {
       payment: 0,
       paymentStatus: 'unpaid'
     });
-  };
+  }, [newRoom]);
 
-  const deleteRoom = (roomId: string) => {
+  const deleteRoom = useCallback((roomId: string) => {
     if (confirm('Вы уверены, что хотите удалить этот апартамент?')) {
-      setRooms(rooms.filter(room => room.id !== roomId));
+      setRooms(prevRooms => prevRooms.filter(room => room.id !== roomId));
     }
-  };
+  }, []);
 
-  const startEditRoom = (roomId: string) => {
+  const startEditRoom = useCallback((roomId: string) => {
     setEditingRoomId(roomId);
-  };
+  }, []);
 
-  const saveEditRoom = () => {
+  const saveEditRoom = useCallback(() => {
     setEditingRoomId(null);
-  };
+  }, []);
 
-  const updateRoomField = (roomId: string, field: keyof Room, value: any) => {
-    setRooms(rooms.map(room => 
+  const updateRoomField = useCallback((roomId: string, field: keyof Room, value: any) => {
+    setRooms(prevRooms => prevRooms.map(room => 
       room.id === roomId ? { ...room, [field]: value } : room
     ));
-  };
+  }, []);
 
   return {
     rooms,

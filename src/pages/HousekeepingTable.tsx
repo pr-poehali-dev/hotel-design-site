@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import StatsCards from '@/components/housekeeping/StatsCards';
@@ -64,13 +64,15 @@ const HousekeepingTable = () => {
   const [isManagingHousekeepers, setIsManagingHousekeepers] = useState(false);
   const [showPaymentsReport, setShowPaymentsReport] = useState(false);
 
-  const filteredRooms = rooms.filter(room => {
-    const statusMatch = filter === 'all' || room.status === filter;
-    const housekeeperMatch = selectedHousekeeper === 'all' || room.assignedTo === selectedHousekeeper;
-    return statusMatch && housekeeperMatch;
-  });
+  const filteredRooms = useMemo(() => {
+    return rooms.filter(room => {
+      const statusMatch = filter === 'all' || room.status === filter;
+      const housekeeperMatch = selectedHousekeeper === 'all' || room.assignedTo === selectedHousekeeper;
+      return statusMatch && housekeeperMatch;
+    });
+  }, [rooms, filter, selectedHousekeeper]);
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: rooms.length,
     clean: rooms.filter(r => r.status === 'clean').length,
     dirty: rooms.filter(r => r.status === 'dirty').length,
@@ -78,7 +80,7 @@ const HousekeepingTable = () => {
     inspection: rooms.filter(r => r.status === 'inspection').length,
     turnover: rooms.filter(r => r.status === 'turnover').length,
     occupied: rooms.filter(r => r.status === 'occupied').length
-  };
+  }), [rooms]);
 
   if (!user) {
     return <LoginForm onLogin={handleLogin} error={loginError} />;

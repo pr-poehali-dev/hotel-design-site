@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Room } from './types';
 import RoomRow from './RoomRow';
 
@@ -14,7 +15,7 @@ interface RoomsTableProps {
   isAdmin: boolean;
 }
 
-const RoomsTable = ({
+const RoomsTable = memo(({
   rooms,
   housekeepers,
   editingRoomId,
@@ -67,6 +68,8 @@ const RoomsTable = ({
       </div>
     </div>
   );
-};
+});
+
+RoomsTable.displayName = 'RoomsTable';
 
 export default RoomsTable;

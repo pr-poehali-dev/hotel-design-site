@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Icon from '@/components/ui/icon';
 import { Room } from './types';
 import { getStatusColor, getStatusText } from './utils';
@@ -15,7 +16,7 @@ interface RoomRowProps {
   isAdmin: boolean;
 }
 
-const RoomRow = ({
+const RoomRow = memo(({
   room,
   housekeepers,
   editingRoomId,
@@ -251,6 +252,8 @@ const RoomRow = ({
       </td>
     </tr>
   );
-};
+});
+
+RoomRow.displayName = 'RoomRow';
 
 export default RoomRow;
