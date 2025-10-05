@@ -90,6 +90,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             title = body_data.get('title', '')
             description = body_data.get('description', '')
             images = body_data.get('images', [])
+            pdf_files = body_data.get('pdf_files', [])
             instruction_text = body_data.get('instruction_text', '')
             important_notes = body_data.get('important_notes', '')
             contact_info = body_data.get('contact_info', '')
@@ -107,11 +108,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if existing:
                     # Обновляем существующую
                     instruction_id = existing[0]
+                    pdf_array = "ARRAY[" + ','.join(["'" + pdf.replace("'", "''") + "'" for pdf in pdf_files]) + "]" if pdf_files else "ARRAY[]::text[]"
                     cur.execute(
                         "UPDATE check_in_instructions SET " +
                         "title = '" + title.replace("'", "''") + "', " +
                         "description = '" + description.replace("'", "''") + "', " +
                         "images = ARRAY[" + ','.join(["'" + img.replace("'", "''") + "'" for img in images]) + "], " +
+                        "pdf_files = " + pdf_array + ", " +
                         "instruction_text = '" + instruction_text.replace("'", "''") + "', " +
                         "important_notes = '" + important_notes.replace("'", "''") + "', " +
                         "contact_info = '" + contact_info.replace("'", "''") + "', " +
@@ -127,12 +130,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     instruction_id = str(uuid.uuid4())
                     
                     images_array = "ARRAY[" + ','.join(["'" + img.replace("'", "''") + "'" for img in images]) + "]" if images else "ARRAY[]::text[]"
+                    pdf_array = "ARRAY[" + ','.join(["'" + pdf.replace("'", "''") + "'" for pdf in pdf_files]) + "]" if pdf_files else "ARRAY[]::text[]"
                     
                     cur.execute(
                         "INSERT INTO check_in_instructions " +
-                        "(id, apartment_id, title, description, images, instruction_text, important_notes, contact_info, wifi_info, parking_info, house_rules, created_at, updated_at) " +
+                        "(id, apartment_id, title, description, images, pdf_files, instruction_text, important_notes, contact_info, wifi_info, parking_info, house_rules, created_at, updated_at) " +
                         "VALUES ('" + instruction_id + "', '" + apartment_id + "', '" + title.replace("'", "''") + "', '" + 
-                        description.replace("'", "''") + "', " + images_array + ", '" + instruction_text.replace("'", "''") + "', '" + 
+                        description.replace("'", "''") + "', " + images_array + ", " + pdf_array + ", '" + instruction_text.replace("'", "''") + "', '" + 
                         important_notes.replace("'", "''") + "', '" + contact_info.replace("'", "''") + "', '" + wifi_info.replace("'", "''") + "', '" + 
                         parking_info.replace("'", "''") + "', '" + house_rules.replace("'", "''") + "', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
                     )

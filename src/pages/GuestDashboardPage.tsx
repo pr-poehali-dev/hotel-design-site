@@ -21,6 +21,7 @@ interface CheckInInstruction {
   title: string;
   description?: string;
   images: string[];
+  pdf_files?: string[];
   instruction_text?: string;
   important_notes?: string;
   contact_info?: string;
@@ -59,6 +60,7 @@ const GuestDashboardPage = () => {
             title: data.title || 'Добро пожаловать!',
             description: data.description,
             images: data.images || [],
+            pdf_files: data.pdf_files || [],
             instruction_text: data.instruction_text,
             important_notes: data.important_notes,
             contact_info: data.contact_info,
@@ -72,6 +74,7 @@ const GuestDashboardPage = () => {
             title: 'Добро пожаловать!',
             description: 'Инструкции по заселению скоро будут добавлены',
             images: [],
+            pdf_files: [],
           });
         }
       } catch (error) {
@@ -80,6 +83,7 @@ const GuestDashboardPage = () => {
           title: 'Добро пожаловать!',
           description: 'Инструкции по заселению скоро будут добавлены',
           images: [],
+          pdf_files: [],
         });
       }
 
@@ -182,7 +186,7 @@ const GuestDashboardPage = () => {
 
         {instruction && (
           <Tabs defaultValue="instruction" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="instruction">
                 <Icon name="Info" size={16} className="mr-2" />
                 Инструкция
@@ -191,12 +195,16 @@ const GuestDashboardPage = () => {
                 <Icon name="Image" size={16} className="mr-2" />
                 Фото
               </TabsTrigger>
+              <TabsTrigger value="documents">
+                <Icon name="FileText" size={16} className="mr-2" />
+                Документы
+              </TabsTrigger>
               <TabsTrigger value="contacts">
                 <Icon name="Phone" size={16} className="mr-2" />
                 Контакты
               </TabsTrigger>
               <TabsTrigger value="rules">
-                <Icon name="FileText" size={16} className="mr-2" />
+                <Icon name="BookOpen" size={16} className="mr-2" />
                 Правила
               </TabsTrigger>
             </TabsList>
@@ -280,6 +288,43 @@ const GuestDashboardPage = () => {
                     <div className="text-center py-12 text-gray-500">
                       <Icon name="Image" size={48} className="mx-auto mb-4 text-gray-300" />
                       <p>Фотографии скоро появятся</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="documents" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Документы и инструкции</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {instruction.pdf_files && instruction.pdf_files.length > 0 ? (
+                    <div className="space-y-3">
+                      {instruction.pdf_files.map((pdf, idx) => (
+                        <a
+                          key={idx}
+                          href={pdf}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                        >
+                          <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                            <Icon name="FileText" size={24} className="text-red-600" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">Документ {idx + 1}</p>
+                            <p className="text-sm text-gray-500 truncate">{pdf}</p>
+                          </div>
+                          <Icon name="Download" size={20} className="text-gray-400 group-hover:text-gold-500 transition-colors" />
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-gray-500">
+                      <Icon name="FileText" size={48} className="mx-auto mb-4 text-gray-300" />
+                      <p>Документы пока не добавлены</p>
                     </div>
                   )}
                 </CardContent>

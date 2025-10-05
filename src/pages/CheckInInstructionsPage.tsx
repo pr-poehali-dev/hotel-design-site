@@ -22,6 +22,7 @@ interface CheckInInstruction {
   title: string;
   description?: string;
   images: string[];
+  pdf_files?: string[];
   instruction_text?: string;
   important_notes?: string;
   contact_info?: string;
@@ -34,11 +35,13 @@ const CheckInInstructionsPage = () => {
   const { toast } = useToast();
   const [selectedApartment, setSelectedApartment] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [pdfUrl, setPdfUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<CheckInInstruction>>({
     title: '',
     description: '',
     images: [],
+    pdf_files: [],
     instruction_text: '',
     important_notes: '',
     contact_info: '',
@@ -66,6 +69,7 @@ const CheckInInstructionsPage = () => {
           title: data.title || '',
           description: data.description || '',
           images: data.images || [],
+          pdf_files: data.pdf_files || [],
           instruction_text: data.instruction_text || '',
           important_notes: data.important_notes || '',
           contact_info: data.contact_info || '',
@@ -86,6 +90,7 @@ const CheckInInstructionsPage = () => {
       title: '',
       description: '',
       images: [],
+      pdf_files: [],
       instruction_text: '',
       important_notes: '',
       contact_info: '',
@@ -122,6 +127,23 @@ const CheckInInstructionsPage = () => {
     setFormData(prev => ({
       ...prev,
       images: prev.images?.filter((_, i) => i !== index) || [],
+    }));
+  };
+
+  const handleAddPdf = () => {
+    if (pdfUrl.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        pdf_files: [...(prev.pdf_files || []), pdfUrl.trim()],
+      }));
+      setPdfUrl('');
+    }
+  };
+
+  const handleRemovePdf = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      pdf_files: prev.pdf_files?.filter((_, i) => i !== index) || [],
     }));
   };
 
@@ -258,6 +280,47 @@ const CheckInInstructionsPage = () => {
                           size="sm"
                           className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                           onClick={() => handleRemoveImage(idx)}
+                        >
+                          <Icon name="X" size={16} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>PDF документы</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={pdfUrl}
+                    onChange={(e) => setPdfUrl(e.target.value)}
+                    placeholder="Вставьте ссылку на PDF файл"
+                  />
+                  <Button type="button" onClick={handleAddPdf}>
+                    <Icon name="Plus" size={18} className="mr-2" />
+                    Добавить
+                  </Button>
+                </div>
+                {formData.pdf_files && formData.pdf_files.length > 0 && (
+                  <div className="space-y-2 mt-4">
+                    {formData.pdf_files.map((pdf, idx) => (
+                      <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg group">
+                        <Icon name="FileText" size={20} className="text-red-600" />
+                        <a 
+                          href={pdf} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex-1 text-sm text-blue-600 hover:underline truncate"
+                        >
+                          {pdf}
+                        </a>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => handleRemovePdf(idx)}
                         >
                           <Icon name="X" size={16} />
                         </Button>
