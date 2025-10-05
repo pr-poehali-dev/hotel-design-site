@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Header from '@/components/sections/Header';
 import HeroSection from '@/components/sections/HeroSection';
+import ApartmentsSlider from '@/components/sections/ApartmentsSlider';
 import RoomsSection from '@/components/sections/RoomsSection';
 import VideoSliderSection from '@/components/sections/VideoSliderSection';
 import BookingSection from '@/components/sections/BookingSection';
@@ -56,6 +57,7 @@ const Index = () => {
       {currentSection === 'home' && (
         <>
           <HeroSection onNavigate={setCurrentSection} />
+          <ApartmentsSlider onNavigate={setCurrentSection} />
           <BookingPromoSection />
           <CulturalSliderSection />
         </>
