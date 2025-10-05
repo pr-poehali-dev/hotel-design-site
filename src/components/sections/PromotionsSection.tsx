@@ -42,15 +42,6 @@ const PromotionsSection = () => {
       color: 'from-purple-500 to-pink-500'
     },
     {
-      id: '4',
-      title: 'Фотоконкурс',
-      description: 'Сделайте лучшее фото из апартаментов и выиграйте сертификат на 5000₽',
-      discount: '5000₽',
-      icon: 'Camera',
-      type: 'new',
-      color: 'from-green-500 to-emerald-500'
-    },
-    {
       id: '5',
       title: 'Отзыв = скидка',
       description: 'Оставьте развернутый отзыв и получите промокод на 20% скидку при следующем бронировании',
