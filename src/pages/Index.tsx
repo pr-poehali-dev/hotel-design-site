@@ -7,6 +7,7 @@ import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
 import ProfileSection from '@/components/sections/ProfileSection';
 import PromotionsSection from '@/components/sections/PromotionsSection';
+import CulturalActivitiesSection from '@/components/sections/CulturalActivitiesSection';
 import Footer from '@/components/sections/Footer';
 import FallingLeaves from '@/components/effects/FallingLeaves';
 import { rooms } from '@/data/roomsData';
@@ -20,6 +21,7 @@ const Index = () => {
     { id: 'home', label: 'Главная', icon: 'Home' },
     { id: 'rooms', label: 'Апартаменты', icon: 'Bed' },
     { id: 'promotions', label: 'Акции', icon: 'Gift' },
+    { id: 'culture', label: 'Афиша', icon: 'Ticket' },
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
     { id: 'profile', label: 'Личный кабинет', icon: 'User' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
@@ -64,6 +66,8 @@ const Index = () => {
       )}
 
       {currentSection === 'promotions' && <PromotionsSection />}
+
+      {currentSection === 'culture' && <CulturalActivitiesSection />}
 
       {currentSection === 'booking' && <BookingSection />}
 
