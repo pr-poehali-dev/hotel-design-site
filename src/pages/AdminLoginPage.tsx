@@ -19,7 +19,7 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     // Проверка логина и пароля
-    if (login === 'admin' && password === 'admin123') {
+    if (login === 'hab-agent@mail.ru' && password === '3Dyzaape29938172') {
       // Сохраняем статус авторизации
       localStorage.setItem('adminAuthenticated', 'true');
       
