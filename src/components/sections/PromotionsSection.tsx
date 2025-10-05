@@ -19,6 +19,7 @@ const PromotionsSection = () => {
     minutes: 0,
     seconds: 0
   });
+  const [isExpired, setIsExpired] = useState(false);
 
   const promotions: Promotion[] = [
     {
@@ -92,6 +93,9 @@ const PromotionsSection = () => {
           minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
           seconds: Math.floor((difference % (1000 * 60)) / 1000)
         });
+        setIsExpired(false);
+      } else {
+        setIsExpired(true);
       }
     }, 1000);
 
@@ -141,40 +145,42 @@ const PromotionsSection = () => {
         </p>
       </div>
 
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl p-8 mb-12 shadow-2xl">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Icon name="Clock" size={24} />
-              <span className="text-sm font-semibold uppercase tracking-wider">Ограниченное предложение</span>
+      {!isExpired && (
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl p-8 mb-12 shadow-2xl">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <Icon name="Clock" size={24} />
+                <span className="text-sm font-semibold uppercase tracking-wider">Ограниченное предложение</span>
+              </div>
+              <h3 className="text-3xl font-playfair font-bold mb-2">
+                Октябрьская распродажа
+              </h3>
+              <p className="text-white/90">
+                Успейте забронировать со скидкой до 10 октября!
+              </p>
             </div>
-            <h3 className="text-3xl font-playfair font-bold mb-2">
-              Октябрьская распродажа
-            </h3>
-            <p className="text-white/90">
-              Успейте забронировать со скидкой до конца месяца!
-            </p>
-          </div>
-          <div className="flex gap-4">
-            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-              <div className="text-3xl font-bold">{timeLeft.days}</div>
-              <div className="text-xs uppercase">дней</div>
-            </div>
-            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-              <div className="text-3xl font-bold">{timeLeft.hours}</div>
-              <div className="text-xs uppercase">часов</div>
-            </div>
-            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-              <div className="text-3xl font-bold">{timeLeft.minutes}</div>
-              <div className="text-xs uppercase">минут</div>
-            </div>
-            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-              <div className="text-3xl font-bold">{timeLeft.seconds}</div>
-              <div className="text-xs uppercase">секунд</div>
+            <div className="flex gap-4">
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
+                <div className="text-3xl font-bold">{timeLeft.days}</div>
+                <div className="text-xs uppercase">дней</div>
+              </div>
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
+                <div className="text-3xl font-bold">{timeLeft.hours}</div>
+                <div className="text-xs uppercase">часов</div>
+              </div>
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
+                <div className="text-3xl font-bold">{timeLeft.minutes}</div>
+                <div className="text-xs uppercase">минут</div>
+              </div>
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
+                <div className="text-3xl font-bold">{timeLeft.seconds}</div>
+                <div className="text-xs uppercase">секунд</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {promotions.map((promo) => (
