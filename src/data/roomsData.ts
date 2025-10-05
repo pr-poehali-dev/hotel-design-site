@@ -228,6 +228,7 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/files/0a1e44a0-1527-4d9c-97d9-8606c618a060.jpeg',
       'https://cdn.poehali.dev/files/53963eb0-646a-4c7e-8f45-dd083ee7b06f.jpeg'
     ],
+    video: 'https://rutube.ru/play/embed/6e52bebaee7a4ed67e5225ce03d11086',
     description: `Премиум апартаменты площадью 55 кв.м на 13 этаже с изысканным дизайном в светлых тонах и панорамными окнами.
 
 Апартаменты включают:
