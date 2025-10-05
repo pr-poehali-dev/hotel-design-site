@@ -207,14 +207,23 @@ const FortuneWheelPage = () => {
               </div>
             )}
 
-            <div className="text-center mt-6">
-              <button
-                onClick={() => setShowQRInfo(!showQRInfo)}
-                className="text-gold-600 font-semibold hover:text-gold-700 flex items-center gap-2 mx-auto"
+            <div className="text-center mt-6 space-y-3">
+              <a
+                href="/my-promo-codes"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow"
               >
-                <Icon name="QrCode" size={20} />
-                Как получить доступ к колесу?
-              </button>
+                <Icon name="Ticket" size={20} />
+                Посмотреть мои промокоды
+              </a>
+              <div>
+                <button
+                  onClick={() => setShowQRInfo(!showQRInfo)}
+                  className="text-gold-600 font-semibold hover:text-gold-700 flex items-center gap-2 mx-auto"
+                >
+                  <Icon name="QrCode" size={20} />
+                  Как получить доступ к колесу?
+                </button>
+              </div>
             </div>
           </div>
 
