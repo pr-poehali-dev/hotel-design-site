@@ -8,6 +8,7 @@ import ContactsSection from '@/components/sections/ContactsSection';
 import ProfileSection from '@/components/sections/ProfileSection';
 import PromotionsSection from '@/components/sections/PromotionsSection';
 import CulturalActivitiesSection from '@/components/sections/CulturalActivitiesSection';
+import CulturalSliderSection from '@/components/sections/CulturalSliderSection';
 import Footer from '@/components/sections/Footer';
 import FallingLeaves from '@/components/effects/FallingLeaves';
 import { rooms } from '@/data/roomsData';
@@ -53,7 +54,10 @@ const Index = () => {
       />
 
       {currentSection === 'home' && (
-        <HeroSection onNavigate={setCurrentSection} />
+        <>
+          <HeroSection onNavigate={setCurrentSection} />
+          <CulturalSliderSection />
+        </>
       )}
 
       {currentSection === 'rooms' && (
