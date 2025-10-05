@@ -7,6 +7,7 @@ import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
 import ProfileSection from '@/components/sections/ProfileSection';
 import Footer from '@/components/sections/Footer';
+import FallingLeaves from '@/components/effects/FallingLeaves';
 import { rooms } from '@/data/roomsData';
 
 const Index = () => {
@@ -40,6 +41,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-charcoal-50 to-white">
+      <FallingLeaves />
       <Header 
         navigation={navigation}
         currentSection={currentSection}
