@@ -7,7 +7,6 @@ import AddRoomForm from '@/components/housekeeping/AddRoomForm';
 import RoomsTable from '@/components/housekeeping/RoomsTable';
 import HistoryPanel from '@/components/housekeeping/HistoryPanel';
 import LoginForm from '@/components/auth/LoginForm';
-import UserManagement from '@/components/auth/UserManagement';
 import HousekeepersManager from '@/components/housekeeping/HousekeepersManager';
 import PageHeader from '@/components/housekeeping/PageHeader';
 import PaymentsReport from '@/components/housekeeping/PaymentsReport';
@@ -19,12 +18,8 @@ import { useHistory } from '@/hooks/useHistory';
 const HousekeepingTable = () => {
   const {
     user,
-    users,
     loginError,
     handleLogin,
-    handleAddUser,
-    handleDeleteUser,
-    handleUpdateUser,
     handleLogout,
   } = useAuth();
 

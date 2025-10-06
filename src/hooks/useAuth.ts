@@ -19,7 +19,6 @@ export const useAuth = () => {
   });
   
   const [loginError, setLoginError] = useState('');
-  const [users, setUsers] = useState<StoredUser[]>([]);
 
   const handleLogin = async (username: string, password: string) => {
     console.log('=== ПОПЫТКА ВХОДА ЧЕРЕЗ API ===');
@@ -63,7 +62,6 @@ export const useAuth = () => {
 
   return {
     user,
-    users,
     loginError,
     handleLogin,
     handleLogout,
