@@ -41,6 +41,7 @@ const HousekeepingTable = () => {
     startEditRoom,
     saveEditRoom,
     updateRoomField,
+    loading: roomsLoading
   } = useRooms();
 
   const {
@@ -49,6 +50,7 @@ const HousekeepingTable = () => {
     setNewHousekeeperName,
     addHousekeeper,
     deleteHousekeeper,
+    loading: housekeepersLoading
   } = useHousekeepers(rooms, setRooms);
 
   const {
@@ -87,6 +89,17 @@ const HousekeepingTable = () => {
   }
 
   const isAdmin = user?.role === 'admin' || false;
+
+  if (roomsLoading || housekeepersLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg">Загрузка данных...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 py-8 px-4">

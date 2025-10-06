@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Room } from '@/components/housekeeping/types';
 
+const API_URL = 'https://functions.poehali.dev/2bfc831a-ddc0-4387-9025-124ea0b2b58f';
+
 const INITIAL_ROOMS: Room[] = [
   {
     id: '1',
@@ -61,19 +63,8 @@ const INITIAL_ROOMS: Room[] = [
 ];
 
 export const useRooms = () => {
-  const [rooms, setRooms] = useState<Room[]>(() => {
-    const savedRooms = localStorage.getItem('housekeeping_current');
-    if (savedRooms) {
-      try {
-        return JSON.parse(savedRooms);
-      } catch (e) {
-        console.error('Error loading rooms:', e);
-        return INITIAL_ROOMS;
-      }
-    }
-    return INITIAL_ROOMS;
-  });
-  
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editingRoomId, setEditingRoomId] = useState<string | null>(null);
   const [newRoom, setNewRoom] = useState<Partial<Room>>({
     number: '',
@@ -88,26 +79,89 @@ export const useRooms = () => {
     paymentStatus: 'unpaid'
   });
 
+  // Загрузка комнат с сервера
+  const loadRooms = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}?action=rooms`);
+      if (!response.ok) throw new Error('Failed to load rooms');
+      const data = await response.json();
+      
+      if (data.rooms && data.rooms.length > 0) {
+        setRooms(data.rooms);
+      } else {
+        // Если БД пустая, инициализируем начальными данными
+        console.log('🔄 Инициализация БД начальными данными');
+        for (const room of INITIAL_ROOMS) {
+          await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'add_room', room })
+          });
+        }
+        // Загружаем еще раз
+        const retryResponse = await fetch(`${API_URL}?action=rooms`);
+        const retryData = await retryResponse.json();
+        setRooms(retryData.rooms || []);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки комнат:', error);
+      // Fallback на localStorage если API не работает
+      const savedRooms = localStorage.getItem('housekeeping_current');
+      if (savedRooms) {
+        setRooms(JSON.parse(savedRooms));
+      } else {
+        setRooms(INITIAL_ROOMS);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    console.log('💾 Сохранение комнат в localStorage:', rooms);
-    localStorage.setItem('housekeeping_current', JSON.stringify(rooms));
+    loadRooms();
+  }, [loadRooms]);
+
+  const updateRoomStatus = useCallback(async (roomId: string, newStatus: Room['status']) => {
+    const room = rooms.find(r => r.id === roomId);
+    if (!room) return;
+
+    const updatedRoom = {
+      ...room,
+      status: newStatus,
+      lastCleaned: newStatus === 'clean' ? new Date().toLocaleString('ru-RU') : room.lastCleaned
+    };
+
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update_room', room: updatedRoom })
+      });
+      setRooms(prev => prev.map(r => r.id === roomId ? updatedRoom : r));
+    } catch (error) {
+      console.error('Ошибка обновления статуса:', error);
+    }
   }, [rooms]);
 
-  const updateRoomStatus = useCallback((roomId: string, newStatus: Room['status']) => {
-    setRooms(prevRooms => prevRooms.map(room => 
-      room.id === roomId 
-        ? { ...room, status: newStatus, lastCleaned: newStatus === 'clean' ? new Date().toLocaleString('ru-RU') : room.lastCleaned }
-        : room
-    ));
-  }, []);
+  const assignHousekeeper = useCallback(async (roomId: string, housekeeper: string) => {
+    const room = rooms.find(r => r.id === roomId);
+    if (!room) return;
 
-  const assignHousekeeper = useCallback((roomId: string, housekeeper: string) => {
-    setRooms(prevRooms => prevRooms.map(room => 
-      room.id === roomId ? { ...room, assignedTo: housekeeper } : room
-    ));
-  }, []);
+    const updatedRoom = { ...room, assignedTo: housekeeper };
 
-  const addRoom = useCallback(() => {
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update_room', room: updatedRoom })
+      });
+      setRooms(prev => prev.map(r => r.id === roomId ? updatedRoom : r));
+    } catch (error) {
+      console.error('Ошибка назначения горничной:', error);
+    }
+  }, [rooms]);
+
+  const addRoom = useCallback(async () => {
     if (!newRoom.number) {
       alert('Введите номер апартамента');
       return;
@@ -128,24 +182,42 @@ export const useRooms = () => {
       paymentStatus: newRoom.paymentStatus || 'unpaid'
     };
     
-    setRooms(prevRooms => [...prevRooms, room]);
-    setNewRoom({
-      number: '',
-      floor: 1,
-      status: 'dirty',
-      assignedTo: '',
-      checkOut: '',
-      checkIn: '',
-      priority: 'normal',
-      notes: '',
-      payment: 0,
-      paymentStatus: 'unpaid'
-    });
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add_room', room })
+      });
+      setRooms(prev => [...prev, room]);
+      setNewRoom({
+        number: '',
+        floor: 1,
+        status: 'dirty',
+        assignedTo: '',
+        checkOut: '',
+        checkIn: '',
+        priority: 'normal',
+        notes: '',
+        payment: 0,
+        paymentStatus: 'unpaid'
+      });
+    } catch (error) {
+      console.error('Ошибка добавления комнаты:', error);
+    }
   }, [newRoom]);
 
-  const deleteRoom = useCallback((roomId: string) => {
-    if (confirm('Вы уверены, что хотите удалить этот апартамент?')) {
-      setRooms(prevRooms => prevRooms.filter(room => room.id !== roomId));
+  const deleteRoom = useCallback(async (roomId: string) => {
+    if (!confirm('Вы уверены, что хотите удалить этот апартамент?')) return;
+
+    try {
+      await fetch(API_URL, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete_room', id: roomId })
+      });
+      setRooms(prev => prev.filter(room => room.id !== roomId));
+    } catch (error) {
+      console.error('Ошибка удаления комнаты:', error);
     }
   }, []);
 
@@ -157,12 +229,28 @@ export const useRooms = () => {
     setEditingRoomId(null);
   }, []);
 
-  const updateRoomField = useCallback((roomId: string, field: keyof Room, value: any) => {
-    console.log(`✏️ Обновление поля ${field} для комнаты ${roomId}:`, value);
-    setRooms(prevRooms => prevRooms.map(room => 
-      room.id === roomId ? { ...room, [field]: value } : room
-    ));
-  }, []);
+  const updateRoomField = useCallback(async (roomId: string, field: keyof Room, value: any) => {
+    const room = rooms.find(r => r.id === roomId);
+    if (!room) return;
+
+    const updatedRoom = { ...room, [field]: value };
+    
+    // Оптимистичное обновление UI
+    setRooms(prev => prev.map(r => r.id === roomId ? updatedRoom : r));
+
+    // Синхронизация с сервером
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update_room', room: updatedRoom })
+      });
+    } catch (error) {
+      console.error('Ошибка обновления поля:', error);
+      // Откатываем изменения при ошибке
+      setRooms(prev => prev.map(r => r.id === roomId ? room : r));
+    }
+  }, [rooms]);
 
   return {
     rooms,
@@ -177,5 +265,7 @@ export const useRooms = () => {
     startEditRoom,
     saveEditRoom,
     updateRoomField,
+    loading,
+    reload: loadRooms
   };
 };
