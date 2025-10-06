@@ -64,7 +64,7 @@ const BnovoBookingWidget = ({ onClose }: BnovoBookingWidgetProps) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
         <div className="sticky top-0 z-10 bg-gradient-to-r from-gold-500 to-gold-600 px-6 py-4 flex items-center justify-between shadow-md">
-          <h2 className="text-2xl font-playfair font-bold text-white">
+          <h2 className="text-lg md:text-2xl font-playfair font-bold text-white">
             Бронирование апартаментов
           </h2>
           <button
@@ -81,7 +81,7 @@ const BnovoBookingWidget = ({ onClose }: BnovoBookingWidgetProps) => {
             <div className="flex items-center justify-center py-20">
               <div className="flex flex-col items-center gap-4">
                 <div className="w-16 h-16 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-600 font-inter">Загрузка системы бронирования...</p>
+                <p className="text-sm md:text-base text-gray-600 font-inter">Загрузка системы бронирования...</p>
               </div>
             </div>
           )}

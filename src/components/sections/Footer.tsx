@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-charcoal-900 text-white py-12">
       <div className="container mx-auto px-6">
         <div className="text-center">
-          <h4 className="text-lg font-playfair font-semibold text-gold-400 mb-4">Телеграмм</h4>
+          <h4 className="text-base md:text-lg font-playfair font-semibold text-gold-400 mb-4">Телеграмм</h4>
           <div className="flex justify-center">
             <GlowIconButton 
               href="https://t.me/apartamentsmsk"
@@ -19,7 +19,7 @@ const Footer = () => {
         <div className="border-t border-charcoal-700 mt-8 pt-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="text-center md:text-left">
-              <h5 className="text-gold-400 font-playfair font-semibold mb-3">Для гостей</h5>
+              <h5 className="text-sm md:text-base text-gold-400 font-playfair font-semibold mb-3">Для гостей</h5>
               <div className="space-y-2">
                 <a 
                   href="#" 
@@ -31,7 +31,7 @@ const Footer = () => {
             </div>
 
             <div className="text-center md:text-left">
-              <h5 className="text-gold-400 font-playfair font-semibold mb-3">Для партнёров</h5>
+              <h5 className="text-sm md:text-base text-gold-400 font-playfair font-semibold mb-3">Для партнёров</h5>
               <div className="space-y-2">
                 <a 
                   href="/owner-login" 
@@ -51,7 +51,7 @@ const Footer = () => {
             </div>
 
             <div className="text-center md:text-left">
-              <h5 className="text-gold-400 font-playfair font-semibold mb-3">Администрирование</h5>
+              <h5 className="text-sm md:text-base text-gold-400 font-playfair font-semibold mb-3">Администрирование</h5>
               <div className="space-y-2">
                 <a 
                   href="/reports" 
