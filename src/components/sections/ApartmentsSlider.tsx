@@ -48,20 +48,6 @@ const ApartmentsSlider = ({ onNavigate }: ApartmentsSliderProps) => {
         </div>
 
         <div className="relative max-w-6xl mx-auto">
-          <button
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-gold-500/20 hover:bg-gold-500/40 backdrop-blur-sm text-white rounded-full p-3 transition-all duration-300 hover:scale-110 -translate-x-4"
-          >
-            <Icon name="ChevronLeft" size={28} />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-gold-500/20 hover:bg-gold-500/40 backdrop-blur-sm text-white rounded-full p-3 transition-all duration-300 hover:scale-110 translate-x-4"
-          >
-            <Icon name="ChevronRight" size={28} />
-          </button>
-
           <div className="overflow-hidden rounded-2xl">
             <div 
               className="flex transition-transform duration-500 ease-out"
