@@ -86,12 +86,28 @@ const HousekeepingTable = () => {
   }, [user, reloadRooms, reloadHousekeepers]);
 
   const filteredRooms = useMemo(() => {
+    console.log('Фильтрация комнат:', {
+      totalRooms: rooms.length,
+      user: user,
+      isAdmin,
+      filter,
+      selectedHousekeeper
+    });
+    
     return rooms.filter(room => {
       const statusMatch = filter === 'all' || room.status === filter;
       
       // Для горничных показываем только их апартаменты
       if (!isAdmin && user?.role === 'housekeeper') {
-        return statusMatch && room.assignedTo === user.username;
+        const match = statusMatch && room.assignedTo === user.username;
+        console.log('Проверка комнаты для горничной:', {
+          roomNumber: room.number,
+          roomAssignedTo: room.assignedTo,
+          username: user.username,
+          statusMatch,
+          finalMatch: match
+        });
+        return match;
       }
       
       // Для админа работает обычный фильтр

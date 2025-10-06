@@ -36,6 +36,8 @@ export const useAuth = () => {
   });
 
   const handleLogin = (username: string, password: string) => {
+    console.log('Попытка входа:', { username, availableUsers: users });
+    
     const foundUser = users.find(
       u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
     );
@@ -45,10 +47,12 @@ export const useAuth = () => {
         username: foundUser.housekeeperName || foundUser.username, 
         role: foundUser.role 
       };
+      console.log('Успешный вход:', { foundUser, userToSave });
       setUser(userToSave);
       setLoginError('');
       localStorage.setItem('housekeeping_user', JSON.stringify(userToSave));
     } else {
+      console.log('Неверный логин или пароль');
       setLoginError('Неверный логин или пароль');
     }
   };
