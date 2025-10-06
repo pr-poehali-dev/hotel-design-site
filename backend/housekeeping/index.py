@@ -44,7 +44,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # GET - получение данных
         if method == 'GET':
             if action == 'rooms':
-                cur.execute('SELECT * FROM rooms ORDER BY floor, number')
+                cur.execute('''
+                    SELECT id, number, floor, status, assigned_to, last_cleaned, 
+                           urgent, notes, payment, payment_status, created_at, updated_at 
+                    FROM rooms ORDER BY floor, number
+                ''')
                 rooms = [dict(row) for row in cur.fetchall()]
                 # Конвертируем datetime в строки
                 for room in rooms:
@@ -75,7 +79,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             else:
                 # Возвращаем всё сразу
-                cur.execute('SELECT * FROM rooms ORDER BY floor, number')
+                cur.execute('''
+                    SELECT id, number, floor, status, assigned_to, last_cleaned, 
+                           urgent, notes, payment, payment_status, created_at, updated_at 
+                    FROM rooms ORDER BY floor, number
+                ''')
                 rooms = [dict(row) for row in cur.fetchall()]
                 for room in rooms:
                     if room.get('last_cleaned'):
@@ -104,13 +112,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if action == 'add_room':
                 room = body_data.get('room', {})
                 cur.execute('''
-                    INSERT INTO rooms (id, number, floor, status, assigned_to, check_out, check_in, priority, notes, payment, payment_status, last_cleaned)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+                    INSERT INTO rooms (id, number, floor, status, assigned_to, urgent, notes, payment, payment_status, last_cleaned)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
                 ''', (
                     room['id'], room['number'], room['floor'], room['status'],
-                    room.get('assignedTo', ''), room.get('checkOut', ''), room.get('checkIn', ''),
-                    room.get('priority', 'normal'), room.get('notes', ''),
-                    room.get('payment', 0), room.get('paymentStatus', 'unpaid')
+                    room.get('assignedTo', ''), room.get('urgent', False),
+                    room.get('notes', ''), room.get('payment', 0), room.get('paymentStatus', 'unpaid')
                 ))
                 conn.commit()
                 return {
@@ -129,15 +136,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 cur.execute(f'''
                     UPDATE rooms 
                     SET number = %s, floor = %s, status = %s, assigned_to = %s,
-                        check_out = %s, check_in = %s, priority = %s, notes = %s,
-                        payment = %s, payment_status = %s, updated_at = CURRENT_TIMESTAMP
+                        urgent = %s, notes = %s, payment = %s, payment_status = %s, 
+                        updated_at = CURRENT_TIMESTAMP
                         {last_cleaned_sql}
                     WHERE id = %s
                 ''', (
                     room['number'], room['floor'], room['status'],
-                    room.get('assignedTo', ''), room.get('checkOut', ''), room.get('checkIn', ''),
-                    room.get('priority', 'normal'), room.get('notes', ''),
-                    room.get('payment', 0), room.get('paymentStatus', 'unpaid'), room_id
+                    room.get('assignedTo', ''), room.get('urgent', False), 
+                    room.get('notes', ''), room.get('payment', 0), 
+                    room.get('paymentStatus', 'unpaid'), room_id
                 ))
                 conn.commit()
                 return {

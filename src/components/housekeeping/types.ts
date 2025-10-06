@@ -5,9 +5,7 @@ export interface Room {
   status: 'clean' | 'dirty' | 'in-progress' | 'inspection' | 'turnover' | 'occupied';
   assignedTo: string;
   lastCleaned: string;
-  checkOut: string;
-  checkIn: string;
-  priority: 'high' | 'normal' | 'low';
+  urgent: boolean;
   notes: string;
   payment?: number;
   paymentStatus?: 'paid' | 'unpaid';

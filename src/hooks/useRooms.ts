@@ -3,6 +3,20 @@ import { Room } from '@/components/housekeeping/types';
 
 const API_URL = 'https://functions.poehali.dev/2bfc831a-ddc0-4387-9025-124ea0b2b58f';
 
+// Маппинг полей из БД (snake_case) в формат фронтенда (camelCase)
+const mapRoomFromDB = (dbRoom: any): Room => ({
+  id: dbRoom.id,
+  number: dbRoom.number,
+  floor: dbRoom.floor,
+  status: dbRoom.status,
+  assignedTo: dbRoom.assigned_to || '',
+  lastCleaned: dbRoom.last_cleaned || '',
+  urgent: dbRoom.urgent || false,
+  notes: dbRoom.notes || '',
+  payment: dbRoom.payment || 0,
+  paymentStatus: dbRoom.payment_status || 'unpaid'
+});
+
 const INITIAL_ROOMS: Room[] = [
   {
     id: '1',
@@ -11,9 +25,7 @@ const INITIAL_ROOMS: Room[] = [
     status: 'dirty',
     assignedTo: '',
     lastCleaned: '2025-10-04 14:30',
-    checkOut: '12:00',
-    checkIn: '15:00',
-    priority: 'high',
+    urgent: true,
     notes: '',
     payment: 0,
     paymentStatus: 'unpaid'
@@ -25,9 +37,7 @@ const INITIAL_ROOMS: Room[] = [
     status: 'clean',
     assignedTo: 'Мария',
     lastCleaned: '2025-10-05 10:15',
-    checkOut: '',
-    checkIn: '16:00',
-    priority: 'normal',
+    urgent: false,
     notes: '',
     payment: 500,
     paymentStatus: 'unpaid'
@@ -39,9 +49,7 @@ const INITIAL_ROOMS: Room[] = [
     status: 'in-progress',
     assignedTo: 'Елена',
     lastCleaned: '2025-10-04 16:00',
-    checkOut: '11:00',
-    checkIn: '14:00',
-    priority: 'high',
+    urgent: true,
     notes: 'Требуется дополнительное белье',
     payment: 700,
     paymentStatus: 'paid'
@@ -53,9 +61,7 @@ const INITIAL_ROOMS: Room[] = [
     status: 'inspection',
     assignedTo: 'Ольга',
     lastCleaned: '2025-10-05 09:30',
-    checkOut: '',
-    checkIn: '',
-    priority: 'normal',
+    urgent: false,
     notes: '',
     payment: 500,
     paymentStatus: 'unpaid'
@@ -71,9 +77,7 @@ export const useRooms = () => {
     floor: 1,
     status: 'dirty',
     assignedTo: '',
-    checkOut: '',
-    checkIn: '',
-    priority: 'normal',
+    urgent: false,
     notes: '',
     payment: 0,
     paymentStatus: 'unpaid'
@@ -113,7 +117,7 @@ export const useRooms = () => {
       const data = await response.json();
       
       if (data.rooms && data.rooms.length > 0) {
-        setRooms(data.rooms);
+        setRooms(data.rooms.map(mapRoomFromDB));
       } else {
         // Проверяем localStorage и мигрируем данные
         const migrated = await migrateFromLocalStorage();
@@ -122,7 +126,7 @@ export const useRooms = () => {
           // Загружаем мигрированные данные
           const retryResponse = await fetch(`${API_URL}?action=rooms`);
           const retryData = await retryResponse.json();
-          setRooms(retryData.rooms || []);
+          setRooms((retryData.rooms || []).map(mapRoomFromDB));
         } else {
           // Если БД пустая и нет localStorage, инициализируем начальными данными
           console.log('🔄 Инициализация БД начальными данными');
@@ -135,7 +139,7 @@ export const useRooms = () => {
           }
           const retryResponse = await fetch(`${API_URL}?action=rooms`);
           const retryData = await retryResponse.json();
-          setRooms(retryData.rooms || []);
+          setRooms((retryData.rooms || []).map(mapRoomFromDB));
         }
       }
     } catch (error) {
@@ -223,9 +227,7 @@ export const useRooms = () => {
         floor: 1,
         status: 'dirty',
         assignedTo: '',
-        checkOut: '',
-        checkIn: '',
-        priority: 'normal',
+        urgent: false,
         notes: '',
         payment: 0,
         paymentStatus: 'unpaid'

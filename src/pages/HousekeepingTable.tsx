@@ -85,10 +85,17 @@ const HousekeepingTable = () => {
   const filteredRooms = useMemo(() => {
     return rooms.filter(room => {
       const statusMatch = filter === 'all' || room.status === filter;
+      
+      // Для горничных показываем только их апартаменты
+      if (!isAdmin && user?.role === 'housekeeper') {
+        return statusMatch && room.assignedTo === user.username;
+      }
+      
+      // Для админа работает обычный фильтр
       const housekeeperMatch = selectedHousekeeper === 'all' || room.assignedTo === selectedHousekeeper;
       return statusMatch && housekeeperMatch;
     });
-  }, [rooms, filter, selectedHousekeeper]);
+  }, [rooms, filter, selectedHousekeeper, isAdmin, user]);
 
   const stats = useMemo(() => ({
     total: rooms.length,
@@ -121,6 +128,20 @@ const HousekeepingTable = () => {
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <PageHeader user={user} isAdmin={isAdmin} onLogout={handleLogout} lastSync={lastSync} />
+
+        {!isAdmin && user?.role === 'housekeeper' && (
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 mb-6 shadow-xl">
+            <div className="flex items-center gap-3">
+              <Icon name="User" size={28} className="text-white" />
+              <div>
+                <h2 className="text-white text-xl font-bold">Мои закреплённые апартаменты</h2>
+                <p className="text-blue-100 text-sm mt-1">
+                  Показаны только апартаменты, закрепленные за вами: {user.username}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <StatsCards stats={stats} />
 

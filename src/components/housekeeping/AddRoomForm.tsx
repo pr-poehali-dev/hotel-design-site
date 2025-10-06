@@ -52,37 +52,16 @@ const AddRoomForm = ({ newRoom, setNewRoom, housekeepers, onSave, onCancel }: Ad
         <div>
           <label className="text-gray-400 text-sm mb-2 block">Приоритет</label>
           <select
-            value={newRoom.priority}
-            onChange={(e) => setNewRoom({ ...newRoom, priority: e.target.value as Room['priority'] })}
+            value={newRoom.urgent ? 'urgent' : 'normal'}
+            onChange={(e) => setNewRoom({ ...newRoom, urgent: e.target.value === 'urgent' })}
             className="w-full bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
           >
-            <option value="normal">Обычный</option>
-            <option value="high">Высокий</option>
-            <option value="low">Низкий</option>
+            <option value="normal">Несрочно</option>
+            <option value="urgent">Срочно</option>
           </select>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-        <div>
-          <label className="text-gray-400 text-sm mb-2 block">Время выезда</label>
-          <input
-            type="text"
-            value={newRoom.checkOut}
-            onChange={(e) => setNewRoom({ ...newRoom, checkOut: e.target.value })}
-            className="w-full bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
-            placeholder="12:00"
-          />
-        </div>
-        <div>
-          <label className="text-gray-400 text-sm mb-2 block">Время заезда</label>
-          <input
-            type="text"
-            value={newRoom.checkIn}
-            onChange={(e) => setNewRoom({ ...newRoom, checkIn: e.target.value })}
-            className="w-full bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
-            placeholder="15:00"
-          />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div>
           <label className="text-gray-400 text-sm mb-2 block">Клинер</label>
           <select

@@ -36,26 +36,15 @@ const RoomRow = memo(({
     }`}>
       <td className="px-6 py-4">
         {isEditing ? (
-          <div className="flex items-center gap-2">
-            <select
-              value={room.priority}
-              onChange={(e) => onUpdateField(room.id, 'priority', e.target.value)}
-              className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-24"
-            >
-              <option value="normal">Обычный</option>
-              <option value="high">Высокий</option>
-              <option value="low">Низкий</option>
-            </select>
-            <input
-              type="text"
-              value={room.number}
-              onChange={(e) => onUpdateField(room.id, 'number', e.target.value)}
-              className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 font-semibold w-20"
-            />
-          </div>
+          <input
+            type="text"
+            value={room.number}
+            onChange={(e) => onUpdateField(room.id, 'number', e.target.value)}
+            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 font-semibold w-20"
+          />
         ) : (
           <div className="flex items-center gap-2">
-            {room.priority === 'high' && <Icon name="AlertCircle" size={20} className="text-red-500" />}
+            {room.urgent && <Icon name="AlertCircle" size={20} className="text-red-500" />}
             <span className="text-white font-semibold text-lg">{room.number}</span>
           </div>
         )}
@@ -110,30 +99,22 @@ const RoomRow = memo(({
           </span>
         )}
       </td>
-      <td className="px-6 py-4 text-gray-300 text-sm">
+      <td className="px-6 py-4">
         {isEditing ? (
-          <input
-            type="text"
-            value={room.checkOut}
-            onChange={(e) => onUpdateField(room.id, 'checkOut', e.target.value)}
-            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-20"
-            placeholder="12:00"
-          />
+          <select
+            value={room.urgent ? 'urgent' : 'normal'}
+            onChange={(e) => onUpdateField(room.id, 'urgent', e.target.value === 'urgent')}
+            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+          >
+            <option value="normal">Несрочно</option>
+            <option value="urgent">Срочно</option>
+          </select>
         ) : (
-          room.checkOut || '—'
-        )}
-      </td>
-      <td className="px-6 py-4 text-gray-300 text-sm">
-        {isEditing ? (
-          <input
-            type="text"
-            value={room.checkIn}
-            onChange={(e) => onUpdateField(room.id, 'checkIn', e.target.value)}
-            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-20"
-            placeholder="15:00"
-          />
-        ) : (
-          room.checkIn || '—'
+          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-sm font-semibold ${
+            room.urgent ? 'bg-red-600' : 'bg-gray-600'
+          }`}>
+            {room.urgent ? 'Срочно' : 'Несрочно'}
+          </span>
         )}
       </td>
       <td className="px-6 py-4 text-gray-300 text-sm">{room.lastCleaned}</td>
