@@ -130,31 +130,116 @@ const Location = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                <span>Посуточная аренда на Поклонной 9 без переплат</span>
+                <span>Аренда премиум апартаментов на Поклонной 9</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                <span>Апартаменты на короткий срок с полным оснащением</span>
+                <span>Посуточная аренда квартир на Поклонной 9 без переплат</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                <span>ENZO отель — европейский уровень сервиса</span>
+                <span>Элитные апартаменты с полным оснащением</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
+                <span>5 звёзд — люкс апартаменты Поклонная 9</span>
               </li>
             </ul>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                <span>Рядом с метро Парк Победы и Парком Победы</span>
+                <span>Снять квартиру посуточно у метро Парк Победы</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                <span>Крокус фитнес на Поклонной 9 в пешей доступности</span>
+                <span>Краткосрочная аренда жилья на Поклонной</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                <span>Удобное расположение в г. Москва, ул. Поклонная 9</span>
+                <span>Гостиница рядом с Парком Победы в Москве</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Icon name="CheckCircle" className="text-green-400 mt-1 flex-shrink-0" size={20} />
+                <span>Удобное жильё в комплексе Поклонная 9</span>
               </li>
             </ul>
+          </div>
+        </section>
+
+        <section className="bg-charcoal-800 rounded-xl p-8 border border-gray-700">
+          <h2 className="text-3xl font-playfair text-gold-400 mb-6">
+            Популярные запросы для поиска жилья на Поклонной 9
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-4 text-sm">
+            <div className="bg-charcoal-700 p-4 rounded-lg">
+              <h3 className="font-semibold text-gold-400 mb-2">Аренда на Поклонной 9</h3>
+              <ul className="space-y-1 text-gray-300">
+                <li>• Поклонная 9 аренда квартир</li>
+                <li>• Снять квартиру Поклонная 9</li>
+                <li>• Квартира посуточно Москва Поклонная</li>
+                <li>• Жильё Поклонная 9 Москва</li>
+              </ul>
+            </div>
+
+            <div className="bg-charcoal-700 p-4 rounded-lg">
+              <h3 className="font-semibold text-gold-400 mb-2">Гостиницы и отели</h3>
+              <ul className="space-y-1 text-gray-300">
+                <li>• Гостиница Поклонная 9</li>
+                <li>• Отель у Парка Победы</li>
+                <li>• Гостиница метро Парк Победы</li>
+                <li>• ENZO отель Москва</li>
+              </ul>
+            </div>
+
+            <div className="bg-charcoal-700 p-4 rounded-lg">
+              <h3 className="font-semibold text-gold-400 mb-2">Премиум жильё</h3>
+              <ul className="space-y-1 text-gray-300">
+                <li>• Премиум апартаменты Поклонная</li>
+                <li>• 5 звезд апартаменты Москва</li>
+                <li>• Элитные апартаменты Поклонная 9</li>
+                <li>• Люкс апартаменты Парк Победы</li>
+              </ul>
+            </div>
+
+            <div className="bg-charcoal-700 p-4 rounded-lg">
+              <h3 className="font-semibold text-gold-400 mb-2">Краткосрочная аренда</h3>
+              <ul className="space-y-1 text-gray-300">
+                <li>• Посуточная аренда Поклонная 9</li>
+                <li>• Краткосрочная аренда Москва</li>
+                <li>• Апартаменты на короткий срок</li>
+                <li>• Квартира на сутки Поклонная</li>
+              </ul>
+            </div>
+
+            <div className="bg-charcoal-700 p-4 rounded-lg">
+              <h3 className="font-semibold text-gold-400 mb-2">Рядом с достопримечательностями</h3>
+              <ul className="space-y-1 text-gray-300">
+                <li>• Жильё у Парка Победы</li>
+                <li>• Отель Крокус фитнес Поклонная</li>
+                <li>• Апартаменты метро Парк Победы</li>
+                <li>• Гостиница рядом с Парком Победы</li>
+              </ul>
+            </div>
+
+            <div className="bg-charcoal-700 p-4 rounded-lg">
+              <h3 className="font-semibold text-gold-400 mb-2">Комфортное проживание</h3>
+              <ul className="space-y-1 text-gray-300">
+                <li>• Комфортные апартаменты Москва</li>
+                <li>• Уютное жильё Поклонная 9</li>
+                <li>• Апартаменты с удобствами</li>
+                <li>• Современное жильё Москва центр</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-6 p-4 bg-gold-500/10 border border-gold-500/30 rounded-lg">
+            <p className="text-center text-gray-300">
+              <strong className="text-gold-400">Ищете жильё на Поклонной 9?</strong> 
+              {' '}Вы нашли лучший вариант! ENZO отель предлагает премиум апартаменты для аренды 
+              на короткий срок и посуточно в 5* комплексе на ул. Поклонная 9 в Москве, 
+              рядом с Парком Победы и метро Парк Победы.
+            </p>
           </div>
         </section>
 
