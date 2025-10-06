@@ -9,7 +9,7 @@ interface HousekeepersManagerProps {
   setNewHousekeeperName: (name: string) => void;
   onAddHousekeeper: () => void;
   onDeleteHousekeeper: (id: number) => void;
-  onUpdateHousekeeper: (id: number, name: string, email: string) => void;
+  onUpdateHousekeeper: (id: number, name: string, email: string, password?: string) => void;
 }
 
 const HousekeepersManager = ({
@@ -23,22 +23,26 @@ const HousekeepersManager = ({
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState('');
   const [editEmail, setEditEmail] = useState('');
+  const [editPassword, setEditPassword] = useState('');
 
   const handleEdit = (housekeeper: Housekeeper) => {
     setEditingId(housekeeper.id);
     setEditName(housekeeper.name);
     setEditEmail(housekeeper.email || '');
+    setEditPassword('');
   };
 
   const handleSave = (id: number) => {
-    onUpdateHousekeeper(id, editName, editEmail);
+    onUpdateHousekeeper(id, editName, editEmail, editPassword);
     setEditingId(null);
+    setEditPassword('');
   };
 
   const handleCancel = () => {
     setEditingId(null);
     setEditName('');
     setEditEmail('');
+    setEditPassword('');
   };
 
   return (
@@ -82,6 +86,13 @@ const HousekeepersManager = ({
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
                   placeholder="Email (логин для входа)"
+                  className="w-full px-3 py-2 bg-charcoal-600 border border-gray-500 rounded text-white focus:outline-none focus:border-gold-500"
+                />
+                <input
+                  type="password"
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
+                  placeholder="Новый пароль (оставьте пустым если не меняете)"
                   className="w-full px-3 py-2 bg-charcoal-600 border border-gray-500 rounded text-white focus:outline-none focus:border-gold-500"
                 />
                 <div className="flex gap-2">

@@ -1,6 +1,6 @@
 '''
-Business: Обновление данных горничной (имя, email)
-Args: event с httpMethod, body (id, name, email)
+Business: Обновление данных горничной (имя, email, пароль)
+Args: event с httpMethod, body (id, name, email, password)
 Returns: HTTP response с обновленной горничной
 '''
 
@@ -36,6 +36,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     housekeeper_id = body_data.get('id')
     name = body_data.get('name')
     email = body_data.get('email')
+    password = body_data.get('password')
     
     if not housekeeper_id or not name:
         return {
@@ -53,19 +54,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     conn = psycopg2.connect(dsn)
+    conn.autocommit = True
     cursor = conn.cursor()
     
-    # Обновляем горничную
+    # Формируем SQL в зависимости от наличия полей
+    safe_name = name.replace("'", "''")
+    safe_email = email.replace("'", "''") if email else ''
+    safe_password = password.replace("'", "''") if password else ''
+    
+    updates = [f"name = '{safe_name}'"]
     if email:
-        cursor.execute(
-            "UPDATE housekeepers SET name = %s, email = %s WHERE id = %s RETURNING id, name, email, created_at",
-            (name, email, housekeeper_id)
-        )
-    else:
-        cursor.execute(
-            "UPDATE housekeepers SET name = %s WHERE id = %s RETURNING id, name, email, created_at",
-            (name, housekeeper_id)
-        )
+        updates.append(f"email = '{safe_email}'")
+    if password:
+        updates.append(f"password = '{safe_password}'")
+    
+    query = f"UPDATE housekeepers SET {', '.join(updates)} WHERE id = {housekeeper_id} RETURNING id, name, email, created_at"
+    cursor.execute(query)
     
     result = cursor.fetchone()
     conn.commit()

@@ -101,12 +101,17 @@ export const useHousekeepers = (rooms: Room[], setRooms: (rooms: Room[]) => void
     }
   }, [rooms, setRooms, housekeepers]);
 
-  const updateHousekeeper = useCallback(async (id: number, name: string, email: string) => {
+  const updateHousekeeper = useCallback(async (id: number, name: string, email: string, password?: string) => {
     try {
+      const body: any = { id, name, email };
+      if (password) {
+        body.password = password;
+      }
+      
       const response = await fetch(UPDATE_API_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, name, email })
+        body: JSON.stringify(body)
       });
       
       if (!response.ok) throw new Error('Failed to update housekeeper');
