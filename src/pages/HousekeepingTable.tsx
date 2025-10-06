@@ -159,13 +159,6 @@ const HousekeepingTable = () => {
 
         {isAdmin && (
           <>
-            <UserManagement
-              users={users}
-              onAddUser={handleAddUser}
-              onDeleteUser={handleDeleteUser}
-              onUpdateUser={handleUpdateUser}
-            />
-
             <div className="mb-6 flex gap-3 flex-wrap">
               <FizzyButton
                 onClick={() => {
