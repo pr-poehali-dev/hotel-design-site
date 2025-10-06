@@ -1,0 +1,21 @@
+{
+  "tests": [
+    {
+      "name": "Update housekeeper with email",
+      "method": "PUT",
+      "path": "/",
+      "body": {
+        "id": 1,
+        "name": "Test Housekeeper",
+        "email": "test@example.com"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "id": "number",
+        "name": "string",
+        "email": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { Room } from './types';
+import { Room, Housekeeper } from './types';
 import RoomRow from './RoomRow';
 
 interface RoomsTableProps {
   rooms: Room[];
-  housekeepers: string[];
+  housekeepers: Housekeeper[];
   editingRoomId: string | null;
   onUpdateStatus: (roomId: string, status: Room['status']) => void;
   onAssignHousekeeper: (roomId: string, housekeeper: string) => void;

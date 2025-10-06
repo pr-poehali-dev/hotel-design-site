@@ -1,11 +1,11 @@
 import { memo } from 'react';
 import Icon from '@/components/ui/icon';
-import { Room } from './types';
+import { Room, Housekeeper } from './types';
 import { getStatusColor, getStatusText } from './utils';
 
 interface RoomRowProps {
   room: Room;
-  housekeepers: string[];
+  housekeepers: Housekeeper[];
   editingRoomId: string | null;
   onUpdateStatus: (roomId: string, status: Room['status']) => void;
   onAssignHousekeeper: (roomId: string, housekeeper: string) => void;
@@ -90,7 +90,7 @@ const RoomRow = memo(({
           >
             <option value="">Не назначена</option>
             {housekeepers.map(hk => (
-              <option key={hk} value={hk}>{hk}</option>
+              <option key={hk.id} value={hk.name}>{hk.name}</option>
             ))}
           </select>
         ) : (

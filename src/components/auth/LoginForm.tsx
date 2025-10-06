@@ -102,7 +102,7 @@ const LoginForm = ({ onLogin, error }: LoginFormProps) => {
               <span className="font-semibold">Администратор:</span> hab-agent@mail.ru
             </p>
             <p className="text-gray-300">
-              <span className="font-semibold">Горничная:</span> Савастеева Марина / 89261781426
+              <span className="font-semibold">Горничная:</span> savasteeva020202@yandex.ru / 89261781426
             </p>
           </div>
         </div>

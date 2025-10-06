@@ -1,13 +1,13 @@
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
-import { Room } from './types';
+import { Room, Housekeeper } from './types';
 
 interface FilterBarProps {
   filter: 'all' | Room['status'];
   setFilter: (filter: 'all' | Room['status']) => void;
   selectedHousekeeper: string;
   setSelectedHousekeeper: (housekeeper: string) => void;
-  housekeepers: string[];
+  housekeepers: Housekeeper[];
   onAddRoom?: () => void;
 }
 
@@ -86,7 +86,7 @@ const FilterBar = ({
             >
               <option value="all">Все клинеры</option>
               {housekeepers.map(hk => (
-                <option key={hk} value={hk}>{hk}</option>
+                <option key={hk.id} value={hk.name}>{hk.name}</option>
               ))}
             </select>
           </div>

@@ -35,4 +35,12 @@ export interface StoredUser {
   username: string;
   password: string;
   role: 'admin' | 'housekeeper';
+  housekeeperName?: string; // Привязка к имени горничной
+}
+
+export interface Housekeeper {
+  id: number;
+  name: string;
+  email?: string;
+  created_at: string;
 }

@@ -51,6 +51,7 @@ const HousekeepingTable = () => {
     setNewHousekeeperName,
     addHousekeeper,
     deleteHousekeeper,
+    updateHousekeeper,
     loading: housekeepersLoading,
     reload: reloadHousekeepers
   } = useHousekeepers(rooms, setRooms);
@@ -90,14 +91,7 @@ const HousekeepingTable = () => {
       
       // Для горничных показываем только их апартаменты
       if (!isAdmin && user?.role === 'housekeeper') {
-        const match = statusMatch && room.assignedTo === user.username;
-        console.log('Фильтр для горничной:', { 
-          username: user.username, 
-          roomAssignedTo: room.assignedTo, 
-          roomNumber: room.number,
-          match 
-        });
-        return match;
+        return statusMatch && room.assignedTo === user.username;
       }
       
       // Для админа работает обычный фильтр
@@ -204,6 +198,7 @@ const HousekeepingTable = () => {
             setNewHousekeeperName={setNewHousekeeperName}
             onAddHousekeeper={addHousekeeper}
             onDeleteHousekeeper={deleteHousekeeper}
+            onUpdateHousekeeper={updateHousekeeper}
           />
         )}
 

@@ -1,11 +1,11 @@
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
-import { Room } from './types';
+import { Room, Housekeeper } from './types';
 
 interface AddRoomFormProps {
   newRoom: Partial<Room>;
   setNewRoom: (room: Partial<Room>) => void;
-  housekeepers: string[];
+  housekeepers: Housekeeper[];
   onSave: () => void;
   onCancel: () => void;
 }
@@ -71,7 +71,7 @@ const AddRoomForm = ({ newRoom, setNewRoom, housekeepers, onSave, onCancel }: Ad
           >
             <option value="">Не назначен</option>
             {housekeepers.map(hk => (
-              <option key={hk} value={hk}>{hk}</option>
+              <option key={hk.id} value={hk.name}>{hk.name}</option>
             ))}
           </select>
         </div>

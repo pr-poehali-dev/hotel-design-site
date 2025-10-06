@@ -3,10 +3,7 @@ import { User, StoredUser } from '@/components/housekeeping/types';
 
 export const DEFAULT_USERS: StoredUser[] = [
   { username: 'hab-agent@mail.ru', password: '3Dyzaape29938172', role: 'admin' },
-  { username: 'Савастеева Марина', password: '89261781426', role: 'housekeeper' },
-  { username: 'Иванченко Ольга', password: '89261781426', role: 'housekeeper' },
-  { username: 'Солонина Александра', password: '89261781426', role: 'housekeeper' },
-  { username: 'Шарова Диана', password: '89261781426', role: 'housekeeper' },
+  { username: 'savasteeva020202@yandex.ru', password: '89261781426', role: 'housekeeper', housekeeperName: 'Савастеева Марина' },
 ];
 
 export const useAuth = () => {
@@ -44,9 +41,13 @@ export const useAuth = () => {
     );
     
     if (foundUser) {
-      setUser({ username: foundUser.username, role: foundUser.role });
+      const userToSave = { 
+        username: foundUser.housekeeperName || foundUser.username, 
+        role: foundUser.role 
+      };
+      setUser(userToSave);
       setLoginError('');
-      localStorage.setItem('housekeeping_user', JSON.stringify({ username: foundUser.username, role: foundUser.role }));
+      localStorage.setItem('housekeeping_user', JSON.stringify(userToSave));
     } else {
       setLoginError('Неверный логин или пароль');
     }

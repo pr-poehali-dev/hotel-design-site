@@ -69,8 +69,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             elif action == 'housekeepers':
-                cur.execute('SELECT name FROM housekeepers ORDER BY name')
-                housekeepers = [row['name'] for row in cur.fetchall()]
+                cur.execute('SELECT id, name, email, created_at FROM housekeepers ORDER BY name')
+                housekeepers = []
+                for row in cur.fetchall():
+                    hk = dict(row)
+                    if hk.get('created_at'):
+                        hk['created_at'] = hk['created_at'].isoformat()
+                    housekeepers.append(hk)
                 return {
                     'statusCode': 200,
                     'headers': cors_headers,
@@ -95,8 +100,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     if room.get('payment') is not None:
                         room['payment'] = float(room['payment'])
                 
-                cur.execute('SELECT name FROM housekeepers ORDER BY name')
-                housekeepers = [row['name'] for row in cur.fetchall()]
+                cur.execute('SELECT id, name, email, created_at FROM housekeepers ORDER BY name')
+                housekeepers = []
+                for row in cur.fetchall():
+                    hk = dict(row)
+                    if hk.get('created_at'):
+                        hk['created_at'] = hk['created_at'].isoformat()
+                    housekeepers.append(hk)
                 
                 return {
                     'statusCode': 200,
