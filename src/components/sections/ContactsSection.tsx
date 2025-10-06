@@ -7,17 +7,17 @@ const ContactsSection = () => {
     <section className="py-20 min-h-screen bg-gradient-to-br from-charcoal-900 to-charcoal-800">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-playfair font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-4">
             Наши <span className="text-gold-400">Контакты</span>
           </h2>
-          <p className="text-xl text-gray-300 font-inter max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-gray-300 font-inter max-w-2xl mx-auto">
             Свяжитесь с нами для бронирования или получения дополнительной информации
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
           <Card className="p-8 bg-white shadow-2xl border-0">
-            <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-6">Контактная информация</h3>
+            <h3 className="text-xl md:text-2xl font-playfair font-bold text-charcoal-900 mb-6">Контактная информация</h3>
             <div className="space-y-6">
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gold-500 rounded-lg flex items-center justify-center">
@@ -74,7 +74,7 @@ const ContactsSection = () => {
           </Card>
 
           <Card className="p-8 bg-white shadow-2xl border-0">
-            <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-6">Связаться с нами</h3>
+            <h3 className="text-xl md:text-2xl font-playfair font-bold text-charcoal-900 mb-6">Связаться с нами</h3>
             <div className="space-y-4">
               <p className="text-charcoal-600 font-inter mb-6">
                 Напишите нам в WhatsApp для быстрой связи

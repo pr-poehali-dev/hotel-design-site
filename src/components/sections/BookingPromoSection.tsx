@@ -51,13 +51,13 @@ const BookingPromoSection = () => {
               </div>
             </div>
             
-            <h2 className={`text-4xl md:text-5xl font-playfair font-bold text-white mb-4 transition-all duration-1000 delay-300 ${
+            <h2 className={`text-3xl md:text-5xl font-playfair font-bold text-white mb-4 transition-all duration-1000 delay-300 ${
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
             }`}>
               Готовы забронировать?
             </h2>
             
-            <p className={`text-xl text-gray-300 mb-8 font-inter leading-relaxed transition-all duration-1000 delay-500 ${
+            <p className={`text-base md:text-xl text-gray-300 mb-8 font-inter leading-relaxed transition-all duration-1000 delay-500 ${
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
             }`}>
               Лучшие апартаменты премиум-класса ждут вас. <br />

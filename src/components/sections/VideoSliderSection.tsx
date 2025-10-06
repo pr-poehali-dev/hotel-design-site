@@ -70,10 +70,10 @@ const VideoSliderSection = () => {
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-playfair font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-6xl font-playfair font-bold text-white mb-4">
             Фото <span className="text-gold-400">Галерея</span>
           </h2>
-          <p className="text-xl text-gray-300 font-inter max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-gray-300 font-inter max-w-2xl mx-auto">
             Откройте для себя красоту и роскошь комплекса Поклонная 9
           </p>
         </div>
