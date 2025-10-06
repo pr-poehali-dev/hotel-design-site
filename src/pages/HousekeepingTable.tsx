@@ -137,8 +137,11 @@ const HousekeepingTable = () => {
   const handleUpdateRoomStatus = async (roomId: string, newStatus: Room['status']) => {
     const room = rooms.find(r => r.id === roomId);
     
+    console.log('handleUpdateRoomStatus called:', { roomId, newStatus, room, assignedTo: room?.assignedTo, payment: room?.payment });
+    
     // Если комната переведена в статус "clean", записываем в историю
     if (newStatus === 'clean' && room && room.assignedTo) {
+      console.log('Creating cleaning record:', room.number, room.assignedTo, room.payment);
       addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
     }
     

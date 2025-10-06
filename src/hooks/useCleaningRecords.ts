@@ -26,7 +26,10 @@ export const useCleaningRecords = () => {
       paymentStatus: 'unpaid'
     };
 
-    saveRecords([...records, newRecord]);
+    console.log('addCleaningRecord called:', { newRecord, currentRecords: records.length });
+    const updatedRecords = [...records, newRecord];
+    console.log('Saving records:', updatedRecords);
+    saveRecords(updatedRecords);
   };
 
   const markAsPaid = (recordId: string) => {
