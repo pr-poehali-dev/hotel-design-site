@@ -1,18 +1,34 @@
+import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import ContactInfo from '@/components/seo/ContactInfo';
 import FAQ from '@/components/seo/FAQ';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 
 const Location = () => {
+  const navigate = useNavigate();
+
+  const handleBooking = () => {
+    navigate('/bookings');
+  };
+
   return (
-    <div className="min-h-screen bg-charcoal-900 text-white">
+    <div className="min-h-screen bg-charcoal-900 text-white relative">
       <div className="max-w-7xl mx-auto px-4 py-12 space-y-8">
         <header className="text-center mb-12">
           <h1 className="text-5xl font-playfair text-gold-400 mb-4">
             Апартаменты на Поклонной 9
           </h1>
-          <p className="text-xl text-gray-300">
+          <p className="text-xl text-gray-300 mb-6">
             ENZO Отель в Москве — посуточная аренда рядом с Парком Победы
           </p>
+          <FizzyButton 
+            onClick={handleBooking}
+            size="lg"
+            className="text-lg px-8 py-6"
+            icon={<Icon name="Calendar" size={24} />}
+          >
+            Забронировать апартаменты на Поклонной 9
+          </FizzyButton>
         </header>
 
         <section className="bg-charcoal-800 rounded-xl p-8 border border-gray-700">
@@ -155,10 +171,39 @@ const Location = () => {
             на Поклонной 9 рядом с Парком Победы и метро Парк Победы. 
             Комфортное проживание у Крокус фитнес на Поклонной 9.
           </p>
-          <p className="text-xl text-gold-400 font-semibold">
+          <p className="text-xl text-gold-400 font-semibold mb-6">
             г. Москва, ул. Поклонная, д. 9
           </p>
+          <FizzyButton 
+            onClick={handleBooking}
+            size="lg"
+            className="text-lg px-8 py-6"
+            icon={<Icon name="CalendarCheck" size={24} />}
+          >
+            Забронировать сейчас
+          </FizzyButton>
         </section>
+      </div>
+
+      <div className="fixed bottom-8 right-8 z-50 hidden md:block">
+        <FizzyButton
+          onClick={handleBooking}
+          size="lg"
+          className="shadow-2xl text-base px-6 py-4"
+          icon={<Icon name="Phone" size={20} />}
+        >
+          Забронировать
+        </FizzyButton>
+      </div>
+
+      <div className="fixed bottom-4 left-0 right-0 z-50 md:hidden px-4">
+        <FizzyButton
+          onClick={handleBooking}
+          className="w-full shadow-2xl"
+          icon={<Icon name="Phone" size={20} />}
+        >
+          Забронировать апартаменты
+        </FizzyButton>
       </div>
     </div>
   );
