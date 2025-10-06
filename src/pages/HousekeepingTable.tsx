@@ -10,10 +10,13 @@ import LoginForm from '@/components/auth/LoginForm';
 import HousekeepersManager from '@/components/housekeeping/HousekeepersManager';
 import PageHeader from '@/components/housekeeping/PageHeader';
 import PaymentsReport from '@/components/housekeeping/PaymentsReport';
+import HousekeeperHistory from '@/components/housekeeping/HousekeeperHistory';
+import { Room } from '@/components/housekeeping/types';
 import { useAuth } from '@/hooks/useAuth';
 import { useRooms } from '@/hooks/useRooms';
 import { useHousekeepers } from '@/hooks/useHousekeepers';
 import { useHistory } from '@/hooks/useHistory';
+import { useCleaningRecords } from '@/hooks/useCleaningRecords';
 
 const HousekeepingTable = () => {
   const {
@@ -57,6 +60,13 @@ const HousekeepingTable = () => {
     loadFromHistory,
     deleteFromHistory,
   } = useHistory(rooms, setRooms);
+
+  const {
+    records,
+    addCleaningRecord,
+    markAsPaid,
+    getRecordsByHousekeeper
+  } = useCleaningRecords();
 
   const [filter, setFilter] = useState<'all' | 'clean' | 'dirty' | 'in-progress' | 'inspection' | 'turnover' | 'occupied'>('all');
   const [selectedHousekeeper, setSelectedHousekeeper] = useState<string>('all');
@@ -120,6 +130,18 @@ const HousekeepingTable = () => {
     turnover: rooms.filter(r => r.status === 'turnover').length,
     occupied: rooms.filter(r => r.status === 'occupied').length
   }), [rooms]);
+
+  // Обёртка для updateRoomStatus, чтобы записывать историю уборок
+  const handleUpdateRoomStatus = async (roomId: string, newStatus: Room['status']) => {
+    const room = rooms.find(r => r.id === roomId);
+    
+    // Если комната переведена в статус "clean", записываем в историю
+    if (newStatus === 'clean' && room && room.assignedTo) {
+      addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
+    }
+    
+    await updateRoomStatus(roomId, newStatus);
+  };
 
   if (!user) {
     return <LoginForm onLogin={handleLogin} error={loginError} />;
@@ -241,7 +263,7 @@ const HousekeepingTable = () => {
           rooms={filteredRooms}
           housekeepers={housekeepers}
           editingRoomId={editingRoomId}
-          onUpdateStatus={updateRoomStatus}
+          onUpdateStatus={handleUpdateRoomStatus}
           onAssignHousekeeper={assignHousekeeper}
           onStartEdit={isAdmin ? startEditRoom : () => {}}
           onSaveEdit={saveEditRoom}
@@ -249,6 +271,25 @@ const HousekeepingTable = () => {
           onDelete={isAdmin ? deleteRoom : () => {}}
           isAdmin={isAdmin}
         />
+
+        {!isAdmin && user?.role === 'housekeeper' && (
+          <div className="mt-8">
+            <HousekeeperHistory 
+              records={getRecordsByHousekeeper(user.username)} 
+              isAdmin={false}
+            />
+          </div>
+        )}
+
+        {isAdmin && (
+          <div className="mt-8">
+            <HousekeeperHistory 
+              records={records}
+              onMarkAsPaid={markAsPaid}
+              isAdmin={true}
+            />
+          </div>
+        )}
 
         <div className="mt-6 flex justify-center">
           <FizzyButton

@@ -6,10 +6,11 @@ export interface FizzyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonE
   children: React.ReactNode;
   icon?: React.ReactNode;
   variant?: "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
 }
 
 const FizzyButton = React.forwardRef<HTMLButtonElement, FizzyButtonProps>(
-  ({ className, children, icon, variant = "primary", ...props }, ref) => {
+  ({ className, children, icon, variant = "primary", size = "md", ...props }, ref) => {
     const [isChecked, setIsChecked] = React.useState(false);
     const [trails, setTrails] = React.useState<Array<{ id: number; x: number; y: number }>>([]);
     const audioRef = React.useRef<HTMLAudioElement | null>(null);
@@ -61,7 +62,12 @@ const FizzyButton = React.forwardRef<HTMLButtonElement, FizzyButtonProps>(
         />
         <button
           ref={ref}
-          className={cn("fizzy-button", variant)}
+          className={cn(
+            "fizzy-button", 
+            variant,
+            size === "sm" && "text-sm px-3 py-1.5",
+            size === "lg" && "text-lg px-6 py-4"
+          )}
           onClick={handleClick}
           {...props}
         >

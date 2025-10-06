@@ -44,3 +44,12 @@ export interface Housekeeper {
   email?: string;
   created_at: string;
 }
+
+export interface CleaningRecord {
+  id: string;
+  roomNumber: string;
+  housekeeperName: string;
+  cleanedAt: string;
+  payment: number;
+  paymentStatus: 'paid' | 'unpaid';
+}

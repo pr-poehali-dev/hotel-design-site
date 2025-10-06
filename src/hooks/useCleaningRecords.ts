@@ -1,0 +1,49 @@
+import { useState, useEffect } from 'react';
+import { CleaningRecord } from '@/components/housekeeping/types';
+
+export const useCleaningRecords = () => {
+  const [records, setRecords] = useState<CleaningRecord[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('cleaning_records');
+    if (stored) {
+      setRecords(JSON.parse(stored));
+    }
+  }, []);
+
+  const saveRecords = (newRecords: CleaningRecord[]) => {
+    setRecords(newRecords);
+    localStorage.setItem('cleaning_records', JSON.stringify(newRecords));
+  };
+
+  const addCleaningRecord = (roomNumber: string, housekeeperName: string, payment: number) => {
+    const newRecord: CleaningRecord = {
+      id: `${Date.now()}-${Math.random()}`,
+      roomNumber,
+      housekeeperName,
+      cleanedAt: new Date().toISOString(),
+      payment,
+      paymentStatus: 'unpaid'
+    };
+
+    saveRecords([...records, newRecord]);
+  };
+
+  const markAsPaid = (recordId: string) => {
+    const updatedRecords = records.map(r => 
+      r.id === recordId ? { ...r, paymentStatus: 'paid' as const } : r
+    );
+    saveRecords(updatedRecords);
+  };
+
+  const getRecordsByHousekeeper = (housekeeperName: string) => {
+    return records.filter(r => r.housekeeperName === housekeeperName);
+  };
+
+  return {
+    records,
+    addCleaningRecord,
+    markAsPaid,
+    getRecordsByHousekeeper
+  };
+};
