@@ -5,6 +5,17 @@ export const useCleaningRecords = () => {
   const [records, setRecords] = useState<CleaningRecord[]>([]);
 
   useEffect(() => {
+    // КРИТИЧНО: Принудительная очистка демо-данных
+    const needsClear = !localStorage.getItem('records_cleared_v2');
+    
+    if (needsClear) {
+      console.log('Clearing demo records...');
+      localStorage.removeItem('cleaning_records');
+      localStorage.setItem('records_cleared_v2', 'true');
+      setRecords([]);
+      return;
+    }
+    
     const stored = localStorage.getItem('cleaning_records');
     if (stored) {
       setRecords(JSON.parse(stored));
