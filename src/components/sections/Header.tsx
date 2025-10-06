@@ -29,14 +29,7 @@ const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
             </div>
             <h1 className="font-playfair font-bold text-gold-400 py-0 px-0 text-sm md:text-lg hidden sm:block">Premium Apartments</h1>
           </a>
-          <div className="flex items-center space-x-2 md:space-x-4">
-            <a 
-              href="/housekeeping"
-              className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all text-xs md:text-sm font-semibold shadow-lg hover:shadow-xl"
-            >
-              <Icon name="ClipboardList" size={16} />
-              <span className="hidden sm:inline">Клинеры</span>
-            </a>
+          <div className="flex items-center space-x-4">
             <nav className="hidden md:flex space-x-2">
               {navigation.map((item) => (
                 <FizzyButton
