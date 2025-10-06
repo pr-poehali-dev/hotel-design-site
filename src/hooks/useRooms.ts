@@ -79,6 +79,32 @@ export const useRooms = () => {
     paymentStatus: 'unpaid'
   });
 
+  // Миграция данных из localStorage в БД
+  const migrateFromLocalStorage = useCallback(async () => {
+    const savedRooms = localStorage.getItem('housekeeping_current');
+    if (!savedRooms) return false;
+    
+    try {
+      const rooms = JSON.parse(savedRooms);
+      console.log('🔄 Миграция данных из localStorage в БД...');
+      
+      for (const room of rooms) {
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'add_room', room })
+        });
+      }
+      
+      console.log('✅ Миграция завершена');
+      localStorage.removeItem('housekeeping_current');
+      return true;
+    } catch (error) {
+      console.error('Ошибка миграции:', error);
+      return false;
+    }
+  }, []);
+
   // Загрузка комнат с сервера
   const loadRooms = useCallback(async () => {
     try {
@@ -89,33 +115,36 @@ export const useRooms = () => {
       if (data.rooms && data.rooms.length > 0) {
         setRooms(data.rooms);
       } else {
-        // Если БД пустая, инициализируем начальными данными
-        console.log('🔄 Инициализация БД начальными данными');
-        for (const room of INITIAL_ROOMS) {
-          await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'add_room', room })
-          });
+        // Проверяем localStorage и мигрируем данные
+        const migrated = await migrateFromLocalStorage();
+        
+        if (migrated) {
+          // Загружаем мигрированные данные
+          const retryResponse = await fetch(`${API_URL}?action=rooms`);
+          const retryData = await retryResponse.json();
+          setRooms(retryData.rooms || []);
+        } else {
+          // Если БД пустая и нет localStorage, инициализируем начальными данными
+          console.log('🔄 Инициализация БД начальными данными');
+          for (const room of INITIAL_ROOMS) {
+            await fetch(API_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'add_room', room })
+            });
+          }
+          const retryResponse = await fetch(`${API_URL}?action=rooms`);
+          const retryData = await retryResponse.json();
+          setRooms(retryData.rooms || []);
         }
-        // Загружаем еще раз
-        const retryResponse = await fetch(`${API_URL}?action=rooms`);
-        const retryData = await retryResponse.json();
-        setRooms(retryData.rooms || []);
       }
     } catch (error) {
       console.error('Ошибка загрузки комнат:', error);
-      // Fallback на localStorage если API не работает
-      const savedRooms = localStorage.getItem('housekeeping_current');
-      if (savedRooms) {
-        setRooms(JSON.parse(savedRooms));
-      } else {
-        setRooms(INITIAL_ROOMS);
-      }
+      setRooms([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [migrateFromLocalStorage]);
 
   useEffect(() => {
     loadRooms();
