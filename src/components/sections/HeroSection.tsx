@@ -83,13 +83,13 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
       </button>
 
       <div className="relative z-10 text-center text-white px-6 max-w-4xl">
-        <h2 className="text-5xl md:text-8xl font-playfair font-bold mb-6 animate-fade-in">
+        <h2 className="text-4xl md:text-8xl font-playfair font-bold mb-6 animate-fade-in">
           Роскошь и <span className="text-gold-400">Элегантность</span>
         </h2>
-        <p className="md:text-2xl font-inter mb-4 text-gray-200 animate-fade-in-slow text-lg">
+        <p className="text-base md:text-2xl font-inter mb-4 text-gray-200 animate-fade-in-slow">
           Видовые апартаменты 5* комплекса Поклонная 9
         </p>
-        <p className="md:text-xl font-inter mb-8 text-gold-300 animate-fade-in-slow text-base font-semibold">
+        <p className="text-sm md:text-xl font-inter mb-8 text-gold-300 animate-fade-in-slow font-semibold">
           {slides[currentSlide].subtitle}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
