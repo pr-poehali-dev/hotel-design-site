@@ -85,6 +85,7 @@ export const useAuth = () => {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('housekeeping_user');
+    window.location.reload();
   };
 
   return {
