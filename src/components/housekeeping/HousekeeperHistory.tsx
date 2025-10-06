@@ -50,7 +50,7 @@ const HousekeeperHistory = ({ records, onMarkAsPaid, isAdmin }: HousekeeperHisto
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-700">
@@ -114,6 +114,59 @@ const HousekeeperHistory = ({ records, onMarkAsPaid, isAdmin }: HousekeeperHisto
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="md:hidden space-y-3">
+        {sortedRecords.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            Пока нет записей об уборках
+          </div>
+        ) : (
+          sortedRecords.map((record) => (
+            <div key={record.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <div className="text-white font-bold text-lg mb-1">Номер {record.roomNumber}</div>
+                  <div className="text-gray-400 text-sm">
+                    {new Date(record.cleanedAt).toLocaleString('ru-RU', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
+                </div>
+                <div className="text-white font-bold text-xl">{record.payment} ₽</div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                {record.paymentStatus === 'paid' ? (
+                  <span className="px-3 py-1 bg-green-600/20 text-green-400 text-xs rounded-full font-semibold flex items-center gap-1 w-fit">
+                    <Icon name="CheckCircle" size={14} />
+                    Выплачено
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 bg-orange-600/20 text-orange-400 text-xs rounded-full font-semibold flex items-center gap-1 w-fit">
+                    <Icon name="Clock" size={14} />
+                    Не выплачено
+                  </span>
+                )}
+                
+                {isAdmin && record.paymentStatus === 'unpaid' && onMarkAsPaid && (
+                  <FizzyButton
+                    onClick={() => onMarkAsPaid(record.id)}
+                    variant="secondary"
+                    size="sm"
+                    icon={<Icon name="Check" size={16} />}
+                  >
+                    Выплачено
+                  </FizzyButton>
+                )}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

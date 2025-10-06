@@ -31,9 +31,10 @@ const RoomRow = memo(({
   const isEditing = editingRoomId === room.id;
 
   return (
-    <tr className={`transition-colors ${
-      isEditing ? 'bg-gold-900/20' : 'hover:bg-charcoal-700'
-    }`}>
+    <>
+      <tr className={`hidden lg:table-row transition-colors ${
+        isEditing ? 'bg-gold-900/20' : 'hover:bg-charcoal-700'
+      }`}>
       <td className="px-6 py-4">
         {isEditing ? (
           <input
@@ -232,6 +233,70 @@ const RoomRow = memo(({
         )}
       </td>
     </tr>
+
+    <div className="lg:hidden bg-charcoal-800 rounded-xl p-4 border border-gray-700">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-2">
+          {room.urgent && <Icon name="AlertCircle" size={20} className="text-red-500" />}
+          <span className="text-white font-bold text-2xl">{room.number}</span>
+        </div>
+        <span className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${getStatusColor(room.status)}`}>
+          {getStatusText(room.status)}
+        </span>
+      </div>
+
+      <div className="space-y-2 mb-4">
+        <div className="flex items-center gap-2 text-sm">
+          <Icon name="User" size={16} className="text-gold-500" />
+          <span className="text-gray-400">Клинер:</span>
+          <span className="text-white font-semibold">{room.assignedTo || 'Не назначена'}</span>
+        </div>
+        
+        <div className="flex items-center gap-2 text-sm">
+          <Icon name="DollarSign" size={16} className="text-gold-500" />
+          <span className="text-gray-400">Выплата:</span>
+          <span className="text-white font-semibold">{room.payment || 0} ₽</span>
+        </div>
+
+        {room.notes && (
+          <div className="flex items-start gap-2 text-sm">
+            <Icon name="FileText" size={16} className="text-gold-500 mt-0.5" />
+            <span className="text-gray-300">{room.notes}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-2 flex-wrap">
+        {room.status !== 'in-progress' && (
+          <button
+            onClick={() => onUpdateStatus(room.id, 'in-progress')}
+            className="flex-1 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors font-semibold text-sm flex items-center justify-center gap-2"
+          >
+            <Icon name="Play" size={16} />
+            Начать
+          </button>
+        )}
+        {room.status !== 'clean' && (
+          <button
+            onClick={() => onUpdateStatus(room.id, 'clean')}
+            className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-semibold text-sm flex items-center justify-center gap-2"
+          >
+            <Icon name="Check" size={16} />
+            Готово
+          </button>
+        )}
+        {room.status !== 'dirty' && (
+          <button
+            onClick={() => onUpdateStatus(room.id, 'dirty')}
+            className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-semibold text-sm flex items-center justify-center gap-2"
+          >
+            <Icon name="X" size={16} />
+            Грязно
+          </button>
+        )}
+      </div>
+    </div>
+    </>
   );
 });
 
