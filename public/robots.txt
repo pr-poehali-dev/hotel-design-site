@@ -1,6 +1,7 @@
 User-agent: Googlebot
 Allow: /
 Allow: /location
+Allow: /reviews
 Allow: /bookings
 Allow: /guest-dashboard
 Allow: /loyalty-program
@@ -8,6 +9,7 @@ Allow: /loyalty-program
 User-agent: Bingbot
 Allow: /
 Allow: /location
+Allow: /reviews
 Allow: /bookings
 Allow: /guest-dashboard
 Allow: /loyalty-program
@@ -21,6 +23,7 @@ Allow: /
 User-agent: Yandex
 Allow: /
 Allow: /location
+Allow: /reviews
 Allow: /bookings
 Allow: /guest-dashboard
 Allow: /loyalty-program
@@ -28,6 +31,7 @@ Allow: /loyalty-program
 User-agent: *
 Allow: /
 Allow: /location
+Allow: /reviews
 Allow: /bookings
 Allow: /guest-dashboard
 Allow: /loyalty-program
