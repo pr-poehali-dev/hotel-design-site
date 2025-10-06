@@ -119,10 +119,10 @@ const CulturalSliderSection = () => {
           <Icon name="Sparkles" size={20} />
           <span className="font-playfair font-bold">Культурная программа</span>
         </div>
-        <h2 className="text-4xl md:text-5xl font-playfair font-bold text-charcoal-900 mb-3">
+        <h2 className="text-3xl md:text-5xl font-playfair font-bold text-charcoal-900 mb-3">
           Октябрьский досуг в Москве
         </h2>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p className="text-base md:text-xl text-gray-600 max-w-3xl mx-auto">
           для гостей апартаментов
         </p>
       </div>
@@ -155,27 +155,27 @@ const CulturalSliderSection = () => {
                     </span>
                   </div>
 
-                  <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-4 leading-tight">
+                  <h3 className="text-2xl md:text-5xl font-playfair font-bold text-white mb-4 leading-tight">
                     {activity.title}
                   </h3>
 
                   <div className="flex flex-wrap items-center gap-4 mb-4 text-white/90">
                     <div className="flex items-center gap-2">
                       <Icon name="MapPin" size={20} />
-                      <span className="text-lg">{activity.venue}</span>
+                      <span className="text-sm md:text-lg">{activity.venue}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="Calendar" size={20} />
-                      <span className="text-lg">{activity.dates}</span>
+                      <span className="text-sm md:text-lg">{activity.dates}</span>
                     </div>
                   </div>
 
-                  <p className="text-lg md:text-xl text-white/90 mb-6 leading-relaxed">
+                  <p className="text-base md:text-xl text-white/90 mb-6 leading-relaxed">
                     {activity.description}
                   </p>
 
                   <div className="flex flex-wrap items-center gap-4">
-                    <div className="text-4xl font-bold text-white">
+                    <div className="text-2xl md:text-4xl font-bold text-white">
                       {activity.price}
                     </div>
                     <button
@@ -183,7 +183,7 @@ const CulturalSliderSection = () => {
                         setSelectedActivity(activity);
                         setIsModalOpen(true);
                       }}
-                      className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all group"
+                      className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl font-bold text-base md:text-lg hover:shadow-2xl hover:scale-105 transition-all group"
                     >
                       Заказать билеты
                       <Icon name="Ticket" size={22} className="group-hover:rotate-12 transition-transform" />

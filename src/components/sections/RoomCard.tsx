@@ -106,9 +106,9 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
         )}
         
         <div className="absolute bottom-4 left-4 text-white z-10">
-          <h3 className="text-xl font-playfair font-bold leading-tight">{room.name}</h3>
-          {room.subtitle && <p className="text-gray-200 text-base font-inter mt-1">{room.subtitle}</p>}
-          <p className="text-gold-400 text-xl font-semibold mt-2">{room.price}/ночь</p>
+          <h3 className="text-lg md:text-xl font-playfair font-bold leading-tight">{room.name}</h3>
+          {room.subtitle && <p className="text-gray-200 text-sm md:text-base font-inter mt-1">{room.subtitle}</p>}
+          <p className="text-gold-400 text-lg md:text-xl font-semibold mt-2">{room.price}/ночь</p>
         </div>
       </div>
       <div className="p-6">
@@ -116,14 +116,14 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           {room.features.map((feature, i) => (
             <li key={i} className="flex items-center space-x-3 text-charcoal-700">
               <Icon name="Check" size={16} className="text-gold-500" />
-              <span className="font-inter">{feature}</span>
+              <span className="font-inter text-sm md:text-base">{feature}</span>
             </li>
           ))}
         </ul>
         
         {room.video && (
           <div className="mt-6">
-            <h4 className="text-lg font-semibold text-charcoal-800 mb-3 font-playfair">Видео номера</h4>
+            <h4 className="text-base md:text-lg font-semibold text-charcoal-800 mb-3 font-playfair">Видео номера</h4>
             <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
               <iframe
                 src={room.video}

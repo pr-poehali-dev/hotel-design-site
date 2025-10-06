@@ -118,28 +118,28 @@ const PromotionsSection = () => {
                 <Icon name="Clock" size={24} />
                 <span className="text-sm font-semibold uppercase tracking-wider">Ограниченное предложение</span>
               </div>
-              <h3 className="text-3xl font-playfair font-bold mb-2">
+              <h3 className="text-2xl md:text-3xl font-playfair font-bold mb-2">
                 Октябрьская распродажа
               </h3>
-              <p className="text-white/90">
+              <p className="text-sm md:text-base text-white/90">
                 Получите дополнительную скидку 10% на проживание до окончания акции
               </p>
             </div>
             <div className="flex gap-4">
-              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-                <div className="text-3xl font-bold">{timeLeft.days}</div>
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-3 md:px-4 py-2 md:py-3 min-w-[60px] md:min-w-[70px]">
+                <div className="text-2xl md:text-3xl font-bold">{timeLeft.days}</div>
                 <div className="text-xs uppercase">дней</div>
               </div>
-              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-                <div className="text-3xl font-bold">{timeLeft.hours}</div>
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-3 md:px-4 py-2 md:py-3 min-w-[60px] md:min-w-[70px]">
+                <div className="text-2xl md:text-3xl font-bold">{timeLeft.hours}</div>
                 <div className="text-xs uppercase">часов</div>
               </div>
-              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-                <div className="text-3xl font-bold">{timeLeft.minutes}</div>
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-3 md:px-4 py-2 md:py-3 min-w-[60px] md:min-w-[70px]">
+                <div className="text-2xl md:text-3xl font-bold">{timeLeft.minutes}</div>
                 <div className="text-xs uppercase">минут</div>
               </div>
-              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-                <div className="text-3xl font-bold">{timeLeft.seconds}</div>
+              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl px-3 md:px-4 py-2 md:py-3 min-w-[60px] md:min-w-[70px]">
+                <div className="text-2xl md:text-3xl font-bold">{timeLeft.seconds}</div>
                 <div className="text-xs uppercase">секунд</div>
               </div>
             </div>
@@ -162,11 +162,11 @@ const PromotionsSection = () => {
                 <Icon name={promo.icon as any} size={32} className="text-white" />
               </div>
 
-              <h3 className="text-2xl font-playfair font-bold text-charcoal-900 mb-2 whitespace-pre-line">
+              <h3 className="text-xl md:text-2xl font-playfair font-bold text-charcoal-900 mb-2 whitespace-pre-line">
                 {promo.title}
               </h3>
 
-              <p className="text-gray-600 mb-4 min-h-[60px] whitespace-pre-line">
+              <p className="text-sm md:text-base text-gray-600 mb-4 min-h-[60px] whitespace-pre-line">
                 {promo.description}
               </p>
 
