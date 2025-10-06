@@ -90,7 +90,14 @@ const HousekeepingTable = () => {
       
       // Для горничных показываем только их апартаменты
       if (!isAdmin && user?.role === 'housekeeper') {
-        return statusMatch && room.assignedTo === user.username;
+        const match = statusMatch && room.assignedTo === user.username;
+        console.log('Фильтр для горничной:', { 
+          username: user.username, 
+          roomAssignedTo: room.assignedTo, 
+          roomNumber: room.number,
+          match 
+        });
+        return match;
       }
       
       // Для админа работает обычный фильтр
