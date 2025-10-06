@@ -185,24 +185,41 @@ const Location = () => {
         </section>
       </div>
 
-      <div className="fixed bottom-8 right-8 z-50 hidden md:block">
+      <div className="fixed bottom-8 right-8 z-50 hidden md:flex flex-col gap-3">
+        <a href="tel:+79141965172">
+          <FizzyButton
+            size="lg"
+            className="shadow-2xl text-base px-6 py-4 w-full"
+            icon={<Icon name="Phone" size={20} />}
+          >
+            +7 (914) 196-51-72
+          </FizzyButton>
+        </a>
         <FizzyButton
           onClick={handleBooking}
           size="lg"
           className="shadow-2xl text-base px-6 py-4"
-          icon={<Icon name="Phone" size={20} />}
+          icon={<Icon name="Calendar" size={20} />}
         >
           Забронировать
         </FizzyButton>
       </div>
 
-      <div className="fixed bottom-4 left-0 right-0 z-50 md:hidden px-4">
+      <div className="fixed bottom-4 left-0 right-0 z-50 md:hidden px-4 flex gap-2">
+        <a href="tel:+79141965172" className="flex-1">
+          <FizzyButton
+            className="w-full shadow-2xl"
+            icon={<Icon name="Phone" size={20} />}
+          >
+            Позвонить
+          </FizzyButton>
+        </a>
         <FizzyButton
           onClick={handleBooking}
-          className="w-full shadow-2xl"
-          icon={<Icon name="Phone" size={20} />}
+          className="flex-1 shadow-2xl"
+          icon={<Icon name="Calendar" size={20} />}
         >
-          Забронировать апартаменты
+          Забронировать
         </FizzyButton>
       </div>
     </div>
