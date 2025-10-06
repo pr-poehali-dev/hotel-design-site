@@ -52,4 +52,5 @@ export interface CleaningRecord {
   cleanedAt: string;
   payment: number;
   paymentStatus: 'paid' | 'unpaid';
+  paidAt?: string;
 }

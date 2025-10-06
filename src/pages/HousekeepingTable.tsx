@@ -11,6 +11,7 @@ import HousekeepersManager from '@/components/housekeeping/HousekeepersManager';
 import PageHeader from '@/components/housekeeping/PageHeader';
 import PaymentsReport from '@/components/housekeeping/PaymentsReport';
 import HousekeeperHistory from '@/components/housekeeping/HousekeeperHistory';
+import AdminCleaningHistory from '@/components/housekeeping/AdminCleaningHistory';
 import { Room } from '@/components/housekeeping/types';
 import { useAuth } from '@/hooks/useAuth';
 import { useRooms } from '@/hooks/useRooms';
@@ -65,6 +66,7 @@ const HousekeepingTable = () => {
     records,
     addCleaningRecord,
     markAsPaid,
+    updatePaymentStatus,
     getRecordsByHousekeeper
   } = useCleaningRecords();
 
@@ -283,10 +285,9 @@ const HousekeepingTable = () => {
 
         {isAdmin && (
           <div className="mt-8">
-            <HousekeeperHistory 
+            <AdminCleaningHistory 
               records={records}
-              onMarkAsPaid={markAsPaid}
-              isAdmin={true}
+              onUpdatePaymentStatus={updatePaymentStatus}
             />
           </div>
         )}

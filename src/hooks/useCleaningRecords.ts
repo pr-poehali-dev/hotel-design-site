@@ -36,6 +36,13 @@ export const useCleaningRecords = () => {
     saveRecords(updatedRecords);
   };
 
+  const updatePaymentStatus = (recordId: string, status: 'paid' | 'unpaid', paidAt?: string) => {
+    const updatedRecords = records.map(r => 
+      r.id === recordId ? { ...r, paymentStatus: status, paidAt } : r
+    );
+    saveRecords(updatedRecords);
+  };
+
   const getRecordsByHousekeeper = (housekeeperName: string) => {
     return records.filter(r => r.housekeeperName === housekeeperName);
   };
@@ -44,6 +51,7 @@ export const useCleaningRecords = () => {
     records,
     addCleaningRecord,
     markAsPaid,
+    updatePaymentStatus,
     getRecordsByHousekeeper
   };
 };
