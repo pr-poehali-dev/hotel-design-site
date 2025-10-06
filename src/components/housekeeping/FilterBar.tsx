@@ -9,6 +9,7 @@ interface FilterBarProps {
   setSelectedHousekeeper: (housekeeper: string) => void;
   housekeepers: Housekeeper[];
   onAddRoom?: () => void;
+  isAdmin?: boolean;
 }
 
 const FilterBar = ({ 
@@ -17,15 +18,16 @@ const FilterBar = ({
   selectedHousekeeper, 
   setSelectedHousekeeper, 
   housekeepers,
-  onAddRoom 
+  onAddRoom,
+  isAdmin = true
 }: FilterBarProps) => {
   return (
     <div className="bg-charcoal-800 rounded-xl p-6 mb-6 border border-gray-700">
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-4 items-center">
-          <div>
+          <div className={isAdmin ? '' : 'hidden lg:block'}>
             <label className="text-gray-400 text-sm mb-2 block">Фильтр по статусу</label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 rounded-lg font-inter transition-all ${
@@ -77,19 +79,21 @@ const FilterBar = ({
             </div>
           </div>
 
-          <div>
-            <label className="text-gray-400 text-sm mb-2 block">Клинер</label>
-            <select
-              value={selectedHousekeeper}
-              onChange={(e) => setSelectedHousekeeper(e.target.value)}
-              className="bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
-            >
-              <option value="all">Все клинеры</option>
-              {housekeepers.map(hk => (
-                <option key={hk.id} value={hk.name}>{hk.name}</option>
-              ))}
-            </select>
-          </div>
+          {isAdmin && (
+            <div>
+              <label className="text-gray-400 text-sm mb-2 block">Клинер</label>
+              <select
+                value={selectedHousekeeper}
+                onChange={(e) => setSelectedHousekeeper(e.target.value)}
+                className="bg-charcoal-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500"
+              >
+                <option value="all">Все клинеры</option>
+                {housekeepers.map(hk => (
+                  <option key={hk.id} value={hk.name}>{hk.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
         {onAddRoom && (
           <div>

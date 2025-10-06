@@ -252,6 +252,7 @@ const HousekeepingTable = () => {
           setSelectedHousekeeper={setSelectedHousekeeper}
           housekeepers={housekeepers}
           onAddRoom={isAdmin ? () => setIsAddingRoom(true) : undefined}
+          isAdmin={isAdmin}
         />
 
         {isAdmin && isAddingRoom && (
