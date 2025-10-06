@@ -23,6 +23,7 @@ import MyPromoCodesPage from "./pages/MyPromoCodesPage";
 import LoyaltyProgram from "./pages/LoyaltyProgram";
 import Location from "./pages/Location";
 import Reviews from "./pages/Reviews";
+import GoogleBusiness from "./pages/GoogleBusiness";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/loyalty-program" element={<LoyaltyProgram />} />
           <Route path="/location" element={<Location />} />
           <Route path="/reviews" element={<Reviews />} />
+          <Route path="/google-business" element={<GoogleBusiness />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
