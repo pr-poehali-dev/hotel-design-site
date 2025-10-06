@@ -3,10 +3,10 @@ import { User, StoredUser } from '@/components/housekeeping/types';
 
 export const DEFAULT_USERS: StoredUser[] = [
   { username: 'hab-agent@mail.ru', password: '3Dyzaape29938172', role: 'admin' },
-  { username: 'Савастеева Марина', password: 'marina123', role: 'housekeeper' },
-  { username: 'Иванченко Ольга', password: 'olga123', role: 'housekeeper' },
-  { username: 'Солонина Александра', password: 'alexandra123', role: 'housekeeper' },
-  { username: 'Шарова Диана', password: 'diana123', role: 'housekeeper' },
+  { username: 'Савастеева Марина', password: '89261781426', role: 'housekeeper' },
+  { username: 'Иванченко Ольга', password: '89261781426', role: 'housekeeper' },
+  { username: 'Солонина Александра', password: '89261781426', role: 'housekeeper' },
+  { username: 'Шарова Диана', password: '89261781426', role: 'housekeeper' },
 ];
 
 export const useAuth = () => {
