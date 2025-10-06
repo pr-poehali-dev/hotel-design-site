@@ -67,20 +67,6 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
       ))}
       
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-transparent to-charcoal-900/40"></div>
-      
-      <button
-        onClick={prevSlide}
-        className="absolute left-8 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full p-4 transition-all duration-300 hover:scale-110"
-      >
-        <Icon name="ChevronLeft" size={32} />
-      </button>
-
-      <button
-        onClick={nextSlide}
-        className="absolute right-8 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full p-4 transition-all duration-300 hover:scale-110"
-      >
-        <Icon name="ChevronRight" size={32} />
-      </button>
 
       <div className="relative z-10 text-center text-white px-6 max-w-4xl">
         <h2 className="text-4xl md:text-8xl font-playfair font-bold mb-6 animate-fade-in">
