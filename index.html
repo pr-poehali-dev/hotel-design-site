@@ -27,10 +27,21 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Hotel",
-      "name": "ENZO Отель",
-      "alternateName": "Апартаменты на Поклонной 9",
-      "description": "Апартаменты на короткий срок на Поклонной 9 в Москве. Посуточная аренда рядом с Парком Победы, метро Парк Победы, Крокус фитнес на Поклонной 9.",
+      "@type": ["Hotel", "LodgingBusiness", "LocalBusiness"],
+      "name": "ENZO Отель - Поклонная 9",
+      "alternateName": ["Апартаменты на Поклонной 9", "P9 Premium Apartments", "Премиум апартаменты Поклонная 9"],
+      "description": "Премиум апартаменты на короткий срок на Поклонной 9 в Москве. Элитные апартаменты 5 звезд для посуточной аренды рядом с Парком Победы, метро Парк Победы, Крокус фитнес на Поклонной 9. Люкс сервис и комфортное проживание.",
+      "logo": {
+        "@type": "ImageObject",
+        "url": window.location.origin + "/logo-p9.svg",
+        "width": "120",
+        "height": "120"
+      },
+      "image": [
+        "https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg",
+        "https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg",
+        "https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg"
+      ],
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "ул. Поклонная, д. 9",
@@ -46,25 +57,112 @@
       },
       "url": window.location.origin,
       "telephone": "+79141965172",
-      "priceRange": "₽₽",
+      "email": "info@poklonnaya9.ru",
+      "priceRange": "₽₽₽",
+      "starRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "7",
+        "bestRating": "5"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
       "amenityFeature": [
         {
           "@type": "LocationFeatureSpecification",
-          "name": "Рядом с Парком Победы"
+          "name": "Рядом с Парком Победы",
+          "value": "5 минут пешком"
         },
         {
           "@type": "LocationFeatureSpecification",
-          "name": "Рядом с Крокус фитнес"
+          "name": "Крокус фитнес на Поклонной 9",
+          "value": "В комплексе"
         },
         {
           "@type": "LocationFeatureSpecification",
-          "name": "Метро Парк Победы"
+          "name": "Метро Парк Победы",
+          "value": "7 минут пешком"
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Wi-Fi",
+          "value": "true"
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Парковка",
+          "value": "true"
         }
       ],
-      "nearbyPoints": [
-        "Парк Победы",
-        "Крокус фитнес на Поклонной 9",
-        "Метро Парк Победы"
+      "additionalProperty": [
+        {
+          "@type": "PropertyValue",
+          "name": "Тип жилья",
+          "value": "Премиум апартаменты, элитные апартаменты, люкс"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Формат аренды",
+          "value": "Посуточная аренда, краткосрочная аренда, апартаменты на короткий срок"
+        }
+      ],
+      "knowsAbout": [
+        "Поклонная 9 аренда квартир",
+        "снять квартиру Поклонная 9",
+        "посуточная аренда Москва Поклонная",
+        "премиум апартаменты Поклонная 9",
+        "элитные апартаменты Москва",
+        "5 звезд апартаменты",
+        "гостиница Парк Победы",
+        "отель у Парка Победы",
+        "жильё метро Парк Победы",
+        "Крокус фитнес Поклонная 9"
+      ],
+      "sameAs": [
+        window.location.origin + "/location",
+        window.location.origin + "/reviews"
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Главная",
+          "item": window.location.origin
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Апартаменты на Поклонной 9",
+          "item": window.location.origin + "/location"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Отзывы",
+          "item": window.location.origin + "/reviews"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Бронирование",
+          "item": window.location.origin + "/bookings"
+        }
       ]
     }
     </script>
