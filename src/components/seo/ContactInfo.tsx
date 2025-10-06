@@ -38,7 +38,7 @@ const ContactInfo = () => {
           <div>
             <h3 className="font-semibold text-white mb-1">WhatsApp</h3>
             <a 
-              href="https://wa.me/79361414232" 
+              href="https://wa.me/79361414232?text=Добро%20пожаловать%20в%20роскошные%20премиум%20апартаменты%20в%205*%20комплексе%20Поклонная%209,%20где%20проживание%20Вам%20точно%20понравится!" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-green-400 hover:text-green-300 transition-colors text-lg font-semibold block"

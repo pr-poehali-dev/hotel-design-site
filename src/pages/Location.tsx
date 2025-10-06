@@ -186,7 +186,7 @@ const Location = () => {
       </div>
 
       <div className="fixed bottom-8 right-8 z-50 hidden md:flex flex-col gap-3">
-        <a href="https://wa.me/79361414232" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/79361414232?text=Добро%20пожаловать%20в%20роскошные%20премиум%20апартаменты%20в%205*%20комплексе%20Поклонная%209,%20где%20проживание%20Вам%20точно%20понравится!" target="_blank" rel="noopener noreferrer">
           <FizzyButton
             size="lg"
             className="shadow-2xl text-base px-6 py-4 w-full bg-green-600 hover:bg-green-700"
@@ -216,7 +216,7 @@ const Location = () => {
 
       <div className="fixed bottom-4 left-0 right-0 z-50 md:hidden px-4">
         <div className="flex gap-2 mb-2">
-          <a href="https://wa.me/79361414232" target="_blank" rel="noopener noreferrer" className="flex-1">
+          <a href="https://wa.me/79361414232?text=Добро%20пожаловать%20в%20роскошные%20премиум%20апартаменты%20в%205*%20комплексе%20Поклонная%209,%20где%20проживание%20Вам%20точно%20понравится!" target="_blank" rel="noopener noreferrer" className="flex-1">
             <FizzyButton
               className="w-full shadow-2xl bg-green-600 hover:bg-green-700"
               icon={<Icon name="MessageCircle" size={20} />}
