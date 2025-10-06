@@ -48,11 +48,17 @@ export const useAuth = () => {
     console.log('Найденный пользователь:', foundUser);
     
     if (foundUser) {
+      // Для горничных используем housekeeperName, для админов - username
+      const displayName = foundUser.role === 'housekeeper' && foundUser.housekeeperName 
+        ? foundUser.housekeeperName 
+        : foundUser.username;
+        
       const userToSave = { 
-        username: foundUser.housekeeperName || foundUser.username, 
+        username: displayName, 
         role: foundUser.role 
       };
       console.log('=== УСПЕШНЫЙ ВХОД ===');
+      console.log('foundUser:', foundUser);
       console.log('Сохраняем пользователя:', userToSave);
       setUser(userToSave);
       setLoginError('');
