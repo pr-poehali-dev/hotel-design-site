@@ -18,6 +18,7 @@ export const useHousekeepers = (rooms: Room[], setRooms: (rooms: Room[]) => void
   const [newHousekeeperName, setNewHousekeeperName] = useState('');
 
   useEffect(() => {
+    console.log('💾 Сохранение горничных в localStorage:', housekeepers);
     localStorage.setItem('housekeepers_list', JSON.stringify(housekeepers));
   }, [housekeepers]);
 

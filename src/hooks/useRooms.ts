@@ -89,6 +89,7 @@ export const useRooms = () => {
   });
 
   useEffect(() => {
+    console.log('💾 Сохранение комнат в localStorage:', rooms);
     localStorage.setItem('housekeeping_current', JSON.stringify(rooms));
   }, [rooms]);
 
@@ -157,6 +158,7 @@ export const useRooms = () => {
   }, []);
 
   const updateRoomField = useCallback((roomId: string, field: keyof Room, value: any) => {
+    console.log(`✏️ Обновление поля ${field} для комнаты ${roomId}:`, value);
     setRooms(prevRooms => prevRooms.map(room => 
       room.id === roomId ? { ...room, [field]: value } : room
     ));
