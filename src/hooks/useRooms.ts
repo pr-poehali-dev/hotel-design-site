@@ -4,18 +4,36 @@ import { Room } from '@/components/housekeeping/types';
 const API_URL = 'https://functions.poehali.dev/2bfc831a-ddc0-4387-9025-124ea0b2b58f';
 
 // Маппинг полей из БД (snake_case) в формат фронтенда (camelCase)
-const mapRoomFromDB = (dbRoom: any): Room => ({
-  id: dbRoom.id,
-  number: dbRoom.number,
-  floor: dbRoom.floor,
-  status: dbRoom.status,
-  assignedTo: dbRoom.assigned_to || '',
-  lastCleaned: dbRoom.last_cleaned || '',
-  urgent: dbRoom.urgent || false,
-  notes: dbRoom.notes || '',
-  payment: dbRoom.payment || 0,
-  paymentStatus: dbRoom.payment_status || 'unpaid'
-});
+const mapRoomFromDB = (dbRoom: any): Room => {
+  try {
+    return {
+      id: dbRoom.id || '',
+      number: dbRoom.number || '',
+      floor: dbRoom.floor || 0,
+      status: dbRoom.status || 'dirty',
+      assignedTo: dbRoom.assigned_to || '',
+      lastCleaned: dbRoom.last_cleaned || '',
+      urgent: dbRoom.urgent || false,
+      notes: dbRoom.notes || '',
+      payment: dbRoom.payment || 0,
+      paymentStatus: dbRoom.payment_status || 'unpaid'
+    };
+  } catch (error) {
+    console.error('Error mapping room from DB:', error, dbRoom);
+    return {
+      id: '',
+      number: '',
+      floor: 0,
+      status: 'dirty',
+      assignedTo: '',
+      lastCleaned: '',
+      urgent: false,
+      notes: '',
+      payment: 0,
+      paymentStatus: 'unpaid'
+    };
+  }
+};
 
 const INITIAL_ROOMS: Room[] = [
   {

@@ -69,6 +69,8 @@ const HousekeepingTable = () => {
   const [showPaymentsReport, setShowPaymentsReport] = useState(false);
   const [lastSync, setLastSync] = useState<Date>(new Date());
 
+  const isAdmin = user?.role === 'admin' || false;
+
   // Автообновление данных каждые 10 секунд
   useEffect(() => {
     if (!user) return;
@@ -110,8 +112,6 @@ const HousekeepingTable = () => {
   if (!user) {
     return <LoginForm onLogin={handleLogin} error={loginError} />;
   }
-
-  const isAdmin = user?.role === 'admin' || false;
 
   if (roomsLoading || housekeepersLoading) {
     return (
