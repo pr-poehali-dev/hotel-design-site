@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
+import ShareButtons from '@/components/ShareButtons';
 
 interface Review {
   id: number;
@@ -219,6 +220,13 @@ const Reviews = () => {
               <p className="text-gray-300">Положительные отзывы гостей</p>
             </div>
           </div>
+        </section>
+
+        <section className="mt-8 bg-charcoal-800 rounded-xl p-8 border border-gray-700">
+          <ShareButtons 
+            title="Отзывы об апартаментах на Поклонной 9 | ENZO Отель"
+            text="Прочитайте отзывы наших гостей о проживании в премиум апартаментах! Рейтинг 5.0 ⭐"
+          />
         </section>
       </div>
     </div>

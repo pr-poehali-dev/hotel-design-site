@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
+import ShareButtons from '@/components/ShareButtons';
 
 const GoogleBusiness = () => {
   const navigate = useNavigate();
@@ -326,7 +327,7 @@ const GoogleBusiness = () => {
           </p>
         </section>
 
-        <section className="bg-charcoal-800 rounded-xl p-8 border border-gray-700">
+        <section className="bg-charcoal-800 rounded-xl p-8 border border-gray-700 mb-8">
           <h2 className="text-2xl font-playfair text-gold-400 mb-4 text-center">
             Ключевые запросы для поиска
           </h2>
@@ -353,6 +354,13 @@ const GoogleBusiness = () => {
               </span>
             ))}
           </div>
+        </section>
+
+        <section className="bg-charcoal-800 rounded-xl p-8 border border-gray-700">
+          <ShareButtons 
+            title="ENZO Отель - Апартаменты на Поклонной 9 | Москва 24/7"
+            text="Премиум апартаменты посуточно на Поклонной 9, рядом с Парком Победы. Работаем круглосуточно!"
+          />
         </section>
       </div>
     </div>

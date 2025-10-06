@@ -13,6 +13,7 @@ import CulturalSliderSection from '@/components/sections/CulturalSliderSection';
 import BookingPromoSection from '@/components/sections/BookingPromoSection';
 import Footer from '@/components/sections/Footer';
 import FallingLeaves from '@/components/effects/FallingLeaves';
+import ShareButtons from '@/components/ShareButtons';
 import { rooms } from '@/data/roomsData';
 
 const Index = () => {
@@ -81,6 +82,15 @@ const Index = () => {
       {currentSection === 'profile' && <ProfileSection />}
 
       {currentSection === 'contacts' && <ContactsSection />}
+
+      <section className="py-12 px-4 max-w-4xl mx-auto">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gold/20">
+          <ShareButtons 
+            title="Апартаменты на Поклонной 9 | ENZO Отель Москва"
+            text="Премиум апартаменты посуточно рядом с Парком Победы. 5 звёзд, все удобства!"
+          />
+        </div>
+      </section>
 
       <Footer />
     </div>

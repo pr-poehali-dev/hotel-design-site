@@ -3,6 +3,7 @@ import Icon from '@/components/ui/icon';
 import ContactInfo from '@/components/seo/ContactInfo';
 import FAQ from '@/components/seo/FAQ';
 import { FizzyButton } from '@/components/ui/fizzy-button';
+import ShareButtons from '@/components/ShareButtons';
 
 const Location = () => {
   const navigate = useNavigate();
@@ -246,6 +247,13 @@ const Location = () => {
         <ContactInfo />
 
         <FAQ />
+
+        <section className="bg-charcoal-800 rounded-xl p-8 border border-gray-700">
+          <ShareButtons 
+            title="Апартаменты на Поклонной 9 | ENZO Отель"
+            text="Премиум апартаменты посуточно рядом с Парком Победы в Москве. Адрес: ул. Поклонная 9"
+          />
+        </section>
 
         <section className="bg-gradient-to-r from-gold-500/20 to-gold-600/20 rounded-xl p-8 border border-gold-500/30 text-center">
           <h2 className="text-3xl font-playfair text-gold-400 mb-4">
