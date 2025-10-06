@@ -1,0 +1,45 @@
+{
+  "tests": [
+    {
+      "name": "Успешный вход горничной",
+      "method": "POST",
+      "body": {
+        "username": "savasteeva020202@yandex.ru",
+        "password": "89261781426"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "username": "string",
+        "role": "housekeeper"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Успешный вход админа",
+      "method": "POST",
+      "body": {
+        "username": "hab-agent@mail.ru",
+        "password": "3Dyzaape29938172"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "username": "string",
+        "role": "admin"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Неверный пароль",
+      "method": "POST",
+      "body": {
+        "username": "test@test.ru",
+        "password": "wrong"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
