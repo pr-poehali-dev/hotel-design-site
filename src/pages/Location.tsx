@@ -186,6 +186,15 @@ const Location = () => {
       </div>
 
       <div className="fixed bottom-8 right-8 z-50 hidden md:flex flex-col gap-3">
+        <a href="https://wa.me/79361414232" target="_blank" rel="noopener noreferrer">
+          <FizzyButton
+            size="lg"
+            className="shadow-2xl text-base px-6 py-4 w-full bg-green-600 hover:bg-green-700"
+            icon={<Icon name="MessageCircle" size={20} />}
+          >
+            WhatsApp
+          </FizzyButton>
+        </a>
         <a href="tel:+79141965172">
           <FizzyButton
             size="lg"
@@ -205,21 +214,31 @@ const Location = () => {
         </FizzyButton>
       </div>
 
-      <div className="fixed bottom-4 left-0 right-0 z-50 md:hidden px-4 flex gap-2">
-        <a href="tel:+79141965172" className="flex-1">
-          <FizzyButton
-            className="w-full shadow-2xl"
-            icon={<Icon name="Phone" size={20} />}
-          >
-            Позвонить
-          </FizzyButton>
-        </a>
+      <div className="fixed bottom-4 left-0 right-0 z-50 md:hidden px-4">
+        <div className="flex gap-2 mb-2">
+          <a href="https://wa.me/79361414232" target="_blank" rel="noopener noreferrer" className="flex-1">
+            <FizzyButton
+              className="w-full shadow-2xl bg-green-600 hover:bg-green-700"
+              icon={<Icon name="MessageCircle" size={20} />}
+            >
+              WhatsApp
+            </FizzyButton>
+          </a>
+          <a href="tel:+79141965172" className="flex-1">
+            <FizzyButton
+              className="w-full shadow-2xl"
+              icon={<Icon name="Phone" size={20} />}
+            >
+              Позвонить
+            </FizzyButton>
+          </a>
+        </div>
         <FizzyButton
           onClick={handleBooking}
-          className="flex-1 shadow-2xl"
+          className="w-full shadow-2xl"
           icon={<Icon name="Calendar" size={20} />}
         >
-          Забронировать
+          Забронировать апартаменты
         </FizzyButton>
       </div>
     </div>

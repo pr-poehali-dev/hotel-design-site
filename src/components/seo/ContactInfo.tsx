@@ -24,11 +24,29 @@ const ContactInfo = () => {
           <Icon name="Phone" className="text-gold-400 mt-1" size={20} />
           <div>
             <h3 className="font-semibold text-white mb-1">Телефон для бронирования</h3>
-            <a href="tel:+79141965172" className="text-gold-400 hover:text-gold-300 transition-colors text-lg font-semibold">
+            <a href="tel:+79141965172" className="text-gold-400 hover:text-gold-300 transition-colors text-lg font-semibold block">
               +7 (914) 196-51-72
             </a>
             <p className="text-sm text-gray-400 mt-1">
               Звоните для бронирования апартаментов на Поклонной 9
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-3">
+          <Icon name="MessageCircle" className="text-green-400 mt-1" size={20} />
+          <div>
+            <h3 className="font-semibold text-white mb-1">WhatsApp</h3>
+            <a 
+              href="https://wa.me/79361414232" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-green-400 hover:text-green-300 transition-colors text-lg font-semibold block"
+            >
+              +7 (936) 141-42-32
+            </a>
+            <p className="text-sm text-gray-400 mt-1">
+              Пишите в WhatsApp для быстрой консультации
             </p>
           </div>
         </div>
