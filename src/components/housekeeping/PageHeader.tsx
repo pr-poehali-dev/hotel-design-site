@@ -6,9 +6,10 @@ interface PageHeaderProps {
   user: User;
   isAdmin: boolean;
   onLogout: () => void;
+  lastSync?: Date;
 }
 
-const PageHeader = ({ user, isAdmin, onLogout }: PageHeaderProps) => {
+const PageHeader = ({ user, isAdmin, onLogout, lastSync }: PageHeaderProps) => {
   return (
     <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
       <div>
@@ -16,10 +17,16 @@ const PageHeader = ({ user, isAdmin, onLogout }: PageHeaderProps) => {
           Таблица уборки апартаментов
         </h1>
         <p className="text-gray-400 font-inter">Управление статусами номеров</p>
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-2 flex items-center gap-3">
           <span className="px-3 py-1 bg-gold-600 text-white text-sm rounded-full font-semibold">
             {isAdmin ? 'Администратор' : 'Горничная'}: {user.username}
           </span>
+          {lastSync && (
+            <span className="px-3 py-1 bg-green-600/20 text-green-400 text-xs rounded-full font-semibold flex items-center gap-1">
+              <Icon name="RefreshCw" size={12} />
+              Синхронизировано: {lastSync.toLocaleTimeString('ru-RU')}
+            </span>
+          )}
         </div>
       </div>
       <div className="text-right">

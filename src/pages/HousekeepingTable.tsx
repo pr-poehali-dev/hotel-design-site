@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import StatsCards from '@/components/housekeeping/StatsCards';
@@ -41,7 +41,8 @@ const HousekeepingTable = () => {
     startEditRoom,
     saveEditRoom,
     updateRoomField,
-    loading: roomsLoading
+    loading: roomsLoading,
+    reload: reloadRooms
   } = useRooms();
 
   const {
@@ -50,7 +51,8 @@ const HousekeepingTable = () => {
     setNewHousekeeperName,
     addHousekeeper,
     deleteHousekeeper,
-    loading: housekeepersLoading
+    loading: housekeepersLoading,
+    reload: reloadHousekeepers
   } = useHousekeepers(rooms, setRooms);
 
   const {
@@ -65,6 +67,20 @@ const HousekeepingTable = () => {
   const [isAddingRoom, setIsAddingRoom] = useState(false);
   const [isManagingHousekeepers, setIsManagingHousekeepers] = useState(false);
   const [showPaymentsReport, setShowPaymentsReport] = useState(false);
+  const [lastSync, setLastSync] = useState<Date>(new Date());
+
+  // Автообновление данных каждые 10 секунд
+  useEffect(() => {
+    if (!user) return;
+
+    const intervalId = setInterval(() => {
+      reloadRooms();
+      reloadHousekeepers();
+      setLastSync(new Date());
+    }, 10000); // 10 секунд
+
+    return () => clearInterval(intervalId);
+  }, [user, reloadRooms, reloadHousekeepers]);
 
   const filteredRooms = useMemo(() => {
     return rooms.filter(room => {
@@ -104,7 +120,7 @@ const HousekeepingTable = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <PageHeader user={user} isAdmin={isAdmin} onLogout={handleLogout} />
+        <PageHeader user={user} isAdmin={isAdmin} onLogout={handleLogout} lastSync={lastSync} />
 
         <StatsCards stats={stats} />
 
@@ -118,6 +134,17 @@ const HousekeepingTable = () => {
             />
 
             <div className="mb-6 flex gap-3 flex-wrap">
+              <FizzyButton
+                onClick={() => {
+                  reloadRooms();
+                  reloadHousekeepers();
+                  setLastSync(new Date());
+                }}
+                icon={<Icon name="RefreshCw" size={20} />}
+                variant="secondary"
+              >
+                Обновить данные
+              </FizzyButton>
               <FizzyButton
                 onClick={saveToHistory}
                 icon={<Icon name="Save" size={20} />}
