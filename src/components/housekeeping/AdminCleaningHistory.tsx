@@ -13,6 +13,8 @@ const AdminCleaningHistory = ({ records, onUpdatePaymentStatus }: AdminCleaningH
   const [filterStatus, setFilterStatus] = useState<'all' | 'paid' | 'unpaid'>('all');
   const [filterHousekeeper, setFilterHousekeeper] = useState<string>('all');
 
+  console.log('AdminCleaningHistory records:', records);
+
   const housekeepers = Array.from(new Set(records.map(r => r.housekeeperName))).sort();
 
   const filteredRecords = records.filter(record => {
@@ -32,6 +34,24 @@ const AdminCleaningHistory = ({ records, onUpdatePaymentStatus }: AdminCleaningH
       onUpdatePaymentStatus(record.id, 'unpaid', undefined);
     }
   };
+
+  if (records.length === 0) {
+    return (
+      <div className="bg-gray-900 rounded-lg p-6 border border-gold-600/30 shadow-xl">
+        <div className="flex items-center gap-3 mb-6">
+          <Icon name="History" size={28} className="text-gold-500" />
+          <h2 className="text-3xl font-playfair font-bold text-white">История уборок и выплаты</h2>
+        </div>
+        <div className="text-center py-12">
+          <Icon name="ClipboardList" size={64} className="text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-400 text-lg mb-2">История уборок пока пуста</p>
+          <p className="text-gray-500 text-sm">
+            Записи будут появляться автоматически при переводе апартаментов в статус "Чистый"
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-900 rounded-lg p-6 border border-gold-600/30 shadow-xl">
