@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Generate PDF for non-existent booking",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "booking_id": "999999",
+        "guest_email": "test@example.com"
+      },
+      "expectedStatus": 404,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing parameters",
+      "method": "POST",
+      "path": "/",
+      "body": {},
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

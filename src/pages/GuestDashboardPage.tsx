@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 
 const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
 const BOOKINGS_API_URL = 'https://functions.poehali.dev/5fb527bf-818a-4b1a-b986-bd90154ba94b';
+const PDF_API_URL = 'https://functions.poehali.dev/658336cf-3e08-480b-b90b-f72aa814a865';
 
 interface Booking {
   id: string;
@@ -43,6 +44,7 @@ const GuestDashboardPage = () => {
   const [instruction, setInstruction] = useState<CheckInInstruction | null>(null);
   const [loading, setLoading] = useState(true);
   const [guestUser, setGuestUser] = useState<any>(null);
+  const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -192,6 +194,39 @@ const GuestDashboardPage = () => {
     window.location.href = '/guest-login';
   };
 
+  const downloadBookingPdf = async (bookingId: string) => {
+    if (!guestUser) return;
+    
+    setDownloadingPdf(bookingId);
+    
+    try {
+      const response = await fetch(PDF_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          booking_id: bookingId,
+          guest_email: guestUser.email
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const linkSource = `data:application/pdf;base64,${data.pdf}`;
+        const downloadLink = document.createElement('a');
+        downloadLink.href = linkSource;
+        downloadLink.download = data.filename || `booking_${bookingId}.pdf`;
+        downloadLink.click();
+      } else {
+        alert('Ошибка: ' + (data.error || 'Не удалось создать PDF'));
+      }
+    } catch (error) {
+      alert('Не удалось скачать подтверждение');
+    } finally {
+      setDownloadingPdf(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="bg-gradient-to-r from-gold-500 to-gold-600 text-white py-8 shadow-lg">
@@ -316,6 +351,25 @@ const GuestDashboardPage = () => {
                 </div>
                 <p className="text-lg text-charcoal-900">№ {booking.apartment_id}</p>
               </div>
+            </div>
+            <div className="pt-4 border-t flex justify-end">
+              <button
+                onClick={() => downloadBookingPdf(booking.id)}
+                disabled={downloadingPdf === booking.id}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
+              >
+                {downloadingPdf === booking.id ? (
+                  <>
+                    <Icon name="Loader2" size={18} className="animate-spin" />
+                    Генерация PDF...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="Download" size={18} />
+                    Скачать подтверждение
+                  </>
+                )}
+              </button>
             </div>
           </CardContent>
         </Card>
@@ -624,6 +678,26 @@ const GuestDashboardPage = () => {
                                 </div>
                               </div>
                             )}
+
+                            <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
+                              <button
+                                onClick={() => downloadBookingPdf(b.id)}
+                                disabled={downloadingPdf === b.id}
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-white rounded-lg text-sm font-medium transition-all disabled:opacity-50"
+                              >
+                                {downloadingPdf === b.id ? (
+                                  <>
+                                    <Icon name="Loader2" size={16} className="animate-spin" />
+                                    Генерация...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Icon name="Download" size={16} />
+                                    Скачать PDF
+                                  </>
+                                )}
+                              </button>
+                            </div>
                           </div>
                         );
                       })}
