@@ -29,6 +29,13 @@ const BookingsManagementPage = () => {
   });
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('adminAuthenticated');
+    if (!isAuthenticated) {
+      navigate('/admin-login');
+    }
+  }, [navigate]);
+
   const loadBookings = () => {
     const savedBookings = localStorage.getItem('bookings');
     if (savedBookings) {
