@@ -1,4 +1,5 @@
-import { Card, Button } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import BookingCard from './BookingCard';
 import { Booking } from './types';
