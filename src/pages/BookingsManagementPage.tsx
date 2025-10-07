@@ -36,52 +36,21 @@ const BookingsManagementPage = () => {
   const [managingInstructions, setManagingInstructions] = useState<{ apartmentId: string; guestName: string } | null>(null);
   const navigate = useNavigate();
 
-  // Проверка авторизации - временно отключена для доступа
-  // useEffect(() => {
-  //   const isAuthenticated = localStorage.getItem('adminAuthenticated');
-  //   if (!isAuthenticated) {
-  //     navigate('/admin-login');
-  //   }
-  // }, [navigate]);
+  const loadBookings = () => {
+    const savedBookings = localStorage.getItem('bookings');
+    if (savedBookings) {
+      setBookings(JSON.parse(savedBookings));
+    }
+    setLoading(false);
+  };
+
+  const saveBookings = (newBookings: Booking[]) => {
+    localStorage.setItem('bookings', JSON.stringify(newBookings));
+    setBookings(newBookings);
+  };
 
   useEffect(() => {
-    const mockBookings: Booking[] = [
-      {
-        id: 'BK001',
-        apartment_id: '816',
-        check_in: '2025-10-10',
-        check_out: '2025-10-15',
-        guest_name: 'Иван Иванов',
-        guest_email: 'ivan@example.com',
-        guest_phone: '+7 900 123-45-67',
-        show_to_guest: true,
-      },
-      {
-        id: 'BK002',
-        apartment_id: '2019',
-        check_in: '2025-10-12',
-        check_out: '2025-10-18',
-        guest_name: 'Мария Петрова',
-        guest_email: 'maria@example.com',
-        guest_phone: '+7 900 234-56-78',
-        show_to_guest: false,
-      },
-      {
-        id: 'BK003',
-        apartment_id: '1311',
-        check_in: '2025-10-15',
-        check_out: '2025-10-20',
-        guest_name: 'Алексей Сидоров',
-        guest_email: 'alexey@example.com',
-        guest_phone: '+7 900 345-67-89',
-        show_to_guest: true,
-      },
-    ];
-
-    setTimeout(() => {
-      setBookings(mockBookings);
-      setLoading(false);
-    }, 500);
+    loadBookings();
   }, []);
 
   const formatDate = (dateStr: string) => {
@@ -104,7 +73,8 @@ const BookingsManagementPage = () => {
   };
 
   const handleDelete = (id: string) => {
-    setBookings(bookings.filter(b => b.id !== id));
+    const newBookings = bookings.filter(b => b.id !== id);
+    saveBookings(newBookings);
     setDeleteConfirm(null);
   };
 
@@ -114,9 +84,10 @@ const BookingsManagementPage = () => {
 
   const handleSaveEdit = () => {
     if (editingBooking) {
-      setBookings(bookings.map(b => 
+      const newBookings = bookings.map(b => 
         b.id === editingBooking.id ? editingBooking : b
-      ));
+      );
+      saveBookings(newBookings);
       setEditingBooking(null);
     }
   };
