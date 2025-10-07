@@ -45,10 +45,30 @@ const GuestsManagement = () => {
 
   const loadGuests = async () => {
     setLoading(true);
-    toast({
-      title: 'Информация',
-      description: 'Функция загрузки всех гостей еще не реализована. Используйте форму для создания новых гостей.',
-    });
+    try {
+      const response = await fetch(API_URL, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setGuests(data.guests || []);
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось загрузить гостей',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить гостей. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    }
     setLoading(false);
   };
 
@@ -168,6 +188,41 @@ const GuestsManagement = () => {
     }
   };
 
+  const handleDeleteGuest = async (id: number) => {
+    if (!confirm('Вы уверены, что хотите удалить этого гостя? Это действие нельзя отменить.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Успешно!',
+          description: 'Гость удалён',
+        });
+        loadGuests();
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось удалить гостя',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось удалить гостя. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -197,6 +252,92 @@ const GuestsManagement = () => {
           </Button>
         </div>
       </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600"></div>
+        </div>
+      ) : guests.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Список гостей ({guests.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {guests.map((guest) => (
+                <div
+                  key={guest.id}
+                  className="flex items-center justify-between p-4 bg-white border border-charcoal-200 rounded-lg hover:border-gold-400 transition-colors"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center">
+                        <Icon name="User" size={20} className="text-gold-700" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-charcoal-900">
+                          {guest.name || 'Без имени'}
+                        </p>
+                        <p className="text-sm text-charcoal-600">{guest.email}</p>
+                        {guest.phone && (
+                          <p className="text-xs text-charcoal-500">{guest.phone}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs text-charcoal-500">
+                      {new Date(guest.created_at).toLocaleDateString('ru-RU')}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setResetEmail(guest.email);
+                        setShowResetDialog(true);
+                      }}
+                      className="text-gold-600 hover:text-gold-700 hover:bg-gold-50"
+                    >
+                      <Icon name="KeyRound" size={16} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteGuest(guest.id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Icon name="Trash2" size={16} />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="border-dashed border-2 border-charcoal-300">
+          <CardContent className="py-12">
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-gold-100 mx-auto mb-4 flex items-center justify-center">
+                <Icon name="Users" size={32} className="text-gold-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-charcoal-900 mb-2">
+                Нет гостей
+              </h3>
+              <p className="text-charcoal-600 mb-4">
+                Создайте первого гостя, чтобы начать работу
+              </p>
+              <Button
+                onClick={() => setShowAddDialog(true)}
+                className="bg-gold-500 hover:bg-gold-600"
+              >
+                <Icon name="UserPlus" size={18} className="mr-2" />
+                Добавить гостя
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

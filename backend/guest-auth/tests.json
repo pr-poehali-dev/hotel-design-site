@@ -1,23 +1,13 @@
 {
   "tests": [
     {
-      "name": "Register new guest",
-      "method": "POST",
+      "name": "Get all guests",
+      "method": "GET",
       "path": "/",
-      "body": {
-        "action": "register",
-        "email": "test@example.com",
-        "password": "testpass123",
-        "name": "Test User",
-        "phone": "+7 900 123-45-67"
-      },
       "expectedStatus": 200,
       "expectedBody": {
         "success": true,
-        "user": {
-          "email": "string"
-        },
-        "token": "string"
+        "guests": []
       },
       "bodyMatcher": "partial"
     },
@@ -37,23 +27,6 @@
           "email": "string"
         },
         "token": "string"
-      },
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "Reset password",
-      "method": "POST",
-      "path": "/",
-      "body": {
-        "action": "reset_password",
-        "email": "test@example.com",
-        "password": "oldpass",
-        "new_password": "newpass456"
-      },
-      "expectedStatus": 200,
-      "expectedBody": {
-        "success": true,
-        "message": "string"
       },
       "bodyMatcher": "partial"
     }

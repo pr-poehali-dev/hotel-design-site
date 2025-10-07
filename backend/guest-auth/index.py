@@ -1,7 +1,7 @@
 '''
-Business: Guest authentication API - register, login, and reset password with email/password
-Args: event with httpMethod (POST), body with action (register/login/reset_password), email, password, name, phone, new_password
-Returns: HTTP response with user data and token or error
+Business: Guest authentication API - manage guests (list, register, login, reset password, delete)
+Args: event with httpMethod (GET/POST/DELETE), body with action (register/login/reset_password), email, password, name, phone, new_password
+Returns: HTTP response with user data/list and token or error
 '''
 
 import json
@@ -37,12 +37,105 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-User-Id, X-Auth-Token',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
         }
+    
+    if method == 'GET':
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            
+            cursor.execute(
+                """
+                SELECT id, email, name, phone, created_at 
+                FROM t_p9202093_hotel_design_site.guest_users 
+                ORDER BY created_at DESC
+                """
+            )
+            guests = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            
+            guests_list = []
+            for guest in guests:
+                guests_list.append({
+                    'id': guest['id'],
+                    'email': guest['email'],
+                    'name': guest['name'],
+                    'phone': guest['phone'],
+                    'created_at': guest['created_at'].isoformat() if guest['created_at'] else None
+                })
+            
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'success': True,
+                    'guests': guests_list
+                })
+            }
+        except Exception as e:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': str(e)})
+            }
+    
+    if method == 'DELETE':
+        try:
+            query_params = event.get('queryStringParameters', {}) or {}
+            guest_id = query_params.get('id')
+            
+            if not guest_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'ID гостя обязателен'})
+                }
+            
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute(
+                f"DELETE FROM t_p9202093_hotel_design_site.guest_users WHERE id = {guest_id}"
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'success': True,
+                    'message': 'Гость удалён'
+                })
+            }
+        except Exception as e:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': str(e)})
+            }
     
     if method != 'POST':
         return {
