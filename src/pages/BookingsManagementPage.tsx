@@ -34,6 +34,17 @@ const BookingsManagementPage = () => {
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [managingInstructions, setManagingInstructions] = useState<{ apartmentId: string; guestName: string } | null>(null);
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [newBooking, setNewBooking] = useState<Booking>({
+    id: '',
+    apartment_id: '',
+    check_in: '',
+    check_out: '',
+    guest_name: '',
+    guest_email: '',
+    guest_phone: '',
+    show_to_guest: false,
+  });
   const navigate = useNavigate();
 
   const loadBookings = () => {
@@ -94,6 +105,33 @@ const BookingsManagementPage = () => {
 
   const handleOpenGuestDashboard = (bookingId: string) => {
     navigate(`/guest-dashboard?booking=${bookingId}`);
+  };
+
+  const handleAddNew = () => {
+    if (!newBooking.guest_name || !newBooking.apartment_id || !newBooking.check_in || !newBooking.check_out || !newBooking.guest_email) {
+      alert('Заполните все обязательные поля!');
+      return;
+    }
+
+    const booking: Booking = {
+      ...newBooking,
+      id: `BK${Date.now()}`,
+    };
+
+    const updatedBookings = [...bookings, booking];
+    saveBookings(updatedBookings);
+    
+    setNewBooking({
+      id: '',
+      apartment_id: '',
+      check_in: '',
+      check_out: '',
+      guest_name: '',
+      guest_email: '',
+      guest_phone: '',
+      show_to_guest: false,
+    });
+    setIsAddingNew(false);
   };
 
   if (loading) {
@@ -175,8 +213,34 @@ const BookingsManagementPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-6 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-charcoal-900">
+            Список бронирований ({bookings.length})
+          </h2>
+          <Button
+            onClick={() => setIsAddingNew(true)}
+            className="bg-gold-500 hover:bg-gold-600"
+          >
+            <Icon name="Plus" size={18} className="mr-2" />
+            Добавить гостя
+          </Button>
+        </div>
+
         <div className="grid gap-6">
-          {bookings.map((booking) => (
+          {bookings.length === 0 ? (
+            <Card className="p-12 text-center">
+              <Icon name="Users" size={48} className="mx-auto mb-4 text-gray-400" />
+              <p className="text-gray-600 text-lg mb-4">Пока нет бронирований</p>
+              <Button
+                onClick={() => setIsAddingNew(true)}
+                className="bg-gold-500 hover:bg-gold-600"
+              >
+                <Icon name="Plus" size={18} className="mr-2" />
+                Добавить первого гостя
+              </Button>
+            </Card>
+          ) : (
+            bookings.map((booking) => (
             <Card key={booking.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -291,7 +355,8 @@ const BookingsManagementPage = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
@@ -392,6 +457,88 @@ const BookingsManagementPage = () => {
               onClick={() => deleteConfirm && handleDelete(deleteConfirm)}
             >
               Удалить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог добавления нового гостя */}
+      <Dialog open={isAddingNew} onOpenChange={setIsAddingNew}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Добавить нового гостя</DialogTitle>
+            <DialogDescription>
+              Заполните данные бронирования
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="new_guest_name">Имя гостя *</Label>
+                <Input
+                  id="new_guest_name"
+                  placeholder="Иван Иванов"
+                  value={newBooking.guest_name}
+                  onChange={(e) => setNewBooking({...newBooking, guest_name: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="new_apartment_id">Номер апартамента *</Label>
+                <Input
+                  id="new_apartment_id"
+                  placeholder="816"
+                  value={newBooking.apartment_id}
+                  onChange={(e) => setNewBooking({...newBooking, apartment_id: e.target.value})}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="new_check_in">Дата заезда *</Label>
+                <Input
+                  id="new_check_in"
+                  type="date"
+                  value={newBooking.check_in}
+                  onChange={(e) => setNewBooking({...newBooking, check_in: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="new_check_out">Дата выезда *</Label>
+                <Input
+                  id="new_check_out"
+                  type="date"
+                  value={newBooking.check_out}
+                  onChange={(e) => setNewBooking({...newBooking, check_out: e.target.value})}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new_guest_email">Email гостя *</Label>
+              <Input
+                id="new_guest_email"
+                type="email"
+                placeholder="guest@example.com"
+                value={newBooking.guest_email}
+                onChange={(e) => setNewBooking({...newBooking, guest_email: e.target.value})}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new_guest_phone">Телефон гостя</Label>
+              <Input
+                id="new_guest_phone"
+                placeholder="+7 900 123-45-67"
+                value={newBooking.guest_phone}
+                onChange={(e) => setNewBooking({...newBooking, guest_phone: e.target.value})}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddingNew(false)}>
+              Отмена
+            </Button>
+            <Button onClick={handleAddNew} className="bg-gold-500 hover:bg-gold-600">
+              <Icon name="Plus" size={16} className="mr-2" />
+              Добавить
             </Button>
           </DialogFooter>
         </DialogContent>
