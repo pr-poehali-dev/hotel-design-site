@@ -30,6 +30,8 @@ const GuestsManagement = () => {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetPassword, setResetPassword] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'name'>('newest');
   const { toast } = useToast();
 
   const [newGuest, setNewGuest] = useState({
@@ -223,6 +225,25 @@ const GuestsManagement = () => {
     }
   };
 
+  const filteredAndSortedGuests = guests
+    .filter((guest) => {
+      const query = searchQuery.toLowerCase();
+      return (
+        guest.email.toLowerCase().includes(query) ||
+        guest.name?.toLowerCase().includes(query) ||
+        guest.phone?.toLowerCase().includes(query)
+      );
+    })
+    .sort((a, b) => {
+      if (sortOrder === 'newest') {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      } else if (sortOrder === 'oldest') {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      } else {
+        return (a.name || '').localeCompare(b.name || '');
+      }
+    });
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -253,6 +274,57 @@ const GuestsManagement = () => {
         </div>
       </div>
 
+      {guests.length > 0 && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex gap-4 items-center">
+              <div className="flex-1 relative">
+                <Icon 
+                  name="Search" 
+                  size={18} 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal-400" 
+                />
+                <Input
+                  placeholder="Поиск по email, имени или телефону..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant={sortOrder === 'newest' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSortOrder('newest')}
+                  className={sortOrder === 'newest' ? 'bg-gold-500 hover:bg-gold-600' : ''}
+                >
+                  <Icon name="ArrowDownWideNarrow" size={16} className="mr-2" />
+                  Новые
+                </Button>
+                <Button
+                  variant={sortOrder === 'oldest' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSortOrder('oldest')}
+                  className={sortOrder === 'oldest' ? 'bg-gold-500 hover:bg-gold-600' : ''}
+                >
+                  <Icon name="ArrowUpWideNarrow" size={16} className="mr-2" />
+                  Старые
+                </Button>
+                <Button
+                  variant={sortOrder === 'name' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSortOrder('name')}
+                  className={sortOrder === 'name' ? 'bg-gold-500 hover:bg-gold-600' : ''}
+                >
+                  <Icon name="SortAsc" size={16} className="mr-2" />
+                  Имя
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600"></div>
@@ -260,11 +332,30 @@ const GuestsManagement = () => {
       ) : guests.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Список гостей ({guests.length})</CardTitle>
+            <CardTitle>
+              Список гостей ({filteredAndSortedGuests.length}
+              {filteredAndSortedGuests.length !== guests.length && ` из ${guests.length}`})
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {guests.map((guest) => (
+            {filteredAndSortedGuests.length === 0 ? (
+              <div className="text-center py-8">
+                <Icon name="SearchX" size={48} className="mx-auto text-charcoal-400 mb-3" />
+                <p className="text-charcoal-600">
+                  Ничего не найдено по запросу "{searchQuery}"
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSearchQuery('')}
+                  className="mt-3"
+                >
+                  Очистить поиск
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredAndSortedGuests.map((guest) => (
                 <div
                   key={guest.id}
                   className="flex items-center justify-between p-4 bg-white border border-charcoal-200 rounded-lg hover:border-gold-400 transition-colors"
@@ -311,7 +402,8 @@ const GuestsManagement = () => {
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       ) : (
