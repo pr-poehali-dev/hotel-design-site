@@ -39,6 +39,23 @@
         "token": "string"
       },
       "bodyMatcher": "partial"
+    },
+    {
+      "name": "Reset password",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "reset_password",
+        "email": "test@example.com",
+        "password": "oldpass",
+        "new_password": "newpass456"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "message": "string"
+      },
+      "bodyMatcher": "partial"
     }
   ]
 }

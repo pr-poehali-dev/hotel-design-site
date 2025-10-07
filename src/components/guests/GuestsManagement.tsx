@@ -27,8 +27,9 @@ const GuestsManagement = () => {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
+  const [showResetDialog, setShowResetDialog] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetPassword, setResetPassword] = useState('');
   const { toast } = useToast();
 
   const [newGuest, setNewGuest] = useState({
@@ -37,8 +38,6 @@ const GuestsManagement = () => {
     name: '',
     phone: ''
   });
-
-  const [newPassword, setNewPassword] = useState('');
 
   useEffect(() => {
     loadGuests();
@@ -112,6 +111,63 @@ const GuestsManagement = () => {
     setNewGuest({ ...newGuest, password });
   };
 
+  const generateResetPassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let password = '';
+    for (let i = 0; i < 10; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setResetPassword(password);
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetEmail || !resetPassword) {
+      toast({
+        title: 'Ошибка',
+        description: 'Введите email и новый пароль',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'reset_password',
+          email: resetEmail,
+          new_password: resetPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Пароль изменён!',
+          description: 'Отправьте новый пароль гостю для входа.',
+        });
+        
+        setShowResetDialog(false);
+        setResetEmail('');
+        setResetPassword('');
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось сбросить пароль',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось сбросить пароль. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -123,13 +179,23 @@ const GuestsManagement = () => {
             Создавайте аккаунты для гостей и управляйте доступом
           </p>
         </div>
-        <Button
-          onClick={() => setShowAddDialog(true)}
-          className="bg-gold-500 hover:bg-gold-600"
-        >
-          <Icon name="UserPlus" size={18} className="mr-2" />
-          Добавить гостя
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            onClick={() => setShowResetDialog(true)}
+            variant="outline"
+            className="border-gold-300 text-gold-700 hover:bg-gold-50"
+          >
+            <Icon name="KeyRound" size={18} className="mr-2" />
+            Сбросить пароль
+          </Button>
+          <Button
+            onClick={() => setShowAddDialog(true)}
+            className="bg-gold-500 hover:bg-gold-600"
+          >
+            <Icon name="UserPlus" size={18} className="mr-2" />
+            Добавить гостя
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -283,6 +349,84 @@ const GuestsManagement = () => {
               className="bg-gold-500 hover:bg-gold-600"
             >
               Создать гостя
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-playfair text-2xl">Сбросить пароль</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="reset-email">Email гостя *</Label>
+              <Input
+                id="reset-email"
+                type="email"
+                placeholder="guest@example.com"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+              />
+              <p className="text-xs text-charcoal-500 mt-1">
+                Введите email гостя, которому нужно сбросить пароль
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="reset-password">Новый пароль *</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="reset-password"
+                  type="text"
+                  placeholder="Введите или сгенерируйте"
+                  value={resetPassword}
+                  onChange={(e) => setResetPassword(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={generateResetPassword}
+                  title="Сгенерировать пароль"
+                >
+                  <Icon name="RefreshCw" size={18} />
+                </Button>
+              </div>
+              <p className="text-xs text-charcoal-500 mt-1">
+                Скопируйте новый пароль и отправьте его гостю
+              </p>
+            </div>
+
+            {resetPassword && (
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="flex gap-2 mb-2">
+                  <Icon name="AlertTriangle" size={18} className="text-amber-600 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-amber-900">
+                    Новый пароль для гостя:
+                  </p>
+                </div>
+                <code className="block bg-white px-3 py-2 rounded border border-amber-300 text-sm">
+                  {resetPassword}
+                </code>
+                <p className="text-xs text-amber-700 mt-2">
+                  Скопируйте и отправьте этот пароль гостю
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowResetDialog(false)}>
+              Отмена
+            </Button>
+            <Button
+              onClick={handleResetPassword}
+              className="bg-gold-500 hover:bg-gold-600"
+            >
+              <Icon name="KeyRound" size={18} className="mr-2" />
+              Сбросить пароль
             </Button>
           </DialogFooter>
         </DialogContent>

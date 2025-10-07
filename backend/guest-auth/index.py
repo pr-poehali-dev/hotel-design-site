@@ -1,6 +1,6 @@
 '''
-Business: Guest authentication API - register and login with email/password
-Args: event with httpMethod (POST), body with action, email, password, name, phone
+Business: Guest authentication API - register, login, and reset password with email/password
+Args: event with httpMethod (POST), body with action (register/login/reset_password), email, password, name, phone, new_password
 Returns: HTTP response with user data and token or error
 '''
 
@@ -173,6 +173,64 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'phone': user['phone']
                     },
                     'token': token
+                })
+            }
+        
+        elif action == 'reset_password':
+            new_password = body_data.get('new_password', '')
+            
+            if not new_password:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'Новый пароль обязателен'})
+                }
+            
+            email_safe = email.replace("'", "''")
+            
+            # Check if user exists
+            cursor.execute(
+                f"SELECT id FROM t_p9202093_hotel_design_site.guest_users WHERE email = '{email_safe}'"
+            )
+            user = cursor.fetchone()
+            
+            if not user:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 404,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'Пользователь не найден'})
+                }
+            
+            # Update password
+            password_hash = hash_password(new_password)
+            cursor.execute(
+                f"""
+                UPDATE t_p9202093_hotel_design_site.guest_users 
+                SET password_hash = '{password_hash}' 
+                WHERE email = '{email_safe}'
+                """
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'success': True,
+                    'message': 'Пароль успешно изменён'
                 })
             }
         
