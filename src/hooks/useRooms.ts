@@ -146,18 +146,9 @@ export const useRooms = () => {
           const retryData = await retryResponse.json();
           setRooms((retryData.rooms || []).map(mapRoomFromDB));
         } else {
-          // Если БД пустая и нет localStorage, инициализируем начальными данными
-          console.log('🔄 Инициализация БД начальными данными');
-          for (const room of INITIAL_ROOMS) {
-            await fetch(API_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'add_room', room })
-            });
-          }
-          const retryResponse = await fetch(`${API_URL}?action=rooms`);
-          const retryData = await retryResponse.json();
-          setRooms((retryData.rooms || []).map(mapRoomFromDB));
+          // Если БД пустая - оставляем пустой массив (НЕ инициализируем демо-данными)
+          console.log('✅ База данных пустая - ожидание добавления гостей');
+          setRooms([]);
         }
       }
     } catch (error) {
