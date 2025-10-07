@@ -1,4 +1,5 @@
 {
+  "password-reset": "https://functions.poehali.dev/00f1c03b-e81c-4016-b7a3-2d06f576b4ab",
   "guest-auth": "https://functions.poehali.dev/a0648fb1-e2c4-4c52-86e7-e96230f139d2",
   "auth-housekeepers": "https://functions.poehali.dev/0a9aa57a-5394-4e58-83f1-2b834f7edae6",
   "update-housekeeper": "https://functions.poehali.dev/9778c1df-7db7-4cd4-a0f9-9ea3bf34f2ab",

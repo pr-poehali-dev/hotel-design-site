@@ -147,6 +147,16 @@ const GuestLoginPage = () => {
                 )}
               </Button>
 
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => navigate('/guest-forgot-password')}
+                  className="text-sm text-gold-600 hover:text-gold-700 hover:underline"
+                >
+                  Забыли пароль?
+                </button>
+              </div>
+
               <div className="text-center pt-4 border-t">
                 <p className="text-sm text-gray-600 mb-3">
                   Ещё нет аккаунта?
