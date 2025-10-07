@@ -74,13 +74,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         
         if action == 'register':
-            name = body_data.get('name', '')
-            phone = body_data.get('phone', '')
+            name = body_data.get('name', '').replace("'", "''")
+            phone = body_data.get('phone', '').replace("'", "''")
+            email_safe = email.replace("'", "''")
             
             # Check if user exists
             cursor.execute(
-                "SELECT id FROM t_p9202093_hotel_design_site.guest_users WHERE email = %s",
-                (email,)
+                f"SELECT id FROM t_p9202093_hotel_design_site.guest_users WHERE email = '{email_safe}'"
             )
             existing = cursor.fetchone()
             
@@ -99,13 +99,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             # Create new user
             password_hash = hash_password(password)
             cursor.execute(
-                """
+                f"""
                 INSERT INTO t_p9202093_hotel_design_site.guest_users 
                 (email, password_hash, name, phone) 
-                VALUES (%s, %s, %s, %s) 
+                VALUES ('{email_safe}', '{password_hash}', '{name}', '{phone}') 
                 RETURNING id, email, name, phone, created_at
-                """,
-                (email, password_hash, name, phone)
+                """
             )
             user = cursor.fetchone()
             conn.commit()
@@ -134,14 +133,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         elif action == 'login':
             password_hash = hash_password(password)
+            email_safe = email.replace("'", "''")
             
             cursor.execute(
-                """
+                f"""
                 SELECT id, email, name, phone, created_at 
                 FROM t_p9202093_hotel_design_site.guest_users 
-                WHERE email = %s AND password_hash = %s
-                """,
-                (email, password_hash)
+                WHERE email = '{email_safe}' AND password_hash = '{password_hash}'
+                """
             )
             user = cursor.fetchone()
             cursor.close()
