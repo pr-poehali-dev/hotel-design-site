@@ -37,6 +37,7 @@ const HousekeepingTable = () => {
     assignHousekeeper,
     addRoom,
     deleteRoom,
+    deleteAllRooms,
     startEditRoom,
     saveEditRoom,
     updateRoomField,
@@ -217,6 +218,13 @@ const HousekeepingTable = () => {
                 variant="secondary"
               >
                 {showPaymentsReport ? 'Скрыть' : 'Отчёт по выплатам'}
+              </FizzyButton>
+              <FizzyButton
+                onClick={deleteAllRooms}
+                icon={<Icon name="Trash2" size={20} />}
+                variant="destructive"
+              >
+                Очистить всю базу
               </FizzyButton>
             </div>
           </>

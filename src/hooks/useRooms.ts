@@ -35,56 +35,7 @@ const mapRoomFromDB = (dbRoom: any): Room => {
   }
 };
 
-const INITIAL_ROOMS: Room[] = [
-  {
-    id: '1',
-    number: '501',
-    floor: 5,
-    status: 'dirty',
-    assignedTo: '',
-    lastCleaned: '2025-10-04 14:30',
-    urgent: true,
-    notes: '',
-    payment: 0,
-    paymentStatus: 'unpaid'
-  },
-  {
-    id: '2',
-    number: '502',
-    floor: 5,
-    status: 'clean',
-    assignedTo: 'Мария',
-    lastCleaned: '2025-10-05 10:15',
-    urgent: false,
-    notes: '',
-    payment: 500,
-    paymentStatus: 'unpaid'
-  },
-  {
-    id: '3',
-    number: '601',
-    floor: 6,
-    status: 'in-progress',
-    assignedTo: 'Елена',
-    lastCleaned: '2025-10-04 16:00',
-    urgent: true,
-    notes: 'Требуется дополнительное белье',
-    payment: 700,
-    paymentStatus: 'paid'
-  },
-  {
-    id: '4',
-    number: '602',
-    floor: 6,
-    status: 'inspection',
-    assignedTo: 'Ольга',
-    lastCleaned: '2025-10-05 09:30',
-    urgent: false,
-    notes: '',
-    payment: 500,
-    paymentStatus: 'unpaid'
-  }
-];
+// Демо-данные полностью удалены - база должна быть пустой по умолчанию
 
 export const useRooms = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -261,6 +212,28 @@ export const useRooms = () => {
     }
   }, []);
 
+  const deleteAllRooms = useCallback(async () => {
+    if (!confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите удалить ВСЕ апартаменты из базы? Это действие нельзя отменить!')) return;
+    if (!confirm('Последнее предупреждение! Все данные будут безвозвратно удалены!')) return;
+
+    try {
+      const deletePromises = rooms.map(room => 
+        fetch(API_URL, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete_room', id: room.id })
+        })
+      );
+      
+      await Promise.all(deletePromises);
+      setRooms([]);
+      alert('✅ Все апартаменты успешно удалены из базы!');
+    } catch (error) {
+      console.error('Ошибка массового удаления:', error);
+      alert('❌ Ошибка при удалении апартаментов');
+    }
+  }, [rooms]);
+
   const startEditRoom = useCallback((roomId: string) => {
     setEditingRoomId(roomId);
   }, []);
@@ -302,6 +275,7 @@ export const useRooms = () => {
     assignHousekeeper,
     addRoom,
     deleteRoom,
+    deleteAllRooms,
     startEditRoom,
     saveEditRoom,
     updateRoomField,
