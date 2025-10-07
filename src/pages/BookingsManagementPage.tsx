@@ -146,30 +146,36 @@ const BookingsManagementPage = () => {
         </div>
       </div>
 
-      <EditBookingDialog
-        booking={editingBooking}
-        onClose={() => setEditingBooking(null)}
-        onSave={handleSaveEdit}
-        onChange={setEditingBooking}
-      />
+      {editingBooking && (
+        <EditBookingDialog
+          booking={editingBooking}
+          onClose={() => setEditingBooking(null)}
+          onSave={handleSaveEdit}
+          onChange={setEditingBooking}
+        />
+      )}
 
-      <DeleteConfirmDialog
-        bookingId={deleteConfirm}
-        onClose={() => setDeleteConfirm(null)}
-        onConfirm={handleDelete}
-      />
+      {deleteConfirm && (
+        <DeleteConfirmDialog
+          bookingId={deleteConfirm}
+          onClose={() => setDeleteConfirm(null)}
+          onConfirm={handleDelete}
+        />
+      )}
 
-      <AddBookingDialog
-        open={isAddingNew}
-        booking={newBooking}
-        onClose={() => setIsAddingNew(false)}
-        onAdd={handleAddNew}
-        onChange={setNewBooking}
-      />
+      {isAddingNew && (
+        <AddBookingDialog
+          open={isAddingNew}
+          booking={newBooking}
+          onClose={() => setIsAddingNew(false)}
+          onAdd={handleAddNew}
+          onChange={setNewBooking}
+        />
+      )}
 
       {managingInstructions && (
         <ManageInstructionsDialog
-          open={!!managingInstructions}
+          open={true}
           onOpenChange={(open) => !open && setManagingInstructions(null)}
           apartmentId={managingInstructions.apartmentId}
           guestName={managingInstructions.guestName}
