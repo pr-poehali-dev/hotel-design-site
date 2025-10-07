@@ -1,27 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+import GuestsList, { Guest } from './GuestsList';
+import GuestsSearchBar from './GuestsSearchBar';
+import AddGuestDialog from './AddGuestDialog';
+import ResetPasswordDialog from './ResetPasswordDialog';
+import GuestsInstructions from './GuestsInstructions';
+import EmptyGuestsState from './EmptyGuestsState';
 
 const API_URL = 'https://functions.poehali.dev/a0648fb1-e2c4-4c52-86e7-e96230f139d2';
-
-interface Guest {
-  id: number;
-  email: string;
-  name: string;
-  phone: string;
-  created_at: string;
-}
 
 const GuestsManagement = () => {
   const [guests, setGuests] = useState<Guest[]>([]);
@@ -275,54 +264,12 @@ const GuestsManagement = () => {
       </div>
 
       {guests.length > 0 && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex gap-4 items-center">
-              <div className="flex-1 relative">
-                <Icon 
-                  name="Search" 
-                  size={18} 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal-400" 
-                />
-                <Input
-                  placeholder="Поиск по email, имени или телефону..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant={sortOrder === 'newest' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSortOrder('newest')}
-                  className={sortOrder === 'newest' ? 'bg-gold-500 hover:bg-gold-600' : ''}
-                >
-                  <Icon name="ArrowDownWideNarrow" size={16} className="mr-2" />
-                  Новые
-                </Button>
-                <Button
-                  variant={sortOrder === 'oldest' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSortOrder('oldest')}
-                  className={sortOrder === 'oldest' ? 'bg-gold-500 hover:bg-gold-600' : ''}
-                >
-                  <Icon name="ArrowUpWideNarrow" size={16} className="mr-2" />
-                  Старые
-                </Button>
-                <Button
-                  variant={sortOrder === 'name' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSortOrder('name')}
-                  className={sortOrder === 'name' ? 'bg-gold-500 hover:bg-gold-600' : ''}
-                >
-                  <Icon name="SortAsc" size={16} className="mr-2" />
-                  Имя
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <GuestsSearchBar
+          searchQuery={searchQuery}
+          sortOrder={sortOrder}
+          onSearchChange={setSearchQuery}
+          onSortChange={setSortOrder}
+        />
       )}
 
       {loading ? (
@@ -338,332 +285,43 @@ const GuestsManagement = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {filteredAndSortedGuests.length === 0 ? (
-              <div className="text-center py-8">
-                <Icon name="SearchX" size={48} className="mx-auto text-charcoal-400 mb-3" />
-                <p className="text-charcoal-600">
-                  Ничего не найдено по запросу "{searchQuery}"
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSearchQuery('')}
-                  className="mt-3"
-                >
-                  Очистить поиск
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {filteredAndSortedGuests.map((guest) => (
-                <div
-                  key={guest.id}
-                  className="flex items-center justify-between p-4 bg-white border border-charcoal-200 rounded-lg hover:border-gold-400 transition-colors"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center">
-                        <Icon name="User" size={20} className="text-gold-700" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-charcoal-900">
-                          {guest.name || 'Без имени'}
-                        </p>
-                        <p className="text-sm text-charcoal-600">{guest.email}</p>
-                        {guest.phone && (
-                          <p className="text-xs text-charcoal-500">{guest.phone}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs text-charcoal-500">
-                      {new Date(guest.created_at).toLocaleDateString('ru-RU')}
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setResetEmail(guest.email);
-                        setShowResetDialog(true);
-                      }}
-                      className="text-gold-600 hover:text-gold-700 hover:bg-gold-50"
-                    >
-                      <Icon name="KeyRound" size={16} />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteGuest(guest.id)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Icon name="Trash2" size={16} />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-              </div>
-            )}
+            <GuestsList
+              guests={filteredAndSortedGuests}
+              searchQuery={searchQuery}
+              onResetPassword={(email) => {
+                setResetEmail(email);
+                setShowResetDialog(true);
+              }}
+              onDeleteGuest={handleDeleteGuest}
+              onClearSearch={() => setSearchQuery('')}
+            />
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-dashed border-2 border-charcoal-300">
-          <CardContent className="py-12">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gold-100 mx-auto mb-4 flex items-center justify-center">
-                <Icon name="Users" size={32} className="text-gold-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-charcoal-900 mb-2">
-                Нет гостей
-              </h3>
-              <p className="text-charcoal-600 mb-4">
-                Создайте первого гостя, чтобы начать работу
-              </p>
-              <Button
-                onClick={() => setShowAddDialog(true)}
-                className="bg-gold-500 hover:bg-gold-600"
-              >
-                <Icon name="UserPlus" size={18} className="mr-2" />
-                Добавить гостя
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <EmptyGuestsState onAddGuest={() => setShowAddDialog(true)} />
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Инструкция по созданию гостя</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-semibold flex-shrink-0">
-              1
-            </div>
-            <div>
-              <p className="font-semibold text-charcoal-900">Создайте аккаунт</p>
-              <p className="text-sm text-charcoal-600">
-                Нажмите "Добавить гостя", введите email и сгенерируйте пароль
-              </p>
-            </div>
-          </div>
+      <GuestsInstructions />
 
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-semibold flex-shrink-0">
-              2
-            </div>
-            <div>
-              <p className="font-semibold text-charcoal-900">Скопируйте данные</p>
-              <p className="text-sm text-charcoal-600">
-                Скопируйте email и пароль — вам нужно отправить их гостю
-              </p>
-            </div>
-          </div>
+      <AddGuestDialog
+        open={showAddDialog}
+        onOpenChange={setShowAddDialog}
+        newGuest={newGuest}
+        onGuestChange={setNewGuest}
+        onGeneratePassword={generatePassword}
+        onSubmit={handleAddGuest}
+      />
 
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-semibold flex-shrink-0">
-              3
-            </div>
-            <div>
-              <p className="font-semibold text-charcoal-900">Отправьте гостю</p>
-              <p className="text-sm text-charcoal-600">
-                Отправьте email и пароль гостю (через WhatsApp, email или другим способом)
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex gap-2">
-              <Icon name="Info" size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-900">
-                <p className="font-semibold mb-1">Адрес личного кабинета:</p>
-                <code className="bg-white px-2 py-1 rounded border border-blue-300">
-                  https://p9apart.ru/guest-login
-                </code>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-playfair text-2xl">Создать гостя</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="guest@example.com"
-                value={newGuest.email}
-                onChange={(e) => setNewGuest({ ...newGuest, email: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password">Пароль *</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="password"
-                  type="text"
-                  placeholder="Введите или сгенерируйте"
-                  value={newGuest.password}
-                  onChange={(e) => setNewGuest({ ...newGuest, password: e.target.value })}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={generatePassword}
-                  title="Сгенерировать пароль"
-                >
-                  <Icon name="RefreshCw" size={18} />
-                </Button>
-              </div>
-              <p className="text-xs text-charcoal-500 mt-1">
-                Скопируйте пароль — вам нужно отправить его гостю
-              </p>
-            </div>
-
-            <div>
-              <Label htmlFor="name">Имя</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Иван Иванов"
-                value={newGuest.name}
-                onChange={(e) => setNewGuest({ ...newGuest, name: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="phone">Телефон</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+7 900 123-45-67"
-                value={newGuest.phone}
-                onChange={(e) => setNewGuest({ ...newGuest, phone: e.target.value })}
-              />
-            </div>
-
-            {newGuest.password && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm font-semibold text-green-900 mb-2">
-                  Данные для входа:
-                </p>
-                <div className="space-y-1 text-sm">
-                  <p>
-                    <span className="text-green-700">Email:</span>{' '}
-                    <code className="bg-white px-2 py-1 rounded border border-green-300">
-                      {newGuest.email}
-                    </code>
-                  </p>
-                  <p>
-                    <span className="text-green-700">Пароль:</span>{' '}
-                    <code className="bg-white px-2 py-1 rounded border border-green-300">
-                      {newGuest.password}
-                    </code>
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
-              Отмена
-            </Button>
-            <Button
-              onClick={handleAddGuest}
-              className="bg-gold-500 hover:bg-gold-600"
-            >
-              Создать гостя
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-playfair text-2xl">Сбросить пароль</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="reset-email">Email гостя *</Label>
-              <Input
-                id="reset-email"
-                type="email"
-                placeholder="guest@example.com"
-                value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
-              />
-              <p className="text-xs text-charcoal-500 mt-1">
-                Введите email гостя, которому нужно сбросить пароль
-              </p>
-            </div>
-
-            <div>
-              <Label htmlFor="reset-password">Новый пароль *</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="reset-password"
-                  type="text"
-                  placeholder="Введите или сгенерируйте"
-                  value={resetPassword}
-                  onChange={(e) => setResetPassword(e.target.value)}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={generateResetPassword}
-                  title="Сгенерировать пароль"
-                >
-                  <Icon name="RefreshCw" size={18} />
-                </Button>
-              </div>
-              <p className="text-xs text-charcoal-500 mt-1">
-                Скопируйте новый пароль и отправьте его гостю
-              </p>
-            </div>
-
-            {resetPassword && (
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <div className="flex gap-2 mb-2">
-                  <Icon name="AlertTriangle" size={18} className="text-amber-600 flex-shrink-0" />
-                  <p className="text-sm font-semibold text-amber-900">
-                    Новый пароль для гостя:
-                  </p>
-                </div>
-                <code className="block bg-white px-3 py-2 rounded border border-amber-300 text-sm">
-                  {resetPassword}
-                </code>
-                <p className="text-xs text-amber-700 mt-2">
-                  Скопируйте и отправьте этот пароль гостю
-                </p>
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowResetDialog(false)}>
-              Отмена
-            </Button>
-            <Button
-              onClick={handleResetPassword}
-              className="bg-gold-500 hover:bg-gold-600"
-            >
-              <Icon name="KeyRound" size={18} className="mr-2" />
-              Сбросить пароль
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ResetPasswordDialog
+        open={showResetDialog}
+        onOpenChange={setShowResetDialog}
+        resetEmail={resetEmail}
+        resetPassword={resetPassword}
+        onEmailChange={setResetEmail}
+        onPasswordChange={setResetPassword}
+        onGeneratePassword={generateResetPassword}
+        onSubmit={handleResetPassword}
+      />
     </div>
   );
 };
