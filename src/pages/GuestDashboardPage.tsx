@@ -35,18 +35,29 @@ const GuestDashboardPage = () => {
   const [instruction, setInstruction] = useState<CheckInInstruction | null>(null);
   const [loading, setLoading] = useState(true);
   const [bookingsCount, setBookingsCount] = useState(3);
+  const [guestUser, setGuestUser] = useState<any>(null);
 
   useEffect(() => {
     const loadData = async () => {
-      // Mock бронирование (позже можно заменить на реальный API)
+      const userStr = localStorage.getItem('guest_user');
+      const token = localStorage.getItem('guest_token');
+      
+      if (!userStr || !token) {
+        window.location.href = '/guest-login';
+        return;
+      }
+
+      const user = JSON.parse(userStr);
+      setGuestUser(user);
+
       const mockBooking: Booking = {
         id: '1',
         apartment_id: '816',
         check_in: '2025-10-10',
         check_out: '2025-10-15',
-        guest_name: 'Иван Иванов',
-        guest_email: 'ivan@example.com',
-        guest_phone: '+7 900 123-45-67',
+        guest_name: user.name || 'Гость',
+        guest_email: user.email,
+        guest_phone: user.phone || '',
       };
 
       setBooking(mockBooking);
@@ -134,11 +145,17 @@ const GuestDashboardPage = () => {
 
   const daysUntil = getDaysUntilCheckIn();
 
+  const handleLogout = () => {
+    localStorage.removeItem('guest_user');
+    localStorage.removeItem('guest_token');
+    window.location.href = '/guest-login';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="bg-gradient-to-r from-gold-500 to-gold-600 text-white py-8 shadow-lg">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center justify-between mb-4">
             <a 
               href="/" 
               className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
@@ -151,10 +168,19 @@ const GuestDashboardPage = () => {
               </div>
               <span className="font-playfair font-bold text-white text-xs">Premium Apartments</span>
             </a>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+            >
+              <Icon name="LogOut" size={18} />
+              <span className="text-sm font-medium">Выход</span>
+            </button>
           </div>
           <div className="border-t border-white/20 pt-4">
             <h1 className="text-2xl font-bold font-playfair mb-1">Личный кабинет гостя</h1>
-            <p className="text-gold-100 text-sm">Вся информация о вашем бронировании</p>
+            <p className="text-gold-100 text-sm">
+              {guestUser ? `Добро пожаловать, ${guestUser.name || guestUser.email}!` : 'Вся информация о вашем бронировании'}
+            </p>
           </div>
         </div>
       </div>

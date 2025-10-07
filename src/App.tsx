@@ -17,6 +17,8 @@ const HousekeepingTable = React.lazy(() => import("./pages/HousekeepingTable"));
 const CheckInInstructionsPage = React.lazy(() => import("./pages/CheckInInstructionsPage"));
 const InstructionsListPage = React.lazy(() => import("./pages/InstructionsListPage"));
 const GuestDashboardPage = React.lazy(() => import("./pages/GuestDashboardPage"));
+const GuestLoginPage = React.lazy(() => import("./pages/GuestLoginPage"));
+const GuestRegisterPage = React.lazy(() => import("./pages/GuestRegisterPage"));
 const BookingsManagementPage = React.lazy(() => import("./pages/BookingsManagementPage"));
 const AdminLoginPage = React.lazy(() => import("./pages/AdminLoginPage"));
 const FortuneWheelPage = React.lazy(() => import("./pages/FortuneWheelPage"));
@@ -47,6 +49,8 @@ const App = () => (
             <Route path="/check-in-instructions" element={<CheckInInstructionsPage />} />
             <Route path="/instructions-list" element={<InstructionsListPage />} />
             <Route path="/guest-dashboard" element={<GuestDashboardPage />} />
+            <Route path="/guest-login" element={<GuestLoginPage />} />
+            <Route path="/guest-register" element={<GuestRegisterPage />} />
             <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="/bookings" element={<BookingsManagementPage />} />
             <Route path="/fortune-wheel" element={<FortuneWheelPage />} />
