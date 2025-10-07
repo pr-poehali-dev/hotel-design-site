@@ -20,7 +20,7 @@ interface EditBookingDialogProps {
 
 const EditBookingDialog = ({ booking, onClose, onSave, onChange }: EditBookingDialogProps) => {
   return (
-    <Dialog open={!!booking} onOpenChange={onClose}>
+    <Dialog open={!!booking} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Редактировать бронирование</DialogTitle>

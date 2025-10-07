@@ -22,7 +22,7 @@ interface AddBookingDialogProps {
 
 const AddBookingDialog = ({ open, booking, onClose, onAdd, onChange }: AddBookingDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Добавить нового гостя</DialogTitle>

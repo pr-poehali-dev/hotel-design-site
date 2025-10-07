@@ -16,7 +16,7 @@ interface DeleteConfirmDialogProps {
 
 const DeleteConfirmDialog = ({ bookingId, onClose, onConfirm }: DeleteConfirmDialogProps) => {
   return (
-    <Dialog open={!!bookingId} onOpenChange={onClose}>
+    <Dialog open={!!bookingId} onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Удалить бронирование?</DialogTitle>
