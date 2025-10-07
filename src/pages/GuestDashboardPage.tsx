@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
+const BOOKINGS_API_URL = 'https://functions.poehali.dev/5fb527bf-818a-4b1a-b986-bd90154ba94b';
 
 interface Booking {
   id: string;
@@ -15,6 +16,12 @@ interface Booking {
   guest_name: string;
   guest_email: string;
   guest_phone: string;
+  total_amount?: number;
+  early_check_in?: number;
+  late_check_out?: number;
+  parking?: number;
+  show_to_guest?: boolean;
+  created_at?: string;
 }
 
 interface CheckInInstruction {
@@ -32,9 +39,9 @@ interface CheckInInstruction {
 
 const GuestDashboardPage = () => {
   const [booking, setBooking] = useState<Booking | null>(null);
+  const [allBookings, setAllBookings] = useState<Booking[]>([]);
   const [instruction, setInstruction] = useState<CheckInInstruction | null>(null);
   const [loading, setLoading] = useState(true);
-  const [bookingsCount, setBookingsCount] = useState(3);
   const [guestUser, setGuestUser] = useState<any>(null);
 
   useEffect(() => {
@@ -50,17 +57,51 @@ const GuestDashboardPage = () => {
       const user = JSON.parse(userStr);
       setGuestUser(user);
 
-      const mockBooking: Booking = {
-        id: '1',
-        apartment_id: '816',
-        check_in: '2025-10-10',
-        check_out: '2025-10-15',
-        guest_name: user.name || 'Гость',
-        guest_email: user.email,
-        guest_phone: user.phone || '',
-      };
-
-      setBooking(mockBooking);
+      try {
+        const bookingsResponse = await fetch(BOOKINGS_API_URL, {
+          method: 'GET',
+          headers: {
+            'X-User-Email': user.email
+          }
+        });
+        
+        const bookingsData = await bookingsResponse.json();
+        
+        if (bookingsData.success && bookingsData.bookings.length > 0) {
+          setAllBookings(bookingsData.bookings);
+          
+          const upcomingBooking = bookingsData.bookings.find((b: Booking) => 
+            new Date(b.check_in) >= new Date()
+          ) || bookingsData.bookings[0];
+          
+          setBooking(upcomingBooking);
+        } else {
+          const mockBooking: Booking = {
+            id: '1',
+            apartment_id: '816',
+            check_in: '2025-10-10',
+            check_out: '2025-10-15',
+            guest_name: user.name || 'Гость',
+            guest_email: user.email,
+            guest_phone: user.phone || '',
+          };
+          setBooking(mockBooking);
+          setAllBookings([mockBooking]);
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки бронирований:', error);
+        const mockBooking: Booking = {
+          id: '1',
+          apartment_id: '816',
+          check_in: '2025-10-10',
+          check_out: '2025-10-15',
+          guest_name: user.name || 'Гость',
+          guest_email: user.email,
+          guest_phone: user.phone || '',
+        };
+        setBooking(mockBooking);
+        setAllBookings([mockBooking]);
+      }
 
       // Загружаем инструкции из базы данных
       try {
@@ -202,7 +243,7 @@ const GuestDashboardPage = () => {
                   Постоянник
                 </h3>
                 <p className="text-gray-700 mb-3">
-                  У вас {bookingsCount} {bookingsCount === 1 ? 'бронирование' : bookingsCount < 5 ? 'бронирования' : 'бронирований'}
+                  У вас {allBookings.length} {allBookings.length === 1 ? 'бронирование' : allBookings.length < 5 ? 'бронирования' : 'бронирований'}
                 </p>
                 <div className="inline-block bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-2xl font-bold px-6 py-2 rounded-xl shadow-lg mb-4">
                   +10% к акциям
@@ -210,18 +251,18 @@ const GuestDashboardPage = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Прогресс до статуса "Амбассадор"</span>
-                    <span className="font-semibold text-charcoal-900">{bookingsCount}/10</span>
+                    <span className="font-semibold text-charcoal-900">{allBookings.length}/10</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                     <div 
                       className="bg-gradient-to-r from-gold-500 to-gold-600 h-full rounded-full transition-all duration-500 relative overflow-hidden"
-                      style={{ width: `${(bookingsCount / 10) * 100}%` }}
+                      style={{ width: `${(allBookings.length / 10) * 100}%` }}
                     >
                       <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
                     </div>
                   </div>
                   <p className="text-sm text-gray-600">
-                    Осталось {10 - bookingsCount} {10 - bookingsCount === 1 ? 'бронирование' : 'бронирований'} до +15% к акциям
+                    Осталось {Math.max(0, 10 - allBookings.length)} {Math.max(0, 10 - allBookings.length) === 1 ? 'бронирование' : 'бронирований'} до +15% к акциям
                   </p>
                 </div>
               </div>
@@ -281,7 +322,7 @@ const GuestDashboardPage = () => {
 
         {instruction && (
           <Tabs defaultValue="instruction" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="instruction">
                 <Icon name="Info" size={16} className="mr-2" />
                 Инструкция
@@ -301,6 +342,10 @@ const GuestDashboardPage = () => {
               <TabsTrigger value="rules">
                 <Icon name="BookOpen" size={16} className="mr-2" />
                 Правила
+              </TabsTrigger>
+              <TabsTrigger value="history">
+                <Icon name="History" size={16} className="mr-2" />
+                История
               </TabsTrigger>
             </TabsList>
 
@@ -469,6 +514,125 @@ const GuestDashboardPage = () => {
                     <p className="text-gray-500 text-center py-8">
                       Правила проживания появятся позже
                     </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="history" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>История бронирований</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {allBookings.length > 0 ? (
+                    <div className="space-y-4">
+                      {allBookings.map((b) => {
+                        const checkInDate = new Date(b.check_in);
+                        const checkOutDate = new Date(b.check_out);
+                        const today = new Date();
+                        const isPast = checkOutDate < today;
+                        const isUpcoming = checkInDate > today;
+                        const isCurrent = checkInDate <= today && checkOutDate >= today;
+
+                        return (
+                          <div
+                            key={b.id}
+                            className={`p-6 rounded-lg border-2 transition-all ${
+                              isCurrent
+                                ? 'bg-green-50 border-green-300'
+                                : isUpcoming
+                                ? 'bg-blue-50 border-blue-300'
+                                : 'bg-gray-50 border-gray-200'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h3 className="text-xl font-bold text-charcoal-900 mb-1">
+                                  Апартамент № {b.apartment_id}
+                                </h3>
+                                <div className="flex items-center gap-2">
+                                  {isCurrent && (
+                                    <Badge className="bg-green-500">Текущее</Badge>
+                                  )}
+                                  {isUpcoming && (
+                                    <Badge className="bg-blue-500">Предстоящее</Badge>
+                                  )}
+                                  {isPast && (
+                                    <Badge variant="outline">Завершено</Badge>
+                                  )}
+                                </div>
+                              </div>
+                              {b.total_amount && (
+                                <div className="text-right">
+                                  <p className="text-2xl font-bold text-gold-600">
+                                    {b.total_amount.toLocaleString('ru-RU')} ₽
+                                  </p>
+                                  <p className="text-xs text-gray-500">Стоимость</p>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                                  <Icon name="Calendar" size={20} className="text-gold-600" />
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-500">Заезд</p>
+                                  <p className="font-semibold text-charcoal-900">
+                                    {formatDate(b.check_in)}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                                  <Icon name="Calendar" size={20} className="text-gold-600" />
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-500">Выезд</p>
+                                  <p className="font-semibold text-charcoal-900">
+                                    {formatDate(b.check_out)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {(b.early_check_in || b.late_check_out || b.parking) && (
+                              <div className="mt-4 pt-4 border-t border-gray-200">
+                                <p className="text-xs text-gray-500 mb-2">Дополнительно:</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {b.early_check_in && b.early_check_in > 0 && (
+                                    <Badge variant="outline" className="text-xs">
+                                      <Icon name="Clock" size={12} className="mr-1" />
+                                      Ранний заезд
+                                    </Badge>
+                                  )}
+                                  {b.late_check_out && b.late_check_out > 0 && (
+                                    <Badge variant="outline" className="text-xs">
+                                      <Icon name="Clock" size={12} className="mr-1" />
+                                      Поздний выезд
+                                    </Badge>
+                                  )}
+                                  {b.parking && b.parking > 0 && (
+                                    <Badge variant="outline" className="text-xs">
+                                      <Icon name="Car" size={12} className="mr-1" />
+                                      Парковка
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-gray-500">
+                      <Icon name="Calendar" size={48} className="mx-auto mb-4 text-gray-300" />
+                      <p>У вас пока нет бронирований</p>
+                    </div>
                   )}
                 </CardContent>
               </Card>
