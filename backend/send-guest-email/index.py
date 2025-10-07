@@ -63,7 +63,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False
         }
     
-    guest_dashboard_url = f"https://your-domain.com/guest-dashboard?booking={booking_id}"
+    guest_dashboard_url = f"https://p9apart.ru/guest-dashboard?booking={booking_id}"
     
     html_content = f"""
     <!DOCTYPE html>
