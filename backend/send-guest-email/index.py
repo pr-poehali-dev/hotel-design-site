@@ -11,6 +11,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     Args: event - dict с httpMethod, body (guest_email, guest_name, booking_id, apartment_id)
           context - object с request_id
     Returns: HTTP response dict
+    Version: 1.1 - обновлена конфигурация SMTP
     '''
     method: str = event.get('httpMethod', 'POST')
     
