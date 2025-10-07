@@ -7,6 +7,7 @@ interface Booking {
   apartment_id: string;
   check_in: string;
   check_out: string;
+  status?: string;
 }
 
 interface CurrentBookingCardProps {
@@ -15,6 +16,8 @@ interface CurrentBookingCardProps {
   daysUntil: number;
   downloadingPdf: string | null;
   onDownloadPdf: (bookingId: string) => void;
+  cancellingBooking: string | null;
+  onCancelBooking: (bookingId: string) => void;
 }
 
 const CurrentBookingCard = ({ 
@@ -22,20 +25,30 @@ const CurrentBookingCard = ({
   formatDate, 
   daysUntil,
   downloadingPdf,
-  onDownloadPdf
+  onDownloadPdf,
+  cancellingBooking,
+  onCancelBooking
 }: CurrentBookingCardProps) => {
+  const isCancelled = booking.status === 'cancelled';
+  const canCancel = daysUntil > 0 && !isCancelled;
   return (
-    <Card className="border-t-4 border-t-gold-500">
+    <Card className={`border-t-4 ${isCancelled ? 'border-t-red-500 opacity-75' : 'border-t-gold-500'}`}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl font-playfair">Ваше бронирование</CardTitle>
-          {daysUntil > 0 && (
-            <Badge className="bg-gold-500 text-white">
-              Заезд через {daysUntil} {daysUntil === 1 ? 'день' : daysUntil < 5 ? 'дня' : 'дней'}
-            </Badge>
-          )}
-          {daysUntil === 0 && (
-            <Badge className="bg-green-500 text-white">Заезд сегодня!</Badge>
+          {isCancelled ? (
+            <Badge className="bg-red-500 text-white">Отменено</Badge>
+          ) : (
+            <>
+              {daysUntil > 0 && (
+                <Badge className="bg-gold-500 text-white">
+                  Заезд через {daysUntil} {daysUntil === 1 ? 'день' : daysUntil < 5 ? 'дня' : 'дней'}
+                </Badge>
+              )}
+              {daysUntil === 0 && (
+                <Badge className="bg-green-500 text-white">Заезд сегодня!</Badge>
+              )}
+            </>
           )}
         </div>
       </CardHeader>
@@ -63,7 +76,27 @@ const CurrentBookingCard = ({
             <p className="text-lg text-charcoal-900">№ {booking.apartment_id}</p>
           </div>
         </div>
-        <div className="pt-4 border-t flex justify-end">
+        <div className="pt-4 border-t flex justify-between items-center">
+          {canCancel && (
+            <button
+              onClick={() => onCancelBooking(booking.id)}
+              disabled={cancellingBooking === booking.id}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all disabled:opacity-50"
+            >
+              {cancellingBooking === booking.id ? (
+                <>
+                  <Icon name="Loader2" size={18} className="animate-spin" />
+                  Отмена...
+                </>
+              ) : (
+                <>
+                  <Icon name="XCircle" size={18} />
+                  Отменить бронирование
+                </>
+              )}
+            </button>
+          )}
+          {!canCancel && <div />}
           <button
             onClick={() => onDownloadPdf(booking.id)}
             disabled={downloadingPdf === booking.id}

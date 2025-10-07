@@ -10,6 +10,7 @@ import InstructionTabs from '@/components/guest/InstructionTabs';
 const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
 const BOOKINGS_API_URL = 'https://functions.poehali.dev/5fb527bf-818a-4b1a-b986-bd90154ba94b';
 const PDF_API_URL = 'https://functions.poehali.dev/658336cf-3e08-480b-b90b-f72aa814a865';
+const CANCEL_BOOKING_API_URL = 'https://functions.poehali.dev/edd37769-9243-46e7-997b-a12c73b0cae2';
 
 interface Booking {
   id: string;
@@ -25,6 +26,7 @@ interface Booking {
   parking?: number;
   show_to_guest?: boolean;
   created_at?: string;
+  status?: string;
 }
 
 interface CheckInInstruction {
@@ -47,6 +49,7 @@ const GuestDashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [guestUser, setGuestUser] = useState<any>(null);
   const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null);
+  const [cancellingBooking, setCancellingBooking] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -201,6 +204,46 @@ const GuestDashboardPage = () => {
     }
   };
 
+  const handleCancelBooking = async (bookingId: string) => {
+    if (!guestUser) return;
+    
+    const confirmed = window.confirm('Вы уверены, что хотите отменить это бронирование?');
+    if (!confirmed) return;
+    
+    setCancellingBooking(bookingId);
+    
+    try {
+      const response = await fetch(CANCEL_BOOKING_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          booking_id: bookingId,
+          guest_email: guestUser.email
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        alert('Бронирование успешно отменено');
+        
+        setAllBookings(prev => 
+          prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled' } : b)
+        );
+        
+        if (booking?.id === bookingId) {
+          setBooking(prev => prev ? { ...prev, status: 'cancelled' } : null);
+        }
+      } else {
+        alert('Ошибка: ' + (data.error || 'Не удалось отменить бронирование'));
+      }
+    } catch (error) {
+      alert('Не удалось отменить бронирование');
+    } finally {
+      setCancellingBooking(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -244,6 +287,8 @@ const GuestDashboardPage = () => {
           daysUntil={daysUntil}
           downloadingPdf={downloadingPdf}
           onDownloadPdf={downloadBookingPdf}
+          cancellingBooking={cancellingBooking}
+          onCancelBooking={handleCancelBooking}
         />
 
         {instruction && instructionTabsContent && (
@@ -301,6 +346,8 @@ const GuestDashboardPage = () => {
                 formatDate={formatDate}
                 downloadingPdf={downloadingPdf}
                 onDownloadPdf={downloadBookingPdf}
+                cancellingBooking={cancellingBooking}
+                onCancelBooking={handleCancelBooking}
               />
             </TabsContent>
           </Tabs>

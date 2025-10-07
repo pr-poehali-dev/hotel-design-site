@@ -11,6 +11,7 @@ interface Booking {
   early_check_in?: number;
   late_check_out?: number;
   parking?: number;
+  status?: string;
 }
 
 interface BookingHistoryTabProps {
@@ -18,9 +19,11 @@ interface BookingHistoryTabProps {
   formatDate: (dateStr: string) => string;
   downloadingPdf: string | null;
   onDownloadPdf: (bookingId: string) => void;
+  cancellingBooking: string | null;
+  onCancelBooking: (bookingId: string) => void;
 }
 
-const BookingHistoryTab = ({ bookings, formatDate, downloadingPdf, onDownloadPdf }: BookingHistoryTabProps) => {
+const BookingHistoryTab = ({ bookings, formatDate, downloadingPdf, onDownloadPdf, cancellingBooking, onCancelBooking }: BookingHistoryTabProps) => {
   return (
     <Card>
       <CardHeader>
@@ -36,12 +39,16 @@ const BookingHistoryTab = ({ bookings, formatDate, downloadingPdf, onDownloadPdf
               const isPast = checkOutDate < today;
               const isUpcoming = checkInDate > today;
               const isCurrent = checkInDate <= today && checkOutDate >= today;
+              const isCancelled = b.status === 'cancelled';
+              const canCancel = isUpcoming && !isCancelled;
 
               return (
                 <div
                   key={b.id}
                   className={`p-6 rounded-lg border-2 transition-all ${
-                    isCurrent
+                    isCancelled
+                      ? 'bg-red-50 border-red-300 opacity-75'
+                      : isCurrent
                       ? 'bg-green-50 border-green-300'
                       : isUpcoming
                       ? 'bg-blue-50 border-blue-300'
@@ -54,13 +61,16 @@ const BookingHistoryTab = ({ bookings, formatDate, downloadingPdf, onDownloadPdf
                         Апартамент № {b.apartment_id}
                       </h3>
                       <div className="flex items-center gap-2">
-                        {isCurrent && (
+                        {isCancelled && (
+                          <Badge className="bg-red-500">Отменено</Badge>
+                        )}
+                        {!isCancelled && isCurrent && (
                           <Badge className="bg-green-500">Текущее</Badge>
                         )}
-                        {isUpcoming && (
+                        {!isCancelled && isUpcoming && (
                           <Badge className="bg-blue-500">Предстоящее</Badge>
                         )}
-                        {isPast && (
+                        {!isCancelled && isPast && (
                           <Badge variant="outline">Завершено</Badge>
                         )}
                       </div>
@@ -127,7 +137,27 @@ const BookingHistoryTab = ({ bookings, formatDate, downloadingPdf, onDownloadPdf
                     </div>
                   )}
 
-                  <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
+                  <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
+                    {canCancel && (
+                      <button
+                        onClick={() => onCancelBooking(b.id)}
+                        disabled={cancellingBooking === b.id}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-all disabled:opacity-50"
+                      >
+                        {cancellingBooking === b.id ? (
+                          <>
+                            <Icon name="Loader2" size={16} className="animate-spin" />
+                            Отмена...
+                          </>
+                        ) : (
+                          <>
+                            <Icon name="XCircle" size={16} />
+                            Отменить бронирование
+                          </>
+                        )}
+                      </button>
+                    )}
+                    {!canCancel && <div />}
                     <button
                       onClick={() => onDownloadPdf(b.id)}
                       disabled={downloadingPdf === b.id}
