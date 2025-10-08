@@ -31,21 +31,21 @@ const RoomsTable = memo(({
   return (
     <>
       <div className="hidden lg:block bg-charcoal-800 rounded-xl overflow-hidden border border-gray-700">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-charcoal-900">
+        <div className="overflow-x-auto max-h-[600px]">
+          <table className="w-full text-sm">
+            <thead className="bg-charcoal-900 sticky top-0 z-10">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Номер</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Этаж</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Статус</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Клинер</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Приоритет</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Последняя уборка</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Примечания</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Выплата</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Статус оплаты</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Действия</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 whitespace-nowrap">Управление</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Номер</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Этаж</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Статус</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Клинер</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Прио</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Убрано</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Заметки</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">₽</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Оплата</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300">Действия</th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-gray-300 whitespace-nowrap">Правка</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700">

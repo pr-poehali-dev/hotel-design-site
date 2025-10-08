@@ -31,42 +31,42 @@ const RoomRow = memo(({
   const isEditing = editingRoomId === room.id;
 
   return (
-    <tr className={`transition-colors ${
+    <tr className={`transition-colors text-sm ${
       isEditing ? 'bg-gold-900/20' : 'hover:bg-charcoal-700'
     }`}>
-      <td className="px-6 py-4">
+      <td className="px-3 py-3">
         {isEditing ? (
           <input
             type="text"
             value={room.number}
             onChange={(e) => onUpdateField(room.id, 'number', e.target.value)}
-            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 font-semibold w-20"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 font-semibold w-16 text-xs"
           />
         ) : (
           <div className="flex items-center gap-2">
-            {room.urgent && <Icon name="AlertCircle" size={20} className="text-red-500" />}
-            <span className="text-white font-semibold text-lg">{room.number}</span>
+            {room.urgent && <Icon name="AlertCircle" size={16} className="text-red-500" />}
+            <span className="text-white font-semibold">{room.number}</span>
           </div>
         )}
       </td>
-      <td className="px-6 py-4 text-gray-300">
+      <td className="px-3 py-3 text-gray-300">
         {isEditing ? (
           <input
             type="number"
             value={room.floor}
             onChange={(e) => onUpdateField(room.id, 'floor', parseInt(e.target.value))}
-            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 w-16"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 w-12 text-xs"
           />
         ) : (
           room.floor
         )}
       </td>
-      <td className="px-6 py-4">
+      <td className="px-3 py-3">
         {isEditing ? (
           <select
             value={room.status}
             onChange={(e) => onUpdateField(room.id, 'status', e.target.value)}
-            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-xs"
           >
             <option value="dirty">Грязно</option>
             <option value="clean">Чисто</option>
@@ -78,17 +78,17 @@ const RoomRow = memo(({
             <option value="occupied">Живут</option>
           </select>
         ) : (
-          <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-white text-sm font-semibold ${getStatusColor(room.status)}`}>
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-white text-xs font-semibold ${getStatusColor(room.status)}`}>
             {getStatusText(room.status)}
           </span>
         )}
       </td>
-      <td className="px-6 py-4">
+      <td className="px-3 py-3">
         {isEditing ? (
           <select
             value={room.assignedTo}
             onChange={(e) => onUpdateField(room.id, 'assignedTo', e.target.value)}
-            className="bg-charcoal-700 text-white px-3 py-1 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-xs"
           >
             <option value="">Не назначена</option>
             {housekeepers.map(hk => (
@@ -101,45 +101,45 @@ const RoomRow = memo(({
           </span>
         )}
       </td>
-      <td className="px-6 py-4">
+      <td className="px-3 py-3">
         {isEditing ? (
           <select
             value={room.urgent ? 'urgent' : 'normal'}
             onChange={(e) => onUpdateField(room.id, 'urgent', e.target.value === 'urgent')}
-            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-xs"
           >
             <option value="normal">Несрочно</option>
             <option value="urgent">Срочно</option>
           </select>
         ) : (
-          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-sm font-semibold ${
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-white text-xs font-semibold ${
             room.urgent ? 'bg-red-600' : 'bg-gray-600'
           }`}>
             {room.urgent ? 'Срочно' : 'Несрочно'}
           </span>
         )}
       </td>
-      <td className="px-6 py-4 text-gray-300 text-sm">{room.lastCleaned}</td>
-      <td className="px-6 py-4 text-gray-400 text-sm max-w-xs">
+      <td className="px-3 py-3 text-gray-300 text-xs">{room.lastCleaned}</td>
+      <td className="px-3 py-3 text-gray-400 text-xs max-w-[120px]">
         {isEditing ? (
           <input
             type="text"
             value={room.notes}
             onChange={(e) => onUpdateField(room.id, 'notes', e.target.value)}
-            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-full"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-xs w-full"
             placeholder="Примечания..."
           />
         ) : (
           <span className="truncate block">{room.notes || '—'}</span>
         )}
       </td>
-      <td className="px-6 py-4 text-gray-300 text-sm">
+      <td className="px-3 py-3 text-gray-300 text-xs">
         {isEditing ? (
           <input
             type="number"
             value={room.payment || 0}
             onChange={(e) => onUpdateField(room.id, 'payment', parseFloat(e.target.value) || 0)}
-            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm w-24"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-xs w-16"
             placeholder="0"
             min="0"
           />
@@ -147,36 +147,36 @@ const RoomRow = memo(({
           <span className="font-semibold">{room.payment || 0} ₽</span>
         )}
       </td>
-      <td className="px-6 py-4">
+      <td className="px-3 py-3">
         {isEditing ? (
           <select
             value={room.paymentStatus || 'unpaid'}
             onChange={(e) => onUpdateField(room.id, 'paymentStatus', e.target.value)}
-            className="bg-charcoal-700 text-white px-3 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-xs"
           >
             <option value="unpaid">Не оплачено</option>
             <option value="paid">Оплачено</option>
           </select>
         ) : (
           <span
-            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-semibold ${
+            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-white text-xs font-semibold ${
               room.paymentStatus === 'paid' ? 'bg-green-600' : 'bg-red-600'
             }`}
           >
-            <Icon name={room.paymentStatus === 'paid' ? 'CheckCircle' : 'XCircle'} size={14} />
+            <Icon name={room.paymentStatus === 'paid' ? 'CheckCircle' : 'XCircle'} size={12} />
             {room.paymentStatus === 'paid' ? 'Оплачено' : 'Не оплачено'}
           </span>
         )}
       </td>
-      <td className="px-4 py-4">
+      <td className="px-2 py-3">
         {isEditing ? (
           <div className="flex gap-1 flex-wrap">
             <button
               onClick={() => onSaveEdit()}
-              className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+              className="p-1.5 bg-green-500 hover:bg-green-600 text-white rounded transition-colors"
               title="Сохранить"
             >
-              <Icon name="Check" size={16} />
+              <Icon name="Check" size={14} />
             </button>
           </div>
         ) : (
@@ -220,22 +220,22 @@ const RoomRow = memo(({
           </div>
         )}
       </td>
-      <td className="px-4 py-4">
+      <td className="px-2 py-3">
         {isAdmin ? (
-          <div className="flex gap-2 items-center justify-center">
+          <div className="flex gap-1 items-center justify-center">
             <button
               onClick={() => onStartEdit(room.id)}
-              className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+              className="p-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded transition-all"
               title="Редактировать"
             >
-              <Icon name="Pencil" size={18} />
+              <Icon name="Pencil" size={14} />
             </button>
             <button
               onClick={() => onDelete(room.id)}
-              className="p-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+              className="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded transition-all"
               title="Удалить"
             >
-              <Icon name="Trash2" size={18} />
+              <Icon name="Trash2" size={14} />
             </button>
           </div>
         ) : (
