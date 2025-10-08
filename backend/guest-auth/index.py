@@ -173,6 +173,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             apartment_id = body_data.get('apartment_id', '').replace("'", "''")
             check_in = body_data.get('check_in', '')
             check_out = body_data.get('check_out', '')
+            price_per_night = body_data.get('price_per_night', 0)
+            total_amount = body_data.get('total_amount', 0)
             
             # Check if user exists
             cursor.execute(
@@ -214,7 +216,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     (id, apartment_id, check_in, check_out, accommodation_amount, total_amount, 
                      guest_name, guest_email, guest_phone, guest_user_id, show_to_guest, created_at)
                     VALUES ('{booking_id}', '{apartment_id}', '{check_in}', '{check_out}', 
-                            0, 0, '{name}', '{email_safe}', '{phone}', {user_id}, true, NOW())
+                            {price_per_night}, {total_amount}, '{name}', '{email_safe}', '{phone}', {user_id}, true, NOW())
                     """
                 )
             

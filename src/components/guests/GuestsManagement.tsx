@@ -30,7 +30,9 @@ const GuestsManagement = () => {
     phone: '',
     apartment_id: '',
     check_in: '',
-    check_out: ''
+    check_out: '',
+    price_per_night: '',
+    total_amount: ''
   });
 
   useEffect(() => {
@@ -85,6 +87,15 @@ const GuestsManagement = () => {
       return;
     }
 
+    if (!newGuest.price_per_night || !newGuest.total_amount) {
+      toast({
+        title: 'Ошибка',
+        description: 'Укажите стоимость проживания',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -97,7 +108,9 @@ const GuestsManagement = () => {
           phone: newGuest.phone,
           apartment_id: newGuest.apartment_id,
           check_in: newGuest.check_in,
-          check_out: newGuest.check_out
+          check_out: newGuest.check_out,
+          price_per_night: parseFloat(newGuest.price_per_night),
+          total_amount: parseFloat(newGuest.total_amount)
         })
       });
 
@@ -110,7 +123,7 @@ const GuestsManagement = () => {
         });
         
         setShowAddDialog(false);
-        setNewGuest({ email: '', password: '', name: '', phone: '', apartment_id: '', check_in: '', check_out: '' });
+        setNewGuest({ email: '', password: '', name: '', phone: '', apartment_id: '', check_in: '', check_out: '', price_per_night: '', total_amount: '' });
         loadGuests();
       } else {
         toast({
