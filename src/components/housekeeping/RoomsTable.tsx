@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Room, Housekeeper } from './types';
 import RoomRow from './RoomRow';
+import RoomCardMobile from './RoomCardMobile';
 
 interface RoomsTableProps {
   rooms: Room[];
@@ -70,17 +71,10 @@ const RoomsTable = memo(({
 
       <div className="lg:hidden space-y-4">
         {rooms.map(room => (
-          <RoomRow
+          <RoomCardMobile
             key={room.id}
             room={room}
-            housekeepers={housekeepers}
-            editingRoomId={editingRoomId}
             onUpdateStatus={onUpdateStatus}
-            onAssignHousekeeper={onAssignHousekeeper}
-            onStartEdit={onStartEdit}
-            onSaveEdit={onSaveEdit}
-            onUpdateField={onUpdateField}
-            onDelete={onDelete}
             isAdmin={isAdmin}
           />
         ))}
