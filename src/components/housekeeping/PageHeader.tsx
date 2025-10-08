@@ -7,9 +7,10 @@ interface PageHeaderProps {
   isAdmin: boolean;
   onLogout: () => void;
   lastSync?: Date;
+  unreadNotifications?: number;
 }
 
-const PageHeader = ({ user, isAdmin, onLogout, lastSync }: PageHeaderProps) => {
+const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0 }: PageHeaderProps) => {
   return (
     <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
       <div>
@@ -21,6 +22,12 @@ const PageHeader = ({ user, isAdmin, onLogout, lastSync }: PageHeaderProps) => {
           <span className="px-3 py-1 bg-gold-600 text-white text-sm rounded-full font-semibold">
             {isAdmin ? 'Администратор' : 'Горничная'}: {user.username}
           </span>
+          {!isAdmin && unreadNotifications > 0 && (
+            <span className="px-3 py-1 bg-orange-600 text-white text-xs rounded-full font-bold flex items-center gap-1 animate-pulse">
+              <Icon name="Bell" size={14} />
+              {unreadNotifications} новых уведомлений
+            </span>
+          )}
           {lastSync && (
             <span className="px-3 py-1 bg-green-600/20 text-green-400 text-xs rounded-full font-semibold flex items-center gap-1">
               <Icon name="RefreshCw" size={12} />

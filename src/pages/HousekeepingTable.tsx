@@ -12,12 +12,15 @@ import PageHeader from '@/components/housekeeping/PageHeader';
 import PaymentsReport from '@/components/housekeeping/PaymentsReport';
 import HousekeeperHistory from '@/components/housekeeping/HousekeeperHistory';
 import AdminCleaningHistory from '@/components/housekeeping/AdminCleaningHistory';
+import NotificationToast from '@/components/housekeeping/NotificationToast';
 import { Room } from '@/components/housekeeping/types';
 import { useAuth } from '@/hooks/useAuth';
 import { useRooms } from '@/hooks/useRooms';
 import { useHousekeepers } from '@/hooks/useHousekeepers';
 import { useHistory } from '@/hooks/useHistory';
 import { useCleaningRecords } from '@/hooks/useCleaningRecords';
+import { useNotifications } from '@/hooks/useNotifications';
+import { usePersistentNotifications } from '@/hooks/usePersistentNotifications';
 
 const HousekeepingTable = () => {
   const {
@@ -26,6 +29,18 @@ const HousekeepingTable = () => {
     handleLogin,
     handleLogout,
   } = useAuth();
+
+  const {
+    notifications,
+    showNotification,
+    removeNotification
+  } = useNotifications();
+
+  const {
+    persistentNotifications,
+    saveNotification: savePersistentNotification,
+    markAsRead
+  } = usePersistentNotifications(user?.username || '');
 
   const {
     rooms,
@@ -145,6 +160,17 @@ const HousekeepingTable = () => {
     // Если горничная нажала "Убрано", переводим в статус "На проверке"
     if (newStatus === 'cleaned' && room && room.assignedTo) {
       await updateRoomStatus(roomId, 'pending-verification');
+      if (!isAdmin) {
+        showNotification(
+          `Апартамент ${room.number} отправлен на проверку администратору`,
+          'info'
+        );
+      } else {
+        showNotification(
+          `${room.assignedTo} отправил(а) апартамент ${room.number} на проверку`,
+          'info'
+        );
+      }
       return;
     }
     
@@ -152,6 +178,18 @@ const HousekeepingTable = () => {
     if (newStatus === 'clean' && room && room.assignedTo && room.status === 'pending-verification') {
       console.log('Creating cleaning record:', room.number, room.assignedTo, room.payment);
       addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
+      
+      if (isAdmin) {
+        const notificationMessage = `✅ Уборка апартамента ${room.number} подтверждена! Начислено ${room.payment || 0} ₽`;
+        
+        showNotification(notificationMessage, 'success');
+        
+        savePersistentNotification(
+          notificationMessage,
+          'success',
+          room.assignedTo
+        );
+      }
     }
     
     await updateRoomStatus(roomId, newStatus);
@@ -175,7 +213,13 @@ const HousekeepingTable = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <PageHeader user={user} isAdmin={isAdmin} onLogout={handleLogout} lastSync={lastSync} />
+        <PageHeader 
+          user={user} 
+          isAdmin={isAdmin} 
+          onLogout={handleLogout} 
+          lastSync={lastSync}
+          unreadNotifications={persistentNotifications.length}
+        />
 
         {!isAdmin && user?.role === 'housekeeper' && (
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 mb-6 shadow-xl">
@@ -321,6 +365,25 @@ const HousekeepingTable = () => {
             Вернуться на главную
           </FizzyButton>
         </div>
+
+        {notifications.map(notification => (
+          <NotificationToast
+            key={notification.id}
+            message={notification.message}
+            type={notification.type}
+            onClose={() => removeNotification(notification.id)}
+          />
+        ))}
+        
+        {persistentNotifications.map(notification => (
+          <NotificationToast
+            key={notification.id}
+            message={notification.message}
+            type={notification.type}
+            duration={10000}
+            onClose={() => markAsRead(notification.id)}
+          />
+        ))}
       </div>
     </div>
   );
