@@ -50,28 +50,29 @@ const PayrollPage = () => {
       setMaids(maidsData);
 
       // Используем данные из БД вместо localStorage
-      const cleaningRecords = records.filter(r => 
-        r.payment_status === 'paid' || r.payment_status === 'pending'
-      );
+      // Показываем ВСЕ записи, независимо от статуса оплаты
+      const cleaningRecords = records;
 
       const payrollReports = maidsData
         .filter((m: Maid) => m.is_active)
         .map((maid: Maid) => {
-          const maidRecords = cleaningRecords.filter(
-            r => r.housekeeper_name === maid.name &&
-            r.cleaning_date >= selectedPeriod.start &&
-            r.cleaning_date <= selectedPeriod.end
-          );
+          const maidRecords = cleaningRecords.filter(r => {
+            if (r.housekeeperName !== maid.name) return false;
+            
+            // Преобразуем ISO timestamp в дату YYYY-MM-DD для сравнения
+            const cleanedDate = r.cleanedAt ? r.cleanedAt.split('T')[0] : '';
+            return cleanedDate >= selectedPeriod.start && cleanedDate <= selectedPeriod.end;
+          });
 
-          const totalAmount = maidRecords.reduce((sum, r) => sum + (r.payment_amount || 0), 0);
+          const totalAmount = maidRecords.reduce((sum, r) => sum + (r.payment || 0), 0);
 
           // Преобразуем записи в формат CleaningTask для совместимости
           const tasks: CleaningTask[] = maidRecords.map(r => ({
-            id: r.id,
+            id: Number(r.id),
             maid_id: maid.id,
-            cleaning_date: r.cleaning_date,
+            cleaning_date: r.cleanedAt,
             status: 'completed',
-            payment_amount: r.payment_amount
+            payment_amount: r.payment
           }));
 
           return {
