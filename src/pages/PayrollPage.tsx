@@ -59,16 +59,25 @@ const PayrollPage = () => {
 
   const loadData = async () => {
     try {
+      console.log('💰 PayrollPage loadData start');
+      console.log('💰 currentUser:', currentUser);
+      console.log('💰 records from hook:', records);
+      
       const maidsRes = await fetch('https://functions.poehali.dev/42e7ec99-c6f4-42fe-93a5-c7334cddee7f');
       const maidsData = await maidsRes.json();
       setMaids(maidsData);
+      console.log('💰 maidsData:', maidsData);
 
       // Используем данные из БД вместо localStorage
       const cleaningRecords = records;
+      console.log('💰 cleaningRecords:', cleaningRecords);
 
       // Находим горничную по имени пользователя
       const currentMaidName = currentUser?.username;
+      console.log('💰 currentMaidName:', currentMaidName);
+      
       if (!currentMaidName) {
+        console.log('❌ No currentMaidName - aborting');
         setReports([]);
         setLoading(false);
         return;
@@ -77,16 +86,26 @@ const PayrollPage = () => {
       // Ищем ID горничной в таблице maids для отчёта
       const maidData = maidsData.find((m: Maid) => m.name === currentMaidName);
       const maidId = maidData?.id || 0;
+      console.log('💰 maidData:', maidData, 'maidId:', maidId);
 
       // Фильтруем записи по имени горничной и периоду
       const maidRecords = cleaningRecords.filter(r => {
-        if (r.housekeeperName !== currentMaidName) return false;
+        console.log('💰 Checking record:', r, 'against currentMaidName:', currentMaidName);
+        
+        if (r.housekeeperName !== currentMaidName) {
+          console.log('❌ Name mismatch:', r.housekeeperName, '!==', currentMaidName);
+          return false;
+        }
         
         const cleanedDate = r.cleanedAt ? r.cleanedAt.split('T')[0] : '';
-        return cleanedDate >= selectedPeriod.start && cleanedDate <= selectedPeriod.end;
+        const inPeriod = cleanedDate >= selectedPeriod.start && cleanedDate <= selectedPeriod.end;
+        console.log('💰 Date check:', cleanedDate, 'in period', selectedPeriod.start, '-', selectedPeriod.end, '=', inPeriod);
+        return inPeriod;
       });
 
+      console.log('💰 Filtered maidRecords:', maidRecords);
       const totalAmount = maidRecords.reduce((sum, r) => sum + (r.payment || 0), 0);
+      console.log('💰 totalAmount:', totalAmount);
 
       // Преобразуем записи в формат CleaningTask
       const tasks: CleaningTask[] = maidRecords.map(r => ({
@@ -107,7 +126,9 @@ const PayrollPage = () => {
         tasks
       };
 
+      console.log('💰 Final payrollReport:', payrollReport);
       setReports([payrollReport]);
+      console.log('💰 Reports set!');
     } catch (error) {
       console.error('Error loading payroll data:', error);
     } finally {
