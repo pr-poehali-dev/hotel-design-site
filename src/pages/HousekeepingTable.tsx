@@ -256,27 +256,14 @@ const HousekeepingTable = () => {
 
         {!isAdmin && user?.role === 'housekeeper' && (
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 mb-6 shadow-xl">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Icon name="User" size={28} className="text-white" />
-                <div>
-                  <h2 className="text-white text-xl font-bold">Мои закреплённые апартаменты</h2>
-                  <p className="text-blue-100 text-sm mt-1">
-                    Показаны только апартаменты, закрепленные за вами: {user.username}
-                  </p>
-                </div>
+            <div className="flex items-center gap-3">
+              <Icon name="User" size={28} className="text-white" />
+              <div>
+                <h2 className="text-white text-xl font-bold">Мои закреплённые апартаменты</h2>
+                <p className="text-blue-100 text-sm mt-1">
+                  Показаны только апартаменты, закрепленные за вами: {user.username}
+                </p>
               </div>
-              <FizzyButton
-                onClick={() => {
-                  localStorage.setItem('housekeeper_user', JSON.stringify(user));
-                  window.location.href = '/payroll';
-                }}
-                variant="primary"
-                icon={<Icon name="DollarSign" size={18} />}
-                className="w-full md:w-auto"
-              >
-                Моя зарплата
-              </FizzyButton>
             </div>
           </div>
         )}
