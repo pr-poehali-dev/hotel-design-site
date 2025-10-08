@@ -212,6 +212,14 @@ const PayrollPage = () => {
       </header>
 
       <main className="container mx-auto px-6 py-12">
+        {/* Диагностика */}
+        <div className="mb-6 p-4 bg-red-500/20 border border-red-500 rounded text-white text-xs">
+          <div>User: {currentUser?.username}</div>
+          <div>Records count: {records.length}</div>
+          <div>Reports count: {reports.length}</div>
+          <div>Total amount: {reports[0]?.total_amount || 0}</div>
+        </div>
+        
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <div>
