@@ -210,17 +210,19 @@ const AdminCleaningHistory = ({ records, onUpdatePaymentStatus, onDeleteRecord }
                         {record.paymentStatus === 'paid' ? 'Отменить' : 'Выплатить'}
                       </FizzyButton>
                       {onDeleteRecord && (
-                        <button
+                        <FizzyButton
                           onClick={() => {
-                            if (window.confirm('Удалить эту запись из истории?')) {
+                            if (window.confirm('Удалить эту запись из истории? Это действие нельзя отменить.')) {
                               onDeleteRecord(record.id);
                             }
                           }}
-                          className="px-2 py-1 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded transition-colors"
-                          title="Удалить запись"
+                          variant="secondary"
+                          size="sm"
+                          icon={<Icon name="Trash2" size={16} />}
+                          className="!bg-red-600/20 hover:!bg-red-600/40 !text-red-400"
                         >
-                          <Icon name="Trash2" size={16} />
-                        </button>
+                          Удалить
+                        </FizzyButton>
                       )}
                     </div>
                   </td>
