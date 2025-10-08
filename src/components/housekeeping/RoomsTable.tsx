@@ -74,7 +74,10 @@ const RoomsTable = memo(({
           <RoomCardMobile
             key={room.id}
             room={room}
+            housekeepers={housekeepers}
             onUpdateStatus={onUpdateStatus}
+            onUpdateField={onUpdateField}
+            onDelete={onDelete}
             isAdmin={isAdmin}
           />
         ))}

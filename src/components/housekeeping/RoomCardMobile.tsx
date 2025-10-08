@@ -1,19 +1,27 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import Icon from '@/components/ui/icon';
-import { Room } from './types';
+import { Room, Housekeeper } from './types';
 import { getStatusColor, getStatusText } from './utils';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 
 interface RoomCardMobileProps {
   room: Room;
+  housekeepers: Housekeeper[];
   onUpdateStatus: (roomId: string, status: Room['status']) => void;
+  onUpdateField: (roomId: string, field: keyof Room, value: any) => void;
+  onDelete: (roomId: string) => void;
   isAdmin: boolean;
 }
 
 const RoomCardMobile = memo(({
   room,
+  housekeepers,
   onUpdateStatus,
+  onUpdateField,
+  onDelete,
   isAdmin
 }: RoomCardMobileProps) => {
+  const [isEditing, setIsEditing] = useState(false);
   return (
     <div className="bg-gradient-to-br from-charcoal-800 to-charcoal-900 rounded-2xl p-5 border-2 border-gold-600/30 shadow-xl">
       <div className="flex items-start justify-between mb-4">
@@ -40,7 +48,20 @@ const RoomCardMobile = memo(({
           </div>
           <div className="flex-1">
             <div className="text-gray-400 text-xs mb-0.5">Клинер</div>
-            <div className="text-white font-semibold text-base">{room.assignedTo || 'Не назначена'}</div>
+            {isEditing ? (
+              <select
+                value={room.assignedTo}
+                onChange={(e) => onUpdateField(room.id, 'assignedTo', e.target.value)}
+                className="w-full bg-charcoal-600 text-white px-3 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+              >
+                <option value="">Не назначена</option>
+                {housekeepers.map(hk => (
+                  <option key={hk.id} value={hk.name}>{hk.name}</option>
+                ))}
+              </select>
+            ) : (
+              <div className="text-white font-semibold text-base">{room.assignedTo || 'Не назначена'}</div>
+            )}
           </div>
         </div>
         
@@ -50,21 +71,39 @@ const RoomCardMobile = memo(({
           </div>
           <div className="flex-1">
             <div className="text-gray-400 text-xs mb-0.5">Оплата за уборку</div>
-            <div className="text-white font-bold text-lg">{room.payment || 0} ₽</div>
+            {isEditing ? (
+              <input
+                type="number"
+                value={room.payment || 0}
+                onChange={(e) => onUpdateField(room.id, 'payment', parseFloat(e.target.value) || 0)}
+                className="w-full bg-charcoal-600 text-white px-3 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+                min="0"
+              />
+            ) : (
+              <div className="text-white font-bold text-lg">{room.payment || 0} ₽</div>
+            )}
           </div>
         </div>
 
-        {room.notes && (
-          <div className="flex items-start gap-3 pt-2 border-t border-gray-600">
-            <div className="bg-blue-500/20 p-2 rounded-lg">
-              <Icon name="FileText" size={18} className="text-blue-400" />
-            </div>
-            <div className="flex-1">
-              <div className="text-gray-400 text-xs mb-1">Примечания</div>
-              <div className="text-gray-300 text-sm">{room.notes}</div>
-            </div>
+        <div className="flex items-start gap-3 pt-2 border-t border-gray-600">
+          <div className="bg-blue-500/20 p-2 rounded-lg">
+            <Icon name="FileText" size={18} className="text-blue-400" />
           </div>
-        )}
+          <div className="flex-1">
+            <div className="text-gray-400 text-xs mb-1">Примечания</div>
+            {isEditing ? (
+              <input
+                type="text"
+                value={room.notes}
+                onChange={(e) => onUpdateField(room.id, 'notes', e.target.value)}
+                className="w-full bg-charcoal-600 text-white px-3 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+                placeholder="Примечания..."
+              />
+            ) : (
+              <div className="text-gray-300 text-sm">{room.notes || '—'}</div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -137,6 +176,47 @@ const RoomCardMobile = memo(({
           </button>
         )}
       </div>
+
+      {isAdmin && (
+        <div className="mt-4 pt-4 border-t border-gray-700">
+          <div className="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-3">Администрирование</div>
+          <div className="flex gap-2">
+            {isEditing ? (
+              <FizzyButton
+                onClick={() => setIsEditing(false)}
+                variant="primary"
+                size="sm"
+                icon={<Icon name="Check" size={16} />}
+                className="flex-1"
+              >
+                Сохранить
+              </FizzyButton>
+            ) : (
+              <FizzyButton
+                onClick={() => setIsEditing(true)}
+                variant="secondary"
+                size="sm"
+                icon={<Icon name="Pencil" size={16} />}
+                className="flex-1"
+              >
+                Редактировать
+              </FizzyButton>
+            )}
+            <FizzyButton
+              onClick={() => {
+                if (window.confirm(`Удалить апартамент ${room.number}?`)) {
+                  onDelete(room.id);
+                }
+              }}
+              variant="destructive"
+              size="sm"
+              icon={<Icon name="Trash2" size={16} />}
+            >
+              Удалить
+            </FizzyButton>
+          </div>
+        </div>
+      )}
     </div>
   );
 });
