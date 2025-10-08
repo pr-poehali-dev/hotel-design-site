@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
@@ -30,7 +31,9 @@ interface PayrollReport {
 }
 
 const PayrollPage = () => {
+  const navigate = useNavigate();
   const { records, loading: recordsLoading } = useCleaningRecords();
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [maids, setMaids] = useState<Maid[]>([]);
   const [reports, setReports] = useState<PayrollReport[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,8 +43,19 @@ const PayrollPage = () => {
   });
 
   useEffect(() => {
-    loadData();
-  }, [selectedPeriod, records]);
+    const user = localStorage.getItem('housekeeper_user');
+    if (!user) {
+      navigate('/housekeeper-login');
+      return;
+    }
+    setCurrentUser(JSON.parse(user));
+  }, [navigate]);
+
+  useEffect(() => {
+    if (currentUser) {
+      loadData();
+    }
+  }, [selectedPeriod, records, currentUser]);
 
   const loadData = async () => {
     try {
@@ -53,8 +67,15 @@ const PayrollPage = () => {
       // Показываем ВСЕ записи, независимо от статуса оплаты
       const cleaningRecords = records;
 
-      const payrollReports = maidsData
-        .filter((m: Maid) => m.is_active)
+      // Фильтруем только текущую горничную
+      const currentMaid = maidsData.find((m: Maid) => m.name === currentUser?.username);
+      if (!currentMaid) {
+        setReports([]);
+        setLoading(false);
+        return;
+      }
+
+      const payrollReports = [currentMaid]
         .map((maid: Maid) => {
           const maidRecords = cleaningRecords.filter(r => {
             if (r.housekeeperName !== maid.name) return false;
@@ -121,8 +142,8 @@ const PayrollPage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    window.location.href = '/login';
+    localStorage.removeItem('housekeeper_user');
+    navigate('/housekeeper-login');
   };
 
   const totalPayroll = reports.reduce((sum, r) => sum + r.total_amount, 0);
