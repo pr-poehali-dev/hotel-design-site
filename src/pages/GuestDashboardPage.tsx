@@ -75,7 +75,6 @@ const GuestDashboardPage = () => {
         });
         
         const bookingsData = await bookingsResponse.json();
-        console.log('📋 Загружены бронирования для гостя:', user.email, bookingsData);
         
         if (bookingsData.success && bookingsData.bookings.length > 0) {
           setAllBookings(bookingsData.bookings);
@@ -84,7 +83,6 @@ const GuestDashboardPage = () => {
             new Date(b.check_in) >= new Date()
           ) || bookingsData.bookings[0];
           
-          console.log('🏠 Выбрано текущее бронирование:', currentBooking);
           setBooking(currentBooking);
         } else {
           const mockBooking: Booking = {
@@ -117,11 +115,9 @@ const GuestDashboardPage = () => {
       }
 
       if (currentBooking) {
-        console.log('🔍 Загружаю инструкции для apartment_id:', currentBooking.apartment_id);
         try {
           const response = await fetch(`${API_URL}?apartment_id=${currentBooking.apartment_id}`);
           const data = await response.json();
-          console.log('📖 Получены инструкции:', data);
           
           if (data) {
             setInstruction({
