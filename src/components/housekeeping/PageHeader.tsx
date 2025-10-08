@@ -36,16 +36,32 @@ const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0
           )}
         </div>
       </div>
-      <div className="text-right">
-        <p className="text-sm text-gray-400">Сегодня</p>
-        <p className="text-xl font-semibold text-white mb-2">{new Date().toLocaleDateString('ru-RU')}</p>
-        <FizzyButton
-          onClick={onLogout}
-          variant="secondary"
-          icon={<Icon name="LogOut" size={18} />}
-        >
-          Выйти
-        </FizzyButton>
+      <div className="text-right flex flex-col gap-3">
+        <div>
+          <p className="text-sm text-gray-400">Сегодня</p>
+          <p className="text-xl font-semibold text-white mb-2">{new Date().toLocaleDateString('ru-RU')}</p>
+        </div>
+        <div className="flex gap-2">
+          {!isAdmin && (
+            <FizzyButton
+              onClick={() => {
+                localStorage.setItem('housekeeper_user', JSON.stringify(user));
+                window.location.href = '/payroll';
+              }}
+              variant="primary"
+              icon={<Icon name="DollarSign" size={18} />}
+            >
+              Моя зарплата
+            </FizzyButton>
+          )}
+          <FizzyButton
+            onClick={onLogout}
+            variant="secondary"
+            icon={<Icon name="LogOut" size={18} />}
+          >
+            Выйти
+          </FizzyButton>
+        </div>
       </div>
     </div>
   );
