@@ -59,17 +59,27 @@ const PayrollPage = () => {
 
   const loadData = async () => {
     try {
+      console.log('🔍 loadData начало. currentUser:', currentUser);
+      console.log('🔍 records.length:', records.length);
+      
       const maidsRes = await fetch('https://functions.poehali.dev/42e7ec99-c6f4-42fe-93a5-c7334cddee7f');
       const maidsData = await maidsRes.json();
       setMaids(maidsData);
+      
+      console.log('🔍 maidsData:', maidsData);
 
       // Используем данные из БД вместо localStorage
       // Показываем ВСЕ записи, независимо от статуса оплаты
       const cleaningRecords = records;
+      console.log('🔍 cleaningRecords:', cleaningRecords);
 
       // Фильтруем только текущую горничную
       const currentMaid = maidsData.find((m: Maid) => m.name === currentUser?.username);
+      console.log('🔍 currentMaid:', currentMaid);
+      console.log('🔍 currentUser.username:', currentUser?.username);
+      
       if (!currentMaid) {
+        console.log('❌ currentMaid не найдена!');
         setReports([]);
         setLoading(false);
         return;
@@ -77,15 +87,29 @@ const PayrollPage = () => {
 
       const payrollReports = [currentMaid]
         .map((maid: Maid) => {
+          console.log('🔍 Фильтрую записи для горничной:', maid.name);
+          
           const maidRecords = cleaningRecords.filter(r => {
-            if (r.housekeeperName !== maid.name) return false;
+            console.log('🔍 Проверяю запись:', r);
+            console.log('🔍 r.housekeeperName:', r.housekeeperName, 'maid.name:', maid.name);
+            
+            if (r.housekeeperName !== maid.name) {
+              console.log('❌ Имя не совпадает');
+              return false;
+            }
             
             // Преобразуем ISO timestamp в дату YYYY-MM-DD для сравнения
             const cleanedDate = r.cleanedAt ? r.cleanedAt.split('T')[0] : '';
-            return cleanedDate >= selectedPeriod.start && cleanedDate <= selectedPeriod.end;
+            console.log('🔍 cleanedDate:', cleanedDate, 'период:', selectedPeriod.start, '-', selectedPeriod.end);
+            
+            const match = cleanedDate >= selectedPeriod.start && cleanedDate <= selectedPeriod.end;
+            console.log('🔍 Попадает в период:', match);
+            return match;
           });
 
+          console.log('🔍 maidRecords:', maidRecords);
           const totalAmount = maidRecords.reduce((sum, r) => sum + (r.payment || 0), 0);
+          console.log('🔍 totalAmount:', totalAmount);
 
           // Преобразуем записи в формат CleaningTask для совместимости
           const tasks: CleaningTask[] = maidRecords.map(r => ({
