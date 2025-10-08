@@ -9,7 +9,14 @@ export const useAuth = () => {
     const savedUser = localStorage.getItem('housekeeping_user');
     if (savedUser) {
       try {
-        return JSON.parse(savedUser);
+        const parsed = JSON.parse(savedUser);
+        // Проверяем если username содержит @ (email), то это старые данные - удаляем
+        if (parsed.username && parsed.username.includes('@')) {
+          console.warn('🔄 Обнаружены устаревшие данные авторизации - требуется повторный вход');
+          localStorage.removeItem('housekeeping_user');
+          return null;
+        }
+        return parsed;
       } catch (e) {
         console.error('Error loading user:', e);
         return null;
