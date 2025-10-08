@@ -27,6 +27,10 @@ const RoomCardMobile = memo(({
   
   return (
     <div className="bg-gradient-to-br from-charcoal-800 to-charcoal-900 rounded-2xl p-5 border-2 border-gold-600/30 shadow-xl">
+      <div className="mb-2 text-xs text-yellow-400 bg-yellow-900/20 px-2 py-1 rounded">
+        DEBUG: isAdmin = {String(isAdmin)}
+      </div>
+      
       {isAdmin && (
         <div className="flex gap-2 mb-4">
           {isEditing ? (
