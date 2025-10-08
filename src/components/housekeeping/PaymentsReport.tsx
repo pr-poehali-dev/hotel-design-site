@@ -1,47 +1,50 @@
-import { Room } from './types';
+import { CleaningRecord } from './types';
 import Icon from '@/components/ui/icon';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 
 interface PaymentsReportProps {
-  rooms: Room[];
+  records: CleaningRecord[];
+  onUpdatePaymentStatus: (recordId: string, status: 'paid' | 'unpaid', paidAt?: string) => void;
 }
 
 interface HousekeeperPayment {
   name: string;
   totalPaid: number;
   totalUnpaid: number;
-  totalRooms: number;
-  paidRooms: number;
-  unpaidRooms: number;
+  totalRecords: number;
+  paidRecords: number;
+  unpaidRecords: number;
+  unpaidRecordsList: CleaningRecord[];
 }
 
-const PaymentsReport = ({ rooms }: PaymentsReportProps) => {
+const PaymentsReport = ({ records, onUpdatePaymentStatus }: PaymentsReportProps) => {
   const calculatePaymentsByHousekeeper = (): HousekeeperPayment[] => {
     const paymentMap = new Map<string, HousekeeperPayment>();
 
-    rooms.forEach(room => {
-      if (!room.assignedTo) return;
-
-      const existing = paymentMap.get(room.assignedTo) || {
-        name: room.assignedTo,
+    records.forEach(record => {
+      const existing = paymentMap.get(record.housekeeperName) || {
+        name: record.housekeeperName,
         totalPaid: 0,
         totalUnpaid: 0,
-        totalRooms: 0,
-        paidRooms: 0,
-        unpaidRooms: 0,
+        totalRecords: 0,
+        paidRecords: 0,
+        unpaidRecords: 0,
+        unpaidRecordsList: [],
       };
 
-      const payment = room.payment || 0;
+      const payment = record.payment || 0;
       
-      if (room.paymentStatus === 'paid') {
+      if (record.paymentStatus === 'paid') {
         existing.totalPaid += payment;
-        existing.paidRooms += 1;
+        existing.paidRecords += 1;
       } else {
         existing.totalUnpaid += payment;
-        existing.unpaidRooms += 1;
+        existing.unpaidRecords += 1;
+        existing.unpaidRecordsList.push(record);
       }
       
-      existing.totalRooms += 1;
-      paymentMap.set(room.assignedTo, existing);
+      existing.totalRecords += 1;
+      paymentMap.set(record.housekeeperName, existing);
     });
 
     return Array.from(paymentMap.values()).sort((a, b) => 
@@ -116,9 +119,9 @@ const PaymentsReport = ({ rooms }: PaymentsReportProps) => {
                     </td>
                     <td className="px-6 py-4 text-gray-300">
                       <div className="text-sm">
-                        <div className="font-semibold">{hk.totalRooms}</div>
+                        <div className="font-semibold">{hk.totalRecords}</div>
                         <div className="text-xs text-gray-500">
-                          {hk.paidRooms} оплачено • {hk.unpaidRooms} не оплачено
+                          {hk.paidRecords} оплачено • {hk.unpaidRecords} не оплачено
                         </div>
                       </div>
                     </td>
@@ -138,7 +141,7 @@ const PaymentsReport = ({ rooms }: PaymentsReportProps) => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                           <div className="w-24 h-2 bg-charcoal-900 rounded-full overflow-hidden">
                             <div
@@ -149,10 +152,28 @@ const PaymentsReport = ({ rooms }: PaymentsReportProps) => {
                           <span className="text-xs text-gray-400">{paidPercent}%</span>
                         </div>
                         {hk.totalUnpaid > 0 && (
-                          <span className="text-xs text-red-400 flex items-center gap-1">
-                            <Icon name="AlertTriangle" size={12} />
-                            Есть долг
-                          </span>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-xs text-red-400 flex items-center gap-1">
+                              <Icon name="AlertTriangle" size={12} />
+                              {hk.unpaidRecords} неоплаченных
+                            </span>
+                            {hk.unpaidRecordsList.map(record => (
+                              <div key={record.id} className="flex items-center gap-2 text-xs">
+                                <span className="text-gray-400">
+                                  {record.roomNumber} - {record.payment}₽
+                                </span>
+                                <FizzyButton
+                                  onClick={() => onUpdatePaymentStatus(record.id, 'paid', new Date().toISOString())}
+                                  variant="primary"
+                                  size="sm"
+                                  icon={<Icon name="Check" size={12} />}
+                                  className="!py-0.5 !px-2 !text-xs"
+                                >
+                                  Оплатить
+                                </FizzyButton>
+                              </div>
+                            ))}
+                          </div>
                         )}
                       </div>
                     </td>

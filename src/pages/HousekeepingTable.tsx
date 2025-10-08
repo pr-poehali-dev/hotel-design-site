@@ -331,7 +331,10 @@ const HousekeepingTable = () => {
         )}
 
         {isAdmin && showPaymentsReport && (
-          <PaymentsReport rooms={rooms} />
+          <PaymentsReport 
+            records={records}
+            onUpdatePaymentStatus={updatePaymentStatus}
+          />
         )}
 
         <FilterBar
