@@ -22,6 +22,9 @@ const RoomCardMobile = memo(({
   isAdmin
 }: RoomCardMobileProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  
+  console.log('RoomCardMobile - isAdmin:', isAdmin, 'room:', room.number);
+  
   return (
     <div className="bg-gradient-to-br from-charcoal-800 to-charcoal-900 rounded-2xl p-5 border-2 border-gold-600/30 shadow-xl">
       {isAdmin && (
