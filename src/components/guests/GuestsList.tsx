@@ -24,6 +24,7 @@ interface GuestsListProps {
   onResetPassword: (email: string) => void;
   onDeleteGuest: (id: number) => void;
   onEditBooking: (guestId: number, booking: any) => void;
+  onAddBooking: (guestId: number, guestName: string) => void;
   onClearSearch: () => void;
 }
 
@@ -33,6 +34,7 @@ const GuestsList = ({
   onResetPassword,
   onDeleteGuest,
   onEditBooking,
+  onAddBooking,
   onClearSearch,
 }: GuestsListProps) => {
   if (guests.length === 0) {
@@ -95,6 +97,15 @@ const GuestsList = ({
                     ))}
                   </div>
                 )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onAddBooking(guest.id, guest.name)}
+                  className="mt-2 text-xs text-gold-600 hover:text-gold-700 hover:bg-gold-50 h-6 px-2"
+                >
+                  <Icon name="Plus" size={12} className="mr-1" />
+                  Добавить бронирование
+                </Button>
               </div>
             </div>
           </div>

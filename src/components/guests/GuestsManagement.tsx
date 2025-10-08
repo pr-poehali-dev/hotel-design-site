@@ -10,6 +10,7 @@ import ResetPasswordDialog from './ResetPasswordDialog';
 import GuestsInstructions from './GuestsInstructions';
 import EmptyGuestsState from './EmptyGuestsState';
 import EditBookingDialog from './EditBookingDialog';
+import AddBookingDialog from './AddBookingDialog';
 
 const API_URL = 'https://functions.poehali.dev/a0648fb1-e2c4-4c52-86e7-e96230f139d2';
 
@@ -19,7 +20,10 @@ const GuestsManagement = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showEditBookingDialog, setShowEditBookingDialog] = useState(false);
+  const [showAddBookingDialog, setShowAddBookingDialog] = useState(false);
   const [editingBooking, setEditingBooking] = useState<any>(null);
+  const [selectedGuestId, setSelectedGuestId] = useState<number>(0);
+  const [selectedGuestName, setSelectedGuestName] = useState<string>('');
   const [resetEmail, setResetEmail] = useState('');
   const [resetPassword, setResetPassword] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -215,6 +219,48 @@ const GuestsManagement = () => {
     setShowEditBookingDialog(true);
   };
 
+  const handleAddBooking = (guestId: number, guestName: string) => {
+    setSelectedGuestId(guestId);
+    setSelectedGuestName(guestName);
+    setShowAddBookingDialog(true);
+  };
+
+  const handleCreateBooking = async (bookingData: any) => {
+    try {
+      const response = await fetch(`${API_URL}?action=create_booking`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Успешно!',
+          description: 'Бронирование создано. Гость увидит его в своём личном кабинете.',
+        });
+        
+        setShowAddBookingDialog(false);
+        setSelectedGuestId(0);
+        setSelectedGuestName('');
+        loadGuests();
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось создать бронирование',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось создать бронирование. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleUpdateBooking = async (bookingData: any) => {
     try {
       const response = await fetch(API_URL, {
@@ -365,6 +411,7 @@ const GuestsManagement = () => {
               }}
               onDeleteGuest={handleDeleteGuest}
               onEditBooking={handleEditBooking}
+              onAddBooking={handleAddBooking}
               onClearSearch={() => setSearchQuery('')}
             />
           </CardContent>
@@ -400,6 +447,14 @@ const GuestsManagement = () => {
         onOpenChange={setShowEditBookingDialog}
         booking={editingBooking}
         onSubmit={handleUpdateBooking}
+      />
+
+      <AddBookingDialog
+        open={showAddBookingDialog}
+        onOpenChange={setShowAddBookingDialog}
+        guestId={selectedGuestId}
+        guestName={selectedGuestName}
+        onSubmit={handleCreateBooking}
       />
     </div>
   );

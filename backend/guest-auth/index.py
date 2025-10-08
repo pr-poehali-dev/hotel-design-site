@@ -221,6 +221,89 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': str(e)})
             }
     
+    if method == 'POST':
+        path = event.get('path', '')
+        
+        if '/create-booking' in path or event.get('queryStringParameters', {}).get('action') == 'create_booking':
+            try:
+                body_data = json.loads(event.get('body', '{}'))
+                guest_id = body_data.get('guest_id', 0)
+                apartment_id = body_data.get('apartment_id', '').replace("'", "''")
+                check_in = body_data.get('check_in', '')
+                check_out = body_data.get('check_out', '')
+                price_per_night = body_data.get('price_per_night', 0)
+                total_amount = body_data.get('total_amount', 0)
+                
+                if not guest_id or not apartment_id or not check_in or not check_out:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'Все обязательные поля должны быть заполнены'})
+                    }
+                
+                conn = get_db_connection()
+                cursor = conn.cursor(cursor_factory=RealDictCursor)
+                
+                cursor.execute(
+                    f"SELECT name, email, phone FROM t_p9202093_hotel_design_site.guest_users WHERE id = {guest_id}"
+                )
+                guest = cursor.fetchone()
+                
+                if not guest:
+                    cursor.close()
+                    conn.close()
+                    return {
+                        'statusCode': 404,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'Гость не найден'})
+                    }
+                
+                booking_id = str(int(datetime.now().timestamp() * 1000))
+                guest_name = guest['name'].replace("'", "''")
+                guest_email = guest['email'].replace("'", "''")
+                guest_phone = guest['phone'].replace("'", "''")
+                
+                cursor.execute(
+                    f"""
+                    INSERT INTO t_p9202093_hotel_design_site.bookings 
+                    (id, apartment_id, check_in, check_out, accommodation_amount, total_amount, 
+                     guest_name, guest_email, guest_phone, guest_user_id, show_to_guest, created_at)
+                    VALUES ('{booking_id}', '{apartment_id}', '{check_in}', '{check_out}', 
+                            {price_per_night}, {total_amount}, '{guest_name}', '{guest_email}', '{guest_phone}', {guest_id}, true, NOW())
+                    """
+                )
+                conn.commit()
+                cursor.close()
+                conn.close()
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({
+                        'success': True,
+                        'booking_id': booking_id,
+                        'message': 'Бронирование создано'
+                    })
+                }
+            except Exception as e:
+                return {
+                    'statusCode': 500,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': str(e)})
+                }
+    
     if method != 'POST':
         return {
             'statusCode': 405,
