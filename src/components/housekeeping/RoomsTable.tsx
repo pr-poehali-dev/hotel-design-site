@@ -72,7 +72,7 @@ const RoomsTable = memo(({
       <div className="lg:hidden space-y-4">
         {rooms.map(room => (
           <RoomCardMobile
-            key={room.id}
+            key={`mobile-${room.id}-${Date.now()}`}
             room={room}
             housekeepers={housekeepers}
             onUpdateStatus={onUpdateStatus}

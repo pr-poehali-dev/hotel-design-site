@@ -223,6 +223,6 @@ const RoomCardMobile = memo(({
   );
 });
 
-RoomCardMobile.displayName = 'RoomCardMobile';
+RoomCardMobile.displayName = 'RoomCardMobile_v2';
 
 export default RoomCardMobile;
