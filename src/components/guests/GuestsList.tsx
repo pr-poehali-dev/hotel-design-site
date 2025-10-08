@@ -8,6 +8,14 @@ export interface Guest {
   name: string;
   phone: string;
   created_at: string;
+  bookings?: {
+    id: string;
+    apartment_id: string;
+    check_in: string;
+    check_out: string;
+    accommodation_amount: number;
+    total_amount: number;
+  }[];
 }
 
 interface GuestsListProps {
@@ -15,6 +23,7 @@ interface GuestsListProps {
   searchQuery: string;
   onResetPassword: (email: string) => void;
   onDeleteGuest: (id: number) => void;
+  onEditBooking: (guestId: number, booking: any) => void;
   onClearSearch: () => void;
 }
 
@@ -23,6 +32,7 @@ const GuestsList = ({
   searchQuery,
   onResetPassword,
   onDeleteGuest,
+  onEditBooking,
   onClearSearch,
 }: GuestsListProps) => {
   if (guests.length === 0) {
@@ -56,13 +66,34 @@ const GuestsList = ({
               <div className="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center">
                 <Icon name="User" size={20} className="text-gold-700" />
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="font-semibold text-charcoal-900">
                   {guest.name || 'Без имени'}
                 </p>
                 <p className="text-sm text-charcoal-600">{guest.email}</p>
                 {guest.phone && (
                   <p className="text-xs text-charcoal-500">{guest.phone}</p>
+                )}
+                {guest.bookings && guest.bookings.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    {guest.bookings.map((booking) => (
+                      <div key={booking.id} className="flex items-center gap-2 text-xs">
+                        <Icon name="Home" size={12} className="text-gold-600" />
+                        <span className="text-charcoal-700">
+                          Ап. {booking.apartment_id} • {new Date(booking.check_in).toLocaleDateString('ru-RU')} - {new Date(booking.check_out).toLocaleDateString('ru-RU')}
+                        </span>
+                        <span className="text-gold-600 font-semibold">• {booking.total_amount?.toLocaleString('ru-RU')} ₽</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEditBooking(guest.id, booking)}
+                          className="h-5 w-5 p-0 text-charcoal-500 hover:text-gold-600"
+                        >
+                          <Icon name="Pencil" size={12} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>

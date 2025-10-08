@@ -9,6 +9,7 @@ import AddGuestDialog from './AddGuestDialog';
 import ResetPasswordDialog from './ResetPasswordDialog';
 import GuestsInstructions from './GuestsInstructions';
 import EmptyGuestsState from './EmptyGuestsState';
+import EditBookingDialog from './EditBookingDialog';
 
 const API_URL = 'https://functions.poehali.dev/a0648fb1-e2c4-4c52-86e7-e96230f139d2';
 
@@ -17,6 +18,8 @@ const GuestsManagement = () => {
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [showEditBookingDialog, setShowEditBookingDialog] = useState(false);
+  const [editingBooking, setEditingBooking] = useState<any>(null);
   const [resetEmail, setResetEmail] = useState('');
   const [resetPassword, setResetPassword] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -207,6 +210,46 @@ const GuestsManagement = () => {
     }
   };
 
+  const handleEditBooking = (guestId: number, booking: any) => {
+    setEditingBooking(booking);
+    setShowEditBookingDialog(true);
+  };
+
+  const handleUpdateBooking = async (bookingData: any) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Успешно!',
+          description: 'Бронирование обновлено. Изменения сразу отобразятся у гостя.',
+        });
+        
+        setShowEditBookingDialog(false);
+        setEditingBooking(null);
+        loadGuests();
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось обновить бронирование',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить бронирование. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleDeleteGuest = async (id: number) => {
     if (!confirm('Вы уверены, что хотите удалить этого гостя? Это действие нельзя отменить.')) {
       return;
@@ -321,6 +364,7 @@ const GuestsManagement = () => {
                 setShowResetDialog(true);
               }}
               onDeleteGuest={handleDeleteGuest}
+              onEditBooking={handleEditBooking}
               onClearSearch={() => setSearchQuery('')}
             />
           </CardContent>
@@ -349,6 +393,13 @@ const GuestsManagement = () => {
         onPasswordChange={setResetPassword}
         onGeneratePassword={generateResetPassword}
         onSubmit={handleResetPassword}
+      />
+
+      <EditBookingDialog
+        open={showEditBookingDialog}
+        onOpenChange={setShowEditBookingDialog}
+        booking={editingBooking}
+        onSubmit={handleUpdateBooking}
       />
     </div>
   );

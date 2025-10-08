@@ -37,7 +37,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-User-Id, X-Auth-Token',
                 'Access-Control-Max-Age': '86400'
             },
@@ -57,18 +57,42 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 """
             )
             guests = cursor.fetchall()
-            cursor.close()
-            conn.close()
             
             guests_list = []
             for guest in guests:
+                # Get bookings for this guest
+                cursor.execute(
+                    f"""
+                    SELECT id, apartment_id, check_in, check_out, accommodation_amount, total_amount
+                    FROM t_p9202093_hotel_design_site.bookings 
+                    WHERE guest_user_id = {guest['id']} AND show_to_guest = true
+                    ORDER BY check_in DESC
+                    """
+                )
+                bookings = cursor.fetchall()
+                
+                bookings_list = []
+                for booking in bookings:
+                    bookings_list.append({
+                        'id': booking['id'],
+                        'apartment_id': booking['apartment_id'],
+                        'check_in': booking['check_in'].isoformat() if booking['check_in'] else None,
+                        'check_out': booking['check_out'].isoformat() if booking['check_out'] else None,
+                        'accommodation_amount': float(booking['accommodation_amount']) if booking['accommodation_amount'] else 0,
+                        'total_amount': float(booking['total_amount']) if booking['total_amount'] else 0
+                    })
+                
                 guests_list.append({
                     'id': guest['id'],
                     'email': guest['email'],
                     'name': guest['name'],
                     'phone': guest['phone'],
-                    'created_at': guest['created_at'].isoformat() if guest['created_at'] else None
+                    'created_at': guest['created_at'].isoformat() if guest['created_at'] else None,
+                    'bookings': bookings_list
                 })
+            
+            cursor.close()
+            conn.close()
             
             return {
                 'statusCode': 200,
@@ -125,6 +149,66 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({
                     'success': True,
                     'message': 'Гость удалён'
+                })
+            }
+        except Exception as e:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': str(e)})
+            }
+    
+    if method == 'PUT':
+        try:
+            body_data = json.loads(event.get('body', '{}'))
+            booking_id = body_data.get('booking_id', '').replace("'", "''")
+            apartment_id = body_data.get('apartment_id', '').replace("'", "''")
+            check_in = body_data.get('check_in', '')
+            check_out = body_data.get('check_out', '')
+            price_per_night = body_data.get('price_per_night', 0)
+            total_amount = body_data.get('total_amount', 0)
+            
+            if not booking_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'ID бронирования обязателен'})
+                }
+            
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute(
+                f"""
+                UPDATE t_p9202093_hotel_design_site.bookings 
+                SET apartment_id = '{apartment_id}',
+                    check_in = '{check_in}',
+                    check_out = '{check_out}',
+                    accommodation_amount = {price_per_night},
+                    total_amount = {total_amount},
+                    updated_at = NOW()
+                WHERE id = '{booking_id}'
+                """
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'success': True,
+                    'message': 'Бронирование обновлено'
                 })
             }
         except Exception as e:
