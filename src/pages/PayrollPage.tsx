@@ -184,21 +184,36 @@ const PayrollPage = () => {
                 </div>
               </div>
             </div>
-            <div className="flex gap-3 items-center">
-              <FizzyButton
-                onClick={() => window.location.href = '/maids'}
-                variant="secondary"
-                icon={<Icon name="Users" size={18} />}
-              >
-                Горничные
-              </FizzyButton>
-              <FizzyButton
-                onClick={() => window.location.href = '/cleaning'}
-                variant="secondary"
-                icon={<Icon name="Calendar" size={18} />}
-              >
-                График
-              </FizzyButton>
+            <div className="flex gap-3 items-center flex-wrap">
+              {currentUser?.role === 'admin' && (
+                <>
+                  <FizzyButton
+                    onClick={() => window.location.href = '/maids'}
+                    variant="secondary"
+                    icon={<Icon name="Users" size={18} />}
+                    className="hidden md:flex"
+                  >
+                    Горничные
+                  </FizzyButton>
+                  <FizzyButton
+                    onClick={() => window.location.href = '/cleaning'}
+                    variant="secondary"
+                    icon={<Icon name="Calendar" size={18} />}
+                    className="hidden md:flex"
+                  >
+                    График
+                  </FizzyButton>
+                </>
+              )}
+              {currentUser?.role === 'housekeeper' && (
+                <FizzyButton
+                  onClick={() => window.location.href = '/housekeeping'}
+                  variant="secondary"
+                  icon={<Icon name="ArrowLeft" size={18} />}
+                >
+                  Назад
+                </FizzyButton>
+              )}
               <FizzyButton
                 onClick={handleLogout}
                 variant="secondary"
@@ -211,53 +226,50 @@ const PayrollPage = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-12">
-        {/* Диагностика */}
-        <div className="mb-6 p-4 bg-red-500/20 border border-red-500 rounded text-white text-xs">
-          <div>User: {currentUser?.username}</div>
-          <div>Records count: {records.length}</div>
-          <div>Reports count: {reports.length}</div>
-          <div>Total amount: {reports[0]?.total_amount || 0}</div>
-        </div>
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-12">
         
         <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
             <div>
-              <h2 className="text-xl font-bold text-white mb-2">Расчет зарплаты</h2>
-              <p className="text-gray-400">Период: {new Date(selectedPeriod.start).toLocaleDateString('ru')} - {new Date(selectedPeriod.end).toLocaleDateString('ru')}</p>
+              <h2 className="text-lg md:text-xl font-bold text-white mb-2">Расчет зарплаты</h2>
+              <p className="text-sm text-gray-400">Период: {new Date(selectedPeriod.start).toLocaleDateString('ru')} - {new Date(selectedPeriod.end).toLocaleDateString('ru')}</p>
             </div>
-            <div className="flex gap-3 items-center">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">От</label>
+            <div className="flex gap-2 md:gap-3 items-center w-full md:w-auto">
+              <div className="flex-1 md:flex-none">
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">От</label>
                 <input
                   type="date"
                   value={selectedPeriod.start}
                   onChange={(e) => setSelectedPeriod({ ...selectedPeriod, start: e.target.value })}
-                  className="px-4 py-2 bg-charcoal-800 border border-gold-500/30 text-white rounded-lg"
+                  className="w-full px-3 md:px-4 py-2 bg-charcoal-800 border border-gold-500/30 text-white rounded-lg text-sm"
                 />
               </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">До</label>
+              <div className="flex-1 md:flex-none">
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">До</label>
                 <input
                   type="date"
                   value={selectedPeriod.end}
                   onChange={(e) => setSelectedPeriod({ ...selectedPeriod, end: e.target.value })}
-                  className="px-4 py-2 bg-charcoal-800 border border-gold-500/30 text-white rounded-lg"
+                  className="w-full px-3 md:px-4 py-2 bg-charcoal-800 border border-gold-500/30 text-white rounded-lg text-sm"
                 />
               </div>
             </div>
           </div>
 
-          <Card className="p-6 bg-gradient-to-br from-gold-500/10 to-gold-600/10 border-gold-500/30">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Общая сумма к выплате</p>
-                <p className="text-3xl font-bold text-gold-400">{totalPayroll.toFixed(2)} руб</p>
+          <Card className="p-4 md:p-6 bg-gradient-to-br from-gold-500/10 to-gold-600/10 border-gold-500/30">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-center md:text-left">
+                <p className="text-xs md:text-sm text-gray-400 mb-1">
+                  {currentUser?.role === 'admin' ? 'Общая сумма к выплате' : 'Ваша зарплата за период'}
+                </p>
+                <p className="text-2xl md:text-3xl font-bold text-gold-400">{totalPayroll.toFixed(2)} руб</p>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-400 mb-1">Горничных</p>
-                <p className="text-2xl font-bold text-white">{reports.length}</p>
-              </div>
+              {currentUser?.role === 'admin' && (
+                <div className="text-center md:text-right">
+                  <p className="text-xs md:text-sm text-gray-400 mb-1">Горничных</p>
+                  <p className="text-xl md:text-2xl font-bold text-white">{reports.length}</p>
+                </div>
+              )}
             </div>
           </Card>
         </div>
@@ -281,22 +293,22 @@ const PayrollPage = () => {
           <div className="grid gap-4">
             {reports.map(report => (
               <Card key={report.maid_id} className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-                      <Icon name="User" size={24} className="text-green-400" />
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+                      <Icon name="User" size={20} className="text-green-400 md:w-6 md:h-6" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">{report.maid_name}</h3>
-                      <p className="text-sm text-gray-400">
+                      <h3 className="text-lg md:text-xl font-bold text-white">{report.maid_name}</h3>
+                      <p className="text-xs md:text-sm text-gray-400">
                         {report.total_cleanings} уборок за период
                       </p>
                     </div>
                   </div>
-                  <div className="text-right flex items-center gap-4">
-                    <div>
-                      <p className="text-sm text-gray-400 mb-1">К выплате</p>
-                      <p className="text-2xl font-bold text-gold-400">
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 w-full md:w-auto">
+                    <div className="text-left md:text-right">
+                      <p className="text-xs md:text-sm text-gray-400 mb-1">К выплате</p>
+                      <p className="text-xl md:text-2xl font-bold text-gold-400">
                         {report.total_amount.toFixed(2)} руб
                       </p>
                     </div>
@@ -304,6 +316,7 @@ const PayrollPage = () => {
                       onClick={() => handleExportPayroll(report)}
                       variant="secondary"
                       icon={<Icon name="Download" size={18} />}
+                      className="w-full md:w-auto"
                     >
                       Экспорт
                     </FizzyButton>
