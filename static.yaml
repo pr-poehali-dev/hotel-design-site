@@ -1,0 +1,11 @@
+# Конфигурация для Yandex Cloud Storage
+# Статические файлы должны отдаваться с правильными MIME типами
+error_document:
+  key: index.html
+  
+routing_rules:
+  - condition:
+      key_prefix_equals: assets/
+    redirect:
+      replace_key_prefix_with: assets/
+      http_redirect_code: 200
