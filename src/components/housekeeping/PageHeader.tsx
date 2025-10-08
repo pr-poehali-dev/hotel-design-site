@@ -51,6 +51,14 @@ const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0
         </div>
       </div>
 
+      {/* Диагностика - удалить после проверки */}
+      <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-white text-xs">
+        <div>👤 Username: {user.username}</div>
+        <div>🎭 Role: {user.role}</div>
+        <div>🔐 isAdmin: {String(isAdmin)}</div>
+        <div>💰 Show button: {String(!isAdmin)}</div>
+      </div>
+
       <div className="flex gap-2 flex-wrap">
         {!isAdmin && (
           <FizzyButton
