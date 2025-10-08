@@ -25,7 +25,7 @@ const FilterBar = ({
     <div className="bg-charcoal-800 rounded-xl p-6 mb-6 border border-gray-700">
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-4 items-center">
-          <div className={isAdmin ? '' : 'hidden lg:block'}>
+          <div>
             <label className="text-gray-400 text-sm mb-2 block">Фильтр по статусу</label>
             <div className="flex gap-2 flex-wrap">
               <button

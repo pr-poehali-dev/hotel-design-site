@@ -7,12 +7,25 @@ export const useCleaningRecords = () => {
   useEffect(() => {
     const stored = localStorage.getItem('cleaning_records');
     console.log('Loading cleaning records from localStorage:', stored);
+    
     if (stored) {
       const parsed = JSON.parse(stored);
       console.log('Parsed cleaning records:', parsed);
       setRecords(parsed);
     } else {
-      console.log('No cleaning records found in localStorage');
+      console.log('No cleaning records found in localStorage - creating test record');
+      // Создаём тестовую запись для апартамента 2110
+      const testRecord: CleaningRecord = {
+        id: `test-${Date.now()}`,
+        roomNumber: '2110',
+        housekeeperName: 'Мария',
+        cleanedAt: new Date().toISOString(),
+        payment: 500,
+        paymentStatus: 'unpaid'
+      };
+      const initialRecords = [testRecord];
+      setRecords(initialRecords);
+      localStorage.setItem('cleaning_records', JSON.stringify(initialRecords));
     }
   }, []);
 
