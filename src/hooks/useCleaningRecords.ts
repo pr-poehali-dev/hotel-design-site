@@ -44,10 +44,18 @@ export const useCleaningRecords = () => {
       paymentStatus: 'unpaid'
     };
 
-    console.log('addCleaningRecord called:', { newRecord, currentRecords: records.length });
+    console.log('🔔 addCleaningRecord called:', { 
+      newRecord, 
+      currentRecords: records.length,
+      roomNumber,
+      housekeeperName,
+      payment
+    });
+    
     const updatedRecords = [...records, newRecord];
-    console.log('Saving records:', updatedRecords);
+    console.log('💾 Saving records to localStorage:', updatedRecords);
     saveRecords(updatedRecords);
+    console.log('✅ Records saved successfully. Total records:', updatedRecords.length);
   };
 
   const markAsPaid = (recordId: string) => {

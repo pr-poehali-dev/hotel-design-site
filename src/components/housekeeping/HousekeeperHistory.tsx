@@ -9,6 +9,12 @@ interface HousekeeperHistoryProps {
 }
 
 const HousekeeperHistory = ({ records, onMarkAsPaid, isAdmin }: HousekeeperHistoryProps) => {
+  console.log('📊 HousekeeperHistory rendering:', { 
+    recordsCount: records.length, 
+    records,
+    isAdmin 
+  });
+
   const totalEarned = records.reduce((sum, r) => sum + r.payment, 0);
   const totalPaid = records.filter(r => r.paymentStatus === 'paid').reduce((sum, r) => sum + r.payment, 0);
   const totalUnpaid = totalEarned - totalPaid;

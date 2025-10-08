@@ -155,10 +155,19 @@ const HousekeepingTable = () => {
   const handleUpdateRoomStatus = async (roomId: string, newStatus: Room['status']) => {
     const room = rooms.find(r => r.id === roomId);
     
-    console.log('handleUpdateRoomStatus called:', { roomId, newStatus, room, assignedTo: room?.assignedTo, payment: room?.payment, currentStatus: room?.status });
+    console.log('🎯 handleUpdateRoomStatus called:', { 
+      roomId, 
+      newStatus, 
+      roomNumber: room?.number,
+      assignedTo: room?.assignedTo, 
+      payment: room?.payment, 
+      currentStatus: room?.status,
+      isAdmin 
+    });
     
     // Если горничная нажала "Убрано", переводим в статус "На проверке"
     if (newStatus === 'cleaned' && room && room.assignedTo) {
+      console.log('🔄 Горничная отправила на проверку:', room.number);
       await updateRoomStatus(roomId, 'pending-verification');
       if (!isAdmin) {
         showNotification(
@@ -181,8 +190,16 @@ const HousekeepingTable = () => {
                           room.status === 'cleaned' || 
                           room.status === 'in-progress';
       
+      console.log('🧹 Проверка создания записи:', { 
+        shouldRecord, 
+        currentStatus: room.status,
+        roomNumber: room.number,
+        housekeeper: room.assignedTo,
+        payment: room.payment 
+      });
+      
       if (shouldRecord) {
-        console.log('Creating cleaning record:', room.number, room.assignedTo, room.payment);
+        console.log('✨ Creating cleaning record:', room.number, room.assignedTo, room.payment);
         addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
         
         if (isAdmin) {
