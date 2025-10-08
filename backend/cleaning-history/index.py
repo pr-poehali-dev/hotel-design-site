@@ -20,7 +20,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-User-Id, X-Auth-Token',
                 'Access-Control-Max-Age': '86400'
             },
@@ -128,6 +128,32 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     SET payment_status = %s, paid_at = NULL
                     WHERE id = %s
                 ''', (payment_status, record_id))
+            
+            conn.commit()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': True})
+            }
+        
+        elif method == 'DELETE':
+            # Удалить запись об уборке
+            body_data = json.loads(event.get('body', '{}'))
+            record_id = body_data.get('id')
+            
+            if not record_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'success': False, 'error': 'Не указан ID записи'})
+                }
+            
+            cur.execute('''
+                DELETE FROM t_p9202093_hotel_design_site.cleaning_history
+                WHERE id = %s
+            ''', (record_id,))
             
             conn.commit()
             

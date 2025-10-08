@@ -380,6 +380,7 @@ const HousekeepingTable = () => {
             <AdminCleaningHistory 
               records={records}
               onUpdatePaymentStatus={updatePaymentStatus}
+              onDeleteRecord={deleteRecord}
             />
           </div>
         )}

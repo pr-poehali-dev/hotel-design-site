@@ -103,6 +103,27 @@ export const useCleaningRecords = () => {
     return records.filter(r => r.housekeeperName === housekeeperName);
   };
 
+  const deleteRecord = async (recordId: string) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: recordId })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('✅ Запись удалена. ID:', recordId);
+        await loadRecords();
+      } else {
+        console.error('❌ Ошибка удаления:', data.error);
+      }
+    } catch (error) {
+      console.error('❌ Ошибка запроса удаления:', error);
+    }
+  };
+
   return {
     records,
     loading,
@@ -110,6 +131,7 @@ export const useCleaningRecords = () => {
     markAsPaid,
     updatePaymentStatus,
     getRecordsByHousekeeper,
+    deleteRecord,
     reload: loadRecords
   };
 };

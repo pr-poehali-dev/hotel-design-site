@@ -6,9 +6,10 @@ import { FizzyButton } from '@/components/ui/fizzy-button';
 interface AdminCleaningHistoryProps {
   records: CleaningRecord[];
   onUpdatePaymentStatus: (recordId: string, status: 'paid' | 'unpaid', paidAt?: string) => void;
+  onDeleteRecord?: (recordId: string) => void;
 }
 
-const AdminCleaningHistory = ({ records, onUpdatePaymentStatus }: AdminCleaningHistoryProps) => {
+const AdminCleaningHistory = ({ records, onUpdatePaymentStatus, onDeleteRecord }: AdminCleaningHistoryProps) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'paid' | 'unpaid'>('all');
   const [filterHousekeeper, setFilterHousekeeper] = useState<string>('all');
@@ -199,14 +200,29 @@ const AdminCleaningHistory = ({ records, onUpdatePaymentStatus }: AdminCleaningH
                     )}
                   </td>
                   <td className="py-3 px-4">
-                    <FizzyButton
-                      onClick={() => handleTogglePayment(record)}
-                      variant={record.paymentStatus === 'paid' ? 'secondary' : 'primary'}
-                      size="sm"
-                      icon={<Icon name={record.paymentStatus === 'paid' ? 'X' : 'Check'} size={16} />}
-                    >
-                      {record.paymentStatus === 'paid' ? 'Отменить' : 'Выплатить'}
-                    </FizzyButton>
+                    <div className="flex gap-2">
+                      <FizzyButton
+                        onClick={() => handleTogglePayment(record)}
+                        variant={record.paymentStatus === 'paid' ? 'secondary' : 'primary'}
+                        size="sm"
+                        icon={<Icon name={record.paymentStatus === 'paid' ? 'X' : 'Check'} size={16} />}
+                      >
+                        {record.paymentStatus === 'paid' ? 'Отменить' : 'Выплатить'}
+                      </FizzyButton>
+                      {onDeleteRecord && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Удалить эту запись из истории?')) {
+                              onDeleteRecord(record.id);
+                            }
+                          }}
+                          className="px-2 py-1 bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded transition-colors"
+                          title="Удалить запись"
+                        >
+                          <Icon name="Trash2" size={16} />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
