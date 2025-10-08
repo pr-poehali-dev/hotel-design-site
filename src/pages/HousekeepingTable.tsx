@@ -229,10 +229,11 @@ const HousekeepingTable = () => {
 
   if (roomsLoading || housekeepersLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Загрузка данных...</p>
+          <div className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg sm:text-xl font-semibold">Загрузка данных...</p>
+          <p className="text-gray-400 text-sm sm:text-base mt-2">Пожалуйста, подождите</p>
         </div>
       </div>
     );

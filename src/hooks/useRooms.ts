@@ -112,6 +112,16 @@ export const useRooms = () => {
 
   useEffect(() => {
     loadRooms();
+    
+    // Защита от бесконечной загрузки
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.warn('⚠️ Таймаут загрузки комнат - принудительная остановка');
+        setLoading(false);
+      }
+    }, 10000); // 10 секунд
+    
+    return () => clearTimeout(timeout);
   }, [loadRooms]);
 
   const updateRoomStatus = useCallback(async (roomId: string, newStatus: Room['status']) => {

@@ -41,6 +41,16 @@ export const useHousekeepers = (rooms: Room[], setRooms: (rooms: Room[]) => void
 
   useEffect(() => {
     loadHousekeepers();
+    
+    // Защита от бесконечной загрузки
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.warn('⚠️ Таймаут загрузки горничных - принудительная остановка');
+        setLoading(false);
+      }
+    }, 10000); // 10 секунд
+    
+    return () => clearTimeout(timeout);
   }, [loadHousekeepers]);
 
   const addHousekeeper = useCallback(async () => {
