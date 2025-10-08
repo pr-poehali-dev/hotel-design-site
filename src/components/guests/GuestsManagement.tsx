@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import GuestsList, { Guest } from './GuestsList';
+import GuestsList from './GuestsList';
 import GuestsSearchBar from './GuestsSearchBar';
 import AddGuestDialog from './AddGuestDialog';
 import ResetPasswordDialog from './ResetPasswordDialog';
@@ -11,359 +11,86 @@ import GuestsInstructions from './GuestsInstructions';
 import EmptyGuestsState from './EmptyGuestsState';
 import EditBookingDialog from './EditBookingDialog';
 import AddBookingDialog from './AddBookingDialog';
-
-const API_URL = 'https://functions.poehali.dev/a0648fb1-e2c4-4c52-86e7-e96230f139d2';
+import { useGuestsData } from './useGuestsData';
+import { useGuestActions } from './useGuestActions';
+import { usePasswordReset } from './usePasswordReset';
+import { useBookingActions } from './useBookingActions';
 
 const GuestsManagement = () => {
-  const [guests, setGuests] = useState<Guest[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showEditBookingDialog, setShowEditBookingDialog] = useState(false);
   const [showAddBookingDialog, setShowAddBookingDialog] = useState(false);
-  const [editingBooking, setEditingBooking] = useState<any>(null);
-  const [selectedGuestId, setSelectedGuestId] = useState<number>(0);
-  const [selectedGuestName, setSelectedGuestName] = useState<string>('');
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetPassword, setResetPassword] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'name'>('newest');
   const { toast } = useToast();
 
-  const [newGuest, setNewGuest] = useState({
-    email: '',
-    password: '',
-    name: '',
-    phone: '',
-    apartment_id: '',
-    check_in: '',
-    check_out: '',
-    price_per_night: '',
-    total_amount: ''
-  });
+  const { guests, loading, loadGuests } = useGuestsData(toast);
+  
+  const {
+    newGuest,
+    setNewGuest,
+    handleAddGuest,
+    handleDeleteGuest,
+    generatePassword
+  } = useGuestActions(toast, loadGuests);
+  
+  const {
+    resetEmail,
+    setResetEmail,
+    resetPassword,
+    setResetPassword,
+    handleResetPassword,
+    generateResetPassword
+  } = usePasswordReset(toast);
+  
+  const {
+    editingBooking,
+    setEditingBooking,
+    selectedGuestId,
+    selectedGuestName,
+    handleEditBooking,
+    handleAddBooking,
+    handleCreateBooking,
+    handleUpdateBooking,
+    handleDeleteBooking
+  } = useBookingActions(toast, loadGuests);
 
-  useEffect(() => {
-    loadGuests();
-  }, []);
-
-  const loadGuests = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(API_URL, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setGuests(data.guests || []);
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось загрузить гостей',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось загрузить гостей. Попробуйте позже.',
-        variant: 'destructive',
-      });
-    }
-    setLoading(false);
-  };
-
-  const handleAddGuest = async () => {
-    if (!newGuest.email || !newGuest.password) {
-      toast({
-        title: 'Ошибка',
-        description: 'Email и пароль обязательны',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!newGuest.apartment_id || !newGuest.check_in || !newGuest.check_out) {
-      toast({
-        title: 'Ошибка',
-        description: 'Заполните информацию о бронировании',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!newGuest.price_per_night || !newGuest.total_amount) {
-      toast({
-        title: 'Ошибка',
-        description: 'Укажите стоимость проживания',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'register',
-          email: newGuest.email,
-          password: newGuest.password,
-          name: newGuest.name,
-          phone: newGuest.phone,
-          apartment_id: newGuest.apartment_id,
-          check_in: newGuest.check_in,
-          check_out: newGuest.check_out,
-          price_per_night: parseFloat(newGuest.price_per_night),
-          total_amount: parseFloat(newGuest.total_amount)
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast({
-          title: 'Успешно!',
-          description: 'Гость и бронирование созданы. Отправьте гостю email и пароль для входа.',
-        });
-        
-        setShowAddDialog(false);
-        setNewGuest({ email: '', password: '', name: '', phone: '', apartment_id: '', check_in: '', check_out: '', price_per_night: '', total_amount: '' });
-        loadGuests();
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось создать гостя',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось создать гостя. Попробуйте позже.',
-        variant: 'destructive',
-      });
+  const onAddGuest = async () => {
+    const success = await handleAddGuest();
+    if (success) {
+      setShowAddDialog(false);
     }
   };
 
-  const generatePassword = () => {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-    let password = '';
-    for (let i = 0; i < 10; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setNewGuest({ ...newGuest, password });
-  };
-
-  const generateResetPassword = () => {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-    let password = '';
-    for (let i = 0; i < 10; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setResetPassword(password);
-  };
-
-  const handleResetPassword = async () => {
-    if (!resetEmail || !resetPassword) {
-      toast({
-        title: 'Ошибка',
-        description: 'Введите email и новый пароль',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'reset_password',
-          email: resetEmail,
-          new_password: resetPassword
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast({
-          title: 'Пароль изменён!',
-          description: 'Отправьте новый пароль гостю для входа.',
-        });
-        
-        setShowResetDialog(false);
-        setResetEmail('');
-        setResetPassword('');
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось сбросить пароль',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось сбросить пароль. Попробуйте позже.',
-        variant: 'destructive',
-      });
+  const onResetPassword = async () => {
+    const success = await handleResetPassword();
+    if (success) {
+      setShowResetDialog(false);
     }
   };
 
-  const handleEditBooking = (guestId: number, booking: any) => {
-    setEditingBooking(booking);
+  const onEditBooking = (guestId: number, booking: any) => {
+    handleEditBooking(guestId, booking);
     setShowEditBookingDialog(true);
   };
 
-  const handleAddBooking = (guestId: number, guestName: string) => {
-    setSelectedGuestId(guestId);
-    setSelectedGuestName(guestName);
+  const onAddBooking = (guestId: number, guestName: string) => {
+    handleAddBooking(guestId, guestName);
     setShowAddBookingDialog(true);
   };
 
-  const handleCreateBooking = async (bookingData: any) => {
-    try {
-      const response = await fetch(`${API_URL}?action=create_booking`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookingData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast({
-          title: 'Успешно!',
-          description: 'Бронирование создано. Гость увидит его в своём личном кабинете.',
-        });
-        
-        setShowAddBookingDialog(false);
-        setSelectedGuestId(0);
-        setSelectedGuestName('');
-        loadGuests();
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось создать бронирование',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось создать бронирование. Попробуйте позже.',
-        variant: 'destructive',
-      });
+  const onCreateBooking = async (bookingData: any) => {
+    const success = await handleCreateBooking(bookingData);
+    if (success) {
+      setShowAddBookingDialog(false);
     }
   };
 
-  const handleUpdateBooking = async (bookingData: any) => {
-    try {
-      const response = await fetch(API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookingData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast({
-          title: 'Успешно!',
-          description: 'Бронирование обновлено. Изменения сразу отобразятся у гостя.',
-        });
-        
-        setShowEditBookingDialog(false);
-        setEditingBooking(null);
-        loadGuests();
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось обновить бронирование',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить бронирование. Попробуйте позже.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleDeleteBooking = async (bookingId: string) => {
-    if (!confirm('Вы уверены, что хотите удалить это бронирование?')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_URL}?action=delete_booking&booking_id=${bookingId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast({
-          title: 'Удалено!',
-          description: 'Бронирование удалено. Гость больше не увидит его в личном кабинете.',
-        });
-        
-        loadGuests();
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось удалить бронирование',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось удалить бронирование. Попробуйте позже.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleDeleteGuest = async (id: number) => {
-    if (!confirm('Вы уверены, что хотите удалить этого гостя? Это действие нельзя отменить.')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_URL}?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast({
-          title: 'Успешно!',
-          description: 'Гость удалён',
-        });
-        loadGuests();
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось удалить гостя',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось удалить гостя. Попробуйте позже.',
-        variant: 'destructive',
-      });
+  const onUpdateBooking = async (bookingData: any) => {
+    const success = await handleUpdateBooking(bookingData);
+    if (success) {
+      setShowEditBookingDialog(false);
     }
   };
 
@@ -446,8 +173,8 @@ const GuestsManagement = () => {
                 setShowResetDialog(true);
               }}
               onDeleteGuest={handleDeleteGuest}
-              onEditBooking={handleEditBooking}
-              onAddBooking={handleAddBooking}
+              onEditBooking={onEditBooking}
+              onAddBooking={onAddBooking}
               onDeleteBooking={handleDeleteBooking}
               onClearSearch={() => setSearchQuery('')}
             />
@@ -465,7 +192,7 @@ const GuestsManagement = () => {
         newGuest={newGuest}
         onGuestChange={setNewGuest}
         onGeneratePassword={generatePassword}
-        onSubmit={handleAddGuest}
+        onSubmit={onAddGuest}
       />
 
       <ResetPasswordDialog
@@ -476,14 +203,14 @@ const GuestsManagement = () => {
         onEmailChange={setResetEmail}
         onPasswordChange={setResetPassword}
         onGeneratePassword={generateResetPassword}
-        onSubmit={handleResetPassword}
+        onSubmit={onResetPassword}
       />
 
       <EditBookingDialog
         open={showEditBookingDialog}
         onOpenChange={setShowEditBookingDialog}
         booking={editingBooking}
-        onSubmit={handleUpdateBooking}
+        onSubmit={onUpdateBooking}
       />
 
       <AddBookingDialog
@@ -491,7 +218,7 @@ const GuestsManagement = () => {
         onOpenChange={setShowAddBookingDialog}
         guestId={selectedGuestId}
         guestName={selectedGuestName}
-        onSubmit={handleCreateBooking}
+        onSubmit={onCreateBooking}
       />
     </div>
   );
