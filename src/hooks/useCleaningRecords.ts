@@ -9,49 +9,55 @@ export const useCleaningRecords = () => {
   const [records, setRecords] = useState<CleaningRecord[]>([]);
   const [loading, setLoading] = useState(true);
   console.log('🎯 Current records state:', records);
+  
+  // ВРЕМЕННО: проверяем API_URL
+  if (typeof window !== 'undefined' && !window.__CLEANING_RECORDS_HOOK_INIT__) {
+    window.__CLEANING_RECORDS_HOOK_INIT__ = true;
+    console.error('🔴🔴🔴 API_URL:', API_URL);
+  }
 
   const loadRecords = async () => {
-    console.log('🚀 loadRecords START. API_URL:', API_URL);
+    console.error('🚀🚀🚀 loadRecords START. API_URL:', API_URL);
     setLoading(true);
     try {
-      console.log('🌐 Делаю fetch запрос к:', API_URL);
+      console.error('🌐🌐🌐 Делаю fetch запрос к:', API_URL);
       const response = await fetch(API_URL, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
       
-      console.log('📡 Response status:', response.status, 'OK:', response.ok);
+      console.error('📡📡📡 Response status:', response.status, 'OK:', response.ok);
       
       const data = await response.json();
       
-      console.log('📥 Загружены записи из БД:', data);
-      console.log('📊 data.success:', data.success);
-      console.log('📊 data.records:', data.records);
-      console.log('📊 data.records.length:', data.records?.length);
+      console.error('📥📥📥 Загружены записи из БД:', data);
+      console.error('📊 data.success:', data.success);
+      console.error('📊 data.records:', data.records);
+      console.error('📊 data.records.length:', data.records?.length);
       
       if (data.success && data.records) {
-        console.log('✅ Устанавливаю records. Количество:', data.records.length);
+        console.error('✅✅✅ Устанавливаю records. Количество:', data.records.length);
         setRecords(data.records);
       } else {
-        console.warn('⚠️ data.success или data.records пустые!');
+        console.error('⚠️⚠️⚠️ data.success или data.records пустые!');
       }
     } catch (error) {
-      console.error('❌ Ошибка загрузки истории уборок:', error);
+      console.error('❌❌❌ Ошибка загрузки истории уборок:', error);
     }
     setLoading(false);
-    console.log('🏁 loadRecords END');
+    console.error('🏁🏁🏁 loadRecords END');
   };
 
   useEffect(() => {
-    console.log('🔥 useEffect запущен в useCleaningRecords');
+    console.error('🔥🔥🔥 useEffect запущен в useCleaningRecords');
     // Очищаем старые данные из localStorage
     const oldRecords = localStorage.getItem('cleaning_records');
     if (oldRecords) {
-      console.log('🗑️ Удаляю старые данные из localStorage');
+      console.error('🗑️ Удаляю старые данные из localStorage');
       localStorage.removeItem('cleaning_records');
     }
     
-    console.log('🔥 Вызываю loadRecords()');
+    console.error('🔥 Вызываю loadRecords()');
     loadRecords();
   }, []);
 
