@@ -34,8 +34,10 @@ const HousekeeperHistory = ({ records, onMarkAsPaid, isAdmin }: HousekeeperHisto
           <FizzyButton
             onClick={() => {
               const user = localStorage.getItem('housekeeping_user');
+              console.log('🔑 Переход на /payroll, user:', user);
               if (user) {
                 localStorage.setItem('housekeeper_user', user);
+                console.log('✅ Saved to housekeeper_user');
               }
               window.location.href = '/payroll';
             }}
