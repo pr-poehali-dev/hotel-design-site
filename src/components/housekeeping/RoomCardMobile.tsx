@@ -23,14 +23,8 @@ const RoomCardMobile = memo(({
 }: RoomCardMobileProps) => {
   const [isEditing, setIsEditing] = useState(false);
   
-  console.log('RoomCardMobile - isAdmin:', isAdmin, 'room:', room.number);
-  
   return (
     <div className="bg-gradient-to-br from-charcoal-800 to-charcoal-900 rounded-2xl p-5 border-2 border-gold-600/30 shadow-xl">
-      <div className="mb-3 p-3 text-lg font-bold text-white bg-red-600 rounded-lg text-center">
-        🔴 ТЕСТ: isAdmin = {String(isAdmin)} 🔴
-      </div>
-      
       {isAdmin && (
         <div className="flex gap-2 mb-4">
           {isEditing ? (
