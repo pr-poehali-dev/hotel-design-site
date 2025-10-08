@@ -59,80 +59,55 @@ const PayrollPage = () => {
 
   const loadData = async () => {
     try {
-      console.log('🔍 loadData начало. currentUser:', currentUser);
-      console.log('🔍 records.length:', records.length);
-      
       const maidsRes = await fetch('https://functions.poehali.dev/42e7ec99-c6f4-42fe-93a5-c7334cddee7f');
       const maidsData = await maidsRes.json();
       setMaids(maidsData);
-      
-      console.log('🔍 maidsData:', maidsData);
 
       // Используем данные из БД вместо localStorage
-      // Показываем ВСЕ записи, независимо от статуса оплаты
       const cleaningRecords = records;
-      console.log('🔍 cleaningRecords:', cleaningRecords);
 
-      // Фильтруем только текущую горничную
-      const currentMaid = maidsData.find((m: Maid) => m.name === currentUser?.username);
-      console.log('🔍 currentMaid:', currentMaid);
-      console.log('🔍 currentUser.username:', currentUser?.username);
-      
-      if (!currentMaid) {
-        console.log('❌ currentMaid не найдена!');
+      // Находим горничную по имени пользователя
+      const currentMaidName = currentUser?.username;
+      if (!currentMaidName) {
         setReports([]);
         setLoading(false);
         return;
       }
 
-      const payrollReports = [currentMaid]
-        .map((maid: Maid) => {
-          console.log('🔍 Фильтрую записи для горничной:', maid.name);
-          
-          const maidRecords = cleaningRecords.filter(r => {
-            console.log('🔍 Проверяю запись:', r);
-            console.log('🔍 r.housekeeperName:', r.housekeeperName, 'maid.name:', maid.name);
-            
-            if (r.housekeeperName !== maid.name) {
-              console.log('❌ Имя не совпадает');
-              return false;
-            }
-            
-            // Преобразуем ISO timestamp в дату YYYY-MM-DD для сравнения
-            const cleanedDate = r.cleanedAt ? r.cleanedAt.split('T')[0] : '';
-            console.log('🔍 cleanedDate:', cleanedDate, 'период:', selectedPeriod.start, '-', selectedPeriod.end);
-            
-            const match = cleanedDate >= selectedPeriod.start && cleanedDate <= selectedPeriod.end;
-            console.log('🔍 Попадает в период:', match);
-            return match;
-          });
+      // Ищем ID горничной в таблице maids для отчёта
+      const maidData = maidsData.find((m: Maid) => m.name === currentMaidName);
+      const maidId = maidData?.id || 0;
 
-          console.log('🔍 maidRecords:', maidRecords);
-          const totalAmount = maidRecords.reduce((sum, r) => sum + (r.payment || 0), 0);
-          console.log('🔍 totalAmount:', totalAmount);
+      // Фильтруем записи по имени горничной и периоду
+      const maidRecords = cleaningRecords.filter(r => {
+        if (r.housekeeperName !== currentMaidName) return false;
+        
+        const cleanedDate = r.cleanedAt ? r.cleanedAt.split('T')[0] : '';
+        return cleanedDate >= selectedPeriod.start && cleanedDate <= selectedPeriod.end;
+      });
 
-          // Преобразуем записи в формат CleaningTask для совместимости
-          const tasks: CleaningTask[] = maidRecords.map(r => ({
-            id: Number(r.id),
-            maid_id: maid.id,
-            cleaning_date: r.cleanedAt,
-            status: 'completed',
-            payment_amount: r.payment
-          }));
+      const totalAmount = maidRecords.reduce((sum, r) => sum + (r.payment || 0), 0);
 
-          return {
-            maid_id: maid.id,
-            maid_name: maid.name,
-            period_start: selectedPeriod.start,
-            period_end: selectedPeriod.end,
-            total_cleanings: maidRecords.length,
-            total_amount: totalAmount,
-            tasks
-          };
-        })
-        .filter((r: PayrollReport) => r.total_cleanings > 0);
+      // Преобразуем записи в формат CleaningTask
+      const tasks: CleaningTask[] = maidRecords.map(r => ({
+        id: Number(r.id),
+        maid_id: maidId,
+        cleaning_date: r.cleanedAt,
+        status: 'completed',
+        payment_amount: r.payment
+      }));
 
-      setReports(payrollReports);
+      const payrollReport: PayrollReport = {
+        maid_id: maidId,
+        maid_name: currentMaidName,
+        period_start: selectedPeriod.start,
+        period_end: selectedPeriod.end,
+        total_cleanings: maidRecords.length,
+        total_amount: totalAmount,
+        tasks
+      };
+
+      setReports([payrollReport]);
     } catch (error) {
       console.error('Error loading payroll data:', error);
     } finally {
