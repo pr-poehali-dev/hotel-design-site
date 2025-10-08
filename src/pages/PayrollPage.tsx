@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import FizzyButton from '@/components/ui/fizzy-button';
+import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import { useCleaningRecords } from '@/hooks/useCleaningRecords';
 
