@@ -300,7 +300,7 @@ const RoomRow = memo(({
       <div className="space-y-3">
         <div className="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-2">Управление статусом</div>
         
-        {room.status !== 'in-progress' && (
+        {room.status !== 'in-progress' && room.status !== 'cleaned' && room.status !== 'pending-verification' && room.status !== 'clean' && (
           <button
             onClick={() => onUpdateStatus(room.id, 'in-progress')}
             className="w-full px-6 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-xl transition-all font-bold text-base flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
