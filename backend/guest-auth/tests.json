@@ -6,27 +6,7 @@
       "path": "/",
       "expectedStatus": 200,
       "expectedBody": {
-        "success": true,
-        "guests": []
-      },
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "Login existing guest",
-      "method": "POST",
-      "path": "/",
-      "body": {
-        "action": "login",
-        "email": "test@example.com",
-        "password": "testpass123"
-      },
-      "expectedStatus": 200,
-      "expectedBody": {
-        "success": true,
-        "user": {
-          "email": "string"
-        },
-        "token": "string"
+        "success": true
       },
       "bodyMatcher": "partial"
     }

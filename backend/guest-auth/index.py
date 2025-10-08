@@ -170,6 +170,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             name = body_data.get('name', '').replace("'", "''")
             phone = body_data.get('phone', '').replace("'", "''")
             email_safe = email.replace("'", "''")
+            apartment_id = body_data.get('apartment_id', '').replace("'", "''")
+            check_in = body_data.get('check_in', '')
+            check_out = body_data.get('check_out', '')
             
             # Check if user exists
             cursor.execute(
@@ -200,6 +203,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 """
             )
             user = cursor.fetchone()
+            user_id = user['id']
+            
+            # Create booking if booking info provided
+            if apartment_id and check_in and check_out:
+                booking_id = str(int(datetime.now().timestamp() * 1000))
+                cursor.execute(
+                    f"""
+                    INSERT INTO t_p9202093_hotel_design_site.bookings 
+                    (id, apartment_id, check_in, check_out, accommodation_amount, total_amount, 
+                     guest_name, guest_email, guest_phone, guest_user_id, show_to_guest, created_at)
+                    VALUES ('{booking_id}', '{apartment_id}', '{check_in}', '{check_out}', 
+                            0, 0, '{name}', '{email_safe}', '{phone}', {user_id}, true, NOW())
+                    """
+                )
+            
             conn.commit()
             cursor.close()
             conn.close()

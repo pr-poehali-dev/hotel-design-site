@@ -18,8 +18,11 @@ interface AddGuestDialogProps {
     password: string;
     name: string;
     phone: string;
+    apartment_id: string;
+    check_in: string;
+    check_out: string;
   };
-  onGuestChange: (guest: { email: string; password: string; name: string; phone: string }) => void;
+  onGuestChange: (guest: { email: string; password: string; name: string; phone: string; apartment_id: string; check_in: string; check_out: string }) => void;
   onGeneratePassword: () => void;
   onSubmit: () => void;
 }
@@ -95,6 +98,45 @@ const AddGuestDialog = ({
               value={newGuest.phone}
               onChange={(e) => onGuestChange({ ...newGuest, phone: e.target.value })}
             />
+          </div>
+
+          <div className="border-t pt-4 mt-4">
+            <h4 className="font-semibold text-charcoal-900 mb-3">Информация о бронировании</h4>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="apartment_id">Номер апартамента *</Label>
+                <Input
+                  id="apartment_id"
+                  type="text"
+                  placeholder="2119"
+                  value={newGuest.apartment_id}
+                  onChange={(e) => onGuestChange({ ...newGuest, apartment_id: e.target.value })}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="check_in">Дата заезда *</Label>
+                  <Input
+                    id="check_in"
+                    type="date"
+                    value={newGuest.check_in}
+                    onChange={(e) => onGuestChange({ ...newGuest, check_in: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="check_out">Дата выезда *</Label>
+                  <Input
+                    id="check_out"
+                    type="date"
+                    value={newGuest.check_out}
+                    onChange={(e) => onGuestChange({ ...newGuest, check_out: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {newGuest.password && (

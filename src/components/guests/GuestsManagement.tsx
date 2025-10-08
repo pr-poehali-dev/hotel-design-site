@@ -27,7 +27,10 @@ const GuestsManagement = () => {
     email: '',
     password: '',
     name: '',
-    phone: ''
+    phone: '',
+    apartment_id: '',
+    check_in: '',
+    check_out: ''
   });
 
   useEffect(() => {
@@ -73,6 +76,15 @@ const GuestsManagement = () => {
       return;
     }
 
+    if (!newGuest.apartment_id || !newGuest.check_in || !newGuest.check_out) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните информацию о бронировании',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -82,7 +94,10 @@ const GuestsManagement = () => {
           email: newGuest.email,
           password: newGuest.password,
           name: newGuest.name,
-          phone: newGuest.phone
+          phone: newGuest.phone,
+          apartment_id: newGuest.apartment_id,
+          check_in: newGuest.check_in,
+          check_out: newGuest.check_out
         })
       });
 
@@ -91,11 +106,11 @@ const GuestsManagement = () => {
       if (response.ok && data.success) {
         toast({
           title: 'Успешно!',
-          description: 'Гость создан. Отправьте ему email и пароль для входа.',
+          description: 'Гость и бронирование созданы. Отправьте гостю email и пароль для входа.',
         });
         
         setShowAddDialog(false);
-        setNewGuest({ email: '', password: '', name: '', phone: '' });
+        setNewGuest({ email: '', password: '', name: '', phone: '', apartment_id: '', check_in: '', check_out: '' });
         loadGuests();
       } else {
         toast({
