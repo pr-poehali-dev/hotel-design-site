@@ -64,6 +64,8 @@ const GuestDashboardPage = () => {
       const user = JSON.parse(userStr);
       setGuestUser(user);
 
+      let currentBooking: Booking | null = null;
+
       try {
         const bookingsResponse = await fetch(BOOKINGS_API_URL, {
           method: 'GET',
@@ -77,11 +79,11 @@ const GuestDashboardPage = () => {
         if (bookingsData.success && bookingsData.bookings.length > 0) {
           setAllBookings(bookingsData.bookings);
           
-          const upcomingBooking = bookingsData.bookings.find((b: Booking) => 
+          currentBooking = bookingsData.bookings.find((b: Booking) => 
             new Date(b.check_in) >= new Date()
           ) || bookingsData.bookings[0];
           
-          setBooking(upcomingBooking);
+          setBooking(currentBooking);
         } else {
           const mockBooking: Booking = {
             id: '1',
@@ -92,6 +94,7 @@ const GuestDashboardPage = () => {
             guest_email: user.email,
             guest_phone: user.phone || '',
           };
+          currentBooking = mockBooking;
           setBooking(mockBooking);
           setAllBookings([mockBooking]);
         }
@@ -106,28 +109,39 @@ const GuestDashboardPage = () => {
           guest_email: user.email,
           guest_phone: user.phone || '',
         };
+        currentBooking = mockBooking;
         setBooking(mockBooking);
         setAllBookings([mockBooking]);
       }
 
-      try {
-        const response = await fetch(`${API_URL}?apartment_id=${mockBooking.apartment_id}`);
-        const data = await response.json();
-        
-        if (data) {
-          setInstruction({
-            title: data.title || 'Добро пожаловать!',
-            description: data.description,
-            images: data.images || [],
-            pdf_files: data.pdf_files || [],
-            instruction_text: data.instruction_text,
-            important_notes: data.important_notes,
-            contact_info: data.contact_info,
-            wifi_info: data.wifi_info,
-            parking_info: data.parking_info,
-            house_rules: data.house_rules,
-          });
-        } else {
+      if (currentBooking) {
+        try {
+          const response = await fetch(`${API_URL}?apartment_id=${currentBooking.apartment_id}`);
+          const data = await response.json();
+          
+          if (data) {
+            setInstruction({
+              title: data.title || 'Добро пожаловать!',
+              description: data.description,
+              images: data.images || [],
+              pdf_files: data.pdf_files || [],
+              instruction_text: data.instruction_text,
+              important_notes: data.important_notes,
+              contact_info: data.contact_info,
+              wifi_info: data.wifi_info,
+              parking_info: data.parking_info,
+              house_rules: data.house_rules,
+            });
+          } else {
+            setInstruction({
+              title: 'Добро пожаловать!',
+              description: 'Инструкции по заселению скоро будут добавлены',
+              images: [],
+              pdf_files: [],
+            });
+          }
+        } catch (error) {
+          console.error('Ошибка загрузки инструкций:', error);
           setInstruction({
             title: 'Добро пожаловать!',
             description: 'Инструкции по заселению скоро будут добавлены',
@@ -135,14 +149,6 @@ const GuestDashboardPage = () => {
             pdf_files: [],
           });
         }
-      } catch (error) {
-        console.error('Ошибка загрузки инструкций:', error);
-        setInstruction({
-          title: 'Добро пожаловать!',
-          description: 'Инструкции по заселению скоро будут добавлены',
-          images: [],
-          pdf_files: [],
-        });
       }
 
       setLoading(false);
