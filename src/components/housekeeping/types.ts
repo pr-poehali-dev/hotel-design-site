@@ -2,7 +2,7 @@ export interface Room {
   id: string;
   number: string;
   floor: number;
-  status: 'clean' | 'dirty' | 'in-progress' | 'inspection' | 'turnover' | 'occupied';
+  status: 'clean' | 'dirty' | 'in-progress' | 'inspection' | 'turnover' | 'occupied' | 'cleaned' | 'pending-verification';
   assignedTo: string;
   lastCleaned: string;
   urgent: boolean;
@@ -16,6 +16,8 @@ export interface RoomStats {
   clean: number;
   dirty: number;
   inProgress: number;
+  cleaned: number;
+  pendingVerification: number;
   inspection: number;
   turnover: number;
   occupied: number;

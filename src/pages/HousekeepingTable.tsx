@@ -129,6 +129,8 @@ const HousekeepingTable = () => {
     clean: rooms.filter(r => r.status === 'clean').length,
     dirty: rooms.filter(r => r.status === 'dirty').length,
     inProgress: rooms.filter(r => r.status === 'in-progress').length,
+    cleaned: rooms.filter(r => r.status === 'cleaned').length,
+    pendingVerification: rooms.filter(r => r.status === 'pending-verification').length,
     inspection: rooms.filter(r => r.status === 'inspection').length,
     turnover: rooms.filter(r => r.status === 'turnover').length,
     occupied: rooms.filter(r => r.status === 'occupied').length
@@ -140,8 +142,14 @@ const HousekeepingTable = () => {
     
     console.log('handleUpdateRoomStatus called:', { roomId, newStatus, room, assignedTo: room?.assignedTo, payment: room?.payment });
     
-    // Если комната переведена в статус "clean", записываем в историю
-    if (newStatus === 'clean' && room && room.assignedTo) {
+    // Если горничная нажала "Убрано", переводим в статус "На проверке"
+    if (newStatus === 'cleaned' && room && room.assignedTo) {
+      await updateRoomStatus(roomId, 'pending-verification');
+      return;
+    }
+    
+    // Если админ подтверждает "На проверке" -> "Чисто", записываем в историю и начисляем оплату
+    if (newStatus === 'clean' && room && room.assignedTo && room.status === 'pending-verification') {
       console.log('Creating cleaning record:', room.number, room.assignedTo, room.payment);
       addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
     }

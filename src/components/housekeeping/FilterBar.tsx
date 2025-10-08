@@ -53,6 +53,22 @@ const FilterBar = ({
                 В процессе
               </button>
               <button
+                onClick={() => setFilter('cleaned')}
+                className={`px-4 py-2 rounded-lg font-inter transition-all ${
+                  filter === 'cleaned' ? 'bg-emerald-500 text-white' : 'bg-charcoal-700 text-gray-300 hover:bg-charcoal-600'
+                }`}
+              >
+                Убрано
+              </button>
+              <button
+                onClick={() => setFilter('pending-verification')}
+                className={`px-4 py-2 rounded-lg font-inter transition-all ${
+                  filter === 'pending-verification' ? 'bg-orange-500 text-white' : 'bg-charcoal-700 text-gray-300 hover:bg-charcoal-600'
+                }`}
+              >
+                На проверке
+              </button>
+              <button
                 onClick={() => setFilter('clean')}
                 className={`px-4 py-2 rounded-lg font-inter transition-all ${
                   filter === 'clean' ? 'bg-green-500 text-white' : 'bg-charcoal-700 text-gray-300 hover:bg-charcoal-600'

@@ -14,6 +14,10 @@ export const getStatusColor = (status: Room['status']) => {
       return 'bg-cyan-500';
     case 'occupied':
       return 'bg-purple-500';
+    case 'cleaned':
+      return 'bg-emerald-500';
+    case 'pending-verification':
+      return 'bg-orange-500';
     default:
       return 'bg-gray-500';
   }
@@ -33,6 +37,10 @@ export const getStatusText = (status: Room['status']) => {
       return 'Текучка';
     case 'occupied':
       return 'Живут';
+    case 'cleaned':
+      return 'Убрано';
+    case 'pending-verification':
+      return 'На проверке';
     default:
       return status;
   }

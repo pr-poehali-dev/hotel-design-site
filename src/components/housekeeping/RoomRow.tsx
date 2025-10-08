@@ -72,6 +72,8 @@ const RoomRow = memo(({
             <option value="dirty">Грязно</option>
             <option value="clean">Чисто</option>
             <option value="in-progress">В процессе</option>
+            <option value="cleaned">Убрано</option>
+            <option value="pending-verification">На проверке</option>
             <option value="inspection">Проверка</option>
             <option value="turnover">Текучка</option>
             <option value="occupied">Живут</option>
@@ -180,7 +182,7 @@ const RoomRow = memo(({
           </div>
         ) : (
           <div className="flex gap-1 flex-wrap">
-            {room.status !== 'in-progress' && (
+            {room.status !== 'in-progress' && room.status !== 'cleaned' && room.status !== 'pending-verification' && (
               <button
                 onClick={() => onUpdateStatus(room.id, 'in-progress')}
                 className="p-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition-colors"
@@ -189,13 +191,22 @@ const RoomRow = memo(({
                 <Icon name="Play" size={14} />
               </button>
             )}
-            {room.status !== 'clean' && (
+            {room.status === 'in-progress' && !isAdmin && (
+              <button
+                onClick={() => onUpdateStatus(room.id, 'cleaned')}
+                className="p-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded transition-colors"
+                title="Убрано"
+              >
+                <Icon name="Check" size={14} />
+              </button>
+            )}
+            {room.status === 'pending-verification' && isAdmin && (
               <button
                 onClick={() => onUpdateStatus(room.id, 'clean')}
                 className="p-1.5 bg-green-500 hover:bg-green-600 text-white rounded transition-colors"
-                title="Чисто"
+                title="Подтвердить - Чисто"
               >
-                <Icon name="Check" size={14} />
+                <Icon name="CheckCheck" size={14} />
               </button>
             )}
             {room.status !== 'dirty' && (
@@ -299,14 +310,42 @@ const RoomRow = memo(({
           </button>
         )}
         
-        {room.status === 'in-progress' && (
+        {room.status === 'in-progress' && !isAdmin && (
+          <button
+            onClick={() => onUpdateStatus(room.id, 'cleaned')}
+            className="w-full px-6 py-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white rounded-xl transition-all font-bold text-base flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <Icon name="Check" size={22} />
+            Убрано - отправить на проверку
+          </button>
+        )}
+        
+        {room.status === 'pending-verification' && !isAdmin && (
+          <div className="text-center py-3">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 rounded-lg text-orange-400 font-semibold">
+              <Icon name="Clock" size={20} />
+              На проверке у администратора
+            </div>
+          </div>
+        )}
+        
+        {room.status === 'pending-verification' && isAdmin && (
           <button
             onClick={() => onUpdateStatus(room.id, 'clean')}
             className="w-full px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl transition-all font-bold text-base flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            <Icon name="Check" size={22} />
-            Завершить уборку
+            <Icon name="CheckCheck" size={22} />
+            Подтвердить - Чисто
           </button>
+        )}
+        
+        {room.status === 'cleaned' && !isAdmin && (
+          <div className="text-center py-3">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 rounded-lg text-emerald-400 font-semibold">
+              <Icon name="Check" size={20} />
+              Убрано - ожидайте проверки
+            </div>
+          </div>
         )}
         
         {room.status === 'clean' && (
@@ -318,7 +357,7 @@ const RoomRow = memo(({
           </div>
         )}
 
-        {room.status !== 'dirty' && room.status !== 'clean' && (
+        {room.status !== 'dirty' && room.status !== 'clean' && room.status !== 'cleaned' && room.status !== 'pending-verification' && (
           <button
             onClick={() => onUpdateStatus(room.id, 'dirty')}
             className="w-full px-6 py-3 bg-charcoal-700 hover:bg-red-600 border-2 border-gray-600 hover:border-red-500 text-white rounded-xl transition-all font-semibold text-sm flex items-center justify-center gap-2"
