@@ -11,6 +11,13 @@ interface PageHeaderProps {
 }
 
 const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0 }: PageHeaderProps) => {
+  console.log('🔍 PageHeader:', { 
+    username: user.username, 
+    role: user.role, 
+    isAdmin, 
+    shouldShowPayroll: !isAdmin 
+  });
+  
   return (
     <div className="mb-8">
       <div className="flex items-start justify-between mb-4 flex-wrap gap-4">
@@ -21,7 +28,7 @@ const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0
           <p className="text-gray-400 font-inter text-sm">Управление статусами номеров</p>
           <div className="mt-2 flex items-center gap-2 flex-wrap">
             <span className="px-3 py-1 bg-gold-600 text-white text-xs md:text-sm rounded-full font-semibold">
-              {isAdmin ? 'Администратор' : 'Горничная'}: {user.username}
+              {isAdmin ? 'Администратор' : 'Горничная'}: {user.username} ({user.role})
             </span>
             {!isAdmin && unreadNotifications > 0 && (
               <span className="px-3 py-1 bg-orange-600 text-white text-xs rounded-full font-bold flex items-center gap-1 animate-pulse">
