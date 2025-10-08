@@ -1,4 +1,18 @@
 # Redirects for Single Page Application
-# All routes should serve index.html for client-side routing
+# Статические файлы должны отдаваться как есть (НЕ через index.html!)
+/assets/*  200!
+/*.js      200!
+/*.css     200!
+/*.png     200!
+/*.jpg     200!
+/*.jpeg    200!
+/*.svg     200!
+/*.ico     200!
+/*.woff    200!
+/*.woff2   200!
+/*.ttf     200!
+/*.eot     200!
+/*.json    200!
 
+# Все остальные маршруты идут на index.html (для React Router)
 /*    /index.html   200
