@@ -85,6 +85,7 @@ const HousekeepingTable = () => {
     markAsPaid,
     updatePaymentStatus,
     getRecordsByHousekeeper,
+    deleteRecord,
     reload: reloadRecords
   } = useCleaningRecords();
 
