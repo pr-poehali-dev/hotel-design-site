@@ -1,75 +1,93 @@
 import { useState, useEffect } from 'react';
 import { CleaningRecord } from '@/components/housekeeping/types';
+import func2url from '../../backend/func2url.json';
+
+const API_URL = func2url['cleaning-history'];
 
 export const useCleaningRecords = () => {
   const [records, setRecords] = useState<CleaningRecord[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('cleaning_records');
-    console.log('Loading cleaning records from localStorage:', stored);
-    
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      console.log('Parsed cleaning records:', parsed);
-      setRecords(parsed);
-    } else {
-      console.log('No cleaning records found in localStorage - creating test record');
-      // Создаём тестовую запись для апартамента 2110
-      const testRecord: CleaningRecord = {
-        id: `test-${Date.now()}`,
-        roomNumber: '2110',
-        housekeeperName: 'Мария',
-        cleanedAt: new Date().toISOString(),
-        payment: 500,
-        paymentStatus: 'unpaid'
-      };
-      const initialRecords = [testRecord];
-      setRecords(initialRecords);
-      localStorage.setItem('cleaning_records', JSON.stringify(initialRecords));
+  const loadRecords = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_URL, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.records) {
+        setRecords(data.records);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки истории уборок:', error);
     }
-  }, []);
-
-  const saveRecords = (newRecords: CleaningRecord[]) => {
-    setRecords(newRecords);
-    localStorage.setItem('cleaning_records', JSON.stringify(newRecords));
+    setLoading(false);
   };
 
-  const addCleaningRecord = (roomNumber: string, housekeeperName: string, payment: number) => {
-    const newRecord: CleaningRecord = {
-      id: `${Date.now()}-${Math.random()}`,
-      roomNumber,
-      housekeeperName,
-      cleanedAt: new Date().toISOString(),
-      payment,
-      paymentStatus: 'unpaid'
-    };
+  useEffect(() => {
+    loadRecords();
+  }, []);
 
+  const addCleaningRecord = async (roomNumber: string, housekeeperName: string, payment: number) => {
     console.log('🔔 addCleaningRecord called:', { 
-      newRecord, 
-      currentRecords: records.length,
       roomNumber,
       housekeeperName,
       payment
     });
     
-    const updatedRecords = [...records, newRecord];
-    console.log('💾 Saving records to localStorage:', updatedRecords);
-    saveRecords(updatedRecords);
-    console.log('✅ Records saved successfully. Total records:', updatedRecords.length);
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          roomNumber,
+          housekeeperName,
+          payment
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('✅ Запись об уборке сохранена в БД. ID:', data.id);
+        // Перезагружаем все записи
+        await loadRecords();
+      } else {
+        console.error('❌ Ошибка сохранения:', data.error);
+      }
+    } catch (error) {
+      console.error('❌ Ошибка запроса:', error);
+    }
   };
 
-  const markAsPaid = (recordId: string) => {
-    const updatedRecords = records.map(r => 
-      r.id === recordId ? { ...r, paymentStatus: 'paid' as const } : r
-    );
-    saveRecords(updatedRecords);
+  const markAsPaid = async (recordId: string) => {
+    await updatePaymentStatus(recordId, 'paid');
   };
 
-  const updatePaymentStatus = (recordId: string, status: 'paid' | 'unpaid', paidAt?: string) => {
-    const updatedRecords = records.map(r => 
-      r.id === recordId ? { ...r, paymentStatus: status, paidAt } : r
-    );
-    saveRecords(updatedRecords);
+  const updatePaymentStatus = async (recordId: string, status: 'paid' | 'unpaid', paidAt?: string) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: recordId,
+          paymentStatus: status,
+          paidAt
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Перезагружаем все записи
+        await loadRecords();
+      }
+    } catch (error) {
+      console.error('Ошибка обновления статуса оплаты:', error);
+    }
   };
 
   const getRecordsByHousekeeper = (housekeeperName: string) => {
@@ -78,9 +96,11 @@ export const useCleaningRecords = () => {
 
   return {
     records,
+    loading,
     addCleaningRecord,
     markAsPaid,
     updatePaymentStatus,
-    getRecordsByHousekeeper
+    getRecordsByHousekeeper,
+    reload: loadRecords
   };
 };

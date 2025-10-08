@@ -1,0 +1,31 @@
+{
+  "tests": [
+    {
+      "name": "Get all cleaning history",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "records": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Add cleaning record",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "roomNumber": "2110",
+        "housekeeperName": "Мария",
+        "payment": 500
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "id": "number"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
