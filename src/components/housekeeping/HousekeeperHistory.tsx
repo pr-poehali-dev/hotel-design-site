@@ -25,9 +25,26 @@ const HousekeeperHistory = ({ records, onMarkAsPaid, isAdmin }: HousekeeperHisto
 
   return (
     <div className="bg-gray-900 rounded-lg p-6 border border-gold-600/30 shadow-xl">
-      <div className="flex items-center gap-3 mb-6">
-        <Icon name="History" size={24} className="text-gold-500" />
-        <h2 className="text-2xl font-playfair font-bold text-white">История уборок</h2>
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <Icon name="History" size={24} className="text-gold-500" />
+          <h2 className="text-2xl font-playfair font-bold text-white">История уборок</h2>
+        </div>
+        {!isAdmin && (
+          <FizzyButton
+            onClick={() => {
+              const user = localStorage.getItem('housekeeping_user');
+              if (user) {
+                localStorage.setItem('housekeeper_user', user);
+              }
+              window.location.href = '/payroll';
+            }}
+            variant="primary"
+            icon={<Icon name="DollarSign" size={18} />}
+          >
+            Подробнее о зарплате
+          </FizzyButton>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
