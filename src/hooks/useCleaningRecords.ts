@@ -5,8 +5,10 @@ import func2url from '../../backend/func2url.json';
 const API_URL = func2url['cleaning-history'];
 
 export const useCleaningRecords = () => {
+  console.log('🎯 useCleaningRecords HOOK CALLED');
   const [records, setRecords] = useState<CleaningRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  console.log('🎯 Current records state:', records);
 
   const loadRecords = async () => {
     console.log('🚀 loadRecords START. API_URL:', API_URL);
@@ -41,6 +43,7 @@ export const useCleaningRecords = () => {
   };
 
   useEffect(() => {
+    console.log('🔥 useEffect запущен в useCleaningRecords');
     // Очищаем старые данные из localStorage
     const oldRecords = localStorage.getItem('cleaning_records');
     if (oldRecords) {
@@ -48,6 +51,7 @@ export const useCleaningRecords = () => {
       localStorage.removeItem('cleaning_records');
     }
     
+    console.log('🔥 Вызываю loadRecords()');
     loadRecords();
   }, []);
 
