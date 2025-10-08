@@ -25,6 +25,7 @@ interface GuestsListProps {
   onDeleteGuest: (id: number) => void;
   onEditBooking: (guestId: number, booking: any) => void;
   onAddBooking: (guestId: number, guestName: string) => void;
+  onDeleteBooking: (bookingId: string) => void;
   onClearSearch: () => void;
 }
 
@@ -35,6 +36,7 @@ const GuestsList = ({
   onDeleteGuest,
   onEditBooking,
   onAddBooking,
+  onDeleteBooking,
   onClearSearch,
 }: GuestsListProps) => {
   if (guests.length === 0) {
@@ -92,6 +94,14 @@ const GuestsList = ({
                           className="h-5 w-5 p-0 text-charcoal-500 hover:text-gold-600"
                         >
                           <Icon name="Pencil" size={12} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDeleteBooking(booking.id)}
+                          className="h-5 w-5 p-0 text-charcoal-500 hover:text-red-600"
+                        >
+                          <Icon name="Trash2" size={12} />
                         </Button>
                       </div>
                     ))}

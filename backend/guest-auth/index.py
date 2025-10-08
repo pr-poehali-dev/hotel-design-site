@@ -119,8 +119,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         try:
             query_params = event.get('queryStringParameters', {}) or {}
             guest_id = query_params.get('id')
+            booking_id = query_params.get('booking_id')
+            action = query_params.get('action')
+            
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            if action == 'delete_booking' and booking_id:
+                booking_id_safe = booking_id.replace("'", "''")
+                cursor.execute(
+                    f"DELETE FROM t_p9202093_hotel_design_site.bookings WHERE id = '{booking_id_safe}'"
+                )
+                conn.commit()
+                cursor.close()
+                conn.close()
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({
+                        'success': True,
+                        'message': 'Бронирование удалено'
+                    })
+                }
             
             if not guest_id:
+                cursor.close()
+                conn.close()
                 return {
                     'statusCode': 400,
                     'headers': {
@@ -129,9 +157,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     },
                     'body': json.dumps({'error': 'ID гостя обязателен'})
                 }
-            
-            conn = get_db_connection()
-            cursor = conn.cursor()
             
             cursor.execute(
                 f"DELETE FROM t_p9202093_hotel_design_site.guest_users WHERE id = {guest_id}"

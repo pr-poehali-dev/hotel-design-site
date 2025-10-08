@@ -296,6 +296,42 @@ const GuestsManagement = () => {
     }
   };
 
+  const handleDeleteBooking = async (bookingId: string) => {
+    if (!confirm('Вы уверены, что хотите удалить это бронирование?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}?action=delete_booking&booking_id=${bookingId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Удалено!',
+          description: 'Бронирование удалено. Гость больше не увидит его в личном кабинете.',
+        });
+        
+        loadGuests();
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось удалить бронирование',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось удалить бронирование. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleDeleteGuest = async (id: number) => {
     if (!confirm('Вы уверены, что хотите удалить этого гостя? Это действие нельзя отменить.')) {
       return;
@@ -412,6 +448,7 @@ const GuestsManagement = () => {
               onDeleteGuest={handleDeleteGuest}
               onEditBooking={handleEditBooking}
               onAddBooking={handleAddBooking}
+              onDeleteBooking={handleDeleteBooking}
               onClearSearch={() => setSearchQuery('')}
             />
           </CardContent>
