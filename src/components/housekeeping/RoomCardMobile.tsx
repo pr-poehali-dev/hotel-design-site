@@ -24,6 +24,44 @@ const RoomCardMobile = memo(({
   const [isEditing, setIsEditing] = useState(false);
   return (
     <div className="bg-gradient-to-br from-charcoal-800 to-charcoal-900 rounded-2xl p-5 border-2 border-gold-600/30 shadow-xl">
+      {isAdmin && (
+        <div className="flex gap-2 mb-4">
+          {isEditing ? (
+            <FizzyButton
+              onClick={() => setIsEditing(false)}
+              variant="primary"
+              size="sm"
+              icon={<Icon name="Check" size={16} />}
+              className="flex-1"
+            >
+              Сохранить
+            </FizzyButton>
+          ) : (
+            <FizzyButton
+              onClick={() => setIsEditing(true)}
+              variant="secondary"
+              size="sm"
+              icon={<Icon name="Pencil" size={16} />}
+              className="flex-1"
+            >
+              Редактировать
+            </FizzyButton>
+          )}
+          <FizzyButton
+            onClick={() => {
+              if (window.confirm(`Удалить апартамент ${room.number}?`)) {
+                onDelete(room.id);
+              }
+            }}
+            variant="destructive"
+            size="sm"
+            icon={<Icon name="Trash2" size={16} />}
+          >
+            Удалить
+          </FizzyButton>
+        </div>
+      )}
+      
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           {room.urgent && (
@@ -177,46 +215,7 @@ const RoomCardMobile = memo(({
         )}
       </div>
 
-      {isAdmin && (
-        <div className="mt-4 pt-4 border-t border-gray-700">
-          <div className="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-3">Администрирование</div>
-          <div className="flex gap-2">
-            {isEditing ? (
-              <FizzyButton
-                onClick={() => setIsEditing(false)}
-                variant="primary"
-                size="sm"
-                icon={<Icon name="Check" size={16} />}
-                className="flex-1"
-              >
-                Сохранить
-              </FizzyButton>
-            ) : (
-              <FizzyButton
-                onClick={() => setIsEditing(true)}
-                variant="secondary"
-                size="sm"
-                icon={<Icon name="Pencil" size={16} />}
-                className="flex-1"
-              >
-                Редактировать
-              </FizzyButton>
-            )}
-            <FizzyButton
-              onClick={() => {
-                if (window.confirm(`Удалить апартамент ${room.number}?`)) {
-                  onDelete(room.id);
-                }
-              }}
-              variant="destructive"
-              size="sm"
-              icon={<Icon name="Trash2" size={16} />}
-            >
-              Удалить
-            </FizzyButton>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 });
