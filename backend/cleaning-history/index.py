@@ -14,7 +14,6 @@ DSN = os.environ['DATABASE_URL']
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')
     
-    # Handle CORS OPTIONS request
     if method == 'OPTIONS':
         return {
             'statusCode': 200,
@@ -32,18 +31,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         if method == 'GET':
-            # Получить историю уборок (всю или для конкретной горничной)
             params = event.get('queryStringParameters') or {}
             housekeeper_name = params.get('housekeeper_name')
             
             if housekeeper_name:
-                cur.execute('''
+                escaped_name = housekeeper_name.replace("'", "''")
+                cur.execute(f'''
                     SELECT id, room_number, housekeeper_name, cleaned_at, 
                            payment_amount, payment_status, paid_at
                     FROM t_p9202093_hotel_design_site.cleaning_history
-                    WHERE housekeeper_name = %s
+                    WHERE housekeeper_name = '{escaped_name}'
                     ORDER BY cleaned_at DESC
-                ''', (housekeeper_name,))
+                ''')
             else:
                 cur.execute('''
                     SELECT id, room_number, housekeeper_name, cleaned_at, 
@@ -73,7 +72,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'POST':
-            # Добавить новую запись об уборке
             body_data = json.loads(event.get('body', '{}'))
             room_number = body_data.get('roomNumber')
             housekeeper_name = body_data.get('housekeeperName')
@@ -86,12 +84,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'success': False, 'error': 'Не указан номер апартамента или имя горничной'})
                 }
             
-            cur.execute('''
+            escaped_room = room_number.replace("'", "''")
+            escaped_name = housekeeper_name.replace("'", "''")
+            cur.execute(f'''
                 INSERT INTO t_p9202093_hotel_design_site.cleaning_history 
                 (room_number, housekeeper_name, payment_amount)
-                VALUES (%s, %s, %s)
+                VALUES ('{escaped_room}', '{escaped_name}', {payment})
                 RETURNING id
-            ''', (room_number, housekeeper_name, payment))
+            ''')
             
             record_id = cur.fetchone()[0]
             conn.commit()
@@ -104,7 +104,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'PUT':
-            # Обновить статус оплаты
             body_data = json.loads(event.get('body', '{}'))
             record_id = body_data.get('id')
             payment_status = body_data.get('paymentStatus')
@@ -117,17 +116,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             if payment_status == 'paid':
-                cur.execute('''
+                cur.execute(f'''
                     UPDATE t_p9202093_hotel_design_site.cleaning_history
-                    SET payment_status = %s, paid_at = NOW()
-                    WHERE id = %s
-                ''', (payment_status, record_id))
+                    SET payment_status = 'paid', paid_at = NOW()
+                    WHERE id = {record_id}
+                ''')
             else:
-                cur.execute('''
+                cur.execute(f'''
                     UPDATE t_p9202093_hotel_design_site.cleaning_history
-                    SET payment_status = %s, paid_at = NULL
-                    WHERE id = %s
-                ''', (payment_status, record_id))
+                    SET payment_status = 'unpaid', paid_at = NULL
+                    WHERE id = {record_id}
+                ''')
             
             conn.commit()
             
@@ -139,7 +138,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'DELETE':
-            # Удалить запись об уборке
             body_data = json.loads(event.get('body', '{}'))
             record_id = body_data.get('id')
             
@@ -150,10 +148,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'success': False, 'error': 'Не указан ID записи'})
                 }
             
-            cur.execute('''
+            cur.execute(f'''
                 DELETE FROM t_p9202093_hotel_design_site.cleaning_history
-                WHERE id = %s
-            ''', (record_id,))
+                WHERE id = {record_id}
+            ''')
             
             conn.commit()
             
