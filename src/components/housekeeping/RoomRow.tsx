@@ -200,7 +200,7 @@ const RoomRow = memo(({
                 <Icon name="Check" size={14} />
               </button>
             )}
-            {room.status === 'pending-verification' && isAdmin && (
+            {(room.status === 'pending-verification' || room.status === 'cleaned' || (room.status === 'in-progress' && isAdmin)) && isAdmin && (
               <button
                 onClick={() => onUpdateStatus(room.id, 'clean')}
                 className="p-1.5 bg-green-500 hover:bg-green-600 text-white rounded transition-colors"

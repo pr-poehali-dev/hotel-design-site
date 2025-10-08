@@ -155,7 +155,7 @@ const HousekeepingTable = () => {
   const handleUpdateRoomStatus = async (roomId: string, newStatus: Room['status']) => {
     const room = rooms.find(r => r.id === roomId);
     
-    console.log('handleUpdateRoomStatus called:', { roomId, newStatus, room, assignedTo: room?.assignedTo, payment: room?.payment });
+    console.log('handleUpdateRoomStatus called:', { roomId, newStatus, room, assignedTo: room?.assignedTo, payment: room?.payment, currentStatus: room?.status });
     
     // Если горничная нажала "Убрано", переводим в статус "На проверке"
     if (newStatus === 'cleaned' && room && room.assignedTo) {
@@ -174,21 +174,28 @@ const HousekeepingTable = () => {
       return;
     }
     
-    // Если админ подтверждает "На проверке" -> "Чисто", записываем в историю и начисляем оплату
-    if (newStatus === 'clean' && room && room.assignedTo && room.status === 'pending-verification') {
-      console.log('Creating cleaning record:', room.number, room.assignedTo, room.payment);
-      addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
+    // Если админ подтверждает любой статус (кроме dirty) -> "Чисто" и есть горничная, записываем в историю
+    if (newStatus === 'clean' && room && room.assignedTo) {
+      // Проверяем, что это не просто установка чисто с грязного (должна быть уборка)
+      const shouldRecord = room.status === 'pending-verification' || 
+                          room.status === 'cleaned' || 
+                          room.status === 'in-progress';
       
-      if (isAdmin) {
-        const notificationMessage = `✅ Уборка апартамента ${room.number} подтверждена! Начислено ${room.payment || 0} ₽`;
+      if (shouldRecord) {
+        console.log('Creating cleaning record:', room.number, room.assignedTo, room.payment);
+        addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
         
-        showNotification(notificationMessage, 'success');
-        
-        savePersistentNotification(
-          notificationMessage,
-          'success',
-          room.assignedTo
-        );
+        if (isAdmin) {
+          const notificationMessage = `✅ Уборка апартамента ${room.number} подтверждена! Начислено ${room.payment || 0} ₽`;
+          
+          showNotification(notificationMessage, 'success');
+          
+          savePersistentNotification(
+            notificationMessage,
+            'success',
+            room.assignedTo
+          );
+        }
       }
     }
     
