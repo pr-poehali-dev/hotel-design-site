@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import FizzyButton from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
+import { useCleaningRecords } from '@/hooks/useCleaningRecords';
 
 interface Maid {
   id: number;
@@ -29,6 +30,7 @@ interface PayrollReport {
 }
 
 const PayrollPage = () => {
+  const { records, loading: recordsLoading } = useCleaningRecords();
   const [maids, setMaids] = useState<Maid[]>([]);
   const [reports, setReports] = useState<PayrollReport[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +41,7 @@ const PayrollPage = () => {
 
   useEffect(() => {
     loadData();
-  }, [selectedPeriod]);
+  }, [selectedPeriod, records]);
 
   const loadData = async () => {
     try {
@@ -47,29 +49,39 @@ const PayrollPage = () => {
       const maidsData = await maidsRes.json();
       setMaids(maidsData);
 
-      const savedTasks = localStorage.getItem('cleaning_tasks');
-      const tasks: CleaningTask[] = savedTasks ? JSON.parse(savedTasks) : [];
+      // Используем данные из БД вместо localStorage
+      const cleaningRecords = records.filter(r => 
+        r.payment_status === 'paid' || r.payment_status === 'pending'
+      );
 
       const payrollReports = maidsData
         .filter((m: Maid) => m.is_active)
         .map((maid: Maid) => {
-          const maidTasks = tasks.filter(
-            t => t.maid_id === maid.id && 
-            t.status === 'completed' &&
-            t.cleaning_date >= selectedPeriod.start &&
-            t.cleaning_date <= selectedPeriod.end
+          const maidRecords = cleaningRecords.filter(
+            r => r.housekeeper_name === maid.name &&
+            r.cleaning_date >= selectedPeriod.start &&
+            r.cleaning_date <= selectedPeriod.end
           );
 
-          const totalAmount = maidTasks.reduce((sum, t) => sum + (t.payment_amount || 0), 0);
+          const totalAmount = maidRecords.reduce((sum, r) => sum + (r.payment_amount || 0), 0);
+
+          // Преобразуем записи в формат CleaningTask для совместимости
+          const tasks: CleaningTask[] = maidRecords.map(r => ({
+            id: r.id,
+            maid_id: maid.id,
+            cleaning_date: r.cleaning_date,
+            status: 'completed',
+            payment_amount: r.payment_amount
+          }));
 
           return {
             maid_id: maid.id,
             maid_name: maid.name,
             period_start: selectedPeriod.start,
             period_end: selectedPeriod.end,
-            total_cleanings: maidTasks.length,
+            total_cleanings: maidRecords.length,
             total_amount: totalAmount,
-            tasks: maidTasks
+            tasks
           };
         })
         .filter((r: PayrollReport) => r.total_cleanings > 0);

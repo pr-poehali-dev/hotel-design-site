@@ -30,6 +30,7 @@ const Location = React.lazy(() => import("./pages/Location"));
 const Reviews = React.lazy(() => import("./pages/Reviews"));
 const GoogleBusiness = React.lazy(() => import("./pages/GoogleBusiness"));
 const TestAPI = React.lazy(() => import("./pages/TestAPI"));
+const PayrollPage = React.lazy(() => import("./pages/PayrollPage"));
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,7 @@ const App = () => (
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/google-business" element={<GoogleBusiness />} />
             <Route path="/test-api" element={<TestAPI />} />
+            <Route path="/payroll" element={<PayrollPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
