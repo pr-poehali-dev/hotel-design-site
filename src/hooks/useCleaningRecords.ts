@@ -9,24 +9,35 @@ export const useCleaningRecords = () => {
   const [loading, setLoading] = useState(true);
 
   const loadRecords = async () => {
+    console.log('🚀 loadRecords START. API_URL:', API_URL);
     setLoading(true);
     try {
+      console.log('🌐 Делаю fetch запрос к:', API_URL);
       const response = await fetch(API_URL, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
       
+      console.log('📡 Response status:', response.status, 'OK:', response.ok);
+      
       const data = await response.json();
       
       console.log('📥 Загружены записи из БД:', data);
+      console.log('📊 data.success:', data.success);
+      console.log('📊 data.records:', data.records);
+      console.log('📊 data.records.length:', data.records?.length);
       
       if (data.success && data.records) {
+        console.log('✅ Устанавливаю records. Количество:', data.records.length);
         setRecords(data.records);
+      } else {
+        console.warn('⚠️ data.success или data.records пустые!');
       }
     } catch (error) {
-      console.error('Ошибка загрузки истории уборок:', error);
+      console.error('❌ Ошибка загрузки истории уборок:', error);
     }
     setLoading(false);
+    console.log('🏁 loadRecords END');
   };
 
   useEffect(() => {
