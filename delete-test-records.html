@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Test Records</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #d4af37;
+            margin-top: 0;
+        }
+        .log {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .info { color: #60a5fa; }
+        button {
+            background: #d4af37;
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: #f0c869;
+            transform: translateY(-1px);
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ Delete Test Records</h1>
+        <p>This will delete test records with id="1" and id="3" from the cleaning history database.</p>
+        <p><strong>Record id="2" (Савастеева Марина) will be preserved.</strong></p>
+        
+        <button id="deleteBtn" onclick="deleteTestRecords()">Delete Test Records</button>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://functions.poehali.dev/31057b18-39ce-40dd-8afe-75b9fa434a82';
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function deleteRecord(id) {
+            try {
+                log(`Sending DELETE request for id="${id}"...`, 'info');
+                
+                const response = await fetch(API_URL, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    log(`✅ Successfully deleted record with id="${id}"`, 'success');
+                    return true;
+                } else {
+                    log(`❌ Failed to delete record with id="${id}": ${data.error || 'Unknown error'}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ Error deleting record with id="${id}": ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function deleteTestRecords() {
+            const btn = document.getElementById('deleteBtn');
+            btn.disabled = true;
+            
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML = '';
+            
+            log('🚀 Starting deletion process...', 'info');
+            log('', 'info');
+            
+            // Delete test record id=1
+            await deleteRecord('1');
+            
+            // Small delay between requests
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Delete test record id=3
+            await deleteRecord('3');
+            
+            log('', 'info');
+            log('✨ Deletion process completed!', 'success');
+            log('📋 Note: Record id="2" (Савастеева Марина) was preserved as requested.', 'info');
+            
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
