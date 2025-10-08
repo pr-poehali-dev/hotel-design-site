@@ -80,10 +80,12 @@ const HousekeepingTable = () => {
 
   const {
     records,
+    loading: recordsLoading,
     addCleaningRecord,
     markAsPaid,
     updatePaymentStatus,
-    getRecordsByHousekeeper
+    getRecordsByHousekeeper,
+    reload: reloadRecords
   } = useCleaningRecords();
 
   const [filter, setFilter] = useState<'all' | 'clean' | 'dirty' | 'in-progress' | 'inspection' | 'turnover' | 'occupied'>('all');
@@ -102,11 +104,12 @@ const HousekeepingTable = () => {
     const intervalId = setInterval(() => {
       reloadRooms();
       reloadHousekeepers();
+      reloadRecords();
       setLastSync(new Date());
     }, 10000); // 10 секунд
 
     return () => clearInterval(intervalId);
-  }, [user, reloadRooms, reloadHousekeepers]);
+  }, [user, reloadRooms, reloadHousekeepers, reloadRecords]);
 
   const filteredRooms = useMemo(() => {
     console.log('Фильтрация комнат:', {
@@ -268,6 +271,7 @@ const HousekeepingTable = () => {
                 onClick={() => {
                   reloadRooms();
                   reloadHousekeepers();
+                  reloadRecords();
                   setLastSync(new Date());
                 }}
                 icon={<Icon name="RefreshCw" size={20} />}

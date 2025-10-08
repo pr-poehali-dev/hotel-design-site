@@ -18,6 +18,8 @@ export const useCleaningRecords = () => {
       
       const data = await response.json();
       
+      console.log('📥 Загружены записи из БД:', data);
+      
       if (data.success && data.records) {
         setRecords(data.records);
       }
@@ -28,6 +30,13 @@ export const useCleaningRecords = () => {
   };
 
   useEffect(() => {
+    // Очищаем старые данные из localStorage
+    const oldRecords = localStorage.getItem('cleaning_records');
+    if (oldRecords) {
+      console.log('🗑️ Удаляю старые данные из localStorage');
+      localStorage.removeItem('cleaning_records');
+    }
+    
     loadRecords();
   }, []);
 
