@@ -52,11 +52,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         safe_username = username.replace("'", "''")
         safe_password = password.replace("'", "''")
         
-        # Поиск пользователя по email (нечувствительно к регистру)
+        # Поиск пользователя по email ИЛИ по имени (нечувствительно к регистру)
         query = f"""
             SELECT id, name, email, role
             FROM housekeepers
-            WHERE LOWER(email) = LOWER('{safe_username}') AND password = '{safe_password}'
+            WHERE (
+                LOWER(email) = LOWER('{safe_username}') 
+                OR LOWER(name) = LOWER('{safe_username}')
+            ) 
+            AND password = '{safe_password}'
         """
         cur.execute(query)
         
