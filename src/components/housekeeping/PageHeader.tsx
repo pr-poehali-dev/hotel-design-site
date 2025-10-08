@@ -11,13 +11,6 @@ interface PageHeaderProps {
 }
 
 const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0 }: PageHeaderProps) => {
-  console.log('🔍 PageHeader:', { 
-    username: user.username, 
-    role: user.role, 
-    isAdmin, 
-    shouldShowPayroll: !isAdmin 
-  });
-  
   return (
     <div className="mb-8">
       <div className="flex items-start justify-between mb-4 flex-wrap gap-4">
@@ -28,7 +21,7 @@ const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0
           <p className="text-gray-400 font-inter text-sm">Управление статусами номеров</p>
           <div className="mt-2 flex items-center gap-2 flex-wrap">
             <span className="px-3 py-1 bg-gold-600 text-white text-xs md:text-sm rounded-full font-semibold">
-              {isAdmin ? 'Администратор' : 'Горничная'}: {user.username} ({user.role})
+              {isAdmin ? 'Администратор' : 'Горничная'}: {user.username}
             </span>
             {!isAdmin && unreadNotifications > 0 && (
               <span className="px-3 py-1 bg-orange-600 text-white text-xs rounded-full font-bold flex items-center gap-1 animate-pulse">
@@ -49,14 +42,6 @@ const PageHeader = ({ user, isAdmin, onLogout, lastSync, unreadNotifications = 0
           <p className="text-xs text-gray-400">Сегодня</p>
           <p className="text-lg md:text-xl font-semibold text-white">{new Date().toLocaleDateString('ru-RU')}</p>
         </div>
-      </div>
-
-      {/* Диагностика - удалить после проверки */}
-      <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-white text-xs">
-        <div>👤 Username: {user.username}</div>
-        <div>🎭 Role: {user.role}</div>
-        <div>🔐 isAdmin: {String(isAdmin)}</div>
-        <div>💰 Show button: {String(!isAdmin)}</div>
       </div>
 
       <div className="flex gap-2 flex-wrap">
