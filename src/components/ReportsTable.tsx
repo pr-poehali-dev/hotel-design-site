@@ -103,18 +103,18 @@ const ReportsTable = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-playfair font-bold text-charcoal-900">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <h2 className="text-2xl md:text-3xl font-playfair font-bold text-charcoal-900">
           Отчетность по бронированиям
         </h2>
-        <div className="flex gap-3 items-center">
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
           {onCommissionRateChange && (
             <div className="flex items-center gap-2">
-              <label className="text-sm font-inter text-charcoal-700">Комиссия управления:</label>
+              <label className="text-xs md:text-sm font-inter text-charcoal-700 whitespace-nowrap">Комиссия:</label>
               <select
                 value={managementCommissionRate}
                 onChange={(e) => onCommissionRateChange(Number(e.target.value))}
-                className="px-3 py-2 border border-charcoal-300 rounded-lg bg-white text-charcoal-900 font-inter text-sm focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
+                className="px-2 py-1.5 md:px-3 md:py-2 border border-charcoal-300 rounded-lg bg-white text-charcoal-900 font-inter text-xs md:text-sm focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
               >
                 <option value={0}>0%</option>
                 <option value={15}>15%</option>
@@ -123,49 +123,52 @@ const ReportsTable = ({
               </select>
             </div>
           )}
-          {!readOnly && onAddBooking && <div className="flex gap-3">
+          {!readOnly && onAddBooking && <div className="flex gap-2 sm:gap-3">
             <FizzyButton
               onClick={exportToExcel}
               variant="secondary"
-              icon={<Icon name="Download" size={18} />}
+              icon={<Icon name="Download" size={16} />}
+              className="text-xs md:text-sm px-3 py-2"
             >
-              Экспорт в Excel
+              <span className="hidden sm:inline">Экспорт</span>
             </FizzyButton>
             <FizzyButton
               onClick={onAddBooking}
-              icon={<Icon name="Plus" size={18} />}
+              icon={<Icon name="Plus" size={16} />}
+              className="text-xs md:text-sm px-3 py-2"
             >
-              Добавить бронь
+              <span className="hidden sm:inline">Добавить бронь</span>
+              <span className="sm:hidden">Добавить</span>
             </FizzyButton>
           </div>}
         </div>
       </div>
 
-      <Card className="p-6 bg-gradient-to-br from-gold-50 to-white border-gold-200">
-        <div className="grid grid-cols-5 gap-4">
+      <Card className="p-4 md:p-6 bg-gradient-to-br from-gold-50 to-white border-gold-200">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
           <div>
-            <p className="text-sm text-charcoal-600 font-inter">Общая сумма</p>
-            <p className="text-2xl font-bold text-charcoal-900">{totals.totalAmount.toLocaleString('ru')} ₽</p>
+            <p className="text-xs md:text-sm text-charcoal-600 font-inter">Общая сумма</p>
+            <p className="text-lg md:text-2xl font-bold text-charcoal-900">{totals.totalAmount.toLocaleString('ru')} ₽</p>
           </div>
           <div>
-            <p className="text-sm text-charcoal-600 font-inter">Средства собственнику</p>
-            <p className="text-2xl font-bold text-green-600">{totals.ownerFunds.toLocaleString('ru')} ₽</p>
+            <p className="text-xs md:text-sm text-charcoal-600 font-inter">Собственнику</p>
+            <p className="text-lg md:text-2xl font-bold text-green-600">{totals.ownerFunds.toLocaleString('ru')} ₽</p>
           </div>
           <div>
-            <p className="text-sm text-charcoal-600 font-inter">Затраты на эксплуатацию</p>
-            <p className="text-2xl font-bold text-orange-600">{totals.operatingExpenses.toLocaleString('ru')} ₽</p>
+            <p className="text-xs md:text-sm text-charcoal-600 font-inter">Затраты</p>
+            <p className="text-lg md:text-2xl font-bold text-orange-600">{totals.operatingExpenses.toLocaleString('ru')} ₽</p>
           </div>
           <div>
-            <p className="text-sm text-charcoal-600 font-inter">Количество броней</p>
-            <p className="text-2xl font-bold text-charcoal-900">{bookings.length}</p>
+            <p className="text-xs md:text-sm text-charcoal-600 font-inter">Броней</p>
+            <p className="text-lg md:text-2xl font-bold text-charcoal-900">{bookings.length}</p>
           </div>
           {onCommissionRateChange && (
-            <div>
-              <p className="text-sm text-charcoal-600 font-inter mb-2">Комиссия управления</p>
+            <div className="col-span-2 md:col-span-1">
+              <p className="text-xs md:text-sm text-charcoal-600 font-inter mb-2">Комиссия</p>
               <select
                 value={managementCommissionRate}
                 onChange={(e) => onCommissionRateChange(Number(e.target.value))}
-                className="w-full px-4 py-2 border-2 border-gold-400 rounded-lg bg-white text-charcoal-900 font-bold text-xl focus:border-gold-600 focus:ring-2 focus:ring-gold-200 hover:bg-gold-50 transition-colors cursor-pointer"
+                className="w-full px-3 py-1.5 md:px-4 md:py-2 border-2 border-gold-400 rounded-lg bg-white text-charcoal-900 font-bold text-base md:text-xl focus:border-gold-600 focus:ring-2 focus:ring-gold-200 hover:bg-gold-50 transition-colors cursor-pointer"
               >
                 <option value={0}>0%</option>
                 <option value={15}>15%</option>
@@ -177,7 +180,90 @@ const ReportsTable = ({
         </div>
       </Card>
 
-      <div className="overflow-x-auto">
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-4">
+        {recalculatedBookings.map((booking, index) => (
+          <Card 
+            key={booking.id}
+            className="p-4 bg-white shadow-md hover:shadow-lg transition-shadow"
+            onClick={() => !readOnly && onEditBooking?.(bookings[index])}
+          >
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-xs text-charcoal-600 font-inter">Период</p>
+                  <p className="text-sm font-semibold text-charcoal-900">{booking.checkIn} — {booking.checkOut}</p>
+                </div>
+                {!readOnly && (
+                  <div className="flex gap-2">
+                    {booking.guestEmail && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSendReport?.(booking);
+                        }}
+                        className="text-gold-600 hover:text-gold-800 transition-colors p-2"
+                      >
+                        <Icon name="Send" size={16} />
+                      </button>
+                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteBooking?.(booking.id);
+                      }}
+                      className="text-red-600 hover:text-red-800 transition-colors p-2"
+                    >
+                      <Icon name="Trash2" size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-200">
+                <div>
+                  <p className="text-xs text-charcoal-600">Сумма проживания</p>
+                  <p className="text-sm font-semibold">{booking.accommodationAmount.toLocaleString('ru')} ₽</p>
+                </div>
+                <div>
+                  <p className="text-xs text-charcoal-600">Паркинг</p>
+                  <p className="text-sm font-semibold">{booking.parking.toLocaleString('ru')} ₽</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-xs text-charcoal-600">Итоговая сумма</p>
+                  <p className="text-base font-bold text-charcoal-900">{booking.totalAmount.toLocaleString('ru')} ₽</p>
+                </div>
+                <div>
+                  <p className="text-xs text-charcoal-600">Комиссия агрегатора</p>
+                  <p className="text-sm">{booking.aggregatorCommission}%</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-200">
+                <div>
+                  <p className="text-xs text-charcoal-600">Комиссия управления</p>
+                  <p className="text-sm font-semibold">{booking.managementCommission.toLocaleString('ru')} ₽</p>
+                </div>
+                <div>
+                  <p className="text-xs text-charcoal-600">Затраты</p>
+                  <p className="text-sm font-semibold text-orange-600">{booking.operatingExpenses.toLocaleString('ru')} ₽</p>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t-2 border-gold-300 bg-green-50 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+                <p className="text-xs text-charcoal-600 mb-1">Средства собственнику</p>
+                <p className="text-xl font-bold text-green-600">{booking.ownerFunds.toLocaleString('ru')} ₽</p>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Desktop Table */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full border-collapse bg-white shadow-lg rounded-lg overflow-hidden">
           <thead className="bg-gradient-to-r from-charcoal-800 to-charcoal-900 text-white">
             <tr>

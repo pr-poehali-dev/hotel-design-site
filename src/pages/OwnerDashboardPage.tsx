@@ -73,17 +73,18 @@ const OwnerDashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex justify-between items-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-3 md:p-4">
+      <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div>
-            <h1 className="text-3xl font-bold">Добро пожаловать, {ownerName}!</h1>
-            <p className="text-gray-600 mt-1">Выберите квартиру для просмотра отчетов</p>
+            <h1 className="text-xl md:text-3xl font-bold">Добро пожаловать, {ownerName}!</h1>
+            <p className="text-sm md:text-base text-gray-600 mt-1">Выберите квартиру для просмотра отчетов</p>
           </div>
           <FizzyButton
             onClick={handleLogout}
             variant="secondary"
-            icon={<Icon name="LogOut" size={18} />}
+            icon={<Icon name="LogOut" size={16} />}
+            className="text-sm px-4 py-2 w-full sm:w-auto"
           >
             Выйти
           </FizzyButton>
@@ -92,31 +93,31 @@ const OwnerDashboardPage = () => {
         {apartments.length === 0 ? (
           <Card>
             <CardHeader>
-              <CardTitle>Квартиры не найдены</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg md:text-xl">Квартиры не найдены</CardTitle>
+              <CardDescription className="text-sm">
                 К вашему аккаунту пока не привязаны квартиры. Обратитесь к администратору.
               </CardDescription>
             </CardHeader>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
             {apartments.map((apartment) => (
               <Card 
                 key={apartment.apartment_id}
                 className="hover:shadow-lg transition-shadow cursor-pointer"
                 onClick={() => navigate(`/owner/${apartment.apartment_id}`)}
               >
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Icon name="Home" size={20} />
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+                    <Icon name="Home" size={18} />
                     {apartment.name}
                   </CardTitle>
-                  <CardDescription>Нажмите, чтобы посмотреть отчеты</CardDescription>
+                  <CardDescription className="text-xs md:text-sm">Нажмите, чтобы посмотреть отчеты</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <FizzyButton
-                    className="w-full"
-                    icon={<Icon name="FileText" size={18} />}
+                    className="w-full text-sm md:text-base"
+                    icon={<Icon name="FileText" size={16} />}
                   >
                     Открыть отчеты
                   </FizzyButton>

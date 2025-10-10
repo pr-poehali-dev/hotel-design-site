@@ -99,16 +99,16 @@ export default function OwnerReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-3 md:p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <div className="flex justify-between items-center">
+        <div className="mb-4 md:mb-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">
-                Отчеты по апартаменту {apartmentId}
+              <h1 className="text-xl md:text-3xl font-bold text-white mb-2">
+                Апартамент {apartmentId}
               </h1>
               {ownerInfo && (
-                <p className="text-slate-300">
+                <p className="text-sm md:text-base text-slate-300">
                   Собственник: {ownerInfo.ownerName}
                 </p>
               )}
@@ -116,7 +116,7 @@ export default function OwnerReportsPage() {
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="px-4 py-2 bg-slate-800/80 border border-purple-500/30 text-white rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+              className="px-3 py-2 md:px-4 md:py-2 bg-slate-800/80 border border-purple-500/30 text-white text-sm md:text-base rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
             >
               <option value="current">Текущий период</option>
               {monthlyReports.map(report => (
@@ -128,9 +128,9 @@ export default function OwnerReportsPage() {
           </div>
         </div>
 
-        <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6">
+        <div className="bg-white rounded-lg shadow-xl p-3 md:p-6">
           {bookings.length === 0 ? (
-            <div className="text-center text-slate-300 py-8">
+            <div className="text-center text-slate-600 py-6 md:py-8 text-sm md:text-base">
               Нет данных для отображения
             </div>
           ) : (
@@ -141,7 +141,7 @@ export default function OwnerReportsPage() {
               readOnly={true}
             />
           )}
-        </Card>
+        </div>
       </div>
     </div>
   );
