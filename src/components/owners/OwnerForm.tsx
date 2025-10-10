@@ -1,0 +1,85 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import Icon from '@/components/ui/icon';
+
+interface OwnerFormData {
+  apartmentId: string;
+  ownerEmail: string;
+  ownerName: string;
+}
+
+interface OwnerFormProps {
+  formData: OwnerFormData;
+  loading: boolean;
+  isNew: boolean;
+  onSave: () => void;
+  onCancel: () => void;
+  onChange: (form: OwnerFormData) => void;
+}
+
+export default function OwnerForm({
+  formData,
+  loading,
+  isNew,
+  onSave,
+  onCancel,
+  onChange,
+}: OwnerFormProps) {
+  return (
+    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 space-y-3">
+      <h3 className="text-xl font-semibold text-white">
+        {isNew ? 'Новый собственник' : 'Редактирование'}
+      </h3>
+      <div className="space-y-3">
+        <div>
+          <label className="text-sm text-slate-300 mb-1 block">
+            ID апартамента
+          </label>
+          <Input
+            value={formData.apartmentId}
+            onChange={(e) =>
+              onChange({ ...formData, apartmentId: e.target.value })
+            }
+            placeholder="2019"
+            className="bg-white/10 border-white/20 text-white"
+            disabled={!isNew}
+          />
+        </div>
+        <div>
+          <label className="text-sm text-slate-300 mb-1 block">
+            Имя собственника
+          </label>
+          <Input
+            value={formData.ownerName}
+            onChange={(e) =>
+              onChange({ ...formData, ownerName: e.target.value })
+            }
+            placeholder="Иван Иванов"
+            className="bg-white/10 border-white/20 text-white"
+          />
+        </div>
+        <div>
+          <label className="text-sm text-slate-300 mb-1 block">Email</label>
+          <Input
+            value={formData.ownerEmail}
+            onChange={(e) =>
+              onChange({ ...formData, ownerEmail: e.target.value })
+            }
+            placeholder="owner@example.com"
+            className="bg-white/10 border-white/20 text-white"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={onSave} disabled={loading}>
+            <Icon name="Check" size={16} />
+            Сохранить
+          </Button>
+          <Button onClick={onCancel} variant="outline">
+            <Icon name="X" size={16} />
+            Отмена
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

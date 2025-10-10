@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Icon from '@/components/ui/icon';
 import AdminLogin from '@/components/AdminLogin';
+import OwnersHeader from '@/components/owners/OwnersHeader';
+import InvestorSection from '@/components/owners/InvestorSection';
+import OwnerSection from '@/components/owners/OwnerSection';
 
 const AUTH_KEY = 'premium_apartments_admin_auth';
 
@@ -275,320 +274,42 @@ export default function OwnersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Управление собственниками</h1>
-            <p className="text-slate-300">Добавляйте собственников и привязывайте их к апартаментам</p>
-          </div>
-          <div className="flex gap-3">
-            <Button 
-              onClick={() => setShowInvestorSection(!showInvestorSection)}
-              variant={showInvestorSection ? "default" : "outline"}
-            >
-              <Icon name="Users" size={20} />
-              {showInvestorSection ? 'Скрыть инвесторов' : 'Инвесторы'}
-            </Button>
-            <Button onClick={handleAddNew} disabled={isAddingNew}>
-              <Icon name="Plus" size={20} />
-              Добавить собственника
-            </Button>
-            <Button onClick={handleLogout} variant="outline">
-              <Icon name="LogOut" size={20} />
-              Выйти
-            </Button>
-          </div>
-        </div>
+        <OwnersHeader
+          showInvestorSection={showInvestorSection}
+          isAddingNew={isAddingNew}
+          onToggleInvestorSection={() => setShowInvestorSection(!showInvestorSection)}
+          onAddNew={handleAddNew}
+          onLogout={handleLogout}
+        />
 
         {showInvestorSection && (
-          <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-white">Доступы инвесторов</h2>
-              <Button onClick={handleAddInvestor} disabled={isAddingInvestor}>
-                <Icon name="UserPlus" size={20} />
-                Создать доступ
-              </Button>
-            </div>
-
-            {isAddingInvestor && (
-              <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4 space-y-3">
-                <h3 className="text-xl font-semibold text-white">Новый инвестор</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">Логин *</label>
-                    <Input
-                      value={investorForm.username}
-                      onChange={(e) => setInvestorForm({ ...investorForm, username: e.target.value })}
-                      placeholder="investor1"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">Пароль *</label>
-                    <Input
-                      type="password"
-                      value={investorForm.password}
-                      onChange={(e) => setInvestorForm({ ...investorForm, password: e.target.value })}
-                      placeholder="••••••••"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">ФИО *</label>
-                    <Input
-                      value={investorForm.full_name}
-                      onChange={(e) => setInvestorForm({ ...investorForm, full_name: e.target.value })}
-                      placeholder="Иван Иванов"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">Номер апартамента</label>
-                    <Input
-                      value={investorForm.apartment_number}
-                      onChange={(e) => setInvestorForm({ ...investorForm, apartment_number: e.target.value })}
-                      placeholder="2019"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">Email</label>
-                    <Input
-                      value={investorForm.email}
-                      onChange={(e) => setInvestorForm({ ...investorForm, email: e.target.value })}
-                      placeholder="investor@example.com"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">Телефон</label>
-                    <Input
-                      value={investorForm.phone}
-                      onChange={(e) => setInvestorForm({ ...investorForm, phone: e.target.value })}
-                      placeholder="+7 999 123 45 67"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button onClick={handleSaveInvestor} disabled={loading}>
-                    <Icon name="Check" size={16} />
-                    Создать
-                  </Button>
-                  <Button onClick={() => setIsAddingInvestor(false)} variant="outline">
-                    <Icon name="X" size={16} />
-                    Отмена
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-3">
-              {ownerUsers.map((user) => (
-                <div key={user.id} className="bg-white/5 border border-white/10 rounded-lg p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-white">{user.full_name}</h3>
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          user.is_active 
-                            ? 'bg-green-500/20 text-green-300' 
-                            : 'bg-red-500/20 text-red-300'
-                        }`}>
-                          {user.is_active ? 'Активен' : 'Отключён'}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-sm text-slate-300">
-                        <div><span className="text-slate-400">Логин:</span> {user.username}</div>
-                        <div><span className="text-slate-400">Апартамент:</span> {user.apartment_number || '—'}</div>
-                        <div><span className="text-slate-400">Email:</span> {user.email || '—'}</div>
-                        <div><span className="text-slate-400">Телефон:</span> {user.phone || '—'}</div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => toggleInvestorStatus(user.id, user.is_active)}
-                        variant="outline"
-                        size="sm"
-                      >
-                        <Icon name={user.is_active ? "UserX" : "UserCheck"} size={16} />
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteInvestor(user.id)}
-                        variant="outline"
-                        size="sm"
-                        className="text-red-400 hover:text-red-300"
-                      >
-                        <Icon name="Trash2" size={16} />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+          <InvestorSection
+            ownerUsers={ownerUsers}
+            isAddingInvestor={isAddingInvestor}
+            investorForm={investorForm}
+            loading={loading}
+            onAddInvestor={handleAddInvestor}
+            onSaveInvestor={handleSaveInvestor}
+            onCancelInvestor={() => setIsAddingInvestor(false)}
+            onDeleteInvestor={handleDeleteInvestor}
+            onToggleStatus={toggleInvestorStatus}
+            onFormChange={setInvestorForm}
+          />
         )}
 
-        <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6">
-          <div className="space-y-4">
-            {isAddingNew && (
-              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 space-y-3">
-                <h3 className="text-xl font-semibold text-white">
-                  Новый собственник
-                </h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">
-                      ID апартамента
-                    </label>
-                    <Input
-                      value={formData.apartmentId}
-                      onChange={(e) =>
-                        setFormData({ ...formData, apartmentId: e.target.value })
-                      }
-                      placeholder="2019"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">
-                      Имя собственника
-                    </label>
-                    <Input
-                      value={formData.ownerName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, ownerName: e.target.value })
-                      }
-                      placeholder="Иван Иванов"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-slate-300 mb-1 block">Email</label>
-                    <Input
-                      value={formData.ownerEmail}
-                      onChange={(e) =>
-                        setFormData({ ...formData, ownerEmail: e.target.value })
-                      }
-                      placeholder="owner@example.com"
-                      className="bg-white/10 border-white/20 text-white"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button onClick={handleSave} disabled={loading}>
-                      <Icon name="Check" size={16} />
-                      Сохранить
-                    </Button>
-                    <Button onClick={handleCancel} variant="outline">
-                      <Icon name="X" size={16} />
-                      Отмена
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {owners.map((owner) => {
-              const isEditing = editingId === owner.apartmentId;
-
-              return (
-                <div
-                  key={owner.apartmentId}
-                  className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold text-white">
-                      Апартамент {owner.apartmentId}
-                    </h3>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => copyLink(owner.apartmentId)}
-                        variant="outline"
-                        size="sm"
-                      >
-                        <Icon name="Link" size={16} />
-                        Скопировать ссылку
-                      </Button>
-                      <Button
-                        onClick={() => handleDelete(owner.apartmentId)}
-                        variant="outline"
-                        size="sm"
-                        className="text-red-400 hover:text-red-300"
-                      >
-                        <Icon name="Trash2" size={16} />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {isEditing ? (
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-sm text-slate-300 mb-1 block">
-                          ID апартамента
-                        </label>
-                        <Input
-                          value={formData.apartmentId}
-                          onChange={(e) =>
-                            setFormData({ ...formData, apartmentId: e.target.value })
-                          }
-                          placeholder="2019"
-                          className="bg-white/10 border-white/20 text-white"
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm text-slate-300 mb-1 block">
-                          Имя собственника
-                        </label>
-                        <Input
-                          value={formData.ownerName}
-                          onChange={(e) =>
-                            setFormData({ ...formData, ownerName: e.target.value })
-                          }
-                          placeholder="Иван Иванов"
-                          className="bg-white/10 border-white/20 text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm text-slate-300 mb-1 block">Email</label>
-                        <Input
-                          value={formData.ownerEmail}
-                          onChange={(e) =>
-                            setFormData({ ...formData, ownerEmail: e.target.value })
-                          }
-                          placeholder="owner@example.com"
-                          className="bg-white/10 border-white/20 text-white"
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <Button onClick={handleSave} disabled={loading}>
-                          <Icon name="Check" size={16} />
-                          Сохранить
-                        </Button>
-                        <Button onClick={handleCancel} variant="outline">
-                          <Icon name="X" size={16} />
-                          Отмена
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <div className="text-slate-300">
-                        <span className="text-slate-400">Имя:</span> {owner.ownerName}
-                      </div>
-                      <div className="text-slate-300">
-                        <span className="text-slate-400">Email:</span> {owner.ownerEmail}
-                      </div>
-                      <Button onClick={() => handleEdit(owner)} variant="outline" size="sm">
-                        <Icon name="Edit" size={16} />
-                        Изменить
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+        <OwnerSection
+          owners={owners}
+          isAddingNew={isAddingNew}
+          editingId={editingId}
+          formData={formData}
+          loading={loading}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onCopyLink={copyLink}
+          onFormChange={setFormData}
+        />
       </div>
     </div>
   );
