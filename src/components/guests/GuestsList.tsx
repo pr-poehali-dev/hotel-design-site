@@ -27,6 +27,7 @@ interface GuestsListProps {
   onAddBooking: (guestId: number, guestName: string) => void;
   onDeleteBooking: (bookingId: string) => void;
   onClearSearch: () => void;
+  onCreateCredentials: (guest: Guest) => void;
 }
 
 const GuestsList = ({
@@ -38,6 +39,7 @@ const GuestsList = ({
   onAddBooking,
   onDeleteBooking,
   onClearSearch,
+  onCreateCredentials,
 }: GuestsListProps) => {
   if (guests.length === 0) {
     return (
@@ -126,8 +128,18 @@ const GuestsList = ({
             <Button
               variant="ghost"
               size="sm"
+              onClick={() => onCreateCredentials(guest)}
+              className="text-green-600 hover:text-green-700 hover:bg-green-50"
+              title="Создать логин и пароль"
+            >
+              <Icon name="UserCog" size={16} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => onResetPassword(guest.email)}
               className="text-gold-600 hover:text-gold-700 hover:bg-gold-50"
+              title="Сбросить пароль"
             >
               <Icon name="KeyRound" size={16} />
             </Button>
@@ -136,6 +148,7 @@ const GuestsList = ({
               size="sm"
               onClick={() => onDeleteGuest(guest.id)}
               className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              title="Удалить гостя"
             >
               <Icon name="Trash2" size={16} />
             </Button>

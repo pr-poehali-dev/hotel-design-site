@@ -11,16 +11,20 @@ import GuestsInstructions from './GuestsInstructions';
 import EmptyGuestsState from './EmptyGuestsState';
 import EditBookingDialog from './EditBookingDialog';
 import AddBookingDialog from './AddBookingDialog';
+import CreateCredentialsDialog from './CreateCredentialsDialog';
 import { useGuestsData } from './useGuestsData';
 import { useGuestActions } from './useGuestActions';
 import { usePasswordReset } from './usePasswordReset';
 import { useBookingActions } from './useBookingActions';
+import type { Guest } from './GuestsList';
 
 const GuestsManagement = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showEditBookingDialog, setShowEditBookingDialog] = useState(false);
   const [showAddBookingDialog, setShowAddBookingDialog] = useState(false);
+  const [showCredentialsDialog, setShowCredentialsDialog] = useState(false);
+  const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'name'>('newest');
   const { toast } = useToast();
@@ -91,6 +95,31 @@ const GuestsManagement = () => {
     const success = await handleUpdateBooking(bookingData);
     if (success) {
       setShowEditBookingDialog(false);
+    }
+  };
+
+  const onCreateCredentials = (guest: Guest) => {
+    setSelectedGuest(guest);
+    setShowCredentialsDialog(true);
+  };
+
+  const handleCreateCredentials = async (login: string, password: string) => {
+    if (!selectedGuest) return;
+
+    try {
+      toast({
+        title: "Учётные данные созданы",
+        description: `Логин: ${login} • Пароль скопирован в буфер обмена`,
+      });
+      navigator.clipboard.writeText(`Логин: ${login}\nПароль: ${password}`);
+      setShowCredentialsDialog(false);
+      setSelectedGuest(null);
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось создать учётные данные",
+        variant: "destructive",
+      });
     }
   };
 
@@ -177,6 +206,7 @@ const GuestsManagement = () => {
               onAddBooking={onAddBooking}
               onDeleteBooking={handleDeleteBooking}
               onClearSearch={() => setSearchQuery('')}
+              onCreateCredentials={onCreateCredentials}
             />
           </CardContent>
         </Card>
@@ -219,6 +249,14 @@ const GuestsManagement = () => {
         guestId={selectedGuestId}
         guestName={selectedGuestName}
         onSubmit={onCreateBooking}
+      />
+
+      <CreateCredentialsDialog
+        open={showCredentialsDialog}
+        onOpenChange={setShowCredentialsDialog}
+        guestName={selectedGuest?.name || ''}
+        guestEmail={selectedGuest?.email || ''}
+        onSubmit={handleCreateCredentials}
       />
     </div>
   );
