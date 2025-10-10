@@ -45,7 +45,14 @@ def format_date(date_str: str) -> str:
 def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
     """Generate PDF for booking confirmation"""
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20*mm, bottomMargin=20*mm)
+    doc = SimpleDocTemplate(
+        buffer, 
+        pagesize=A4, 
+        topMargin=20*mm, 
+        bottomMargin=20*mm,
+        leftMargin=20*mm,
+        rightMargin=20*mm
+    )
     
     story = []
     styles = getSampleStyleSheet()
@@ -93,6 +100,7 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
     
     booking_table = Table(booking_data, colWidths=[60*mm, 100*mm])
     booking_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.white),
         ('FONT', (0, 0), (0, -1), 'Helvetica-Bold', 10),
         ('FONT', (1, 0), (1, -1), 'Helvetica', 10),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor('#2c3e50')),
@@ -100,6 +108,7 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
         ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e0e0e0')),
     ]))
     
     story.append(booking_table)
@@ -115,6 +124,7 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
     
     dates_table = Table(dates_data, colWidths=[40*mm, 80*mm, 40*mm])
     dates_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.white),
         ('FONT', (0, 0), (0, -1), 'Helvetica-Bold', 10),
         ('FONT', (1, 0), (-1, -1), 'Helvetica', 10),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor('#2c3e50')),
@@ -124,6 +134,7 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
         ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e0e0e0')),
     ]))
     
     story.append(dates_table)
@@ -149,6 +160,7 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
         
         cost_table = Table(cost_data, colWidths=[120*mm, 40*mm])
         cost_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.white),
             ('FONT', (0, 0), (0, -2), 'Helvetica', 10),
             ('FONT', (1, 0), (1, -2), 'Helvetica', 10),
             ('FONT', (0, -1), (-1, -1), 'Helvetica-Bold', 12),
@@ -227,20 +239,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Method not allowed'})
         }
     
+    body = event.get('body', '{}')
+    if not body or body.strip() == '':
+        body = '{}'
+    
     try:
-        body_data = json.loads(event.get('body', '{}'))
-        booking_id = body_data.get('booking_id')
-        guest_email = body_data.get('guest_email', '').lower().strip()
-        
-        if not booking_id or not guest_email:
-            return {
-                'statusCode': 400,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body': json.dumps({'error': 'booking_id и guest_email обязательны'})
-            }
+        body_data = json.loads(body)
+    except json.JSONDecodeError:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Неверный формат JSON'})
+        }
+    
+    booking_id = body_data.get('booking_id')
+    guest_email = body_data.get('guest_email', '').lower().strip()
+    
+    if not booking_id or not guest_email:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'booking_id и guest_email обязательны'})
+        }
+    
+    try:
         
         conn = get_db_connection()
         cursor = conn.cursor(cursor_factory=RealDictCursor)
