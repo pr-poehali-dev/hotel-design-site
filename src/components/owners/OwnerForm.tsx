@@ -6,6 +6,8 @@ interface OwnerFormData {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  username: string;
+  password: string;
 }
 
 interface OwnerFormProps {
@@ -66,6 +68,29 @@ export default function OwnerForm({
               onChange({ ...formData, ownerEmail: e.target.value })
             }
             placeholder="owner@example.com"
+            className="bg-white/10 border-white/20 text-white"
+          />
+        </div>
+        <div>
+          <label className="text-sm text-slate-300 mb-1 block">Логин для входа</label>
+          <Input
+            value={formData.username}
+            onChange={(e) =>
+              onChange({ ...formData, username: e.target.value })
+            }
+            placeholder="ivan_ivanov"
+            className="bg-white/10 border-white/20 text-white"
+          />
+        </div>
+        <div>
+          <label className="text-sm text-slate-300 mb-1 block">Пароль</label>
+          <Input
+            type="password"
+            value={formData.password}
+            onChange={(e) =>
+              onChange({ ...formData, password: e.target.value })
+            }
+            placeholder="••••••••"
             className="bg-white/10 border-white/20 text-white"
           />
         </div>

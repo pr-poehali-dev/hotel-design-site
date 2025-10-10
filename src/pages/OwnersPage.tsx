@@ -31,7 +31,7 @@ export default function OwnersPage() {
   const [ownerUsers, setOwnerUsers] = useState<OwnerUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ apartmentId: '', ownerEmail: '', ownerName: '' });
+  const [formData, setFormData] = useState({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [showInvestorSection, setShowInvestorSection] = useState(false);
   const [investorForm, setInvestorForm] = useState({
@@ -91,24 +91,24 @@ export default function OwnersPage() {
   const handleEdit = (owner: Owner) => {
     setEditingId(owner.apartmentId);
     setIsAddingNew(false);
-    setFormData({ apartmentId: owner.apartmentId, ownerEmail: owner.ownerEmail, ownerName: owner.ownerName });
+    setFormData({ apartmentId: owner.apartmentId, ownerEmail: owner.ownerEmail, ownerName: owner.ownerName, username: '', password: '' });
   };
 
   const handleAddNew = () => {
     setIsAddingNew(true);
     setEditingId(null);
-    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '' });
+    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
   };
 
   const handleSave = async () => {
-    if (!formData.apartmentId || !formData.ownerEmail || !formData.ownerName) {
+    if (!formData.apartmentId || !formData.ownerEmail || !formData.ownerName || !formData.username || !formData.password) {
       alert('Заполните все поля');
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/03cef8fb-0be9-49db-bf4a-2867e6e483e5', {
+      const ownerResponse = await fetch('https://functions.poehali.dev/03cef8fb-0be9-49db-bf4a-2867e6e483e5', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -118,14 +118,34 @@ export default function OwnersPage() {
         }),
       });
 
-      if (response.ok) {
-        await loadOwners();
-        setEditingId(null);
-        setIsAddingNew(false);
-        setFormData({ apartmentId: '', ownerEmail: '', ownerName: '' });
-      } else {
-        alert('Ошибка при сохранении данных');
+      if (!ownerResponse.ok) {
+        alert('Ошибка при сохранении данных собственника');
+        return;
       }
+
+      const userResponse = await fetch('https://functions.poehali.dev/65d57cf7-a248-416f-87f1-477b145f13c2', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+          apartment_number: formData.apartmentId,
+          full_name: formData.ownerName,
+          email: formData.ownerEmail,
+          phone: ''
+        }),
+      });
+
+      if (!userResponse.ok) {
+        alert('Ошибка при создании логина/пароля. Собственник создан, но доступ не предоставлен.');
+      }
+
+      await loadOwners();
+      await loadOwnerUsers();
+      setEditingId(null);
+      setIsAddingNew(false);
+      setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
+      alert('Собственник успешно добавлен! Логин и пароль созданы.');
     } catch (error) {
       console.error('Failed to save owner:', error);
       alert('Ошибка при сохранении данных');
@@ -137,7 +157,7 @@ export default function OwnersPage() {
   const handleCancel = () => {
     setEditingId(null);
     setIsAddingNew(false);
-    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '' });
+    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
   };
 
   const handleDelete = async (apartmentId: string) => {
