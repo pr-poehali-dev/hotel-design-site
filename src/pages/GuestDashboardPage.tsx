@@ -9,6 +9,7 @@ import BookingHistoryTab from '@/components/guest/BookingHistoryTab';
 const BOOKINGS_API_URL = 'https://functions.poehali.dev/5fb527bf-818a-4b1a-b986-bd90154ba94b';
 const PDF_API_URL = 'https://functions.poehali.dev/658336cf-3e08-480b-b90b-f72aa814a865';
 const CANCEL_BOOKING_API_URL = 'https://functions.poehali.dev/edd37769-9243-46e7-997b-a12c73b0cae2';
+const INSTRUCTIONS_API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
 
 interface Booking {
   id: string;
@@ -27,9 +28,14 @@ interface Booking {
   status?: string;
 }
 
+interface Instruction {
+  images: string[];
+}
+
 const GuestDashboardPage = () => {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [allBookings, setAllBookings] = useState<Booking[]>([]);
+  const [instruction, setInstruction] = useState<Instruction | null>(null);
   const [loading, setLoading] = useState(true);
   const [guestUser, setGuestUser] = useState<any>(null);
   const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null);
@@ -96,6 +102,19 @@ const GuestDashboardPage = () => {
         currentBooking = mockBooking;
         setBooking(mockBooking);
         setAllBookings([mockBooking]);
+      }
+
+      if (currentBooking) {
+        try {
+          const response = await fetch(`${INSTRUCTIONS_API_URL}?apartment_id=${currentBooking.apartment_id}`);
+          const data = await response.json();
+          
+          if (data && data.images) {
+            setInstruction({ images: data.images });
+          }
+        } catch (error) {
+          console.error('Ошибка загрузки инструкций:', error);
+        }
       }
 
       setLoading(false);
@@ -242,6 +261,30 @@ const GuestDashboardPage = () => {
           cancellingBooking={cancellingBooking}
           onCancelBooking={handleCancelBooking}
         />
+
+        {instruction && instruction.images && instruction.images.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Icon name="Image" size={20} className="text-gold-600" />
+                Фотографии апартамента
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {instruction.images.map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`Апартамент ${idx + 1}`}
+                    className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer"
+                    onClick={() => window.open(img, '_blank')}
+                  />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
