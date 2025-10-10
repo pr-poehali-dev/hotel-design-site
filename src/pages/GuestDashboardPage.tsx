@@ -121,32 +121,23 @@ const GuestDashboardPage = () => {
           
           if (data) {
             setInstruction({
-              title: data.title || 'Добро пожаловать!',
+              title: data.title || 'Фото вашего апартамента',
               description: data.description,
               images: data.images || [],
-              pdf_files: data.pdf_files || [],
-              instruction_text: data.instruction_text,
-              important_notes: data.important_notes,
-              contact_info: data.contact_info,
-              wifi_info: data.wifi_info,
-              parking_info: data.parking_info,
-              house_rules: data.house_rules,
             });
           } else {
             setInstruction({
-              title: 'Добро пожаловать!',
-              description: 'Инструкции по заселению скоро будут добавлены',
+              title: 'Фото вашего апартамента',
+              description: 'Фотографии скоро будут добавлены',
               images: [],
-              pdf_files: [],
             });
           }
         } catch (error) {
-          console.error('Ошибка загрузки инструкций:', error);
+          console.error('Ошибка загрузки фото:', error);
           setInstruction({
-            title: 'Добро пожаловать!',
-            description: 'Инструкции по заселению скоро будут добавлены',
+            title: 'Фото вашего апартамента',
+            description: 'Фотографии скоро будут добавлены',
             images: [],
-            pdf_files: [],
           });
         }
       }
@@ -298,52 +289,20 @@ const GuestDashboardPage = () => {
         />
 
         {instruction && instructionTabsContent && (
-          <Tabs defaultValue="instruction" className="w-full">
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="instruction">
-                <Icon name="Info" size={16} className="mr-2" />
-                Инструкция
-              </TabsTrigger>
+          <Tabs defaultValue="photos" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="photos">
                 <Icon name="Image" size={16} className="mr-2" />
-                Фото
-              </TabsTrigger>
-              <TabsTrigger value="documents">
-                <Icon name="FileText" size={16} className="mr-2" />
-                Документы
-              </TabsTrigger>
-              <TabsTrigger value="contacts">
-                <Icon name="Phone" size={16} className="mr-2" />
-                Контакты
-              </TabsTrigger>
-              <TabsTrigger value="rules">
-                <Icon name="BookOpen" size={16} className="mr-2" />
-                Правила
+                Фото апартамента
               </TabsTrigger>
               <TabsTrigger value="history">
                 <Icon name="History" size={16} className="mr-2" />
-                История
+                История бронирований
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="instruction" className="mt-6">
-              {instructionTabsContent.instruction}
-            </TabsContent>
-
             <TabsContent value="photos" className="mt-6">
               {instructionTabsContent.photos}
-            </TabsContent>
-
-            <TabsContent value="documents" className="mt-6">
-              {instructionTabsContent.documents}
-            </TabsContent>
-
-            <TabsContent value="contacts" className="mt-6">
-              {instructionTabsContent.contacts}
-            </TabsContent>
-
-            <TabsContent value="rules" className="mt-6">
-              {instructionTabsContent.rules}
             </TabsContent>
 
             <TabsContent value="history" className="mt-6">
