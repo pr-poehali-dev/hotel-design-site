@@ -104,15 +104,16 @@ def handle_login(conn, data: Dict[str, Any]) -> Dict[str, Any]:
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'message': 'Введите email и пароль'})
+            'body': json.dumps({'success': False, 'message': 'Введите логин/email и пароль'})
         }
     
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     password_hash = hash_password(password)
     safe_email = email.replace("'", "''")
     
-    sql = f"""SELECT id, full_name as name FROM t_p9202093_hotel_design_site.owner_users 
-       WHERE email = '{safe_email}' AND password_hash = '{password_hash}' AND is_active = true"""
+    sql = f"""SELECT id, full_name as name, email, apartment_number FROM t_p9202093_hotel_design_site.owner_users 
+       WHERE (email = '{safe_email}' OR username = '{safe_email}') 
+       AND password_hash = '{password_hash}' AND is_active = true"""
     cursor.execute(sql)
     owner = cursor.fetchone()
     
@@ -122,16 +123,29 @@ def handle_login(conn, data: Dict[str, Any]) -> Dict[str, Any]:
             'statusCode': 401,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'message': 'Неверный email или пароль'})
+            'body': json.dumps({'success': False, 'message': 'Неверный логин/email или пароль'})
         }
     
     owner_id = str(owner['id'])
-    owner_email = email.replace("'", "''")
-    sql = f"""SELECT apartment_id, owner_name as name 
-       FROM t_p9202093_hotel_design_site.apartment_owners
-       WHERE owner_email = '{owner_email}'"""
-    cursor.execute(sql)
-    apartments = cursor.fetchall()
+    owner_email = (owner['email'] or '').replace("'", "''")
+    
+    apartments = []
+    
+    if owner_email:
+        sql = f"""SELECT apartment_id, owner_name as name 
+           FROM t_p9202093_hotel_design_site.apartment_owners
+           WHERE owner_email = '{owner_email}'"""
+        cursor.execute(sql)
+        apartments = cursor.fetchall()
+    
+    if not apartments and owner['apartment_number']:
+        apartment_num = str(owner['apartment_number']).replace("'", "''")
+        sql = f"""SELECT apartment_id, owner_name as name 
+           FROM t_p9202093_hotel_design_site.apartment_owners
+           WHERE apartment_id = '{apartment_num}'"""
+        cursor.execute(sql)
+        apartments = cursor.fetchall()
+    
     cursor.close()
     
     import uuid

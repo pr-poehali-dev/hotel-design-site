@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
 const OwnerLoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [loginField, setLoginField] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const OwnerLoginPage = () => {
       const response = await fetch('https://functions.poehali.dev/0b8a0b4d-6cf0-4bc5-8a77-6860120e85fe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, action: 'login' })
+        body: JSON.stringify({ email: loginField, password, action: 'login' })
       });
 
       const data = await response.json();
@@ -60,18 +60,18 @@ const OwnerLoginPage = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Вход для собственников</CardTitle>
-          <CardDescription>Войдите, чтобы посмотреть отчеты по вашим квартирам</CardDescription>
+          <CardDescription>Введите логин или email, чтобы посмотреть отчеты</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="loginField">Логин или Email</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="loginField"
+                type="text"
+                placeholder="ivan_ivanov или your@email.com"
+                value={loginField}
+                onChange={(e) => setLoginField(e.target.value)}
                 required
               />
             </div>
