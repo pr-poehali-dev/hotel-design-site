@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import GuestHeader from '@/components/guest/GuestHeader';
 import LoyaltyCard from '@/components/guest/LoyaltyCard';
 import CurrentBookingCard from '@/components/guest/CurrentBookingCard';
 import BookingHistoryTab from '@/components/guest/BookingHistoryTab';
-import InstructionTabs from '@/components/guest/InstructionTabs';
 
-const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
 const BOOKINGS_API_URL = 'https://functions.poehali.dev/5fb527bf-818a-4b1a-b986-bd90154ba94b';
 const PDF_API_URL = 'https://functions.poehali.dev/658336cf-3e08-480b-b90b-f72aa814a865';
 const CANCEL_BOOKING_API_URL = 'https://functions.poehali.dev/edd37769-9243-46e7-997b-a12c73b0cae2';
@@ -29,23 +27,9 @@ interface Booking {
   status?: string;
 }
 
-interface CheckInInstruction {
-  title: string;
-  description?: string;
-  images: string[];
-  pdf_files?: string[];
-  instruction_text?: string;
-  important_notes?: string;
-  contact_info?: string;
-  wifi_info?: string;
-  parking_info?: string;
-  house_rules?: string;
-}
-
 const GuestDashboardPage = () => {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [allBookings, setAllBookings] = useState<Booking[]>([]);
-  const [instruction, setInstruction] = useState<CheckInInstruction | null>(null);
   const [loading, setLoading] = useState(true);
   const [guestUser, setGuestUser] = useState<any>(null);
   const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null);
@@ -112,34 +96,6 @@ const GuestDashboardPage = () => {
         currentBooking = mockBooking;
         setBooking(mockBooking);
         setAllBookings([mockBooking]);
-      }
-
-      if (currentBooking) {
-        try {
-          const response = await fetch(`${API_URL}?apartment_id=${currentBooking.apartment_id}`);
-          const data = await response.json();
-          
-          if (data) {
-            setInstruction({
-              title: data.title || 'Фото вашего апартамента',
-              description: data.description,
-              images: data.images || [],
-            });
-          } else {
-            setInstruction({
-              title: 'Фото вашего апартамента',
-              description: 'Фотографии скоро будут добавлены',
-              images: [],
-            });
-          }
-        } catch (error) {
-          console.error('Ошибка загрузки фото:', error);
-          setInstruction({
-            title: 'Фото вашего апартамента',
-            description: 'Фотографии скоро будут добавлены',
-            images: [],
-          });
-        }
       }
 
       setLoading(false);
@@ -265,7 +221,6 @@ const GuestDashboardPage = () => {
   }
 
   const daysUntil = getDaysUntilCheckIn();
-  const instructionTabsContent = instruction ? InstructionTabs({ instruction }) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -288,35 +243,24 @@ const GuestDashboardPage = () => {
           onCancelBooking={handleCancelBooking}
         />
 
-        {instruction && instructionTabsContent && (
-          <Tabs defaultValue="photos" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="photos">
-                <Icon name="Image" size={16} className="mr-2" />
-                Фото апартамента
-              </TabsTrigger>
-              <TabsTrigger value="history">
-                <Icon name="History" size={16} className="mr-2" />
-                История бронирований
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="photos" className="mt-6">
-              {instructionTabsContent.photos}
-            </TabsContent>
-
-            <TabsContent value="history" className="mt-6">
-              <BookingHistoryTab
-                bookings={allBookings}
-                formatDate={formatDate}
-                downloadingPdf={downloadingPdf}
-                onDownloadPdf={downloadBookingPdf}
-                cancellingBooking={cancellingBooking}
-                onCancelBooking={handleCancelBooking}
-              />
-            </TabsContent>
-          </Tabs>
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Icon name="History" size={20} className="text-gold-600" />
+              История бронирований
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BookingHistoryTab
+              bookings={allBookings}
+              formatDate={formatDate}
+              downloadingPdf={downloadingPdf}
+              onDownloadPdf={downloadBookingPdf}
+              cancellingBooking={cancellingBooking}
+              onCancelBooking={handleCancelBooking}
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
