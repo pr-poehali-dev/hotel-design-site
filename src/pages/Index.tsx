@@ -3,7 +3,6 @@ import Header from '@/components/sections/Header';
 import HeroSection from '@/components/sections/HeroSection';
 import ApartmentsSlider from '@/components/sections/ApartmentsSlider';
 import RoomsSection from '@/components/sections/RoomsSection';
-import VideoSliderSection from '@/components/sections/VideoSliderSection';
 import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
 import ProfileSection from '@/components/sections/ProfileSection';
@@ -28,12 +27,6 @@ const Index = () => {
     { id: 'booking', label: 'Бронирование', icon: 'Calendar' },
     { id: 'profile', label: 'Личный кабинет', icon: 'User' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
-  ];
-
-  const hotelImages = [
-    { url: 'https://cdn.poehali.dev/files/c967fccf-7cf2-4c56-82ea-8e57d812d0f1.jpeg', title: 'Вид на Поклонную гору' },
-    { url: 'https://cdn.poehali.dev/files/d4a44fee-7b1f-466f-b16d-6e7d66cc4b06.jpeg', title: 'Лобби Поклонная 9' },
-    { url: 'https://cdn.poehali.dev/files/5c65ea91-ed82-4428-94f5-6b6085637be2.jpeg', title: 'Интерьер апартаментов' },
   ];
 
   const handleImageChange = (delta: number, galleryLength: number) => {
