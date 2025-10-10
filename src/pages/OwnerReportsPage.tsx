@@ -134,12 +134,34 @@ export default function OwnerReportsPage() {
               Нет данных для отображения
             </div>
           ) : (
-            <ReportsTable
-              bookings={bookings}
-              onEdit={() => {}}
-              onDelete={() => {}}
-              readOnly={true}
-            />
+            <>
+              <ReportsTable
+                bookings={bookings}
+                onEdit={() => {}}
+                onDelete={() => {}}
+                readOnly={true}
+              />
+              
+              <Card className="mt-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-400 shadow-lg">
+                <div className="p-4 md:p-6">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                    <div>
+                      <p className="text-sm md:text-base text-gray-700 font-medium mb-1">
+                        Итого к получению за период:
+                      </p>
+                      <p className="text-xs md:text-sm text-gray-600">
+                        {bookings.length} {bookings.length === 1 ? 'бронирование' : bookings.length < 5 ? 'бронирования' : 'бронирований'}
+                      </p>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <p className="text-3xl md:text-5xl font-bold text-green-600">
+                        {bookings.reduce((sum, b) => sum + b.ownerFunds, 0).toLocaleString('ru')} ₽
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </>
           )}
         </div>
       </div>
