@@ -13,6 +13,13 @@ export default function OwnerReportsPage() {
   const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string } | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<string>('current');
   const [monthlyReports, setMonthlyReports] = useState<any[]>([]);
+  
+  const getCurrentMonthName = () => {
+    if (selectedMonth === 'current') {
+      return new Date().toLocaleDateString('ru', { year: 'numeric', month: 'long' });
+    }
+    return new Date(selectedMonth + '-01').toLocaleDateString('ru', { year: 'numeric', month: 'long' });
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('ownerToken');
@@ -76,7 +83,13 @@ export default function OwnerReportsPage() {
           const response = await fetch(`https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e?apartment_id=${apartmentId}&month=${selectedMonth}`);
           if (response.ok) {
             const data = await response.json();
-            const filteredBookings = (data.reportData || []).filter((b: BookingRecord) => b.showToGuest);
+            let reportData = data.reportData || [];
+            
+            if (typeof reportData === 'string') {
+              reportData = JSON.parse(reportData);
+            }
+            
+            const filteredBookings = reportData.filter((b: any) => b.showToGuest);
             setBookings(filteredBookings);
           }
         } catch (error) {
@@ -147,7 +160,7 @@ export default function OwnerReportsPage() {
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                     <div>
                       <p className="text-sm md:text-base text-gray-700 font-medium mb-1">
-                        Итого к получению за период:
+                        Итого к получению за {getCurrentMonthName()}
                       </p>
                       <p className="text-xs md:text-sm text-gray-600">
                         {bookings.length} {bookings.length === 1 ? 'бронирование' : bookings.length < 5 ? 'бронирования' : 'бронирований'}

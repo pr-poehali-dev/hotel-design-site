@@ -176,33 +176,33 @@ const ReportsPage = () => {
 
   const handleArchiveMonth = async () => {
     const now = new Date();
-    const reportMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const reportMonth = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}`;
     
-    if (!confirm(`Архивировать текущие данные за ${new Date(reportMonth + '-01').toLocaleDateString('ru', { year: 'numeric', month: 'long' })}?`)) {
+    const monthName = lastMonth.toLocaleDateString('ru', { year: 'numeric', month: 'long' });
+    
+    if (!confirm(`Архивировать отчёты всех апартаментов за ${monthName}?\n\nЭто создаст архив прошлого месяца для всех собственников.`)) {
       return;
     }
     
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e', {
+      const response = await fetch('https://functions.poehali.dev/463e593e-5863-4107-a36c-c825da3844fd', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          apartmentId: selectedApartment,
-          reportMonth,
-          reportData: bookings
-        })
+        headers: { 'Content-Type': 'application/json' }
       });
       
-      if (response.ok) {
-        alert('Отчет за месяц успешно архивирован!');
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        alert(`✅ Архивация завершена!\n\nАрхивировано отчётов: ${data.archivedCount}\nПериод: ${monthName}`);
         await loadMonthlyReports();
       } else {
-        alert('Ошибка при архивировании отчета');
+        alert(`❌ Ошибка при архивировании: ${data.error || 'Неизвестная ошибка'}`);
       }
     } catch (error) {
       console.error('Failed to archive month:', error);
-      alert('Ошибка при архивировании отчета');
+      alert('❌ Ошибка при архивировании отчета');
     } finally {
       setLoading(false);
     }
@@ -288,9 +288,9 @@ Premium Apartments`;
                   onClick={handleArchiveMonth}
                   variant="secondary"
                   icon={<Icon name="Archive" size={18} />}
-                  disabled={loading || bookings.length === 0}
+                  disabled={loading}
                 >
-                  Архивировать месяц
+                  Архивировать прошлый месяц
                 </FizzyButton>
               )}
               <FizzyButton
