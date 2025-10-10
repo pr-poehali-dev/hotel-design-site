@@ -118,10 +118,10 @@ const GuestsManagement = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-playfair font-bold text-charcoal-900">
-            Управление гостями
+            Гости и бронирования
           </h2>
           <p className="text-charcoal-600 mt-1">
-            Создавайте аккаунты для гостей и управляйте доступом
+            Управляйте гостями и их бронированиями в одном месте
           </p>
         </div>
         <div className="flex gap-3">
