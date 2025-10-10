@@ -12,13 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import ImageUploadSection from '@/components/check-in/ImageUploadSection';
-import PdfUploadSection from '@/components/check-in/PdfUploadSection';
-import VideoUploadSection from '@/components/check-in/VideoUploadSection';
-import InstructionFormFields from '@/components/check-in/InstructionFormFields';
-import AdditionalInfoFields from '@/components/check-in/AdditionalInfoFields';
 import { useCheckInInstructions } from '@/hooks/useCheckInInstructions';
 import { useFileUpload } from '@/hooks/useFileUpload';
-import { CheckInInstruction } from '@/types/checkin';
 
 const apartments = [
   { id: '2019', name: '2х комнатный 2019' },
@@ -38,13 +33,11 @@ const CheckInInstructionsPage = () => {
   const navigate = useNavigate();
   const [selectedApartment, setSelectedApartment] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [pdfUrl, setPdfUrl] = useState('');
-  const [videoUrl, setVideoUrl] = useState('');
   
-  const { formData, isLoading, updateField, saveInstructions, setFormData } = 
+  const { formData, isLoading, saveInstructions, setFormData } = 
     useCheckInInstructions(selectedApartment);
   
-  const { uploadImage, uploadPdf, isUploadingImage, isUploadingPdf } = useFileUpload();
+  const { uploadImage, isUploadingImage } = useFileUpload();
 
   useEffect(() => {
     const apartmentFromUrl = searchParams.get('apartment');
@@ -84,53 +77,7 @@ const CheckInInstructionsPage = () => {
     e.target.value = '';
   };
 
-  const handleAddPdf = () => {
-    if (pdfUrl.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        pdf_files: [...(prev.pdf_files || []), pdfUrl.trim()],
-      }));
-      setPdfUrl('');
-    }
-  };
 
-  const handleRemovePdf = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      pdf_files: prev.pdf_files?.filter((_, i) => i !== index) || [],
-    }));
-  };
-
-  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const url = await uploadPdf(file);
-    if (url) {
-      setFormData(prev => ({
-        ...prev,
-        pdf_files: [...(prev.pdf_files || []), url],
-      }));
-    }
-    e.target.value = '';
-  };
-
-  const handleAddVideo = () => {
-    if (videoUrl.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        videos: [...(prev.videos || []), videoUrl.trim()],
-      }));
-      setVideoUrl('');
-    }
-  };
-
-  const handleRemoveVideo = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      videos: prev.videos?.filter((_, i) => i !== index) || [],
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,7 +130,7 @@ const CheckInInstructionsPage = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-sm">1. Загрузите</p>
-                      <p className="text-xs text-gray-600">Фото, PDF, текст</p>
+                      <p className="text-xs text-gray-600">Фото в JPEG</p>
                     </div>
                   </div>
                   <Icon name="ArrowRight" size={24} className="text-gray-400" />
@@ -224,21 +171,13 @@ const CheckInInstructionsPage = () => {
             <div className="space-y-2 mt-3">
               <p className="text-sm text-gray-500">
                 <Icon name="Info" size={16} className="inline mr-1" />
-                Вы можете загружать файлы с компьютера или добавлять по ссылке
+                Загружайте фотографии в формате JPEG
               </p>
               <div className="bg-gold-50 border border-gold-200 rounded-lg p-3">
                 <p className="text-sm text-gold-900 flex items-start">
                   <Icon name="Eye" size={16} className="mr-2 mt-0.5 flex-shrink-0" />
                   <span>
-                    Все загруженные фото, PDF документы и инструкции автоматически появятся в личном кабинете гостя
-                  </span>
-                </p>
-              </div>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-sm text-blue-900 flex items-start">
-                  <Icon name="AlertCircle" size={16} className="mr-2 mt-0.5 flex-shrink-0" />
-                  <span>
-                    Нажмите "Сохранить инструкцию" внизу страницы, чтобы данные появились у гостя
+                    Загруженные фотографии автоматически появятся в личном кабинете гостя
                   </span>
                 </p>
               </div>
@@ -262,11 +201,6 @@ const CheckInInstructionsPage = () => {
                 </Select>
               </div>
 
-              <InstructionFormFields 
-                formData={formData}
-                onFieldChange={updateField}
-              />
-
               <ImageUploadSection
                 images={formData.images || []}
                 imageUrl={imageUrl}
@@ -275,29 +209,6 @@ const CheckInInstructionsPage = () => {
                 onAddImage={handleAddImage}
                 onImageUpload={handleImageUpload}
                 onRemoveImage={handleRemoveImage}
-              />
-
-              <PdfUploadSection
-                pdfFiles={formData.pdf_files || []}
-                pdfUrl={pdfUrl}
-                isUploading={isUploadingPdf}
-                onPdfUrlChange={setPdfUrl}
-                onAddPdf={handleAddPdf}
-                onPdfUpload={handlePdfUpload}
-                onRemovePdf={handleRemovePdf}
-              />
-
-              <VideoUploadSection
-                videos={formData.videos || []}
-                videoUrl={videoUrl}
-                onVideoUrlChange={setVideoUrl}
-                onAddVideo={handleAddVideo}
-                onRemoveVideo={handleRemoveVideo}
-              />
-
-              <AdditionalInfoFields
-                formData={formData}
-                onFieldChange={updateField}
               />
 
               <div className="flex gap-4">
