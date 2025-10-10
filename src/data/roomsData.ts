@@ -96,7 +96,8 @@ export const rooms: Room[] = [
 Апартамент Вам точно понравится.`
   },
   {
-    name: '3х комнатный 2110',
+    name: '3х комнатный',
+    subtitle: 'Fireplace Luxury',
     price: 'от 30 000 ₽',
     features: ['85 кв.м.', '21 этаж', 'Для 1-5 гостей'],
     image: 'https://cdn.poehali.dev/files/b6a25376-5125-4ebb-bfdf-9a419c0ae887.jpeg',
