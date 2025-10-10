@@ -1,0 +1,38 @@
+{
+  "tests": [
+    {
+      "name": "Get all owner users",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "0": {
+          "id": "number",
+          "username": "string",
+          "full_name": "string",
+          "is_active": "boolean"
+        }
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Create new owner user",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "username": "test_investor",
+        "password": "testpass123",
+        "full_name": "Test Investor",
+        "apartment_number": "2019",
+        "email": "test@example.com",
+        "phone": "+7 999 000 00 00"
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "id": "number",
+        "message": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
