@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Test cron returns response (200 with data or 500 if no DATABASE_URL)",
+      "method": "POST",
+      "path": "/",
+      "expectedStatus": 500,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

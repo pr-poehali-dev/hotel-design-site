@@ -1,0 +1,11 @@
+{
+  "schedules": [
+    {
+      "name": "monthly-archive",
+      "description": "Автоматическая архивация отчётов 1-го числа каждого месяца",
+      "function": "cron-archive",
+      "cron": "0 3 1 * *",
+      "timezone": "Europe/Moscow"
+    }
+  ]
+}
