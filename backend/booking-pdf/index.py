@@ -216,7 +216,7 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
     footer_text = f"""
     <b>P9 PREMIUM APARTMENTS</b><br/>
     📍 г. Москва, ул. Поклонная, дом 9<br/>
-    📞 +7 914 196 51 72<br/>
+    📞 +7 914 196 51 72 | ✉️ hab-agent@mail.ru<br/>
     <br/>
     <font size="8" color="#95a5a6">Документ сгенерирован {datetime.now().strftime('%d.%m.%Y в %H:%M')}</font>
     """
