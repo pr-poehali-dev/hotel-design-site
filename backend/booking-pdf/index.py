@@ -209,13 +209,27 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
         fontSize=9,
         textColor=colors.HexColor('#7f8c8d'),
         alignment=TA_CENTER,
-        fontName='Helvetica'
+        fontName='Helvetica',
+        leading=12
     )
     
     footer_text = f"""
-    Документ сгенерирован {datetime.now().strftime('%d.%m.%Y в %H:%M')}<br/>
-    P9 Premium Apartments | p9apart.ru
+    <b>P9 PREMIUM APARTMENTS</b><br/>
+    📍 Санкт-Петербург, Невский проспект<br/>
+    📞 +7 (812) 123-45-67 | ✉️ info@p9apart.ru<br/>
+    🌐 www.p9apart.ru<br/>
+    <br/>
+    <font size="8" color="#95a5a6">Документ сгенерирован {datetime.now().strftime('%d.%m.%Y в %H:%M')}</font>
     """
+    
+    story.append(Spacer(1, 5*mm))
+    
+    separator_line = Table([['']], colWidths=[170*mm])
+    separator_line.setStyle(TableStyle([
+        ('LINEABOVE', (0, 0), (-1, 0), 1, colors.HexColor('#e0e0e0')),
+    ]))
+    story.append(separator_line)
+    story.append(Spacer(1, 3*mm))
     
     story.append(Paragraph(footer_text, footer_style))
     
