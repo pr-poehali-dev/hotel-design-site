@@ -84,6 +84,18 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
         fontName='Helvetica'
     )
     
+    try:
+        logo_url = 'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/1f83d654-efe4-4c5c-ae63-9e5c1acde2f5.jpg'
+        import urllib.request
+        logo_data = urllib.request.urlopen(logo_url).read()
+        logo_buffer = BytesIO(logo_data)
+        logo = Image(logo_buffer, width=50*mm, height=50*mm)
+        logo.hAlign = 'CENTER'
+        story.append(logo)
+        story.append(Spacer(1, 5*mm))
+    except:
+        pass
+    
     story.append(Paragraph("P9 PREMIUM APARTMENTS", title_style))
     story.append(Spacer(1, 10*mm))
     
