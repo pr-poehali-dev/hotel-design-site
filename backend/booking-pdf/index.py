@@ -130,8 +130,8 @@ def generate_booking_pdf(booking: Dict[str, Any]) -> bytes:
     story.append(Spacer(1, 3*mm))
     
     dates_data = [
-        ['Заезд:', format_date(booking['check_in']), 'с 14:00'],
-        ['Выезд:', format_date(booking['check_out']), 'до 12:00'],
+        ['Заезд:', format_date(booking['check_in']), '⏰ с 14:00'],
+        ['Выезд:', format_date(booking['check_out']), '⏰ до 12:00'],
     ]
     
     dates_table = Table(dates_data, colWidths=[40*mm, 80*mm, 40*mm])
