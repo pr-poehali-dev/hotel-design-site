@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage apartment owners (CRUD operations including delete)
+    Business: Manage apartment owners (CRUD operations including update and delete)
     Args: event with httpMethod, body, queryStringParameters (apartment_id)
     Returns: HTTP response with owner data
     '''
@@ -16,7 +16,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
@@ -103,6 +103,33 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 "INSERT INTO apartment_owners (apartment_id, owner_email, owner_name, commission_rate) VALUES (%s, %s, %s, %s) "
                 "ON CONFLICT (apartment_id) DO UPDATE SET owner_email = EXCLUDED.owner_email, owner_name = EXCLUDED.owner_name, commission_rate = EXCLUDED.commission_rate",
                 (apartment_id, owner_email, owner_name, commission_rate)
+            )
+            conn.commit()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': True})
+            }
+        
+        if method == 'PUT':
+            body_data = json.loads(event.get('body', '{}'))
+            apartment_id = body_data.get('apartmentId')
+            owner_email = body_data.get('ownerEmail', '')
+            owner_name = body_data.get('ownerName', '')
+            commission_rate = body_data.get('commissionRate', 20.0)
+            
+            if not apartment_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'apartmentId is required'})
+                }
+            
+            cursor.execute(
+                "UPDATE apartment_owners SET owner_email = %s, owner_name = %s, commission_rate = %s WHERE apartment_id = %s",
+                (owner_email, owner_name, commission_rate, apartment_id)
             )
             conn.commit()
             

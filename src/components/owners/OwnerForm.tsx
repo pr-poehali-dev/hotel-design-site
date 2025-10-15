@@ -87,29 +87,33 @@ export default function OwnerForm({
             <option value={25}>25%</option>
           </select>
         </div>
-        <div>
-          <label className="text-sm text-slate-300 mb-1 block">Логин для входа</label>
-          <Input
-            value={formData.username}
-            onChange={(e) =>
-              onChange({ ...formData, username: e.target.value })
-            }
-            placeholder="ivan_ivanov"
-            className="bg-white/10 border-white/20 text-white"
-          />
-        </div>
-        <div>
-          <label className="text-sm text-slate-300 mb-1 block">Пароль</label>
-          <Input
-            type="password"
-            value={formData.password}
-            onChange={(e) =>
-              onChange({ ...formData, password: e.target.value })
-            }
-            placeholder="••••••••"
-            className="bg-white/10 border-white/20 text-white"
-          />
-        </div>
+        {isNew && (
+          <>
+            <div>
+              <label className="text-sm text-slate-300 mb-1 block">Логин для входа</label>
+              <Input
+                value={formData.username}
+                onChange={(e) =>
+                  onChange({ ...formData, username: e.target.value })
+                }
+                placeholder="ivan_ivanov"
+                className="bg-white/10 border-white/20 text-white"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-slate-300 mb-1 block">Пароль</label>
+              <Input
+                type="password"
+                value={formData.password}
+                onChange={(e) =>
+                  onChange({ ...formData, password: e.target.value })
+                }
+                placeholder="••••••••"
+                className="bg-white/10 border-white/20 text-white"
+              />
+            </div>
+          </>
+        )}
         <div className="flex gap-2">
           <Button onClick={onSave} disabled={loading}>
             <Icon name="Check" size={16} />

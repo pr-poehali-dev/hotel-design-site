@@ -102,6 +102,14 @@ export default function OwnersPage() {
   };
 
   const handleSave = async () => {
+    if (editingId) {
+      await handleUpdate();
+    } else {
+      await handleCreate();
+    }
+  };
+
+  const handleCreate = async () => {
     if (!formData.apartmentId || !formData.ownerEmail || !formData.ownerName || !formData.username || !formData.password) {
       alert('Заполните все поля');
       return;
@@ -151,6 +159,42 @@ export default function OwnersPage() {
     } catch (error) {
       console.error('Failed to save owner:', error);
       alert('Ошибка при сохранении данных');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!formData.apartmentId || !formData.ownerEmail || !formData.ownerName) {
+      alert('Заполните все поля');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const ownerResponse = await fetch('https://functions.poehali.dev/03cef8fb-0be9-49db-bf4a-2867e6e483e5', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apartmentId: formData.apartmentId,
+          ownerEmail: formData.ownerEmail,
+          ownerName: formData.ownerName,
+          commissionRate: formData.commissionRate,
+        }),
+      });
+
+      if (!ownerResponse.ok) {
+        alert('Ошибка при обновлении данных собственника');
+        return;
+      }
+
+      await loadOwners();
+      setEditingId(null);
+      setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', commissionRate: 20, username: '', password: '' });
+      alert('Данные собственника обновлены!');
+    } catch (error) {
+      console.error('Failed to update owner:', error);
+      alert('Ошибка при обновлении данных');
     } finally {
       setLoading(false);
     }
