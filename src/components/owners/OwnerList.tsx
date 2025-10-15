@@ -6,12 +6,14 @@ interface Owner {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  commissionRate: number;
 }
 
 interface OwnerFormData {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  commissionRate: number;
 }
 
 interface OwnerListProps {
@@ -89,6 +91,9 @@ export default function OwnerList({
                 </div>
                 <div className="text-slate-300">
                   <span className="text-slate-400">Email:</span> {owner.ownerEmail}
+                </div>
+                <div className="text-slate-300">
+                  <span className="text-slate-400">Комиссия:</span> {owner.commissionRate}%
                 </div>
                 <Button onClick={() => onEdit(owner)} variant="outline" size="sm">
                   <Icon name="Edit" size={16} />

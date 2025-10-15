@@ -10,6 +10,7 @@ interface Owner {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  commissionRate: number;
 }
 
 interface OwnerUser {
@@ -31,7 +32,7 @@ export default function OwnersPage() {
   const [ownerUsers, setOwnerUsers] = useState<OwnerUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
+  const [formData, setFormData] = useState({ apartmentId: '', ownerEmail: '', ownerName: '', commissionRate: 20, username: '', password: '' });
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [showInvestorSection, setShowInvestorSection] = useState(false);
   const [investorForm, setInvestorForm] = useState({
@@ -91,13 +92,13 @@ export default function OwnersPage() {
   const handleEdit = (owner: Owner) => {
     setEditingId(owner.apartmentId);
     setIsAddingNew(false);
-    setFormData({ apartmentId: owner.apartmentId, ownerEmail: owner.ownerEmail, ownerName: owner.ownerName, username: '', password: '' });
+    setFormData({ apartmentId: owner.apartmentId, ownerEmail: owner.ownerEmail, ownerName: owner.ownerName, commissionRate: owner.commissionRate || 20, username: '', password: '' });
   };
 
   const handleAddNew = () => {
     setIsAddingNew(true);
     setEditingId(null);
-    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
+    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', commissionRate: 20, username: '', password: '' });
   };
 
   const handleSave = async () => {
@@ -115,6 +116,7 @@ export default function OwnersPage() {
           apartmentId: formData.apartmentId,
           ownerEmail: formData.ownerEmail,
           ownerName: formData.ownerName,
+          commissionRate: formData.commissionRate,
         }),
       });
 
@@ -144,7 +146,7 @@ export default function OwnersPage() {
       await loadOwnerUsers();
       setEditingId(null);
       setIsAddingNew(false);
-      setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
+      setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', commissionRate: 20, username: '', password: '' });
       alert('Собственник успешно добавлен! Логин и пароль созданы.');
     } catch (error) {
       console.error('Failed to save owner:', error);
@@ -157,7 +159,7 @@ export default function OwnersPage() {
   const handleCancel = () => {
     setEditingId(null);
     setIsAddingNew(false);
-    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', username: '', password: '' });
+    setFormData({ apartmentId: '', ownerEmail: '', ownerName: '', commissionRate: 20, username: '', password: '' });
   };
 
   const handleDelete = async (apartmentId: string) => {

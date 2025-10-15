@@ -6,6 +6,7 @@ interface OwnerFormData {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  commissionRate: number;
   username: string;
   password: string;
 }
@@ -70,6 +71,21 @@ export default function OwnerForm({
             placeholder="owner@example.com"
             className="bg-white/10 border-white/20 text-white"
           />
+        </div>
+        <div>
+          <label className="text-sm text-slate-300 mb-1 block">Комиссия (%)</label>
+          <select
+            value={formData.commissionRate}
+            onChange={(e) =>
+              onChange({ ...formData, commissionRate: Number(e.target.value) })
+            }
+            className="w-full px-3 py-2 bg-white/10 border border-white/20 text-white rounded-md focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+          >
+            <option value={0}>0%</option>
+            <option value={15}>15%</option>
+            <option value={20}>20%</option>
+            <option value={25}>25%</option>
+          </select>
         </div>
         <div>
           <label className="text-sm text-slate-300 mb-1 block">Логин для входа</label>

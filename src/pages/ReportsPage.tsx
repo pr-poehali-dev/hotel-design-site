@@ -15,6 +15,7 @@ interface Owner {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  commissionRate: number;
 }
 
 const ReportsPage = () => {
@@ -91,6 +92,15 @@ const ReportsPage = () => {
       loadMonthlyReports();
     }
   }, [selectedApartment]);
+
+  useEffect(() => {
+    if (selectedApartment && owners.length > 0) {
+      const currentOwner = owners.find(o => o.apartmentId === selectedApartment);
+      if (currentOwner) {
+        setCommissionRate(currentOwner.commissionRate || 20);
+      }
+    }
+  }, [selectedApartment, owners]);
 
   useEffect(() => {
     const loadSelectedMonth = async () => {
@@ -343,7 +353,6 @@ Premium Apartments`;
             onSendReport={handleSendReport}
             readOnly={selectedMonth !== 'current'}
             managementCommissionRate={commissionRate}
-            onCommissionRateChange={selectedMonth === 'current' ? setCommissionRate : undefined}
           />
         ) : null}
       </main>
@@ -353,6 +362,7 @@ Premium Apartments`;
         onClose={() => setDialogOpen(false)}
         onSave={handleSaveBooking}
         booking={editingBooking}
+        commissionRate={commissionRate}
       />
     </div>
   );

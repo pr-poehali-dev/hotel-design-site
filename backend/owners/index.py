@@ -41,7 +41,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             if apartment_id:
                 cursor.execute(
-                    "SELECT owner_email, owner_name FROM apartment_owners WHERE apartment_id = %s",
+                    "SELECT owner_email, owner_name, commission_rate FROM apartment_owners WHERE apartment_id = %s",
                     (apartment_id,)
                 )
                 row = cursor.fetchone()
@@ -55,7 +55,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 owner_info = {
                     'ownerEmail': row[0],
-                    'ownerName': row[1]
+                    'ownerName': row[1],
+                    'commissionRate': float(row[2]) if row[2] else 20.0
                 }
                 
                 return {
@@ -65,7 +66,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps(owner_info)
                 }
             else:
-                cursor.execute("SELECT apartment_id, owner_email, owner_name FROM apartment_owners ORDER BY apartment_id")
+                cursor.execute("SELECT apartment_id, owner_email, owner_name, commission_rate FROM apartment_owners ORDER BY apartment_id")
                 rows = cursor.fetchall()
                 
                 owners = []
@@ -73,7 +74,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     owners.append({
                         'apartmentId': row[0],
                         'ownerEmail': row[1],
-                        'ownerName': row[2]
+                        'ownerName': row[2],
+                        'commissionRate': float(row[3]) if row[3] else 20.0
                     })
                 
                 return {
@@ -88,6 +90,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             apartment_id = body_data.get('apartmentId')
             owner_email = body_data.get('ownerEmail', '')
             owner_name = body_data.get('ownerName', '')
+            commission_rate = body_data.get('commissionRate', 20.0)
             
             if not apartment_id:
                 return {
@@ -97,9 +100,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             cursor.execute(
-                "INSERT INTO apartment_owners (apartment_id, owner_email, owner_name) VALUES (%s, %s, %s) "
-                "ON CONFLICT (apartment_id) DO UPDATE SET owner_email = EXCLUDED.owner_email, owner_name = EXCLUDED.owner_name",
-                (apartment_id, owner_email, owner_name)
+                "INSERT INTO apartment_owners (apartment_id, owner_email, owner_name, commission_rate) VALUES (%s, %s, %s, %s) "
+                "ON CONFLICT (apartment_id) DO UPDATE SET owner_email = EXCLUDED.owner_email, owner_name = EXCLUDED.owner_name, commission_rate = EXCLUDED.commission_rate",
+                (apartment_id, owner_email, owner_name, commission_rate)
             )
             conn.commit()
             

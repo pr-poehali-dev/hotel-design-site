@@ -9,9 +9,10 @@ interface BookingDialogProps {
   onClose: () => void;
   onSave: (booking: BookingRecord) => void;
   booking?: BookingRecord;
+  commissionRate?: number;
 }
 
-const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) => {
+const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20 }: BookingDialogProps) => {
   const [formData, setFormData] = useState<Partial<BookingRecord>>({
     checkIn: '',
     checkOut: '',
@@ -49,7 +50,7 @@ const BookingDialog = ({ open, onClose, onSave, booking }: BookingDialogProps) =
     const aggregatorCommissionAmount = totalAmount * ((formData.aggregatorCommission || 0) / 100);
     const taxAndBankCommission = totalAmount * 0.07; // 7% УСН и комиссия банка
     const remainderBeforeManagement = totalAmount - aggregatorCommissionAmount;
-    const managementCommission = remainderBeforeManagement * 0.20; // 20% комиссия управления
+    const managementCommission = remainderBeforeManagement * (commissionRate / 100);
     const remainderBeforeExpenses = remainderBeforeManagement - managementCommission;
     
     const operatingExpenses = 

@@ -1,0 +1,1 @@
+ALTER TABLE apartment_owners ADD COLUMN IF NOT EXISTS commission_rate DECIMAL(5, 2) DEFAULT 20.00;

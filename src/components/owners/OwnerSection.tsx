@@ -6,12 +6,14 @@ interface Owner {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  commissionRate: number;
 }
 
 interface OwnerFormData {
   apartmentId: string;
   ownerEmail: string;
   ownerName: string;
+  commissionRate: number;
 }
 
 interface OwnerSectionProps {

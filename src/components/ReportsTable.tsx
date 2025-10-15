@@ -13,7 +13,6 @@ interface ReportsTableProps {
   onSendReport?: (booking: BookingRecord) => void;
   readOnly?: boolean;
   managementCommissionRate?: number;
-  onCommissionRateChange?: (rate: number) => void;
 }
 
 const ReportsTable = ({ 
@@ -23,8 +22,7 @@ const ReportsTable = ({
   onDeleteBooking, 
   onSendReport, 
   readOnly = false,
-  managementCommissionRate = 20,
-  onCommissionRateChange
+  managementCommissionRate = 20
 }: ReportsTableProps) => {
   
   const recalculateBooking = (booking: BookingRecord, rate: number) => {
@@ -108,21 +106,6 @@ const ReportsTable = ({
           Отчетность по бронированиям
         </h2>
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-          {onCommissionRateChange && (
-            <div className="flex items-center gap-2">
-              <label className="text-xs md:text-sm font-inter text-charcoal-700 whitespace-nowrap">Комиссия:</label>
-              <select
-                value={managementCommissionRate}
-                onChange={(e) => onCommissionRateChange(Number(e.target.value))}
-                className="px-2 py-1.5 md:px-3 md:py-2 border border-charcoal-300 rounded-lg bg-white text-charcoal-900 font-inter text-xs md:text-sm focus:border-gold-500 focus:ring-2 focus:ring-gold-200"
-              >
-                <option value={0}>0%</option>
-                <option value={15}>15%</option>
-                <option value={20}>20%</option>
-                <option value={25}>25%</option>
-              </select>
-            </div>
-          )}
           {!readOnly && onAddBooking && <div className="flex gap-2 sm:gap-3">
             <FizzyButton
               onClick={exportToExcel}
@@ -162,21 +145,10 @@ const ReportsTable = ({
             <p className="text-xs md:text-sm text-charcoal-600 font-inter">Броней</p>
             <p className="text-lg md:text-2xl font-bold text-charcoal-900">{bookings.length}</p>
           </div>
-          {onCommissionRateChange && (
-            <div className="col-span-2 md:col-span-1">
-              <p className="text-xs md:text-sm text-charcoal-600 font-inter mb-2">Комиссия</p>
-              <select
-                value={managementCommissionRate}
-                onChange={(e) => onCommissionRateChange(Number(e.target.value))}
-                className="w-full px-3 py-1.5 md:px-4 md:py-2 border-2 border-gold-400 rounded-lg bg-white text-charcoal-900 font-bold text-base md:text-xl focus:border-gold-600 focus:ring-2 focus:ring-gold-200 hover:bg-gold-50 transition-colors cursor-pointer"
-              >
-                <option value={0}>0%</option>
-                <option value={15}>15%</option>
-                <option value={20}>20%</option>
-                <option value={25}>25%</option>
-              </select>
-            </div>
-          )}
+          <div className="col-span-2 md:col-span-1">
+            <p className="text-xs md:text-sm text-charcoal-600 font-inter mb-2">Комиссия</p>
+            <p className="text-lg md:text-2xl font-bold text-charcoal-900">{managementCommissionRate}%</p>
+          </div>
         </div>
       </Card>
 
