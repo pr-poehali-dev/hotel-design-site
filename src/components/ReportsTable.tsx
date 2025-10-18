@@ -11,6 +11,7 @@ interface ReportsTableProps {
   onEditBooking?: (booking: BookingRecord) => void;
   onDeleteBooking?: (id: string) => void;
   onSendReport?: (booking: BookingRecord) => void;
+  onMarkAsPaid?: (booking: BookingRecord) => void;
   readOnly?: boolean;
   managementCommissionRate?: number;
 }
@@ -20,7 +21,8 @@ const ReportsTable = ({
   onAddBooking, 
   onEditBooking, 
   onDeleteBooking, 
-  onSendReport, 
+  onSendReport,
+  onMarkAsPaid,
   readOnly = false,
   managementCommissionRate = 20
 }: ReportsTableProps) => {
@@ -270,6 +272,24 @@ const ReportsTable = ({
                 <td className="px-4 py-3 text-sm text-right font-bold text-green-600 bg-green-50">{booking.ownerFunds.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex gap-2 justify-center items-center">
+                    {!readOnly && booking.paymentStatus !== 'paid' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onMarkAsPaid?.(bookings[index]);
+                        }}
+                        className="text-green-600 hover:text-green-800 transition-colors"
+                        title="Отметить как оплачено"
+                      >
+                        <Icon name="CheckCircle" size={18} />
+                      </button>
+                    )}
+                    {!readOnly && booking.paymentStatus === 'paid' && (
+                      <span className="text-green-600 flex items-center gap-1 text-xs font-medium">
+                        <Icon name="CheckCircle2" size={16} />
+                        Оплачено
+                      </span>
+                    )}
                     {!readOnly && booking.guestEmail && (
                       <button
                         onClick={(e) => {

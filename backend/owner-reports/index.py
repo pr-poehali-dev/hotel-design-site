@@ -89,7 +89,7 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
                     remainder_before_expenses, operating_expenses, owner_funds, payment_to_owner,
                     payment_date, maid, laundry, hygiene, transport, compliment, other,
                     other_note, guest_name, guest_email, guest_phone, show_to_guest,
-                    created_at, updated_at
+                    payment_status, payment_completed_at, created_at, updated_at
                 FROM bookings 
                 WHERE apartment_id = %s 
                 ORDER BY check_in DESC
@@ -127,7 +127,9 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
                     'guestName': row[25] or '',
                     'guestEmail': row[26] or '',
                     'guestPhone': row[27] or '',
-                    'showToGuest': row[28] or False
+                    'showToGuest': row[28] or False,
+                    'paymentStatus': row[29] or 'pending',
+                    'paymentCompletedAt': str(row[30]) if row[30] else None
                 })
             
             return {
@@ -147,9 +149,10 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
                 tax_and_bank_commission, remainder_before_management, management_commission,
                 remainder_before_expenses, operating_expenses, owner_funds, payment_to_owner,
                 payment_date, maid, laundry, hygiene, transport, compliment, other,
-                other_note, guest_name, guest_email, guest_phone, show_to_guest
+                other_note, guest_name, guest_email, guest_phone, show_to_guest,
+                payment_status, payment_completed_at
             ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
             )
             ''', (
                 body_data['id'], body_data['apartmentId'], body_data['checkIn'], body_data['checkOut'],
@@ -162,7 +165,8 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
                 body_data.get('paymentDate') or None, body_data.get('maid', 0), body_data.get('laundry', 0),
                 body_data.get('hygiene', 0), body_data.get('transport', 0), body_data.get('compliment', 0),
                 body_data.get('other', 0), body_data.get('otherNote', ''), body_data.get('guestName', ''),
-                body_data.get('guestEmail', ''), body_data.get('guestPhone', ''), body_data.get('showToGuest', False)
+                body_data.get('guestEmail', ''), body_data.get('guestPhone', ''), body_data.get('showToGuest', False),
+                body_data.get('paymentStatus', 'pending'), body_data.get('paymentCompletedAt') or None
             ))
             
             conn.commit()
@@ -196,7 +200,7 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
                     remainder_before_expenses = %s, operating_expenses = %s, owner_funds = %s, payment_to_owner = %s,
                     payment_date = %s, maid = %s, laundry = %s, hygiene = %s, transport = %s, compliment = %s,
                     other = %s, other_note = %s, guest_name = %s, guest_email = %s, guest_phone = %s,
-                    show_to_guest = %s, updated_at = CURRENT_TIMESTAMP
+                    show_to_guest = %s, payment_status = %s, payment_completed_at = %s, updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s AND apartment_id = %s
             ''', (
                 body_data['checkIn'], body_data['checkOut'], body_data.get('earlyCheckIn', 0),
@@ -210,6 +214,7 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
                 body_data.get('transport', 0), body_data.get('compliment', 0), body_data.get('other', 0),
                 body_data.get('otherNote', ''), body_data.get('guestName', ''), body_data.get('guestEmail', ''),
                 body_data.get('guestPhone', ''), body_data.get('showToGuest', False),
+                body_data.get('paymentStatus', 'pending'), body_data.get('paymentCompletedAt') or None,
                 body_data['id'], body_data['apartmentId']
             ))
             

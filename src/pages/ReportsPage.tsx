@@ -184,6 +184,29 @@ const ReportsPage = () => {
     }
   };
 
+  const handleMarkAsPaid = async (booking: BookingRecord) => {
+    if (!confirm(`Отметить выплату ${booking.ownerFunds.toLocaleString('ru')} ₽ как оплаченную?`)) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await bookingsAPI.updateBooking({
+        ...booking,
+        paymentStatus: 'paid',
+        paymentCompletedAt: new Date().toISOString(),
+        apartmentId: selectedApartment
+      });
+      await loadBookings();
+      alert('✅ Выплата отмечена как оплаченная');
+    } catch (error) {
+      console.error('Failed to mark as paid:', error);
+      alert('Ошибка при обновлении статуса выплаты');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleArchiveMonth = async () => {
     const now = new Date();
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -424,6 +447,7 @@ Premium Apartments`;
             onEditBooking={selectedMonth === 'current' ? handleEditBooking : undefined}
             onDeleteBooking={selectedMonth === 'current' ? handleDeleteBooking : undefined}
             onSendReport={handleSendReport}
+            onMarkAsPaid={selectedMonth === 'current' ? handleMarkAsPaid : undefined}
             readOnly={selectedMonth !== 'current'}
             managementCommissionRate={commissionRate}
           />

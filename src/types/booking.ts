@@ -28,6 +28,8 @@ export interface BookingRecord {
   guestPhone?: string;
   guestName?: string;
   showToGuest: boolean;
+  paymentStatus?: 'pending' | 'paid' | 'partial';
+  paymentCompletedAt?: string | null;
 }
 
 export interface MonthlyReport {
