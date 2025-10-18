@@ -68,6 +68,7 @@ const ReportsTable = ({
 
   const exportToExcel = () => {
     const exportData = recalculatedBookings.map(b => ({
+      'Гость': b.guestName || '',
       'Заселение': b.checkIn,
       'Выезд': b.checkOut,
       'Ранний заезд': b.earlyCheckIn,
