@@ -233,6 +233,31 @@ const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20 }: 
                   />
                 </div>
               </div>
+
+              <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-4">
+                <label className="block text-sm font-bold text-purple-900 mb-2 flex items-center gap-2">
+                  <Icon name="Percent" size={16} />
+                  Ваша комиссия (управление)
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value={commissionRate}
+                    readOnly
+                    className="w-24 px-4 py-2 bg-gray-100 border border-purple-300 rounded-lg text-center font-bold text-lg"
+                  />
+                  <span className="text-purple-900 font-semibold">%</span>
+                  <div className="flex-1 text-sm text-purple-700">
+                    = {calculated.managementCommission.toLocaleString('ru')} ₽
+                  </div>
+                </div>
+                <p className="text-xs text-purple-600 mt-2">
+                  Изменить можно в настройках собственников
+                </p>
+              </div>
             </div>
 
             <div className="space-y-4">
