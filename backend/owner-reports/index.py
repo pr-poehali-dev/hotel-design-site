@@ -176,6 +176,17 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
     elif method == 'PUT':
         body_data = json.loads(event.get('body', '{}'))
         
+        required_fields = ['id', 'apartmentId', 'checkIn', 'checkOut', 'accommodationAmount', 'totalAmount']
+        missing_fields = [f for f in required_fields if f not in body_data]
+        
+        if missing_fields:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': f'Missing required fields: {", ".join(missing_fields)}'}),
+                'isBase64Encoded': False
+            }
+        
         cur.execute('''
             UPDATE bookings SET
                 check_in = %s, check_out = %s, early_check_in = %s, late_check_out = %s,
