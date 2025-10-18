@@ -239,6 +239,35 @@ Premium Apartments`;
     window.location.href = `mailto:${booking.guestEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
+  const handleShowAllToOwner = async () => {
+    const hiddenCount = bookings.filter(b => !b.showToGuest).length;
+    
+    if (hiddenCount === 0) {
+      alert('Все бронирования уже видны собственнику');
+      return;
+    }
+    
+    if (!confirm(`Показать собственнику ${hiddenCount} скрытых бронирований?`)) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      for (const booking of bookings) {
+        if (!booking.showToGuest) {
+          await bookingsAPI.updateBooking({ ...booking, showToGuest: true, apartmentId: selectedApartment });
+        }
+      }
+      await loadBookings();
+      alert(`✅ ${hiddenCount} бронирований теперь видны собственнику`);
+    } catch (error) {
+      console.error('Failed to update bookings:', error);
+      alert('❌ Ошибка при обновлении бронирований');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-50 to-white">
       <header className="bg-charcoal-900 text-white shadow-2xl relative overflow-hidden">
@@ -294,14 +323,24 @@ Premium Apartments`;
                 ))}
               </select>
               {selectedMonth === 'current' && (
-                <FizzyButton
-                  onClick={handleArchiveMonth}
-                  variant="secondary"
-                  icon={<Icon name="Archive" size={18} />}
-                  disabled={loading}
-                >
-                  Архивировать прошлый месяц
-                </FizzyButton>
+                <>
+                  <FizzyButton
+                    onClick={handleShowAllToOwner}
+                    variant="secondary"
+                    icon={<Icon name="Eye" size={18} />}
+                    disabled={loading}
+                  >
+                    Показать все собственнику
+                  </FizzyButton>
+                  <FizzyButton
+                    onClick={handleArchiveMonth}
+                    variant="secondary"
+                    icon={<Icon name="Archive" size={18} />}
+                    disabled={loading}
+                  >
+                    Архивировать прошлый месяц
+                  </FizzyButton>
+                </>
               )}
               <FizzyButton
                 onClick={() => navigate('/owners')}
