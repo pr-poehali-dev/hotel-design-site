@@ -34,6 +34,7 @@ const ReportsPage = () => {
   const [editingBooking, setEditingBooking] = useState<BookingRecord | undefined>();
   const [loading, setLoading] = useState(false);
   const [commissionRate, setCommissionRate] = useState<number>(20);
+  const [showPaymentHistory, setShowPaymentHistory] = useState(false);
 
   const loadBookings = async () => {
     if (!selectedApartment) {
@@ -441,16 +442,72 @@ Premium Apartments`;
             </FizzyButton>
           </Card>
         ) : selectedApartment ? (
-          <ReportsTable
-            bookings={bookings}
-            onAddBooking={selectedMonth === 'current' ? handleAddBooking : undefined}
-            onEditBooking={selectedMonth === 'current' ? handleEditBooking : undefined}
-            onDeleteBooking={selectedMonth === 'current' ? handleDeleteBooking : undefined}
-            onSendReport={handleSendReport}
-            onMarkAsPaid={selectedMonth === 'current' ? handleMarkAsPaid : undefined}
-            readOnly={selectedMonth !== 'current'}
-            managementCommissionRate={commissionRate}
-          />
+          <>
+            {/* Pending Payments */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Icon name="Clock" size={24} className="text-gold-600" />
+                  <h2 className="text-2xl font-bold text-charcoal-900">К оплате</h2>
+                  <span className="px-3 py-1 bg-gold-100 text-gold-700 rounded-full text-sm font-medium">
+                    {bookings.filter(b => b.paymentStatus !== 'paid').length}
+                  </span>
+                </div>
+              </div>
+              <ReportsTable
+                bookings={bookings.filter(b => b.paymentStatus !== 'paid')}
+                onAddBooking={selectedMonth === 'current' ? handleAddBooking : undefined}
+                onEditBooking={selectedMonth === 'current' ? handleEditBooking : undefined}
+                onDeleteBooking={selectedMonth === 'current' ? handleDeleteBooking : undefined}
+                onSendReport={handleSendReport}
+                onMarkAsPaid={selectedMonth === 'current' ? handleMarkAsPaid : undefined}
+                readOnly={selectedMonth !== 'current'}
+                managementCommissionRate={commissionRate}
+              />
+            </div>
+
+            {/* Payment History */}
+            {bookings.filter(b => b.paymentStatus === 'paid').length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <Icon name="CheckCircle2" size={24} className="text-green-600" />
+                    <h2 className="text-2xl font-bold text-charcoal-900">История выплат</h2>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                      {bookings.filter(b => b.paymentStatus === 'paid').length}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setShowPaymentHistory(!showPaymentHistory)}
+                    className="text-charcoal-600 hover:text-charcoal-900 flex items-center gap-2"
+                  >
+                    {showPaymentHistory ? (
+                      <>
+                        <span>Скрыть</span>
+                        <Icon name="ChevronUp" size={20} />
+                      </>
+                    ) : (
+                      <>
+                        <span>Показать</span>
+                        <Icon name="ChevronDown" size={20} />
+                      </>
+                    )}
+                  </button>
+                </div>
+                {showPaymentHistory && (
+                  <div className="opacity-75">
+                    <ReportsTable
+                      bookings={bookings.filter(b => b.paymentStatus === 'paid')}
+                      onEditBooking={selectedMonth === 'current' ? handleEditBooking : undefined}
+                      onDeleteBooking={selectedMonth === 'current' ? handleDeleteBooking : undefined}
+                      readOnly={selectedMonth !== 'current'}
+                      managementCommissionRate={commissionRate}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         ) : null}
       </main>
 

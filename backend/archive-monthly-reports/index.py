@@ -98,7 +98,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'compliment': float(booking['compliment'] or 0),
                     'other': float(booking['other'] or 0),
                     'otherNote': booking['other_note'] or '',
-                    'showToGuest': booking['show_to_guest']
+                    'showToGuest': booking['show_to_guest'],
+                    'paymentStatus': booking.get('payment_status', 'pending'),
+                    'paymentCompletedAt': str(booking['payment_completed_at']) if booking.get('payment_completed_at') else None
                 })
             
             cursor.execute('''
