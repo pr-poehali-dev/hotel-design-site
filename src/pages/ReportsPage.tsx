@@ -260,6 +260,13 @@ Premium Apartments`;
     try {
       const hiddenBookings = bookings.filter(b => !b.showToGuest);
       console.log('Обновляю бронирования:', hiddenBookings.length);
+      console.log('Скрытые бронирования:', hiddenBookings);
+      
+      if (hiddenBookings.length === 0) {
+        alert('⚠️ Нет скрытых бронирований для обновления');
+        setLoading(false);
+        return;
+      }
       
       let successCount = 0;
       let failedCount = 0;
