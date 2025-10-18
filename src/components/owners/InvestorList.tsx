@@ -25,7 +25,7 @@ export default function InvestorList({
   return (
     <div className="space-y-3">
       {users.map((user) => (
-        <div key={user.id} className="bg-white/5 border border-white/10 rounded-lg p-4">
+        <div key={user.id} className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 hover:shadow-lg hover:scale-[1.01] transition-all duration-300">
           <div className="flex items-start justify-between">
             <div className="space-y-2 flex-1">
               <div className="flex items-center gap-3">
@@ -50,6 +50,7 @@ export default function InvestorList({
                 onClick={() => onToggleStatus(user.id, user.is_active)}
                 variant="outline"
                 size="sm"
+                className="hover:scale-105 active:scale-95 transition-all duration-200"
               >
                 <Icon name={user.is_active ? "UserX" : "UserCheck"} size={16} />
               </Button>
@@ -57,7 +58,7 @@ export default function InvestorList({
                 onClick={() => onDelete(user.id)}
                 variant="outline"
                 size="sm"
-                className="text-red-400 hover:text-red-300"
+                className="text-red-400 hover:text-red-300 hover:scale-105 active:scale-95 transition-all duration-200"
               >
                 <Icon name="Trash2" size={16} />
               </Button>

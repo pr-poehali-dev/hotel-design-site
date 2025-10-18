@@ -44,7 +44,7 @@ export default function OwnerSection({
   onFormChange,
 }: OwnerSectionProps) {
   return (
-    <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6">
+    <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6 shadow-lg hover:shadow-2xl transition-all duration-300 animate-fade-in-up">
       <div className="space-y-4">
         {isAddingNew && (
           <OwnerForm

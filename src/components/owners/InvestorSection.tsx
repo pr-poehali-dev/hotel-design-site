@@ -49,10 +49,10 @@ export default function InvestorSection({
   onFormChange,
 }: InvestorSectionProps) {
   return (
-    <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6 mb-6">
+    <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6 mb-6 shadow-lg hover:shadow-2xl transition-all duration-300 animate-fade-in-up">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-white">Доступы инвесторов</h2>
-        <Button onClick={onAddInvestor} disabled={isAddingInvestor}>
+        <Button onClick={onAddInvestor} disabled={isAddingInvestor} className="hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg disabled:hover:scale-100">
           <Icon name="UserPlus" size={20} />
           Создать доступ
         </Button>

@@ -29,7 +29,7 @@ export default function OwnerForm({
   onChange,
 }: OwnerFormProps) {
   return (
-    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 space-y-3">
+    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 space-y-3 animate-fade-in shadow-lg">
       <h3 className="text-xl font-semibold text-white">
         {isNew ? 'Новый собственник' : 'Редактирование'}
       </h3>
@@ -115,11 +115,11 @@ export default function OwnerForm({
           </>
         )}
         <div className="flex gap-2">
-          <Button onClick={onSave} disabled={loading}>
+          <Button onClick={onSave} disabled={loading} className="hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg disabled:hover:scale-100">
             <Icon name="Check" size={16} />
             Сохранить
           </Button>
-          <Button onClick={onCancel} variant="outline">
+          <Button onClick={onCancel} variant="outline" className="hover:scale-105 active:scale-95 transition-all duration-200">
             <Icon name="X" size={16} />
             Отмена
           </Button>

@@ -49,7 +49,7 @@ export default function OwnerList({
         return (
           <div
             key={owner.apartmentId}
-            className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-3"
+            className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-3 hover:bg-white/10 hover:shadow-lg hover:scale-[1.01] transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-white">
@@ -60,6 +60,7 @@ export default function OwnerList({
                   onClick={() => onCopyLink(owner.apartmentId)}
                   variant="outline"
                   size="sm"
+                  className="hover:scale-105 active:scale-95 transition-all duration-200"
                 >
                   <Icon name="Link" size={16} />
                   Скопировать ссылку
@@ -68,7 +69,7 @@ export default function OwnerList({
                   onClick={() => onDelete(owner.apartmentId)}
                   variant="outline"
                   size="sm"
-                  className="text-red-400 hover:text-red-300"
+                  className="text-red-400 hover:text-red-300 hover:scale-105 active:scale-95 transition-all duration-200"
                 >
                   <Icon name="Trash2" size={16} />
                 </Button>
@@ -95,7 +96,7 @@ export default function OwnerList({
                 <div className="text-slate-300">
                   <span className="text-slate-400">Комиссия:</span> {owner.commissionRate}%
                 </div>
-                <Button onClick={() => onEdit(owner)} variant="outline" size="sm">
+                <Button onClick={() => onEdit(owner)} variant="outline" size="sm" className="hover:scale-105 active:scale-95 transition-all duration-200">
                   <Icon name="Edit" size={16} />
                   Изменить
                 </Button>
