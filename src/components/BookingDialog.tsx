@@ -31,7 +31,7 @@ const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20 }: 
     guestName: '',
     guestEmail: '',
     guestPhone: '',
-    showToGuest: false,
+    showToGuest: true,
   });
 
   useEffect(() => {
