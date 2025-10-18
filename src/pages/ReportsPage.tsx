@@ -240,7 +240,12 @@ Premium Apartments`;
   };
 
   const handleShowAllToOwner = async () => {
+    console.log('🚀 handleShowAllToOwner вызвана');
+    console.log('Всего бронирований:', bookings.length);
+    console.log('Бронирования:', bookings);
+    
     const hiddenCount = bookings.filter(b => !b.showToGuest).length;
+    console.log('Скрытых бронирований:', hiddenCount);
     
     if (hiddenCount === 0) {
       alert('Все бронирования уже видны собственнику');
