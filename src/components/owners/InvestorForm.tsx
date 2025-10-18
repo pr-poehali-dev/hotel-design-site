@@ -27,7 +27,7 @@ export default function InvestorForm({
   onChange,
 }: InvestorFormProps) {
   return (
-    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4 space-y-3 animate-fade-in shadow-lg">
+    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4 space-y-3 animate-fade-in shadow-lg max-w-4xl mx-auto">
       <h3 className="text-xl font-semibold text-white">Новый инвестор</h3>
       <div className="grid grid-cols-2 gap-3">
         <div>
