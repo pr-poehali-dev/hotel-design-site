@@ -253,16 +253,22 @@ Premium Apartments`;
     
     setLoading(true);
     try {
-      for (const booking of bookings) {
-        if (!booking.showToGuest) {
-          await bookingsAPI.updateBooking({ ...booking, showToGuest: true, apartmentId: selectedApartment });
-        }
-      }
+      const updatePromises = bookings
+        .filter(b => !b.showToGuest)
+        .map(booking => 
+          bookingsAPI.updateBooking({ 
+            ...booking, 
+            showToGuest: true, 
+            apartmentId: selectedApartment 
+          })
+        );
+      
+      await Promise.all(updatePromises);
       await loadBookings();
       alert(`✅ ${hiddenCount} бронирований теперь видны собственнику`);
-    } catch (error) {
-      console.error('Failed to update bookings:', error);
-      alert('❌ Ошибка при обновлении бронирований');
+    } catch (error: any) {
+      console.error('Ошибка обновления:', error);
+      alert(`❌ Ошибка: ${error.message || 'Не удалось обновить бронирования'}`);
     } finally {
       setLoading(false);
     }
