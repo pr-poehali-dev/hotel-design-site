@@ -45,7 +45,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Handle bookings API (new system)
         params = event.get('queryStringParameters', {}) or {}
         
-        if 'apartment_id' in params or method in ['POST', 'DELETE']:
+        if 'apartment_id' in params or method in ['POST', 'PUT', 'DELETE']:
             return handle_bookings_api(method, params, event, cur, conn)
         
         # Handle old reports API (legacy)
@@ -176,10 +176,6 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
         
         elif method == 'PUT':
             body_data = json.loads(event.get('body', '{}'))
-            
-            import sys
-            print(f'PUT request body keys: {list(body_data.keys())}', file=sys.stderr, flush=True)
-            print(f'PUT request id: {body_data.get("id")}', file=sys.stderr, flush=True)
             
             required_fields = ['id', 'apartmentId', 'checkIn', 'checkOut', 'accommodationAmount', 'totalAmount']
             missing_fields = [f for f in required_fields if f not in body_data]
