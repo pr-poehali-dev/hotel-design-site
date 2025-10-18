@@ -117,7 +117,7 @@ const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20 }: 
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-playfair font-bold text-charcoal-900">
             {booking ? 'Редактировать бронирование' : 'Добавить бронирование'}
