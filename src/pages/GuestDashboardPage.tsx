@@ -249,7 +249,7 @@ const GuestDashboardPage = () => {
         onLogout={handleLogout}
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-8 space-y-4 md:space-y-6">
         <LoyaltyCard bookingsCount={allBookings.length} />
 
         <CurrentBookingCard

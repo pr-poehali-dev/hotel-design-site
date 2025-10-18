@@ -32,85 +32,84 @@ const CurrentBookingCard = ({
   const isCancelled = booking.status === 'cancelled';
   const canCancel = daysUntil > 0 && !isCancelled;
   return (
-    <Card className={`border-t-4 ${isCancelled ? 'border-t-red-500 opacity-75' : 'border-t-gold-500'}`}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-2xl font-playfair">Ваше бронирование</CardTitle>
+    <Card className={`border-t-4 shadow-lg ${isCancelled ? 'border-t-red-500 opacity-75' : 'border-t-gold-500'}`}>
+      <CardHeader className="pb-3 md:pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <CardTitle className="text-lg md:text-2xl font-playfair">Ваше бронирование</CardTitle>
           {isCancelled ? (
-            <Badge className="bg-red-500 text-white">Отменено</Badge>
+            <Badge className="bg-red-500 text-white text-xs md:text-sm w-fit">Отменено</Badge>
           ) : (
             <>
               {daysUntil > 0 && (
-                <Badge className="bg-gold-500 text-white">
+                <Badge className="bg-gold-500 text-white text-xs md:text-sm w-fit">
                   Заезд через {daysUntil} {daysUntil === 1 ? 'день' : daysUntil < 5 ? 'дня' : 'дней'}
                 </Badge>
               )}
               {daysUntil === 0 && (
-                <Badge className="bg-green-500 text-white">Заезд сегодня!</Badge>
+                <Badge className="bg-green-500 text-white text-xs md:text-sm w-fit">Заезд сегодня!</Badge>
               )}
             </>
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-1">
+      <CardContent className="space-y-3 md:space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-3 md:p-4 rounded-lg border border-gray-100">
             <div className="flex items-center text-gray-600 mb-2">
-              <Icon name="Calendar" size={18} className="mr-2" />
-              <span className="font-semibold">Заезд</span>
+              <Icon name="Calendar" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+              <span className="font-semibold text-sm md:text-base">Заезд</span>
             </div>
-            <p className="text-lg text-charcoal-900">{formatDate(booking.check_in)}</p>
+            <p className="text-base md:text-lg font-bold text-charcoal-900">{formatDate(booking.check_in)}</p>
           </div>
-          <div className="space-y-1">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-3 md:p-4 rounded-lg border border-gray-100">
             <div className="flex items-center text-gray-600 mb-2">
-              <Icon name="Calendar" size={18} className="mr-2" />
-              <span className="font-semibold">Выезд</span>
+              <Icon name="Calendar" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+              <span className="font-semibold text-sm md:text-base">Выезд</span>
             </div>
-            <p className="text-lg text-charcoal-900">{formatDate(booking.check_out)}</p>
+            <p className="text-base md:text-lg font-bold text-charcoal-900">{formatDate(booking.check_out)}</p>
           </div>
-          <div className="space-y-1">
+          <div className="bg-gradient-to-br from-gold-50 to-white p-3 md:p-4 rounded-lg border border-gold-200">
             <div className="flex items-center text-gray-600 mb-2">
-              <Icon name="Home" size={18} className="mr-2" />
-              <span className="font-semibold">Апартамент</span>
+              <Icon name="Home" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+              <span className="font-semibold text-sm md:text-base">Апартамент</span>
             </div>
-            <p className="text-lg text-charcoal-900">№ {booking.apartment_id}</p>
+            <p className="text-base md:text-lg font-bold text-gold-600">№ {booking.apartment_id}</p>
           </div>
         </div>
-        <div className="pt-4 border-t flex justify-between items-center">
+        <div className="pt-3 md:pt-4 border-t flex flex-col sm:flex-row sm:justify-between gap-2 md:gap-3">
           {canCancel && (
             <button
               onClick={() => onCancelBooking(booking.id)}
               disabled={cancellingBooking === booking.id}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium text-sm md:text-base transition-all disabled:opacity-50 w-full sm:w-auto"
             >
               {cancellingBooking === booking.id ? (
                 <>
-                  <Icon name="Loader2" size={18} className="animate-spin" />
-                  Отмена...
+                  <Icon name="Loader2" size={16} className="animate-spin md:w-[18px] md:h-[18px]" />
+                  <span className="text-sm md:text-base">Отмена...</span>
                 </>
               ) : (
                 <>
-                  <Icon name="XCircle" size={18} />
-                  Отменить бронирование
+                  <Icon name="XCircle" size={16} className="md:w-[18px] md:h-[18px]" />
+                  <span className="text-sm md:text-base">Отменить</span>
                 </>
               )}
             </button>
           )}
-          {!canCancel && <div />}
           <button
             onClick={() => onDownloadPdf(booking.id)}
             disabled={downloadingPdf === booking.id}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white rounded-lg font-semibold text-sm md:text-base transition-all disabled:opacity-50 shadow-lg w-full sm:w-auto"
           >
             {downloadingPdf === booking.id ? (
               <>
-                <Icon name="Loader2" size={18} className="animate-spin" />
-                Генерация PDF...
+                <Icon name="Loader2" size={16} className="animate-spin md:w-[18px] md:h-[18px]" />
+                <span>Генерация...</span>
               </>
             ) : (
               <>
-                <Icon name="Download" size={18} />
-                Скачать подтверждение
+                <Icon name="Download" size={16} className="md:w-[18px] md:h-[18px]" />
+                <span>Скачать подтверждение</span>
               </>
             )}
           </button>
