@@ -32,7 +32,7 @@ const CurrentBookingCard = ({
   const isCancelled = booking.status === 'cancelled';
   const canCancel = daysUntil > 0 && !isCancelled;
   return (
-    <Card className={`border-t-4 shadow-lg ${isCancelled ? 'border-t-red-500 opacity-75' : 'border-t-gold-500'}`}>
+    <Card className={`border-t-4 shadow-lg hover:shadow-2xl transition-all duration-300 ${isCancelled ? 'border-t-red-500 opacity-75' : 'border-t-gold-500'}`}>
       <CardHeader className="pb-3 md:pb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <CardTitle className="text-lg md:text-2xl font-playfair">Ваше бронирование</CardTitle>
@@ -81,7 +81,7 @@ const CurrentBookingCard = ({
             <button
               onClick={() => onCancelBooking(booking.id)}
               disabled={cancellingBooking === booking.id}
-              className="inline-flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium text-sm md:text-base transition-all disabled:opacity-50 w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-red-500 hover:bg-red-600 hover:scale-105 active:scale-95 text-white rounded-lg font-medium text-sm md:text-base transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100 w-full sm:w-auto shadow-md hover:shadow-lg"
             >
               {cancellingBooking === booking.id ? (
                 <>
@@ -99,7 +99,7 @@ const CurrentBookingCard = ({
           <button
             onClick={() => onDownloadPdf(booking.id)}
             disabled={downloadingPdf === booking.id}
-            className="inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white rounded-lg font-semibold text-sm md:text-base transition-all disabled:opacity-50 shadow-lg w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 hover:scale-105 active:scale-95 text-white rounded-lg font-semibold text-sm md:text-base transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100 shadow-lg hover:shadow-xl w-full sm:w-auto"
           >
             {downloadingPdf === booking.id ? (
               <>

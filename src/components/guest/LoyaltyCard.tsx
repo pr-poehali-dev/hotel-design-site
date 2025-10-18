@@ -19,7 +19,7 @@ const LoyaltyCard = ({ bookingsCount }: LoyaltyCardProps) => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-gold-50 to-gold-100 border-t-4 border-t-gold-500 shadow-lg">
+    <Card className="bg-gradient-to-br from-gold-50 to-gold-100 border-t-4 border-t-gold-500 shadow-lg hover:shadow-2xl transition-all duration-300">
       <CardHeader className="pb-3 md:pb-6">
         <CardTitle className="text-base md:text-2xl font-playfair">Ваш статус в программе лояльности</CardTitle>
       </CardHeader>

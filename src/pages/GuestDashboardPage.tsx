@@ -250,60 +250,73 @@ const GuestDashboardPage = () => {
       />
 
       <div className="max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-8 space-y-4 md:space-y-6">
-        <LoyaltyCard bookingsCount={allBookings.length} />
+        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+          <LoyaltyCard bookingsCount={allBookings.length} />
+        </div>
 
-        <CurrentBookingCard
-          booking={booking}
-          formatDate={formatDate}
-          daysUntil={daysUntil}
-          downloadingPdf={downloadingPdf}
-          onDownloadPdf={downloadBookingPdf}
-          cancellingBooking={cancellingBooking}
-          onCancelBooking={handleCancelBooking}
-        />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+          <CurrentBookingCard
+            booking={booking}
+            formatDate={formatDate}
+            daysUntil={daysUntil}
+            downloadingPdf={downloadingPdf}
+            onDownloadPdf={downloadBookingPdf}
+            cancellingBooking={cancellingBooking}
+            onCancelBooking={handleCancelBooking}
+          />
+        </div>
 
         {instruction && instruction.images && instruction.images.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Icon name="Image" size={20} className="text-gold-600" />
-                Фотографии апартамента
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3 md:pb-6">
+                <CardTitle className="flex items-center gap-2 text-lg md:text-2xl">
+                  <Icon name="Image" size={18} className="text-gold-600 md:w-5 md:h-5" />
+                  Фотографии апартамента
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                  {instruction.images.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="animate-in fade-in zoom-in-95 duration-500"
+                      style={{ animationDelay: `${idx * 100}ms` }}
+                    >
+                      <img
+                        src={img}
+                        alt={`Апартамент ${idx + 1}`}
+                        className="w-full h-36 md:h-48 object-cover rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+                        onClick={() => window.open(img, '_blank')}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
+          <Card className="shadow-lg">
+            <CardHeader className="pb-3 md:pb-6">
+              <CardTitle className="flex items-center gap-2 text-lg md:text-2xl">
+                <Icon name="History" size={18} className="text-gold-600 md:w-5 md:h-5" />
+                История бронирований
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {instruction.images.map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt={`Апартамент ${idx + 1}`}
-                    className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer"
-                    onClick={() => window.open(img, '_blank')}
-                  />
-                ))}
-              </div>
+              <BookingHistoryTab
+                bookings={allBookings}
+                formatDate={formatDate}
+                downloadingPdf={downloadingPdf}
+                onDownloadPdf={downloadBookingPdf}
+                cancellingBooking={cancellingBooking}
+                onCancelBooking={handleCancelBooking}
+              />
             </CardContent>
           </Card>
-        )}
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Icon name="History" size={20} className="text-gold-600" />
-              История бронирований
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <BookingHistoryTab
-              bookings={allBookings}
-              formatDate={formatDate}
-              downloadingPdf={downloadingPdf}
-              onDownloadPdf={downloadBookingPdf}
-              cancellingBooking={cancellingBooking}
-              onCancelBooking={handleCancelBooking}
-            />
-          </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
   );

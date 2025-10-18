@@ -25,7 +25,7 @@ interface BookingHistoryTabProps {
 
 const BookingHistoryTab = ({ bookings, formatDate, downloadingPdf, onDownloadPdf, cancellingBooking, onCancelBooking }: BookingHistoryTabProps) => {
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg hover:shadow-2xl transition-all duration-300">
       <CardHeader className="pb-3 md:pb-6">
         <CardTitle className="text-lg md:text-2xl">История бронирований</CardTitle>
       </CardHeader>
@@ -45,7 +45,7 @@ const BookingHistoryTab = ({ bookings, formatDate, downloadingPdf, onDownloadPdf
               return (
                 <div
                   key={b.id}
-                  className={`p-3 md:p-6 rounded-lg border-2 transition-all ${
+                  className={`p-3 md:p-6 rounded-lg border-2 transition-all duration-300 hover:shadow-lg hover:scale-[1.01] ${
                     isCancelled
                       ? 'bg-red-50 border-red-300 opacity-75'
                       : isCurrent
