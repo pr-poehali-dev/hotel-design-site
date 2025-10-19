@@ -26,12 +26,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     body = event.get('body', '{}')
+    print(f"DEBUG: Raw body type={type(body)}, value={repr(body)}")
+    
     if not body or body == '':
         body = '{}'
     
     try:
         body_data = json.loads(body)
-    except json.JSONDecodeError:
+        print(f"DEBUG: Parsed body_data={body_data}")
+    except json.JSONDecodeError as e:
+        print(f"DEBUG: JSONDecodeError - {str(e)}, body={repr(body)}")
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
