@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { useNavigate } from 'react-router-dom';
 
 interface OwnersHeaderProps {
   showInvestorSection: boolean;
@@ -16,6 +17,8 @@ export default function OwnersHeader({
   onAddNew,
   onLogout,
 }: OwnersHeaderProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="flex justify-between items-center mb-6 animate-fade-in">
       <div>
@@ -23,6 +26,14 @@ export default function OwnersHeader({
         <p className="text-slate-300">Добавляйте собственников и привязывайте их к апартаментам</p>
       </div>
       <div className="flex gap-3">
+        <Button 
+          onClick={() => navigate('/calendar')}
+          variant="outline"
+          className="hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg"
+        >
+          <Icon name="Calendar" size={20} />
+          Календарь
+        </Button>
         <Button 
           onClick={onToggleInvestorSection}
           variant={showInvestorSection ? "default" : "outline"}

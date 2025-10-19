@@ -110,6 +110,13 @@ const ReportsHeader = ({
               </>
             )}
             <FizzyButton
+              onClick={() => navigate('/calendar')}
+              variant="secondary"
+              icon={<Icon name="Calendar" size={18} />}
+            >
+              Календарь
+            </FizzyButton>
+            <FizzyButton
               onClick={() => navigate('/owners')}
               variant="secondary"
               icon={<Icon name="Users" size={18} />}
