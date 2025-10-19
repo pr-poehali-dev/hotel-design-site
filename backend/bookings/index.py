@@ -67,6 +67,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'check_out': str(booking['check_out']),
                     'total_amount': float(booking['total_amount']) if booking['total_amount'] else 0,
                     'aggregator_commission': float(booking['aggregator_commission']) if booking['aggregator_commission'] else 0,
+                    'is_prepaid': booking.get('is_prepaid', False),
+                    'prepayment_amount': float(booking['prepayment_amount']) if booking.get('prepayment_amount') else 0,
+                    'prepayment_date': str(booking['prepayment_date']) if booking.get('prepayment_date') else None,
                 })
             
             cursor.close()
@@ -77,6 +80,58 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'isBase64Encoded': False,
                 'body': json.dumps(result)
+            }
+        
+        if method == 'PUT':
+            body_data = json.loads(event.get('body', '{}'))
+            booking_id = body_data.get('id')
+            
+            if not booking_id:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Missing booking id'})
+                }
+            
+            cursor.execute("""
+                UPDATE t_p9202093_hotel_design_site.bookings 
+                SET is_prepaid = %s, 
+                    prepayment_amount = %s,
+                    prepayment_date = CURRENT_TIMESTAMP
+                WHERE id = %s
+                RETURNING id, is_prepaid, prepayment_amount
+            """, (
+                body_data.get('is_prepaid', False),
+                body_data.get('prepayment_amount', 0),
+                booking_id
+            ))
+            
+            updated_booking = cursor.fetchone()
+            
+            if not updated_booking:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 404,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Booking not found'})
+                }
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({
+                    'id': updated_booking['id'],
+                    'is_prepaid': updated_booking['is_prepaid'],
+                    'prepayment_amount': float(updated_booking['prepayment_amount']) if updated_booking['prepayment_amount'] else 0
+                })
             }
         
         if method == 'POST':
@@ -100,8 +155,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor.execute("""
                 INSERT INTO t_p9202093_hotel_design_site.bookings 
                 (id, apartment_id, guest_name, guest_email, guest_phone, check_in, check_out, 
-                 accommodation_amount, total_amount, aggregator_commission)
-                VALUES (gen_random_uuid()::text, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                 accommodation_amount, total_amount, aggregator_commission, is_prepaid, prepayment_amount)
+                VALUES (gen_random_uuid()::text, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id, apartment_id, guest_name, check_in, check_out
             """, (
                 apartment_id,
@@ -112,7 +167,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 check_out,
                 total_amount,
                 total_amount,
-                body_data.get('aggregator_commission', 0)
+                body_data.get('aggregator_commission', 0),
+                body_data.get('is_prepaid', False),
+                body_data.get('prepayment_amount', 0)
             ))
             
             new_booking = cursor.fetchone()

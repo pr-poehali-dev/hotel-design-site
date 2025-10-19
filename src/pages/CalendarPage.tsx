@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import BookingCalendar from '@/components/calendar/BookingCalendar';
 import BookingForm from '@/components/calendar/BookingForm';
+import BookingDetailsDialog from '@/components/calendar/BookingDetailsDialog';
 import AdminLogin from '@/components/AdminLogin';
 
 const AUTH_KEY = 'premium_apartments_admin_auth';
@@ -17,6 +18,9 @@ interface Booking {
   check_out: string;
   total_amount: number;
   aggregator_commission?: number;
+  is_prepaid?: boolean;
+  prepayment_amount?: number;
+  prepayment_date?: string;
 }
 
 interface Apartment {
@@ -45,6 +49,7 @@ export default function CalendarPage() {
   const [apartments, setApartments] = useState<Apartment[]>([]);
   const [loading, setLoading] = useState(false);
   const [isAddingBooking, setIsAddingBooking] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [formData, setFormData] = useState<BookingFormData>({
     apartment_id: '',
     guest_name: '',
@@ -174,7 +179,13 @@ export default function CalendarPage() {
   };
 
   const handleBookingClick = (booking: Booking) => {
-    alert(`Бронирование: ${booking.guest_name}\nЗаезд: ${booking.check_in}\nВыезд: ${booking.check_out}\nСумма: ${booking.total_amount} ₽`);
+    setSelectedBooking(booking);
+  };
+
+  const handleUpdateBooking = (updatedBooking: Booking) => {
+    setBookings(prevBookings => 
+      prevBookings.map(b => b.id === updatedBooking.id ? updatedBooking : b)
+    );
   };
 
   if (!isAuthenticated) {
@@ -227,6 +238,14 @@ export default function CalendarPage() {
           onDateClick={handleDateClick}
           onBookingClick={handleBookingClick}
         />
+
+        {selectedBooking && (
+          <BookingDetailsDialog
+            booking={selectedBooking}
+            onClose={() => setSelectedBooking(null)}
+            onUpdate={handleUpdateBooking}
+          />
+        )}
       </div>
     </div>
   );

@@ -26,6 +26,9 @@ interface Booking {
   check_out: string;
   total_amount: number;
   aggregator_commission?: number;
+  is_prepaid?: boolean;
+  prepayment_amount?: number;
+  prepayment_date?: string;
 }
 
 interface Apartment {
@@ -104,7 +107,10 @@ export default function BookingCalendar({
     }
     
     if (isUpcoming) {
-      return 'bg-blue-600/40';
+      if (booking.is_prepaid) {
+        return 'bg-emerald-600/50 border border-emerald-400/30';
+      }
+      return 'bg-orange-600/50 border border-orange-400/30';
     }
     
     return 'bg-green-600/40';
@@ -213,10 +219,14 @@ export default function BookingCalendar({
           ))}
         </div>
 
-        <div className="flex items-center gap-4 pt-4 border-t border-white/20">
+        <div className="flex items-center gap-4 pt-4 border-t border-white/20 flex-wrap">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-blue-600/40 rounded"></div>
-            <span className="text-sm text-slate-300">Предстоящие</span>
+            <div className="w-4 h-4 bg-emerald-600/50 border border-emerald-400/30 rounded"></div>
+            <span className="text-sm text-slate-300">Оплачено</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-orange-600/50 border border-orange-400/30 rounded"></div>
+            <span className="text-sm text-slate-300">Не оплачено</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-green-500/20 border border-green-500/40 rounded"></div>
