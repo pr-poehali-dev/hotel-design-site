@@ -31,6 +31,8 @@ const AddBookingDialog = ({
     check_out: '',
     price_per_night: '',
     total_amount: '',
+    service_fee_percent: '20',
+    owner_funds: '',
   });
 
   const calculateNights = () => {
@@ -48,7 +50,9 @@ const AddBookingDialog = ({
     const totalNum = parseFloat(total);
     if (nights > 0 && !isNaN(totalNum)) {
       const pricePerNight = (totalNum / nights).toFixed(2);
-      setFormData({ ...formData, total_amount: total, price_per_night: pricePerNight });
+      const serviceFee = parseFloat(formData.service_fee_percent) || 0;
+      const ownerFunds = (totalNum * (1 - serviceFee / 100)).toFixed(2);
+      setFormData({ ...formData, total_amount: total, price_per_night: pricePerNight, owner_funds: ownerFunds });
     } else {
       setFormData({ ...formData, total_amount: total });
     }
@@ -58,7 +62,9 @@ const AddBookingDialog = ({
     const priceNum = parseFloat(price);
     if (nights > 0 && !isNaN(priceNum)) {
       const totalAmount = (priceNum * nights).toFixed(2);
-      setFormData({ ...formData, price_per_night: price, total_amount: totalAmount });
+      const serviceFee = parseFloat(formData.service_fee_percent) || 0;
+      const ownerFunds = (parseFloat(totalAmount) * (1 - serviceFee / 100)).toFixed(2);
+      setFormData({ ...formData, price_per_night: price, total_amount: totalAmount, owner_funds: ownerFunds });
     } else {
       setFormData({ ...formData, price_per_night: price });
     }
@@ -80,6 +86,8 @@ const AddBookingDialog = ({
       check_out: '',
       price_per_night: '',
       total_amount: '',
+      service_fee_percent: '20',
+      owner_funds: '',
     });
   };
 
@@ -161,6 +169,50 @@ const AddBookingDialog = ({
                   {nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}
                 </p>
               )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="service_fee_percent">Комиссия сервиса (%) *</Label>
+              <div className="relative">
+                <Input
+                  id="service_fee_percent"
+                  type="number"
+                  placeholder="20"
+                  value={formData.service_fee_percent}
+                  onChange={(e) => {
+                    const serviceFee = e.target.value;
+                    const totalNum = parseFloat(formData.total_amount);
+                    if (!isNaN(totalNum)) {
+                      const ownerFunds = (totalNum * (1 - parseFloat(serviceFee) / 100)).toFixed(2);
+                      setFormData({ ...formData, service_fee_percent: serviceFee, owner_funds: ownerFunds });
+                    } else {
+                      setFormData({ ...formData, service_fee_percent: serviceFee });
+                    }
+                  }}
+                  className="pr-10"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal-500">%</span>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="owner_funds">Собственнику</Label>
+              <div className="relative">
+                <Input
+                  id="owner_funds"
+                  type="number"
+                  placeholder="8400"
+                  value={formData.owner_funds}
+                  readOnly
+                  className="pr-10 bg-gray-50"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal-500">₽</span>
+              </div>
+              <p className="text-xs text-charcoal-500 mt-1">
+                Автоматически рассчитывается
+              </p>
             </div>
           </div>
         </div>
