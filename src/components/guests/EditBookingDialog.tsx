@@ -20,6 +20,7 @@ interface EditBookingDialogProps {
     check_out: string;
     accommodation_amount: number;
     total_amount: number;
+    owner_funds?: number;
   } | null;
   onSubmit: (bookingData: any) => void;
 }
@@ -36,16 +37,25 @@ const EditBookingDialog = ({
     check_out: '',
     price_per_night: '',
     total_amount: '',
+    service_fee_percent: '20',
+    owner_funds: '',
   });
 
   useEffect(() => {
     if (booking) {
+      const ownerFundsValue = booking.owner_funds || 0;
+      const serviceFee = booking.total_amount > 0 && ownerFundsValue > 0 
+        ? ((1 - ownerFundsValue / booking.total_amount) * 100).toFixed(0)
+        : '20';
+      
       setFormData({
         apartment_id: booking.apartment_id,
         check_in: booking.check_in,
         check_out: booking.check_out,
         price_per_night: booking.accommodation_amount.toString(),
         total_amount: booking.total_amount.toString(),
+        service_fee_percent: serviceFee,
+        owner_funds: ownerFundsValue.toString(),
       });
     }
   }, [booking]);
@@ -65,7 +75,9 @@ const EditBookingDialog = ({
     const totalNum = parseFloat(total);
     if (nights > 0 && !isNaN(totalNum)) {
       const pricePerNight = (totalNum / nights).toFixed(2);
-      setFormData({ ...formData, total_amount: total, price_per_night: pricePerNight });
+      const serviceFee = parseFloat(formData.service_fee_percent) || 0;
+      const ownerFunds = (totalNum * (1 - serviceFee / 100)).toFixed(2);
+      setFormData({ ...formData, total_amount: total, price_per_night: pricePerNight, owner_funds: ownerFunds });
     } else {
       setFormData({ ...formData, total_amount: total });
     }
@@ -75,7 +87,9 @@ const EditBookingDialog = ({
     const priceNum = parseFloat(price);
     if (nights > 0 && !isNaN(priceNum)) {
       const totalAmount = (priceNum * nights).toFixed(2);
-      setFormData({ ...formData, price_per_night: price, total_amount: totalAmount });
+      const serviceFee = parseFloat(formData.service_fee_percent) || 0;
+      const ownerFunds = (parseFloat(totalAmount) * (1 - serviceFee / 100)).toFixed(2);
+      setFormData({ ...formData, price_per_night: price, total_amount: totalAmount, owner_funds: ownerFunds });
     } else {
       setFormData({ ...formData, price_per_night: price });
     }
@@ -166,6 +180,50 @@ const EditBookingDialog = ({
                   {nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}
                 </p>
               )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="service_fee_percent">Комиссия сервиса (%) *</Label>
+              <div className="relative">
+                <Input
+                  id="service_fee_percent"
+                  type="number"
+                  placeholder="20"
+                  value={formData.service_fee_percent}
+                  onChange={(e) => {
+                    const serviceFee = e.target.value;
+                    const totalNum = parseFloat(formData.total_amount);
+                    if (!isNaN(totalNum)) {
+                      const ownerFunds = (totalNum * (1 - parseFloat(serviceFee) / 100)).toFixed(2);
+                      setFormData({ ...formData, service_fee_percent: serviceFee, owner_funds: ownerFunds });
+                    } else {
+                      setFormData({ ...formData, service_fee_percent: serviceFee });
+                    }
+                  }}
+                  className="pr-10"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal-500">%</span>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="owner_funds">Собственнику</Label>
+              <div className="relative">
+                <Input
+                  id="owner_funds"
+                  type="number"
+                  placeholder="8400"
+                  value={formData.owner_funds}
+                  readOnly
+                  className="pr-10 bg-gray-50"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal-500">₽</span>
+              </div>
+              <p className="text-xs text-charcoal-500 mt-1">
+                Автоматически рассчитывается
+              </p>
             </div>
           </div>
         </div>

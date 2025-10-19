@@ -195,6 +195,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             check_out = body_data.get('check_out', '')
             price_per_night = body_data.get('price_per_night', 0)
             total_amount = body_data.get('total_amount', 0)
+            owner_funds = body_data.get('owner_funds', 0)
             
             if not booking_id:
                 return {
@@ -217,6 +218,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     check_out = '{check_out}',
                     accommodation_amount = {price_per_night},
                     total_amount = {total_amount},
+                    owner_funds = {owner_funds},
                     updated_at = NOW()
                 WHERE id = '{booking_id}'
                 """
@@ -258,6 +260,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 check_out = body_data.get('check_out', '')
                 price_per_night = body_data.get('price_per_night', 0)
                 total_amount = body_data.get('total_amount', 0)
+                service_fee_percent = body_data.get('service_fee_percent', 20)
+                owner_funds = body_data.get('owner_funds', 0)
                 
                 if not guest_id or not apartment_id or not check_in or not check_out:
                     return {
@@ -297,10 +301,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 cursor.execute(
                     f"""
                     INSERT INTO t_p9202093_hotel_design_site.bookings 
-                    (id, apartment_id, check_in, check_out, accommodation_amount, total_amount, 
+                    (id, apartment_id, check_in, check_out, accommodation_amount, total_amount, owner_funds,
                      guest_name, guest_email, guest_phone, guest_user_id, show_to_guest, created_at)
                     VALUES ('{booking_id}', '{apartment_id}', '{check_in}', '{check_out}', 
-                            {price_per_night}, {total_amount}, '{guest_name}', '{guest_email}', '{guest_phone}', {guest_id}, true, NOW())
+                            {price_per_night}, {total_amount}, {owner_funds}, '{guest_name}', '{guest_email}', '{guest_phone}', {guest_id}, true, NOW())
                     """
                 )
                 conn.commit()
