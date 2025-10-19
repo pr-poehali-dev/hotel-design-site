@@ -30,13 +30,13 @@ const ReportsTable = ({
   const recalculateBooking = (booking: BookingRecord, rate: number) => {
     const commissionAmount = Math.round(booking.remainderBeforeManagement * (rate / 100));
     const remainderBeforeExpenses = booking.remainderBeforeManagement - commissionAmount;
-    const ownerFunds = remainderBeforeExpenses - booking.operatingExpenses;
+    const calculatedOwnerFunds = remainderBeforeExpenses - booking.operatingExpenses;
     
     return {
       ...booking,
       managementCommission: commissionAmount,
       remainderBeforeExpenses,
-      ownerFunds
+      ownerFunds: booking.ownerFunds > 0 ? booking.ownerFunds : calculatedOwnerFunds
     };
   };
 
