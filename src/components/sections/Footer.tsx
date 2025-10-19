@@ -74,6 +74,13 @@ const Footer = () => {
                   <Icon name="Settings" size={14} className="inline mr-1" />
                   Управление гостями
                 </a>
+                <a 
+                  href="/admin/owners" 
+                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  <Icon name="Users" size={14} className="inline mr-1" />
+                  Управление инвесторами
+                </a>
               </div>
             </div>
           </div>

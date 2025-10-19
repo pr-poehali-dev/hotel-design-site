@@ -59,8 +59,8 @@ const OwnerLoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Вход для собственников</CardTitle>
-          <CardDescription>Введите логин или email, чтобы посмотреть отчеты</CardDescription>
+          <CardTitle className="text-2xl font-bold">Вход для инвесторов</CardTitle>
+          <CardDescription>Введите логин или email для доступа к отчетам по вашим апартаментам</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">

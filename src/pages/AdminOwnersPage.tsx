@@ -85,7 +85,7 @@ export default function AdminOwnersPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Удалить владельца?')) return;
+    if (!confirm('Удалить инвестора?')) return;
     
     try {
       await fetch(`https://functions.poehali.dev/65d57cf7-a248-416f-87f1-477b145f13c2?id=${id}`, {
@@ -132,7 +132,7 @@ export default function AdminOwnersPage() {
                 <Icon name="Users" size={24} className="text-charcoal-900" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-white">Управление владельцами</h1>
+                <h1 className="text-lg font-bold text-white">Управление инвесторами</h1>
                 <p className="text-xs text-gray-400">Администратор</p>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function AdminOwnersPage() {
               className="flex items-center gap-2 px-4 py-2 bg-gold-500 text-charcoal-900 rounded-lg font-semibold hover:bg-gold-600 transition-colors"
             >
               <Icon name="Plus" size={20} />
-              Добавить владельца
+              Добавить инвестора
             </button>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function AdminOwnersPage() {
         {owners.length === 0 ? (
           <Card className="p-8 text-center">
             <Icon name="Users" size={48} className="text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-400">Нет владельцев</p>
+            <p className="text-gray-400">Нет инвесторов</p>
           </Card>
         ) : (
           <div className="space-y-3">
@@ -232,7 +232,7 @@ export default function AdminOwnersPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <Card className="max-w-md w-full p-6">
             <h2 className="text-xl font-bold text-white mb-4">
-              {editingOwner ? 'Редактировать владельца' : 'Добавить владельца'}
+              {editingOwner ? 'Редактировать инвестора' : 'Добавить инвестора'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
