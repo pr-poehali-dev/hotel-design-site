@@ -53,7 +53,7 @@ export default function OwnerReportsPage() {
           setOwnerInfo(info);
         }
 
-        const reportsResponse = await fetch(`https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e?apartment_id=${apartmentId}`);
+        const reportsResponse = await fetch(`https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9?apartment_id=${apartmentId}`);
         if (reportsResponse.ok) {
           const reports = await reportsResponse.json();
           setMonthlyReports(reports);
@@ -90,7 +90,7 @@ export default function OwnerReportsPage() {
       } else {
         setLoading(true);
         try {
-          const response = await fetch(`https://functions.poehali.dev/26b287d9-32f7-4801-bf83-fe0cba67b26e?apartment_id=${apartmentId}&month=${selectedMonth}`);
+          const response = await fetch(`https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9?apartment_id=${apartmentId}&month=${selectedMonth}`);
           if (response.ok) {
             const data = await response.json();
             let reportData = data.reportData || [];
