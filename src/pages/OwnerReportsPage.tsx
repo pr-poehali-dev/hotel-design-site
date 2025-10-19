@@ -32,7 +32,7 @@ export default function OwnerReportsPage() {
           setOwnerInfo(info);
         }
 
-        const bookingsResponse = await fetch(`https://functions.poehali.dev/42f08a7b-0e59-4277-b467-1ceb942afe5e?apartmentId=${apartmentId}`);
+        const bookingsResponse = await fetch(`https://functions.poehali.dev/42f08a7b-0e59-4277-b467-1ceb942afe5e?apartment_id=${apartmentId}`);
         if (bookingsResponse.ok) {
           const data = await bookingsResponse.json();
           const filteredBookings = (data || []).filter((b: any) => b.showToGuest);
