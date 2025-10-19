@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Get all bookings",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "type"
+    },
+    {
+      "name": "Create new booking",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "apartment_id": "2019",
+        "guest_name": "Test Guest",
+        "guest_email": "test@example.com",
+        "check_in": "2025-11-01",
+        "check_out": "2025-11-05",
+        "total_amount": 15000,
+        "aggregator_commission": 15
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "id": "string",
+        "apartment_id": "string",
+        "guest_name": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -32,6 +32,7 @@ const GoogleBusiness = React.lazy(() => import("./pages/GoogleBusiness"));
 const TestAPI = React.lazy(() => import("./pages/TestAPI"));
 const PayrollPage = React.lazy(() => import("./pages/PayrollPage"));
 const HousekeeperLoginPage = React.lazy(() => import("./pages/HousekeeperLoginPage"));
+const CalendarPage = React.lazy(() => import("./pages/CalendarPage"));
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => (
             <Route path="/test-api" element={<TestAPI />} />
             <Route path="/payroll" element={<PayrollPage />} />
             <Route path="/housekeeper-login" element={<HousekeeperLoginPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

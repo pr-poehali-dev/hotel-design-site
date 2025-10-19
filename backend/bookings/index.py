@@ -1,0 +1,149 @@
+import json
+import os
+from typing import Dict, Any
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
+    '''
+    Business: API для управления бронированиями апартаментов
+    Args: event - dict с httpMethod, body, queryStringParameters
+          context - объект с атрибутами request_id, function_name
+    Returns: HTTP response dict
+    '''
+    method: str = event.get('httpMethod', 'GET')
+    
+    if method == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
+                'Access-Control-Max-Age': '86400'
+            },
+            'body': ''
+        }
+    
+    database_url = os.environ.get('DATABASE_URL')
+    if not database_url:
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'DATABASE_URL not configured'})
+        }
+    
+    try:
+        conn = psycopg2.connect(database_url)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        
+        if method == 'GET':
+            query_params = event.get('queryStringParameters', {}) or {}
+            apartment_id = query_params.get('apartment_id')
+            
+            if apartment_id:
+                cursor.execute("""
+                    SELECT * FROM t_p9202093_hotel_design_site.bookings 
+                    WHERE apartment_id = %s 
+                    ORDER BY check_in DESC
+                """, (apartment_id,))
+            else:
+                cursor.execute("""
+                    SELECT * FROM t_p9202093_hotel_design_site.bookings 
+                    ORDER BY check_in DESC
+                """)
+            
+            bookings = cursor.fetchall()
+            
+            result = []
+            for booking in bookings:
+                result.append({
+                    'id': booking['id'],
+                    'apartment_id': booking['apartment_id'],
+                    'guest_name': booking['guest_name'],
+                    'guest_email': booking['guest_email'],
+                    'guest_phone': booking['guest_phone'],
+                    'check_in': str(booking['check_in']),
+                    'check_out': str(booking['check_out']),
+                    'total_amount': float(booking['total_amount']) if booking['total_amount'] else 0,
+                    'aggregator_commission': float(booking['aggregator_commission']) if booking['aggregator_commission'] else 0,
+                })
+            
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps(result)
+            }
+        
+        if method == 'POST':
+            body_data = json.loads(event.get('body', '{}'))
+            
+            apartment_id = body_data.get('apartment_id')
+            guest_name = body_data.get('guest_name')
+            check_in = body_data.get('check_in')
+            check_out = body_data.get('check_out')
+            total_amount = body_data.get('total_amount', 0)
+            
+            if not all([apartment_id, guest_name, check_in, check_out]):
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Missing required fields'})
+                }
+            
+            cursor.execute("""
+                INSERT INTO t_p9202093_hotel_design_site.bookings 
+                (id, apartment_id, guest_name, guest_email, guest_phone, check_in, check_out, 
+                 accommodation_amount, total_amount, aggregator_commission)
+                VALUES (gen_random_uuid()::text, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id, apartment_id, guest_name, check_in, check_out
+            """, (
+                apartment_id,
+                guest_name,
+                body_data.get('guest_email'),
+                body_data.get('guest_phone'),
+                check_in,
+                check_out,
+                total_amount,
+                total_amount,
+                body_data.get('aggregator_commission', 0)
+            ))
+            
+            new_booking = cursor.fetchone()
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 201,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({
+                    'id': new_booking['id'],
+                    'apartment_id': new_booking['apartment_id'],
+                    'guest_name': new_booking['guest_name'],
+                    'check_in': str(new_booking['check_in']),
+                    'check_out': str(new_booking['check_out'])
+                })
+            }
+        
+        cursor.close()
+        conn.close()
+        return {
+            'statusCode': 405,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Method not allowed'})
+        }
+    
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': str(e)})
+        }
