@@ -34,6 +34,7 @@ const PayrollPage = React.lazy(() => import("./pages/PayrollPage"));
 const HousekeeperLoginPage = React.lazy(() => import("./pages/HousekeeperLoginPage"));
 const CalendarPage = React.lazy(() => import("./pages/CalendarPage"));
 const AdminOwnersPage = React.lazy(() => import("./pages/AdminOwnersPage"));
+const HashTestPage = React.lazy(() => import("./pages/HashTestPage"));
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const App = () => (
             <Route path="/housekeeper-login" element={<HousekeeperLoginPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/admin/owners" element={<AdminOwnersPage />} />
+            <Route path="/hash-test" element={<HashTestPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

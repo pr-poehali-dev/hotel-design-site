@@ -97,7 +97,7 @@ const ReportsHeader = ({
                   icon={<Icon name="Eye" size={18} />}
                   disabled={loading}
                 >
-                  Показать все собственнику
+                  Показать все инвестору
                 </FizzyButton>
                 <FizzyButton
                   onClick={onArchiveMonth}
@@ -115,13 +115,6 @@ const ReportsHeader = ({
               icon={<Icon name="Calendar" size={18} />}
             >
               Календарь
-            </FizzyButton>
-            <FizzyButton
-              onClick={() => navigate('/owners')}
-              variant="secondary"
-              icon={<Icon name="Users" size={18} />}
-            >
-              Собственники
             </FizzyButton>
             <FizzyButton
               onClick={() => navigate('/')}
