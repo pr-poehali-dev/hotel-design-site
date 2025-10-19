@@ -57,7 +57,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn.close()
 
 def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode()).hexdigest()
+    hashed = hashlib.sha256(password.encode()).hexdigest()
+    print(f"DEBUG: hash_password('{password}') = {hashed}")
+    return hashed
 
 def handle_register(conn, data: Dict[str, Any]) -> Dict[str, Any]:
     name = data.get('name', '')
