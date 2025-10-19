@@ -12,7 +12,9 @@ import {
   subMonths,
   isWithinInterval,
   startOfWeek,
-  endOfWeek
+  endOfWeek,
+  isBefore,
+  startOfDay
 } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -78,9 +80,34 @@ export default function BookingCalendar({
   const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const handleToday = () => setCurrentMonth(new Date());
 
-  const getCellColor = (bookingsForDay: Booking[]) => {
+  const getCellColor = (bookingsForDay: Booking[], day: Date) => {
     if (bookingsForDay.length === 0) return 'bg-white/5 hover:bg-white/10';
+    
+    const today = startOfDay(new Date());
+    const isPast = isBefore(day, today);
+    
+    if (isPast) {
+      return 'bg-gray-500/20 hover:bg-gray-500/30 border border-gray-500/40';
+    }
+    
     return 'bg-green-500/20 hover:bg-green-500/30 border border-green-500/40';
+  };
+
+  const getBookingBadgeColor = (booking: Booking, day: Date) => {
+    const today = startOfDay(new Date());
+    const checkIn = startOfDay(new Date(booking.check_in));
+    const isPast = isBefore(day, today);
+    const isUpcoming = !isBefore(checkIn, today);
+    
+    if (isPast) {
+      return 'bg-gray-600/40';
+    }
+    
+    if (isUpcoming) {
+      return 'bg-blue-600/40';
+    }
+    
+    return 'bg-green-600/40';
   };
 
   return (
@@ -157,7 +184,7 @@ export default function BookingCalendar({
                       }}
                       className={`
                         min-h-[60px] p-1 rounded cursor-pointer transition-all duration-200
-                        ${getCellColor(bookingsForDay)}
+                        ${getCellColor(bookingsForDay, day)}
                         ${!isCurrentMonth ? 'opacity-30' : ''}
                         ${isToday ? 'ring-2 ring-blue-500' : ''}
                       `}
@@ -170,7 +197,7 @@ export default function BookingCalendar({
                           {bookingsForDay.map(booking => (
                             <div 
                               key={booking.id}
-                              className="text-[10px] text-white/90 bg-green-600/40 rounded px-1 py-0.5 truncate"
+                              className={`text-[10px] text-white/90 rounded px-1 py-0.5 truncate ${getBookingBadgeColor(booking, day)}`}
                               title={`${booking.guest_name || 'Гость'}`}
                             >
                               {booking.guest_name?.split(' ')[0] || 'Гость'}
@@ -188,8 +215,16 @@ export default function BookingCalendar({
 
         <div className="flex items-center gap-4 pt-4 border-t border-white/20">
           <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-blue-600/40 rounded"></div>
+            <span className="text-sm text-slate-300">Предстоящие</span>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-green-500/20 border border-green-500/40 rounded"></div>
-            <span className="text-sm text-slate-300">Забронировано</span>
+            <span className="text-sm text-slate-300">Текущие</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-gray-500/20 border border-gray-500/40 rounded"></div>
+            <span className="text-sm text-slate-300">Прошедшие</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-white/5 border border-white/20 rounded"></div>
