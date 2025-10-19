@@ -62,23 +62,23 @@ const Footer = () => {
               <div className="space-y-2">
                 <a 
                   href="/reports" 
-                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
-                  <Icon name="FileText" size={14} className="inline mr-1" />
+                  <Icon name="FileText" size={14} />
                   Системный вход
                 </a>
                 <a 
                   href="/admin-login" 
-                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
-                  <Icon name="Settings" size={14} className="inline mr-1" />
+                  <Icon name="Settings" size={14} />
                   Управление гостями
                 </a>
                 <a 
                   href="/admin/owners" 
-                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
-                  <Icon name="Users" size={14} className="inline mr-1" />
+                  <Icon name="Users" size={14} />
                   Управление инвесторами
                 </a>
               </div>
