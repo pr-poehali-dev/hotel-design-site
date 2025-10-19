@@ -111,20 +111,60 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         elif method == 'PUT':
             body_data = json.loads(event.get('body', '{}'))
             user_id = body_data.get('id')
-            is_active = body_data.get('is_active')
             
-            if user_id is None or is_active is None:
+            if user_id is None:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'id and is_active are required'})
+                    'body': json.dumps({'error': 'id is required'})
                 }
             
-            cur.execute('''
+            update_parts = []
+            params = []
+            
+            if 'username' in body_data:
+                update_parts.append('username = %s')
+                params.append(body_data['username'])
+            
+            if 'password' in body_data and body_data['password']:
+                update_parts.append('password_hash = %s')
+                params.append(hashlib.sha256(body_data['password'].encode()).hexdigest())
+            
+            if 'full_name' in body_data:
+                update_parts.append('full_name = %s')
+                params.append(body_data['full_name'])
+            
+            if 'apartment_number' in body_data:
+                update_parts.append('apartment_number = %s')
+                params.append(body_data['apartment_number'])
+            
+            if 'email' in body_data:
+                update_parts.append('email = %s')
+                params.append(body_data['email'])
+            
+            if 'phone' in body_data:
+                update_parts.append('phone = %s')
+                params.append(body_data['phone'])
+            
+            if 'is_active' in body_data:
+                update_parts.append('is_active = %s')
+                params.append(body_data['is_active'])
+            
+            if not update_parts:
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'No fields to update'})
+                }
+            
+            update_parts.append('updated_at = NOW()')
+            params.append(user_id)
+            
+            cur.execute(f'''
                 UPDATE t_p9202093_hotel_design_site.owner_users 
-                SET is_active = %s, updated_at = NOW()
+                SET {', '.join(update_parts)}
                 WHERE id = %s
-            ''', (is_active, user_id))
+            ''', params)
             
             conn.commit()
             
