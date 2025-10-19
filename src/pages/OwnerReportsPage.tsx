@@ -12,8 +12,26 @@ export default function OwnerReportsPage() {
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string } | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
   
-  const currentMonth = new Date().toLocaleDateString('ru', { month: 'long', year: 'numeric' });
+  const generateMonthOptions = () => {
+    const months = [];
+    const now = new Date();
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push(date);
+    }
+    return months;
+  };
+  
+  const monthOptions = generateMonthOptions();
+  const currentMonth = selectedMonth.toLocaleDateString('ru', { month: 'long', year: 'numeric' });
+  const isCurrentMonth = selectedMonth.getMonth() === new Date().getMonth() && selectedMonth.getFullYear() === new Date().getFullYear();
+  
+  const filteredBookings = bookings.filter(b => {
+    const checkIn = new Date(b.checkIn);
+    return checkIn.getMonth() === selectedMonth.getMonth() && checkIn.getFullYear() === selectedMonth.getFullYear();
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('ownerToken');
@@ -88,8 +106,8 @@ export default function OwnerReportsPage() {
     );
   }
 
-  const totalAmount = bookings.reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
-  const paidAmount = bookings.filter(b => b.paymentStatus === 'paid').reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
+  const totalAmount = filteredBookings.reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
+  const paidAmount = filteredBookings.filter(b => b.paymentStatus === 'paid').reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
@@ -116,18 +134,45 @@ export default function OwnerReportsPage() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Период */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-3">
             <Icon name="Calendar" size={20} className="text-gold-500" />
-            <span className="text-white font-semibold">{currentMonth}</span>
-            <span className="text-xs bg-gold-500/20 text-gold-500 px-2 py-1 rounded-full">Текущий период</span>
+            <span className="text-white font-semibold">Выбор периода</span>
           </div>
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {monthOptions.map((month, index) => {
+              const isSelected = month.getMonth() === selectedMonth.getMonth() && month.getFullYear() === selectedMonth.getFullYear();
+              const isCurrent = month.getMonth() === new Date().getMonth() && month.getFullYear() === new Date().getFullYear();
+              const label = month.toLocaleDateString('ru', { month: 'short', year: 'numeric' });
+              
+              return (
+                <button
+                  key={index}
+                  onClick={() => setSelectedMonth(month)}
+                  className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
+                    isSelected
+                      ? 'bg-gold-500 text-charcoal-900 font-semibold'
+                      : 'bg-charcoal-800 text-gray-400 hover:bg-charcoal-700'
+                  }`}
+                >
+                  {label}
+                  {isCurrent && isSelected && (
+                    <span className="ml-1 text-xs">●</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        
+        {/* История */}
+        <div className="flex justify-end mb-4">
           <button
             onClick={() => setShowHistory(!showHistory)}
             className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
           >
             <Icon name="History" size={18} />
-            История
+            История оплат
           </button>
         </div>
 
@@ -147,17 +192,22 @@ export default function OwnerReportsPage() {
           </Card>
         </div>
 
-        {/* Бронирования текущего периода */}
+        {/* Бронирования выбранного периода */}
         <div className="mb-4">
-          <h2 className="text-lg font-semibold text-white mb-3">Бронирования</h2>
-          {bookings.length === 0 ? (
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-lg font-semibold text-white">Бронирования</h2>
+            {isCurrentMonth && (
+              <span className="text-xs bg-gold-500/20 text-gold-500 px-2 py-1 rounded-full">Текущий период</span>
+            )}
+          </div>
+          {filteredBookings.length === 0 ? (
             <Card className="p-8 text-center">
               <Icon name="FileText" size={48} className="text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-400">Нет данных о бронированиях</p>
+              <p className="text-gray-400">Нет бронирований за выбранный период</p>
             </Card>
           ) : (
             <div className="space-y-3">
-              {bookings.map((booking) => (
+              {filteredBookings.map((booking) => (
                 <Card key={booking.id} className="p-4">
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -182,15 +232,15 @@ export default function OwnerReportsPage() {
         {/* История оплат */}
         {showHistory && (
           <div className="mt-6">
-            <h2 className="text-lg font-semibold text-white mb-3">История оплат</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">История оплат за {currentMonth}</h2>
             <div className="space-y-3">
-              {bookings.filter(b => b.paymentStatus === 'paid').length === 0 ? (
+              {filteredBookings.filter(b => b.paymentStatus === 'paid').length === 0 ? (
                 <Card className="p-6 text-center">
                   <Icon name="Clock" size={40} className="text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-400">Нет оплаченных бронирований</p>
+                  <p className="text-gray-400">Нет оплаченных бронирований за этот период</p>
                 </Card>
               ) : (
-                bookings.filter(b => b.paymentStatus === 'paid').map((booking) => (
+                filteredBookings.filter(b => b.paymentStatus === 'paid').map((booking) => (
                   <Card key={booking.id} className="p-4 bg-charcoal-800/50">
                     <div className="flex justify-between items-start">
                       <div>
