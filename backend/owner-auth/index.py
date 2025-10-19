@@ -25,7 +25,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': ''
         }
     
-    body_data = json.loads(event.get('body', '{}'))
+    body = event.get('body', '{}')
+    if not body or body == '':
+        body = '{}'
+    
+    try:
+        body_data = json.loads(body)
+    except json.JSONDecodeError:
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': False, 'message': 'Invalid JSON in request body'})
+        }
+    
     action = body_data.get('action', 'login')
     
     db_url = os.environ.get('DATABASE_URL')
