@@ -128,11 +128,15 @@ def handle_login(conn, data: Dict[str, Any]) -> Dict[str, Any]:
     password_hash = hash_password(password)
     safe_email = email.replace("'", "''")
     
+    print(f"DEBUG: Looking for user with email={safe_email}, password_hash={password_hash}")
+    
     sql = f"""SELECT id, full_name as name, email, apartment_number FROM t_p9202093_hotel_design_site.owner_users 
        WHERE (email = '{safe_email}' OR username = '{safe_email}') 
        AND password_hash = '{password_hash}' AND is_active = true"""
     cursor.execute(sql)
     owner = cursor.fetchone()
+    
+    print(f"DEBUG: Found owner: {owner}")
     
     if not owner:
         cursor.close()
@@ -168,15 +172,19 @@ def handle_login(conn, data: Dict[str, Any]) -> Dict[str, Any]:
     import uuid
     token = str(uuid.uuid4())
     
+    result_data = {
+        'success': True,
+        'token': token,
+        'ownerId': owner_id,
+        'ownerName': owner['name'],
+        'apartments': [{'apartment_id': a['apartment_id'], 'name': a['name']} for a in apartments]
+    }
+    
+    print(f"DEBUG: Login successful, returning: {result_data}")
+    
     return {
         'statusCode': 200,
         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
         'isBase64Encoded': False,
-        'body': json.dumps({
-            'success': True,
-            'token': token,
-            'ownerId': owner_id,
-            'ownerName': owner['name'],
-            'apartments': [{'apartment_id': a['apartment_id'], 'name': a['name']} for a in apartments]
-        })
+        'body': json.dumps(result_data)
     }
