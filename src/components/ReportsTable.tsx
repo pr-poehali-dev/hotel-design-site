@@ -228,9 +228,16 @@ const ReportsTable = ({
                 </div>
               </div>
 
-              <div className="pt-2 border-t-2 border-gold-300 bg-green-50 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+              <div className={`pt-2 border-t-2 border-gold-300 -mx-4 -mb-4 px-4 py-3 rounded-b-lg ${
+                new Date(booking.checkIn) > new Date() ? 'bg-blue-50' : 'bg-green-50'
+              }`}>
                 <p className="text-xs text-charcoal-600 mb-1">Средства собственнику</p>
-                <p className="text-xl font-bold text-green-600">{booking.ownerFunds.toLocaleString('ru')} ₽</p>
+                <p className={`text-xl font-bold ${
+                  new Date(booking.checkIn) > new Date() ? 'text-blue-600' : 'text-green-600'
+                }`}>{booking.ownerFunds.toLocaleString('ru')} ₽</p>
+                {new Date(booking.checkIn) > new Date() && (
+                  <p className="text-xs text-blue-500 mt-1">Предстоящее бронирование</p>
+                )}
               </div>
             </div>
           </Card>
@@ -255,13 +262,22 @@ const ReportsTable = ({
             </tr>
           </thead>
           <tbody>
-            {recalculatedBookings.map((booking, index) => (
+            {recalculatedBookings.map((booking, index) => {
+              const isUpcoming = new Date(booking.checkIn) > new Date();
+              return (
               <tr 
                 key={booking.id}
                 className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} ${!readOnly ? 'hover:bg-gold-50 cursor-pointer' : ''} transition-colors`}
                 onClick={() => !readOnly && onEditBooking?.(bookings[index])}
               >
-                <td className="px-4 py-3 text-sm whitespace-nowrap">{booking.checkIn} — {booking.checkOut}</td>
+                <td className="px-4 py-3 text-sm whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    {booking.checkIn} — {booking.checkOut}
+                    {isUpcoming && (
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Предстоящее</span>
+                    )}
+                  </div>
+                </td>
                 <td className="px-4 py-3 text-sm text-right">{booking.parking.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right">{booking.accommodationAmount.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right font-semibold">{booking.totalAmount.toLocaleString('ru')}</td>
@@ -269,7 +285,9 @@ const ReportsTable = ({
                 <td className="px-4 py-3 text-sm text-right">{booking.remainderBeforeManagement.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right">{booking.managementCommission.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-sm text-right text-orange-600">{booking.operatingExpenses.toLocaleString('ru')}</td>
-                <td className="px-4 py-3 text-sm text-right font-bold text-green-600 bg-green-50">{booking.ownerFunds.toLocaleString('ru')}</td>
+                <td className={`px-4 py-3 text-sm text-right font-bold ${
+                  isUpcoming ? 'text-blue-600 bg-blue-50' : 'text-green-600 bg-green-50'
+                }`}>{booking.ownerFunds.toLocaleString('ru')}</td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex gap-2 justify-center items-center">
                     {!readOnly && booking.paymentStatus !== 'paid' && (
@@ -314,7 +332,8 @@ const ReportsTable = ({
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
           <tfoot className="bg-gradient-to-r from-charcoal-800 to-charcoal-900 text-white font-bold">
             <tr>

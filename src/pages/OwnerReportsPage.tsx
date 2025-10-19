@@ -131,9 +131,15 @@ export default function OwnerReportsPage() {
   }
 
   const totalAmount = bookings.reduce((sum, b) => sum + b.ownerFunds, 0);
-  const pendingBookings = bookings.filter(b => b.paymentStatus !== 'paid');
+  const today = new Date();
+  
+  const upcomingBookings = bookings.filter(b => new Date(b.checkIn) > today && b.paymentStatus !== 'paid');
+  const currentBookings = bookings.filter(b => new Date(b.checkIn) <= today && b.paymentStatus !== 'paid');
   const paidBookings = bookings.filter(b => b.paymentStatus === 'paid');
-  const pendingAmount = pendingBookings.reduce((sum, b) => sum + b.ownerFunds, 0);
+  
+  const upcomingAmount = upcomingBookings.reduce((sum, b) => sum + b.ownerFunds, 0);
+  const currentAmount = currentBookings.reduce((sum, b) => sum + b.ownerFunds, 0);
+  const pendingAmount = upcomingAmount + currentAmount;
   const paidAmount = paidBookings.reduce((sum, b) => sum + b.ownerFunds, 0);
 
   return (
@@ -182,7 +188,31 @@ export default function OwnerReportsPage() {
 
       {/* Total Card */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-2xl">
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-white/90 font-medium mb-1">
+                    Предстоящие брони
+                  </p>
+                  <p className="text-xs text-white/70">
+                    До заселения
+                  </p>
+                </div>
+                <Icon name="Calendar" size={32} className="text-white/30" />
+              </div>
+              <div className="mt-4">
+                <p className="text-4xl font-bold text-white">
+                  {upcomingAmount.toLocaleString('ru')} ₽
+                </p>
+                <p className="text-sm text-white/80 mt-1">
+                  {upcomingBookings.length} {upcomingBookings.length === 1 ? 'бронирование' : upcomingBookings.length < 5 ? 'бронирования' : 'бронирований'}
+                </p>
+              </div>
+            </div>
+          </Card>
+
           <Card className="bg-gradient-to-br from-gold-500 to-gold-600 border-0 shadow-2xl">
             <div className="p-6">
               <div className="flex items-center justify-between">
@@ -191,17 +221,17 @@ export default function OwnerReportsPage() {
                     К получению
                   </p>
                   <p className="text-xs text-charcoal-900/60">
-                    {getCurrentMonthName()}
+                    Текущие брони
                   </p>
                 </div>
                 <Icon name="Clock" size={32} className="text-charcoal-900/30" />
               </div>
               <div className="mt-4">
                 <p className="text-4xl font-bold text-charcoal-900">
-                  {pendingAmount.toLocaleString('ru')} ₽
+                  {currentAmount.toLocaleString('ru')} ₽
                 </p>
                 <p className="text-sm text-charcoal-900/60 mt-1">
-                  {pendingBookings.length} {pendingBookings.length === 1 ? 'бронирование' : pendingBookings.length < 5 ? 'бронирования' : 'бронирований'}
+                  {currentBookings.length} {currentBookings.length === 1 ? 'бронирование' : currentBookings.length < 5 ? 'бронирования' : 'бронирований'}
                 </p>
               </div>
             </div>
