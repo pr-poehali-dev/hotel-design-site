@@ -11,6 +11,9 @@ export default function OwnerReportsPage() {
   const [error, setError] = useState<string | null>(null);
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string } | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  
+  const currentMonth = new Date().toLocaleDateString('ru', { month: 'long', year: 'numeric' });
 
   useEffect(() => {
     const token = localStorage.getItem('ownerToken');
@@ -86,6 +89,7 @@ export default function OwnerReportsPage() {
   }
 
   const totalAmount = bookings.reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
+  const paidAmount = bookings.filter(b => b.paymentStatus === 'paid').reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
@@ -111,38 +115,104 @@ export default function OwnerReportsPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <Card className="bg-gradient-to-br from-gold-500 to-gold-600 border-0 p-6 mb-6">
-          <div className="text-center">
-            <p className="text-sm text-charcoal-900/80 mb-2">Итого к получению</p>
-            <p className="text-4xl font-bold text-charcoal-900">{totalAmount.toLocaleString('ru')} ₽</p>
+        {/* Период */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Icon name="Calendar" size={20} className="text-gold-500" />
+            <span className="text-white font-semibold">{currentMonth}</span>
+            <span className="text-xs bg-gold-500/20 text-gold-500 px-2 py-1 rounded-full">Текущий период</span>
           </div>
-        </Card>
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            <Icon name="History" size={18} />
+            История
+          </button>
+        </div>
 
-        {bookings.length === 0 ? (
-          <Card className="p-8 text-center">
-            <Icon name="FileText" size={48} className="text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-400">Нет данных о бронированиях</p>
+        {/* Карточки сумм */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <Card className="bg-gradient-to-br from-gold-500 to-gold-600 border-0 p-6">
+            <div className="text-center">
+              <p className="text-sm text-charcoal-900/80 mb-2">Итого к получению</p>
+              <p className="text-3xl font-bold text-charcoal-900">{totalAmount.toLocaleString('ru')} ₽</p>
+            </div>
           </Card>
-        ) : (
-          <div className="space-y-4">
-            {bookings.map((booking) => (
-              <Card key={booking.id} className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-semibold text-white">{booking.guestName}</p>
-                    <p className="text-sm text-gray-400">
-                      {new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}
-                    </p>
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 border-0 p-6">
+            <div className="text-center">
+              <p className="text-sm text-white/80 mb-2">Уже оплачено</p>
+              <p className="text-3xl font-bold text-white">{paidAmount.toLocaleString('ru')} ₽</p>
+            </div>
+          </Card>
+        </div>
+
+        {/* Бронирования текущего периода */}
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-white mb-3">Бронирования</h2>
+          {bookings.length === 0 ? (
+            <Card className="p-8 text-center">
+              <Icon name="FileText" size={48} className="text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-400">Нет данных о бронированиях</p>
+            </Card>
+          ) : (
+            <div className="space-y-3">
+              {bookings.map((booking) => (
+                <Card key={booking.id} className="p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-semibold text-white">{booking.guestName}</p>
+                      <p className="text-sm text-gray-400">
+                        {new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-gold-500">{(booking.ownerFunds || 0).toLocaleString('ru')} ₽</p>
+                      {booking.paymentStatus === 'paid' && (
+                        <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full">Оплачено</span>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-gold-500">{(booking.ownerFunds || 0).toLocaleString('ru')} ₽</p>
-                    {booking.paymentStatus === 'paid' && (
-                      <span className="text-xs text-green-500">Оплачено</span>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* История оплат */}
+        {showHistory && (
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold text-white mb-3">История оплат</h2>
+            <div className="space-y-3">
+              {bookings.filter(b => b.paymentStatus === 'paid').length === 0 ? (
+                <Card className="p-6 text-center">
+                  <Icon name="Clock" size={40} className="text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-400">Нет оплаченных бронирований</p>
+                </Card>
+              ) : (
+                bookings.filter(b => b.paymentStatus === 'paid').map((booking) => (
+                  <Card key={booking.id} className="p-4 bg-charcoal-800/50">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-semibold text-white">{booking.guestName}</p>
+                        <p className="text-sm text-gray-400">
+                          {new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}
+                        </p>
+                        {booking.prepaymentDate && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Оплачено: {new Date(booking.prepaymentDate).toLocaleDateString('ru')}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-green-500">{(booking.ownerFunds || 0).toLocaleString('ru')} ₽</p>
+                        <Icon name="CheckCircle" size={16} className="text-green-500 ml-auto mt-1" />
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
           </div>
         )}
       </div>
