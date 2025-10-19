@@ -57,19 +57,26 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             result = []
             for booking in bookings:
+                total = float(booking['total_amount']) if booking['total_amount'] else 0
+                commission = float(booking['aggregator_commission']) if booking['aggregator_commission'] else 0
+                owner_funds = total - commission
+                
                 result.append({
                     'id': booking['id'],
-                    'apartment_id': booking['apartment_id'],
-                    'guest_name': booking['guest_name'],
-                    'guest_email': booking['guest_email'],
-                    'guest_phone': booking['guest_phone'],
-                    'check_in': str(booking['check_in']),
-                    'check_out': str(booking['check_out']),
-                    'total_amount': float(booking['total_amount']) if booking['total_amount'] else 0,
-                    'aggregator_commission': float(booking['aggregator_commission']) if booking['aggregator_commission'] else 0,
-                    'is_prepaid': booking.get('is_prepaid', False),
-                    'prepayment_amount': float(booking['prepayment_amount']) if booking.get('prepayment_amount') else 0,
-                    'prepayment_date': str(booking['prepayment_date']) if booking.get('prepayment_date') else None,
+                    'apartmentId': booking['apartment_id'],
+                    'guestName': booking['guest_name'],
+                    'guestEmail': booking['guest_email'],
+                    'guestPhone': booking['guest_phone'],
+                    'checkIn': str(booking['check_in']),
+                    'checkOut': str(booking['check_out']),
+                    'totalAmount': total,
+                    'aggregatorCommission': commission,
+                    'ownerFunds': owner_funds,
+                    'isPrepaid': booking.get('is_prepaid', False),
+                    'prepaymentAmount': float(booking['prepayment_amount']) if booking.get('prepayment_amount') else 0,
+                    'prepaymentDate': str(booking['prepayment_date']) if booking.get('prepayment_date') else None,
+                    'showToGuest': True,
+                    'paymentStatus': 'paid' if booking.get('is_prepaid', False) else 'pending'
                 })
             
             cursor.close()
