@@ -43,24 +43,35 @@ export default function OwnerReportsPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      if (!apartmentId) return;
+      if (!apartmentId) {
+        console.log('No apartmentId provided');
+        return;
+      }
       
+      console.log('Loading data for apartment:', apartmentId);
       setLoading(true);
       try {
+        console.log('Fetching owner info...');
         const response = await fetch(`https://functions.poehali.dev/03cef8fb-0be9-49db-bf4a-2867e6e483e5?apartment_id=${apartmentId}`);
         if (response.ok) {
           const info = await response.json();
+          console.log('Owner info:', info);
           setOwnerInfo(info);
         }
 
+        console.log('Fetching monthly reports...');
         const reportsResponse = await fetch(`https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9?apartment_id=${apartmentId}`);
         if (reportsResponse.ok) {
           const reports = await reportsResponse.json();
+          console.log('Monthly reports:', reports);
           setMonthlyReports(reports);
         }
 
+        console.log('Fetching bookings...');
         const bookingsData = await bookingsAPI.getBookings(apartmentId);
+        console.log('Raw bookings:', bookingsData);
         const filteredBookings = bookingsData.filter((b: BookingRecord) => b.showToGuest);
+        console.log('Filtered bookings:', filteredBookings);
         setBookings(filteredBookings);
       } catch (error) {
         console.error('Failed to load data:', error);
