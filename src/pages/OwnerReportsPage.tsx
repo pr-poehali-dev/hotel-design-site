@@ -130,17 +130,18 @@ export default function OwnerReportsPage() {
     );
   }
 
-  const totalAmount = bookings.reduce((sum, b) => sum + b.ownerFunds, 0);
+  const safeBookings = bookings || [];
+  const totalAmount = safeBookings.reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
   const today = new Date();
   
-  const upcomingBookings = bookings.filter(b => new Date(b.checkIn) > today && b.paymentStatus !== 'paid');
-  const currentBookings = bookings.filter(b => new Date(b.checkIn) <= today && b.paymentStatus !== 'paid');
-  const paidBookings = bookings.filter(b => b.paymentStatus === 'paid');
+  const upcomingBookings = safeBookings.filter(b => new Date(b.checkIn) > today && b.paymentStatus !== 'paid');
+  const currentBookings = safeBookings.filter(b => new Date(b.checkIn) <= today && b.paymentStatus !== 'paid');
+  const paidBookings = safeBookings.filter(b => b.paymentStatus === 'paid');
   
-  const upcomingAmount = upcomingBookings.reduce((sum, b) => sum + b.ownerFunds, 0);
-  const currentAmount = currentBookings.reduce((sum, b) => sum + b.ownerFunds, 0);
+  const upcomingAmount = upcomingBookings.reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
+  const currentAmount = currentBookings.reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
   const pendingAmount = upcomingAmount + currentAmount;
-  const paidAmount = paidBookings.reduce((sum, b) => sum + b.ownerFunds, 0);
+  const paidAmount = paidBookings.reduce((sum, b) => sum + (b.ownerFunds || 0), 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
