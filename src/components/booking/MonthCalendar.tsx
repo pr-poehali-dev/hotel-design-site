@@ -12,11 +12,23 @@ const MonthCalendar = ({ selectedApartment, availability, onDateSelect, selected
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const isDateDisabled = (date: Date) => {
-    if (!selectedApartment) return false;
+    if (!selectedApartment) {
+      console.log('🔴 No apartment selected');
+      return false;
+    }
     const dateStr = date.toISOString().split('T')[0];
     const aptAvailability = availability[selectedApartment];
-    if (!aptAvailability) return false;
-    return aptAvailability[dateStr]?.available === false;
+    
+    if (!aptAvailability) {
+      console.log(`🔴 No availability data for apartment ${selectedApartment}. Available apartments:`, Object.keys(availability));
+      return false;
+    }
+    
+    const isUnavailable = aptAvailability[dateStr]?.available === false;
+    if (isUnavailable) {
+      console.log(`🔴 Date ${dateStr} is unavailable for apartment ${selectedApartment}`);
+    }
+    return isUnavailable;
   };
 
   const isDateSelected = (date: Date) => {
