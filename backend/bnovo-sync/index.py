@@ -3,7 +3,6 @@ import os
 from typing import Dict, Any
 import urllib.request
 import urllib.parse
-import base64
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -26,28 +25,65 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': ''
         }
     
-    # Получаем credentials из секретов
-    account_id = os.environ.get('BNOVO_API_KEY', '111392')
-    api_password = os.environ.get('BNOVO_API_PASSWORD', 'UHZ6V1B3bzRoZzdSbzN0R1BmbHA4eXVxSUZUcjFaZkVobW1tb0lCcitsZz18YjRiZTNhNzVmOTVhZmMwY2Y5MDQ2NDk0ZjBiNTgyY2Q=')
+    # Получаем credentials из секретов (это логин и пароль от Bnovo)
+    login = os.environ.get('BNOVO_API_KEY', '111392')  # ID аккаунта используется как логин
+    password = os.environ.get('BNOVO_API_PASSWORD', '')
     
     try:
-        # Используем прямой доступ по API (без JWT, через Account ID + пароль)
-        # Формируем URL с учётными данными
-        bookings_url = f'https://online.bnovo.ru/{account_id}/api/bookings?password={urllib.parse.quote(api_password)}'
+        # Шаг 1: Авторизация и получение JWT токена
+        auth_url = 'https://online.bnovo.ru/api/v1/auth'
+        auth_payload = {
+            'login': login,
+            'password': password
+        }
+        
+        auth_request = urllib.request.Request(
+            auth_url,
+            data=json.dumps(auth_payload).encode('utf-8'),
+            headers={
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            method='POST'
+        )
+        
+        with urllib.request.urlopen(auth_request, timeout=30) as auth_response:
+            auth_data = json.loads(auth_response.read().decode())
+        
+        # Извлекаем JWT токен
+        jwt_token = auth_data.get('token') or auth_data.get('access_token')
+        
+        if not jwt_token:
+            return {
+                'statusCode': 401,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({
+                    'success': False,
+                    'error': 'Failed to get JWT token',
+                    'auth_response': auth_data
+                })
+            }
+        
+        # Шаг 2: Получаем список бронирований с JWT токеном
+        bookings_url = 'https://online.bnovo.ru/api/v1/bookings'
         
         bookings_request = urllib.request.Request(
             bookings_url,
-            headers={'Content-Type': 'application/json'}
+            headers={
+                'Authorization': f'Bearer {jwt_token}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
         )
         
-        with urllib.request.urlopen(bookings_request, timeout=30) as response:
-            bnovo_data = json.loads(response.read().decode())
+        with urllib.request.urlopen(bookings_request, timeout=30) as bookings_response:
+            bookings_data = json.loads(bookings_response.read().decode())
         
-        # Проверяем формат ответа
-        if isinstance(bnovo_data, dict):
-            bookings_list = bnovo_data.get('data', bnovo_data.get('bookings', []))
-        elif isinstance(bnovo_data, list):
-            bookings_list = bnovo_data
+        # Извлекаем список бронирований
+        if isinstance(bookings_data, dict):
+            bookings_list = bookings_data.get('data', bookings_data.get('bookings', []))
+        elif isinstance(bookings_data, list):
+            bookings_list = bookings_data
         else:
             bookings_list = []
         
@@ -58,19 +94,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({
                 'success': True,
                 'total_from_bnovo': len(bookings_list),
-                'sample': bookings_list[:3] if bookings_list else [],
-                'message': 'Bnovo API connection successful'
-            })
+                'sample_bookings': bookings_list[:3] if bookings_list else [],
+                'message': 'Successfully connected to Bnovo API'
+            }, ensure_ascii=False)
         }
     
     except urllib.error.HTTPError as e:
-        error_body = e.read().decode() if e.fp else str(e)
+        error_body = e.read().decode('utf-8', errors='ignore') if e.fp else str(e)
         return {
-            'statusCode': 500,
+            'statusCode': e.code,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({
                 'success': False,
-                'error': f'HTTP Error {e.code}: {error_body}'
+                'error': f'HTTP {e.code}',
+                'details': error_body[:500]  # Первые 500 символов ошибки
             })
         }
     
