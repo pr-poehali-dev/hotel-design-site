@@ -121,20 +121,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
             </li>
           ))}
         </ul>
-        
-        {room.video && (
-          <div className="mt-6">
-            <h4 className="text-base md:text-lg font-semibold text-charcoal-800 mb-3 font-playfair">Видео номера</h4>
-            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <iframe
-                src={room.video}
-                className="absolute top-0 left-0 w-full h-full rounded-lg"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
-        )}
+
         
         {room.description && (
           <Dialog open={open} onOpenChange={setOpen}>
@@ -169,32 +156,18 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
       <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
         <DialogContent className="max-w-[95vw] max-h-[95vh] p-0">
           <div className="relative w-full h-[90vh] bg-black flex items-center justify-center">
-            {room.video && currentImageIndex === (room.gallery?.length || 0) ? (
-              <div className="w-full h-full flex items-center justify-center p-8">
-                <div className="relative w-full max-w-6xl" style={{ paddingBottom: '56.25%' }}>
-                  <iframe
-                    src={room.video}
-                    className="absolute top-0 left-0 w-full h-full rounded-lg"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              </div>
-            ) : (
-              <img
-                src={room.gallery ? room.gallery[currentImageIndex % (room.gallery.length)] : room.image}
-                alt={room.name}
-                className="w-full h-full object-contain"
-              />
-            )}
+            <img
+              src={room.gallery ? room.gallery[currentImageIndex % (room.gallery.length)] : room.image}
+              alt={room.name}
+              className="w-full h-full object-contain"
+            />
             
-            {((room.gallery && room.gallery.length > 1) || room.video) && (
+            {room.gallery && room.gallery.length > 1 && (
               <>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const totalItems = (room.gallery?.length || 0) + (room.video ? 1 : 0);
-                    onImageChange(-1, totalItems);
+                    onImageChange(-1, room.gallery!.length);
                   }}
                   className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full p-4 transition-all z-10"
                 >
@@ -203,8 +176,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const totalItems = (room.gallery?.length || 0) + (room.video ? 1 : 0);
-                    onImageChange(1, totalItems);
+                    onImageChange(1, room.gallery!.length);
                   }}
                   className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full p-4 transition-all z-10"
                 >
