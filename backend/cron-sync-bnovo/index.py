@@ -179,17 +179,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 skipped_bookings += 1
                 continue
             
-            # Получаем room_id из Bnovo (это bnovo_id апартамента)
-            bnovo_room_id = booking.get('room_id')
+            # Получаем room_name из Bnovo (например: "1116", "816", "2019")
+            room_name = booking.get('room_name', '')
             
-            # Находим наш апартамент по bnovo_id
+            # Находим наш апартамент по bnovo_name (полное совпадение)
             cur.execute(
-                "SELECT id, number FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_id = %s",
-                (bnovo_room_id,)
+                "SELECT id, number, bnovo_name FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_name = %s",
+                (room_name,)
             )
             room = cur.fetchone()
             
             if not room:
+                if skipped_bookings == 0:
+                    print(f"[DEBUG] Room not found for room_name='{room_name}', booking fields: {list(booking.keys())[:20]}")
                 skipped_bookings += 1
                 continue
             
