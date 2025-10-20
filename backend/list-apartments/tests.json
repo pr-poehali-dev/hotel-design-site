@@ -1,0 +1,15 @@
+{
+  "tests": [
+    {
+      "name": "Get apartments list",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "apartments": "array",
+        "total": "number"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

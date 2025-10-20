@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Get availability calendar",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "availability": "object"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

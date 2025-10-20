@@ -1,4 +1,7 @@
 {
+  "check-availability": "https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6",
+  "list-apartments": "https://functions.poehali.dev/7cb67a25-c7f6-4902-8274-277a31ef2bcf",
+  "create-booking": "https://functions.poehali.dev/5a3ff68a-6bba-444f-a0a4-7dd5e4569530",
   "cron-sync-bnovo": "https://functions.poehali.dev/3db1fcfb-2f3e-4cf4-bf62-c73636a166f6",
   "sync-bnovo-to-db": "https://functions.poehali.dev/2faa4887-dddc-4f5a-8a48-3073dd398dbd",
   "apartment-availability": "https://functions.poehali.dev/76c58b68-2c97-40a0-96b0-e94d934c808f",
