@@ -55,8 +55,10 @@ const BookingSection = () => {
     try {
       const response = await fetch('https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6');
       const data = await response.json();
+      console.log('Availability data loaded:', data);
       if (data.availability) {
         setAvailability(data.availability);
+        console.log('Availability set:', data.availability);
       }
     } catch (error) {
       console.error('Failed to load availability:', error);

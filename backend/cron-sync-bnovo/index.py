@@ -76,48 +76,74 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         date_from = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
         date_to = (datetime.now() + timedelta(days=180)).strftime('%Y-%m-%d')
         
-        # Делаем несколько запросов для получения всех бронирований (лимит 20 за запрос)
-        all_bookings = []
-        offset = 0
-        max_iterations = 10  # Максимум 200 бронирований
+        # Используем endpoint /plan который возвращает данные с датами
+        params = urllib.parse.urlencode({
+            'date_from': date_from,
+            'date_to': date_to
+        })
+        plan_url = f'https://api.pms.bnovo.ru/api/v1/plan?{params}'
         
-        for _ in range(max_iterations):
-            params = urllib.parse.urlencode({
-                'date_from': date_from,
-                'date_to': date_to,
-                'limit': 20,
-                'offset': offset
-            })
-            bookings_url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
-            
-            bookings_request = urllib.request.Request(
-                bookings_url,
-                headers={
-                    'Authorization': f'Bearer {jwt_token}',
-                    'Accept': 'application/json'
-                }
-            )
-            
-            with urllib.request.urlopen(bookings_request, timeout=30) as response:
-                bookings_data = json.loads(response.read().decode())
-            
-            # Bnovo возвращает данные в формате {'data': {'bookings': [...]}}
-            if isinstance(bookings_data, dict):
-                if 'data' in bookings_data and isinstance(bookings_data['data'], dict):
-                    batch = bookings_data['data'].get('bookings', [])
-                else:
-                    batch = bookings_data.get('bookings', bookings_data.get('data', []))
-            else:
-                batch = bookings_data
-            
-            if not isinstance(batch, list) or len(batch) == 0:
-                break
-            
-            all_bookings.extend(batch)
-            offset += 20
-            
-            if len(batch) < 20:
-                break
+        plan_request = urllib.request.Request(
+            plan_url,
+            headers={
+                'Authorization': f'Bearer {jwt_token}',
+                'Accept': 'application/json'
+            }
+        )
+        
+        with urllib.request.urlopen(plan_request, timeout=30) as response:
+            plan_data = json.loads(response.read().decode())
+        
+        # Извлекаем бронирования из плана
+        all_bookings = []
+        if isinstance(plan_data, dict) and 'data' in plan_data:
+            rooms_data = plan_data['data'].get('rooms', [])
+            for room in rooms_data:
+                if isinstance(room, dict):
+                    bookings = room.get('bookings', [])
+                    all_bookings.extend(bookings)
+        
+        # Старый код для бэкапа (закомментирован)
+        # all_bookings = []
+        # offset = 0
+        # max_iterations = 2
+        
+        # for _ in range(max_iterations):
+        #     params = urllib.parse.urlencode({
+        #         'date_from': date_from,
+        #         'date_to': date_to,
+        #         'limit': 20,
+        #         'offset': offset
+        #     })
+        #     bookings_url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
+        #     
+        #     bookings_request = urllib.request.Request(
+        #         bookings_url,
+        #         headers={
+        #             'Authorization': f'Bearer {jwt_token}',
+        #             'Accept': 'application/json'
+        #         }
+        #     )
+        #     
+        #     with urllib.request.urlopen(bookings_request, timeout=30) as response:
+        #         bookings_data = json.loads(response.read().decode())
+        #     
+        #     if isinstance(bookings_data, dict):
+        #         if 'data' in bookings_data and isinstance(bookings_data['data'], dict):
+        #             batch = bookings_data['data'].get('bookings', [])
+        #         else:
+        #             batch = bookings_data.get('bookings', bookings_data.get('data', []))
+        #     else:
+        #         batch = bookings_data
+        #     
+        #     if not isinstance(batch, list) or len(batch) == 0:
+        #         break
+        #     
+        #     all_bookings.extend(batch)
+        #     offset += 20
+        #     
+        #     if len(batch) < 20:
+        #         break
         
         # Подключаемся к базе данных
         conn = psycopg2.connect(database_url)
@@ -128,19 +154,51 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         updated_calendar = 0
         skipped_bookings = 0
         
-        # Синхронизируем бронирования
-        for booking in all_bookings:
-            if not isinstance(booking, dict):
+        # Синхронизируем бронирования  
+        for booking_summary in all_bookings:
+            if not isinstance(booking_summary, dict):
                 continue
             
-            bnovo_booking_id = booking.get('id')
+            bnovo_booking_id = booking_summary.get('id')
+            if not bnovo_booking_id:
+                skipped_bookings += 1
+                continue
+            
+            # Получаем детали бронирования отдельным запросом
+            try:
+                detail_url = f'https://api.pms.bnovo.ru/api/v1/bookings/{bnovo_booking_id}'
+                detail_request = urllib.request.Request(
+                    detail_url,
+                    headers={
+                        'Authorization': f'Bearer {jwt_token}',
+                        'Accept': 'application/json'
+                    }
+                )
+                
+                with urllib.request.urlopen(detail_request, timeout=10) as detail_response:
+                    detail_data = json.loads(detail_response.read().decode())
+                
+                # Извлекаем данные бронирования
+                if isinstance(detail_data, dict) and 'data' in detail_data:
+                    booking = detail_data['data']
+                else:
+                    booking = detail_data
+                    
+            except Exception as e:
+                if skipped_bookings == 0:
+                    print(f"[DEBUG] Failed to fetch booking details: {str(e)}")
+                skipped_bookings += 1
+                continue
+            
             room_id = str(booking.get('room_id', ''))
             
             # Извлекаем даты из разных возможных полей
-            check_in = booking.get('check_in') or booking.get('arrival') or booking.get('check_in_date')
-            check_out = booking.get('check_out') or booking.get('departure') or booking.get('check_out_date')
+            check_in = booking.get('check_in') or booking.get('arrival') or booking.get('check_in_date') or booking.get('arrival_date')
+            check_out = booking.get('check_out') or booking.get('departure') or booking.get('check_out_date') or booking.get('departure_date')
             
             if not check_in or not check_out:
+                if skipped_bookings == 0:
+                    print(f"[DEBUG] No dates in booking details, fields: {list(booking.keys())[:15]}")
                 skipped_bookings += 1
                 continue
             
