@@ -179,19 +179,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 skipped_bookings += 1
                 continue
             
-            # Получаем room_name из Bnovo (например: "Поклонная 9 - 3х комнатный Gold Suite")
-            room_name = booking.get('room_name', '')
+            # Получаем room_name из Bnovo (это номер апартамента, например: "1401", "906")
+            room_name_raw = booking.get('room_name', '')
+            room_number = str(room_name_raw).replace("'", "''") if room_name_raw else ''
             
-            # Находим наш апартамент по bnovo_name (полное совпадение)
+            # Находим наш апартамент по номеру
             cur.execute(
-                "SELECT id, number, bnovo_name FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_name = %s",
-                (room_name,)
+                f"SELECT id, number, bnovo_name FROM t_p9202093_hotel_design_site.rooms WHERE number = '{room_number}'"
             )
             room = cur.fetchone()
             
             if not room:
                 if skipped_bookings == 0:
-                    print(f"[DEBUG] Room not found for room_name='{room_name}', booking fields: {list(booking.keys())[:20]}")
+                    print(f"[DEBUG] Room not found for room_number='{room_number}', booking fields: {list(booking.keys())[:20]}")
                 skipped_bookings += 1
                 continue
             
@@ -215,8 +215,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             # Проверяем, существует ли бронирование
             cur.execute(
-                "SELECT id FROM t_p9202093_hotel_design_site.bookings WHERE bnovo_id = %s",
-                (bnovo_booking_id,)
+                f"SELECT id FROM t_p9202093_hotel_design_site.bookings WHERE bnovo_id = '{bnovo_booking_id}'"
             )
             existing = cur.fetchone()
             
@@ -241,38 +240,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 adults = extra.get('adults', 2)
                 children = extra.get('children', 0)
                 
-                cur.execute("""
+                guest_name_escaped = guest_name.replace("'", "''")
+                guest_email_escaped = guest_email.replace("'", "''")
+                guest_phone_escaped = guest_phone.replace("'", "''")
+                notes_escaped = json.dumps(booking, ensure_ascii=False)[:500].replace("'", "''")
+                
+                cur.execute(f"""
                     INSERT INTO t_p9202093_hotel_design_site.bookings 
                     (id, bnovo_id, apartment_id, check_in, check_out, guest_name, guest_email, 
                      guest_phone, guests_count, accommodation_amount, total_amount, status, source, notes)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES ('{booking_id}', '{bnovo_booking_id}', '{apartment_id}', '{check_in}', '{check_out}', 
+                            '{guest_name_escaped}', '{guest_email_escaped}', '{guest_phone_escaped}', 
+                            {adults + children}, {booking.get('amount', 0)}, {booking.get('amount', 0)}, 
+                            'confirmed', 'bnovo', '{notes_escaped}')
                     ON CONFLICT (id) DO NOTHING
-                """, (
-                    booking_id,
-                    bnovo_booking_id,
-                    apartment_id,
-                    check_in,
-                    check_out,
-                    guest_name,
-                    guest_email,
-                    guest_phone,
-                    adults + children,
-                    booking.get('amount', 0),
-                    booking.get('amount', 0),
-                    'confirmed',
-                    'bnovo',
-                    json.dumps(booking, ensure_ascii=False)[:500]
-                ))
+                """)
                 synced_bookings += 1
                 
                 # Обновляем календарь доступности
-                cur.execute("""
+                cur.execute(f"""
                     INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
                     (room_id, date, is_available, booking_id, price)
-                    SELECT %s, generate_series(%s::date, %s::date - interval '1 day', '1 day')::date, false, %s, %s
+                    SELECT '{apartment_id}', generate_series('{check_in}'::date, '{check_out}'::date - interval '1 day', '1 day')::date, false, '{booking_id}', {booking.get('amount', 0)}
                     ON CONFLICT (room_id, date) 
                     DO UPDATE SET is_available = false, booking_id = EXCLUDED.booking_id
-                """, (apartment_id, check_in, check_out, booking_id, booking.get('amount', 0)))
+                """)
                 updated_calendar += 1
         
         conn.commit()
