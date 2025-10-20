@@ -211,9 +211,19 @@ const BookingSection = () => {
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
                     min={minDate}
-                    className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 transition-all ${
+                      checkIn && isDateDisabled(checkIn) 
+                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200' 
+                        : 'border-charcoal-200 focus:border-gold-500 focus:ring-gold-200'
+                    }`}
                     required
                   />
+                  {checkIn && isDateDisabled(checkIn) && (
+                    <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
+                      <Icon name="AlertCircle" size={14} />
+                      Эта дата занята
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-charcoal-700 font-semibold mb-2 font-inter">
@@ -224,9 +234,19 @@ const BookingSection = () => {
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
                     min={checkIn || minDate}
-                    className="w-full px-4 py-3 border border-charcoal-200 rounded-lg focus:border-gold-500 focus:ring-2 focus:ring-gold-200 transition-all"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 transition-all ${
+                      checkOut && isDateDisabled(checkOut) 
+                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200' 
+                        : 'border-charcoal-200 focus:border-gold-500 focus:ring-gold-200'
+                    }`}
                     required
                   />
+                  {checkOut && isDateDisabled(checkOut) && (
+                    <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
+                      <Icon name="AlertCircle" size={14} />
+                      Эта дата занята
+                    </p>
+                  )}
                 </div>
               </div>
               
@@ -247,6 +267,39 @@ const BookingSection = () => {
                   ))}
                 </select>
               </div>
+
+              {selectedApartment && availability[selectedApartment] && (
+                <div className="bg-gold-50 border border-gold-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-charcoal-900 mb-3 flex items-center gap-2">
+                    <Icon name="CalendarX" size={18} className="text-red-500" />
+                    Занятые даты
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(availability[selectedApartment])
+                      .filter(([_, data]) => data.available === false)
+                      .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+                      .slice(0, 10)
+                      .map(([date]) => (
+                        <span 
+                          key={date}
+                          className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium border border-red-300"
+                        >
+                          {new Date(date + 'T00:00:00').toLocaleDateString('ru-RU', { 
+                            day: 'numeric', 
+                            month: 'short' 
+                          })}
+                        </span>
+                      ))}
+                    {Object.entries(availability[selectedApartment])
+                      .filter(([_, data]) => data.available === false).length > 10 && (
+                        <span className="px-3 py-1 text-charcoal-600 text-sm">
+                          и ещё {Object.entries(availability[selectedApartment])
+                            .filter(([_, data]) => data.available === false).length - 10}...
+                        </span>
+                      )}
+                  </div>
+                </div>
+              )}
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
