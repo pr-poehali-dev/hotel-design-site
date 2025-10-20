@@ -33,14 +33,48 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     encoded_credentials = base64.b64encode(credentials.encode()).decode()
     
     try:
-        # Согласно документации Bnovo: GET https://online.bnovo.ru/{ACCOUNT_ID}/bookings
-        # с Basic Auth заголовком
-        url = f'https://online.bnovo.ru/{account_id}/bookings'
+        # Правильный API endpoint: https://api.pms.bnovo.ru
+        # Сначала авторизуемся и получаем JWT токен
+        auth_url = 'https://api.pms.bnovo.ru/auth/login'
+        auth_payload = {
+            'account_id': int(account_id),
+            'password': password
+        }
+        
+        auth_request = urllib.request.Request(
+            auth_url,
+            data=json.dumps(auth_payload).encode('utf-8'),
+            headers={
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            method='POST'
+        )
+        
+        with urllib.request.urlopen(auth_request, timeout=30) as auth_response:
+            auth_data = json.loads(auth_response.read().decode())
+        
+        # Получаем JWT токен
+        jwt_token = auth_data.get('token') or auth_data.get('access_token') or auth_data.get('data', {}).get('token')
+        
+        if not jwt_token:
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({
+                    'success': False,
+                    'error': 'JWT token not found in response',
+                    'auth_response': auth_data
+                })
+            }
+        
+        # Теперь получаем бронирования с JWT токеном
+        url = 'https://api.pms.bnovo.ru/bookings'
         
         request_obj = urllib.request.Request(
             url,
             headers={
-                'Authorization': f'Basic {encoded_credentials}',
+                'Authorization': f'Bearer {jwt_token}',
                 'Accept': 'application/json'
             }
         )
@@ -68,7 +102,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({
                 'success': False,
                 'http_code': e.code,
-                'url_tested': url,
+                'url_tested': e.url if hasattr(e, 'url') else 'https://api.pms.bnovo.ru',
                 'error_details': error_body[:1000]
             })
         }
@@ -81,6 +115,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'success': False,
                 'error': str(e),
                 'error_type': type(e).__name__,
-                'url_tested': f'https://online.bnovo.ru/{account_id}/bookings'
+                'url_tested': 'https://api.pms.bnovo.ru/v2/auth/login'
             })
         }
