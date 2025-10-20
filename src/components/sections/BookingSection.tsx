@@ -54,9 +54,10 @@ const BookingSection = () => {
 
   const loadAvailability = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6');
+      const response = await fetch(`https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6?t=${Date.now()}`);
       const data = await response.json();
       console.log('Availability data loaded:', data);
+      console.log('Apartment 2019 availability:', data.availability?.['2019']);
       if (data.availability) {
         setAvailability(data.availability);
         console.log('Availability set:', data.availability);
@@ -313,7 +314,21 @@ const BookingSection = () => {
               </div>
 
               {selectedApartment && (
-                <div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-charcoal-900 flex items-center gap-2">
+                      <Icon name="Calendar" size={20} />
+                      Выберите даты
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={loadAvailability}
+                      className="text-sm text-gold-600 hover:text-gold-700 flex items-center gap-1 transition-colors"
+                    >
+                      <Icon name="RefreshCw" size={16} />
+                      Обновить
+                    </button>
+                  </div>
                   <MonthCalendar
                     selectedApartment={selectedApartment}
                     availability={availability}
