@@ -1,4 +1,5 @@
 {
+  "sync-bnovo-rates": "https://functions.poehali.dev/1ba1af50-08d7-4d68-b540-a0e059d359df",
   "check-availability": "https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6",
   "list-apartments": "https://functions.poehali.dev/7cb67a25-c7f6-4902-8274-277a31ef2bcf",
   "create-booking": "https://functions.poehali.dev/5a3ff68a-6bba-444f-a0a4-7dd5e4569530",
