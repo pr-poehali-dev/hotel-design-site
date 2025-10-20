@@ -10,6 +10,11 @@ interface MonthCalendarProps {
 
 const MonthCalendar = ({ selectedApartment, availability, onDateSelect, selectedDates }: MonthCalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  
+  console.log('📅 MonthCalendar rendered');
+  console.log('  Selected apartment:', selectedApartment);
+  console.log('  Availability keys:', Object.keys(availability));
+  console.log('  Availability for selected:', availability[selectedApartment]);
 
   const isDateDisabled = (date: Date) => {
     if (!selectedApartment) {
