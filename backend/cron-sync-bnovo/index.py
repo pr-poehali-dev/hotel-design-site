@@ -166,8 +166,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         
         synced_bookings = 0
-        updated_calendar = 0
         skipped_bookings = 0
+        updated_calendar = 0
         
         # Синхронизируем бронирования  
         for booking in all_bookings:
@@ -261,6 +261,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     json.dumps(booking, ensure_ascii=False)[:500]
                 ))
                 synced_bookings += 1
+                
+                # Обновляем календарь доступности
+                cur.execute("""
+                    INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
+                    (room_id, date, is_available, booking_id, price)
+                    SELECT %s, generate_series(%s::date, %s::date - interval '1 day', '1 day')::date, false, %s, %s
+                    ON CONFLICT (room_id, date) 
+                    DO UPDATE SET is_available = false, booking_id = EXCLUDED.booking_id
+                """, (apartment_id, check_in, check_out, booking_id, booking.get('amount', 0)))
+                updated_calendar += 1
         
         conn.commit()
         cur.close()
@@ -271,6 +281,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'success': True,
             'timestamp': datetime.now().isoformat(),
             'synced_bookings': synced_bookings,
+            'updated_calendar': updated_calendar,
             'skipped_bookings': skipped_bookings,
             'total_bookings_from_bnovo': len(all_bookings)
         }
