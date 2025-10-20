@@ -2,7 +2,10 @@ import json
 import os
 from typing import Dict, Any
 import urllib.request
+import urllib.parse
+import urllib.error
 import base64
+from datetime import datetime, timedelta
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -25,8 +28,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': ''
         }
     
-    account_id = os.environ.get('BNOVO_API_KEY', '111392')
-    password = os.environ.get('BNOVO_API_PASSWORD', '')
+    account_id = os.environ.get('BNOVO_ACCOUNT_ID', '')
+    password = os.environ.get('BNOVO_PASSWORD', '')
     
     # Кодируем логин:пароль в Base64 для Basic Auth
     credentials = f'{account_id}:{password}'
@@ -54,8 +57,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         with urllib.request.urlopen(auth_request, timeout=30) as auth_response:
             auth_data = json.loads(auth_response.read().decode())
         
-        # Получаем JWT токен
-        jwt_token = auth_data.get('token') or auth_data.get('access_token') or auth_data.get('data', {}).get('token')
+        # Получаем JWT токен из data.access_token
+        jwt_token = auth_data.get('data', {}).get('access_token') or auth_data.get('access_token') or auth_data.get('token')
         
         if not jwt_token:
             return {
@@ -69,7 +72,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         # Теперь получаем бронирования с JWT токеном
-        url = 'https://api.pms.bnovo.ru/api/v1/bookings'
+        # Добавляем обязательные параметры: date_from, date_to, limit, offset
+        # Получаем бронирования за последние 30 дней и следующие 90 дней
+        # Bnovo использует формат даты Y-m-d (например, 2025-06-25)
+        date_from = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        date_to = (datetime.now() + timedelta(days=90)).strftime('%Y-%m-%d')
+        
+        # Формируем URL с параметрами (limit max 20)
+        params = urllib.parse.urlencode({
+            'date_from': date_from,
+            'date_to': date_to,
+            'limit': 20,
+            'offset': 0
+        })
+        url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
         
         request_obj = urllib.request.Request(
             url,
@@ -89,8 +105,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({
                 'success': True,
                 'message': 'Successfully connected to Bnovo',
-                'total_bookings': len(data) if isinstance(data, list) else len(data.get('data', [])),
-                'sample': data[:2] if isinstance(data, list) else data.get('data', [])[:2]
+                'bookings': data.get('data', []) if isinstance(data, dict) else data,
+                'total_bookings': len(data.get('data', [])) if isinstance(data, dict) else len(data)
             }, ensure_ascii=False)
         }
     
