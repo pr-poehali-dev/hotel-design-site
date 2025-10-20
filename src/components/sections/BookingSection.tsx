@@ -53,17 +53,26 @@ const BookingSection = () => {
   };
 
   const loadAvailability = async () => {
+    console.log('🔄 Starting to load availability...');
     try {
-      const response = await fetch(`https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6?t=${Date.now()}`);
+      const url = `https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6?t=${Date.now()}`;
+      console.log('📡 Fetching from:', url);
+      
+      const response = await fetch(url);
+      console.log('📦 Response status:', response.status);
+      
       const data = await response.json();
-      console.log('Availability data loaded:', data);
-      console.log('Apartment 2019 availability:', data.availability?.['2019']);
+      console.log('✅ Availability data loaded:', data);
+      console.log('🏠 Apartment 2019 availability:', data.availability?.['2019']);
+      
       if (data.availability) {
         setAvailability(data.availability);
-        console.log('Availability set:', data.availability);
+        console.log('💾 Availability set to state');
+      } else {
+        console.warn('⚠️ No availability data in response');
       }
     } catch (error) {
-      console.error('Failed to load availability:', error);
+      console.error('❌ Failed to load availability:', error);
     }
   };
 
