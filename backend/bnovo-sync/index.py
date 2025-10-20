@@ -98,23 +98,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         with urllib.request.urlopen(request_obj, timeout=30) as response:
             data = json.loads(response.read().decode())
         
-        # Получаем список комнат (апартаментов)
-        rooms_url = 'https://api.pms.bnovo.ru/api/v1/rooms'
-        rooms_request = urllib.request.Request(
-            rooms_url,
-            headers={
-                'Authorization': f'Bearer {jwt_token}',
-                'Accept': 'application/json'
-            }
-        )
-        
-        rooms_data = {}
-        try:
-            with urllib.request.urlopen(rooms_request, timeout=30) as rooms_response:
-                rooms_data = json.loads(rooms_response.read().decode())
-        except Exception as rooms_error:
-            rooms_data = {'error': str(rooms_error)}
-        
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -123,8 +106,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'success': True,
                 'message': 'Successfully connected to Bnovo',
                 'bookings': data.get('data', []) if isinstance(data, dict) else data,
-                'total_bookings': len(data.get('data', [])) if isinstance(data, dict) else len(data),
-                'rooms': rooms_data.get('data', []) if isinstance(rooms_data, dict) else rooms_data
+                'total_bookings': len(data.get('data', [])) if isinstance(data, dict) else len(data)
             }, ensure_ascii=False)
         }
     
@@ -149,17 +131,5 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'success': False,
                 'error': str(e),
                 'error_type': type(e).__name__
-            })
-        }
-    
-    except Exception as e:
-        return {
-            'statusCode': 200,  # Возвращаем 200 чтобы увидеть детали ошибки
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({
-                'success': False,
-                'error': str(e),
-                'error_type': type(e).__name__,
-                'url_tested': 'https://api.pms.bnovo.ru/v2/auth/login'
             })
         }

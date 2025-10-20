@@ -17,6 +17,8 @@ export default function AdminOwnersPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingOwner, setEditingOwner] = useState<Owner | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState('');
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -110,6 +112,28 @@ export default function AdminOwnersPage() {
     }
   };
 
+  const handleSyncBnovo = async () => {
+    setSyncing(true);
+    setSyncMessage('Синхронизация...');
+    try {
+      const response = await fetch('https://functions.poehali.dev/3db1fcfb-2f3e-4cf4-bf62-c73636a166f6', {
+        method: 'POST'
+      });
+      const result = await response.json();
+      if (result.success) {
+        setSyncMessage(`Синхронизировано ${result.synced_bookings} бронирований`);
+      } else {
+        setSyncMessage(`Ошибка: ${result.error}`);
+      }
+    } catch (err) {
+      setSyncMessage('Ошибка синхронизации');
+      console.error('Sync error:', err);
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncMessage(''), 5000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 flex items-center justify-center">
@@ -136,17 +160,30 @@ export default function AdminOwnersPage() {
                 <p className="text-xs text-gray-400">Администратор</p>
               </div>
             </div>
-            <button
-              onClick={() => {
-                setEditingOwner(null);
-                setFormData({ username: '', password: '', full_name: '', apartment_number: '', email: '', phone: '' });
-                setShowModal(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-gold-500 text-charcoal-900 rounded-lg font-semibold hover:bg-gold-600 transition-colors"
-            >
-              <Icon name="Plus" size={20} />
-              Добавить инвестора
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSyncBnovo}
+                disabled={syncing}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors disabled:opacity-50"
+              >
+                <Icon name={syncing ? "Loader2" : "RefreshCw"} size={20} className={syncing ? "animate-spin" : ""} />
+                Синхронизация Bnovo
+              </button>
+              {syncMessage && (
+                <span className="text-sm text-gold-500">{syncMessage}</span>
+              )}
+              <button
+                onClick={() => {
+                  setEditingOwner(null);
+                  setFormData({ username: '', password: '', full_name: '', apartment_number: '', email: '', phone: '' });
+                  setShowModal(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-gold-500 text-charcoal-900 rounded-lg font-semibold hover:bg-gold-600 transition-colors"
+              >
+                <Icon name="Plus" size={20} />
+                Добавить инвестора
+              </button>
+            </div>
           </div>
         </div>
       </div>
