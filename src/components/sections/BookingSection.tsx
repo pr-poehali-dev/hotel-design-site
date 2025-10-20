@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import MonthCalendar from '@/components/booking/MonthCalendar';
 
 interface Apartment {
   id: number;
@@ -85,6 +86,20 @@ const BookingSection = () => {
     const aptAvailability = availability[selectedApartment];
     if (!aptAvailability) return false;
     return aptAvailability[date]?.available === false;
+  };
+
+  const handleCalendarDateSelect = (date: string) => {
+    if (!checkIn || (checkIn && checkOut)) {
+      setCheckIn(date);
+      setCheckOut('');
+    } else if (checkIn && !checkOut) {
+      if (date < checkIn) {
+        setCheckIn(date);
+        setCheckOut('');
+      } else {
+        setCheckOut(date);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -268,36 +283,14 @@ const BookingSection = () => {
                 </select>
               </div>
 
-              {selectedApartment && availability[selectedApartment] && (
-                <div className="bg-gold-50 border border-gold-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-charcoal-900 mb-3 flex items-center gap-2">
-                    <Icon name="CalendarX" size={18} className="text-red-500" />
-                    Занятые даты
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {Object.entries(availability[selectedApartment])
-                      .filter(([_, data]) => data.available === false)
-                      .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
-                      .slice(0, 10)
-                      .map(([date]) => (
-                        <span 
-                          key={date}
-                          className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium border border-red-300"
-                        >
-                          {new Date(date + 'T00:00:00').toLocaleDateString('ru-RU', { 
-                            day: 'numeric', 
-                            month: 'short' 
-                          })}
-                        </span>
-                      ))}
-                    {Object.entries(availability[selectedApartment])
-                      .filter(([_, data]) => data.available === false).length > 10 && (
-                        <span className="px-3 py-1 text-charcoal-600 text-sm">
-                          и ещё {Object.entries(availability[selectedApartment])
-                            .filter(([_, data]) => data.available === false).length - 10}...
-                        </span>
-                      )}
-                  </div>
+              {selectedApartment && (
+                <div>
+                  <MonthCalendar
+                    selectedApartment={selectedApartment}
+                    availability={availability}
+                    onDateSelect={handleCalendarDateSelect}
+                    selectedDates={{ checkIn, checkOut }}
+                  />
                 </div>
               )}
 
