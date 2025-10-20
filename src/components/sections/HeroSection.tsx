@@ -212,10 +212,6 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
           </span>
         </div>
       </div>
-
-      {showBookingWidget && (
-        <BnovoBookingWidget onClose={() => setShowBookingWidget(false)} />
-      )}
     </section>
   );
 };
