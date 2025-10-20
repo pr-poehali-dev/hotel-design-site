@@ -35,9 +35,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         # Правильный API endpoint: https://api.pms.bnovo.ru
         # Сначала авторизуемся и получаем JWT токен
-        auth_url = 'https://api.pms.bnovo.ru/auth/login'
+        auth_url = 'https://api.pms.bnovo.ru/api/v1/auth'
         auth_payload = {
-            'account_id': int(account_id),
+            'id': int(account_id),
             'password': password
         }
         
@@ -69,7 +69,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         # Теперь получаем бронирования с JWT токеном
-        url = 'https://api.pms.bnovo.ru/bookings'
+        url = 'https://api.pms.bnovo.ru/api/v1/bookings'
         
         request_obj = urllib.request.Request(
             url,
@@ -97,13 +97,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     except urllib.error.HTTPError as e:
         error_body = e.read().decode('utf-8', errors='ignore') if e.fp else ''
         return {
-            'statusCode': 200,  # Возвращаем 200 чтобы увидеть детали ошибки
+            'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({
                 'success': False,
                 'http_code': e.code,
                 'url_tested': e.url if hasattr(e, 'url') else 'https://api.pms.bnovo.ru',
                 'error_details': error_body[:1000]
+            })
+        }
+    
+    except Exception as e:
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({
+                'success': False,
+                'error': str(e),
+                'error_type': type(e).__name__
             })
         }
     
