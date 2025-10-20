@@ -179,9 +179,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 skipped_bookings += 1
                 continue
             
-            # Используем room_name как apartment_id (например: 2019, 816, 1401)
-            room_name = booking.get('room_name', '')
-            apartment_id = str(room_name) if room_name else str(booking.get('room_id', ''))
+            # Получаем room_id из Bnovo (это bnovo_id апартамента)
+            bnovo_room_id = booking.get('room_id')
+            
+            # Находим наш апартамент по bnovo_id
+            cur.execute(
+                "SELECT id, number FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_id = %s",
+                (bnovo_room_id,)
+            )
+            room = cur.fetchone()
+            
+            if not room:
+                skipped_bookings += 1
+                continue
+            
+            apartment_id = room['id']
             
             # Извлекаем даты из dates объекта
             dates = booking.get('dates', {})
