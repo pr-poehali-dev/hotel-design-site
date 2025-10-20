@@ -76,32 +76,47 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         date_from = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
         date_to = (datetime.now() + timedelta(days=180)).strftime('%Y-%m-%d')
         
-        # Используем endpoint /plan который возвращает данные с датами
-        params = urllib.parse.urlencode({
-            'date_from': date_from,
-            'date_to': date_to
-        })
-        plan_url = f'https://api.pms.bnovo.ru/api/v1/plan?{params}'
-        
-        plan_request = urllib.request.Request(
-            plan_url,
-            headers={
-                'Authorization': f'Bearer {jwt_token}',
-                'Accept': 'application/json'
-            }
-        )
-        
-        with urllib.request.urlopen(plan_request, timeout=30) as response:
-            plan_data = json.loads(response.read().decode())
-        
-        # Извлекаем бронирования из плана
+        # Получаем бронирования из Bnovo API
         all_bookings = []
-        if isinstance(plan_data, dict) and 'data' in plan_data:
-            rooms_data = plan_data['data'].get('rooms', [])
-            for room in rooms_data:
-                if isinstance(room, dict):
-                    bookings = room.get('bookings', [])
-                    all_bookings.extend(bookings)
+        offset = 0
+        max_iterations = 10
+        
+        for _ in range(max_iterations):
+            params = urllib.parse.urlencode({
+                'date_from': date_from,
+                'date_to': date_to,
+                'limit': 20,
+                'offset': offset
+            })
+            bookings_url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
+            
+            bookings_request = urllib.request.Request(
+                bookings_url,
+                headers={
+                    'Authorization': f'Bearer {jwt_token}',
+                    'Accept': 'application/json'
+                }
+            )
+            
+            with urllib.request.urlopen(bookings_request, timeout=30) as response:
+                bookings_data = json.loads(response.read().decode())
+            
+            if isinstance(bookings_data, dict):
+                if 'data' in bookings_data and isinstance(bookings_data['data'], dict):
+                    batch = bookings_data['data'].get('bookings', [])
+                else:
+                    batch = bookings_data.get('bookings', bookings_data.get('data', []))
+            else:
+                batch = bookings_data
+            
+            if not isinstance(batch, list) or len(batch) == 0:
+                break
+            
+            all_bookings.extend(batch)
+            offset += 20
+            
+            if len(batch) < 20:
+                break
         
         # Старый код для бэкапа (закомментирован)
         # all_bookings = []
@@ -155,46 +170,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         skipped_bookings = 0
         
         # Синхронизируем бронирования  
-        for booking_summary in all_bookings:
-            if not isinstance(booking_summary, dict):
+        for booking in all_bookings:
+            if not isinstance(booking, dict):
                 continue
             
-            bnovo_booking_id = booking_summary.get('id')
+            bnovo_booking_id = booking.get('id')
             if not bnovo_booking_id:
                 skipped_bookings += 1
                 continue
             
-            # Получаем детали бронирования отдельным запросом
-            try:
-                detail_url = f'https://api.pms.bnovo.ru/api/v1/bookings/{bnovo_booking_id}'
-                detail_request = urllib.request.Request(
-                    detail_url,
-                    headers={
-                        'Authorization': f'Bearer {jwt_token}',
-                        'Accept': 'application/json'
-                    }
-                )
-                
-                with urllib.request.urlopen(detail_request, timeout=10) as detail_response:
-                    detail_data = json.loads(detail_response.read().decode())
-                
-                # Извлекаем данные бронирования
-                if isinstance(detail_data, dict) and 'data' in detail_data:
-                    booking = detail_data['data']
-                else:
-                    booking = detail_data
-                    
-            except Exception as e:
-                if skipped_bookings == 0:
-                    print(f"[DEBUG] Failed to fetch booking details: {str(e)}")
-                skipped_bookings += 1
-                continue
+            # Используем room_name как apartment_id (например: 2019, 816, 1401)
+            room_name = booking.get('room_name', '')
+            apartment_id = str(room_name) if room_name else str(booking.get('room_id', ''))
             
-            room_id = str(booking.get('room_id', ''))
+            # Извлекаем даты из dates объекта
+            dates = booking.get('dates', {})
+            check_in_raw = dates.get('arrival', '') or booking.get('check_in', '')
+            check_out_raw = dates.get('departure', '') or booking.get('check_out', '')
             
-            # Извлекаем даты из разных возможных полей
-            check_in = booking.get('check_in') or booking.get('arrival') or booking.get('check_in_date') or booking.get('arrival_date')
-            check_out = booking.get('check_out') or booking.get('departure') or booking.get('check_out_date') or booking.get('departure_date')
+            # Конвертируем даты из формата "2025-10-20 15:00:00+03" в "2025-10-20"
+            check_in = check_in_raw.split(' ')[0] if check_in_raw else ''
+            check_out = check_out_raw.split(' ')[0] if check_out_raw else ''
             
             if not check_in or not check_out:
                 if skipped_bookings == 0:
@@ -209,20 +205,26 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             )
             existing = cur.fetchone()
             
-            # Извлекаем данные гостя из вложенного объекта если есть
-            guest_data = booking.get('guest', {})
-            if isinstance(guest_data, dict):
-                guest_name = guest_data.get('name', guest_data.get('full_name', ''))
-                guest_email = guest_data.get('email', '')
-                guest_phone = guest_data.get('phone', '')
+            # Извлекаем данные гостя из customer объекта
+            customer = booking.get('customer', {})
+            if isinstance(customer, dict):
+                name = customer.get('name', '')
+                surname = customer.get('surname', '')
+                guest_name = f"{name} {surname}".strip()
+                guest_email = customer.get('email', '')
+                guest_phone = customer.get('phone', '')
             else:
-                guest_name = str(guest_data) if guest_data else ''
+                guest_name = ''
                 guest_email = ''
                 guest_phone = ''
             
             if not existing:
                 # Создаём новое бронирование
                 booking_id = f"bnovo_{bnovo_booking_id}"
+                
+                extra = booking.get('extra', {})
+                adults = extra.get('adults', 2)
+                children = extra.get('children', 0)
                 
                 cur.execute("""
                     INSERT INTO t_p9202093_hotel_design_site.bookings 
@@ -233,31 +235,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 """, (
                     booking_id,
                     bnovo_booking_id,
-                    room_id,
+                    apartment_id,
                     check_in,
                     check_out,
                     guest_name,
                     guest_email,
                     guest_phone,
-                    booking.get('guests', booking.get('guests_count', 1)),
-                    booking.get('amount', booking.get('price', 0)),
-                    booking.get('amount', booking.get('total', 0)),
+                    adults + children,
+                    booking.get('amount', 0),
+                    booking.get('amount', 0),
                     'confirmed',
                     'bnovo',
                     json.dumps(booking, ensure_ascii=False)[:500]
                 ))
                 synced_bookings += 1
-                
-                # Обновляем календарь доступности
-                if room_id:
-                    cur.execute("""
-                        INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
-                        (room_id, date, is_available, booking_id, price)
-                        SELECT %s, generate_series(%s::date, %s::date - interval '1 day', '1 day')::date, false, %s, %s
-                        ON CONFLICT (room_id, date) 
-                        DO UPDATE SET is_available = false, booking_id = EXCLUDED.booking_id
-                    """, (room_id, check_in, check_out, booking_id, booking.get('amount', 0)))
-                    updated_calendar += 1
         
         conn.commit()
         cur.close()
@@ -268,7 +259,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'success': True,
             'timestamp': datetime.now().isoformat(),
             'synced_bookings': synced_bookings,
-            'updated_calendar': updated_calendar,
             'skipped_bookings': skipped_bookings,
             'total_bookings_from_bnovo': len(all_bookings)
         }

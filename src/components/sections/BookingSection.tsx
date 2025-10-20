@@ -102,6 +102,35 @@ const BookingSection = () => {
     }
   };
 
+  const calculateTotalPrice = () => {
+    if (!checkIn || !checkOut || !selectedApartment) return 0;
+    
+    const apt = apartments.find(a => a.id.toString() === selectedApartment);
+    const defaultPrice = apt?.price || 8500;
+    
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    let total = 0;
+    const current = new Date(start);
+    
+    while (current < end) {
+      const dateStr = current.toISOString().split('T')[0];
+      const aptAvailability = availability[selectedApartment];
+      const dayPrice = (aptAvailability && aptAvailability[dateStr]?.price) || defaultPrice;
+      total += dayPrice;
+      current.setDate(current.getDate() + 1);
+    }
+    
+    return total;
+  };
+
+  const getNights = () => {
+    if (!checkIn || !checkOut) return 0;
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -368,16 +397,26 @@ const BookingSection = () => {
               </div>
 
               {checkIn && checkOut && selectedApartment && (
-                <div className="bg-gold-50 border border-gold-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-charcoal-700 font-semibold">Итоговая стоимость:</span>
-                    <span className="text-2xl font-bold text-gold-600">
-                      {(getCurrentPrice() * Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))).toLocaleString('ru-RU')} ₽
+                <div className="bg-gradient-to-r from-gold-50 to-gold-100 border-2 border-gold-300 rounded-lg p-6 shadow-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Icon name="Wallet" size={24} className="text-gold-600" />
+                      <span className="text-charcoal-900 font-bold text-lg">Итоговая стоимость</span>
+                    </div>
+                    <span className="text-3xl font-bold text-gold-600">
+                      {calculateTotalPrice().toLocaleString('ru-RU')} ₽
                     </span>
                   </div>
-                  <p className="text-sm text-charcoal-600 mt-2">
-                    {Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))} ночей × {getCurrentPrice().toLocaleString('ru-RU')} ₽
-                  </p>
+                  <div className="flex items-center gap-4 text-sm text-charcoal-600">
+                    <div className="flex items-center gap-1">
+                      <Icon name="Moon" size={16} />
+                      <span>{getNights()} {getNights() === 1 ? 'ночь' : getNights() < 5 ? 'ночи' : 'ночей'}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Icon name="Users" size={16} />
+                      <span>{guests.adults + guests.children} {guests.adults + guests.children === 1 ? 'гость' : 'гостей'}</span>
+                    </div>
+                  </div>
                 </div>
               )}
 
