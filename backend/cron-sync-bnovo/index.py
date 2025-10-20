@@ -179,7 +179,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 skipped_bookings += 1
                 continue
             
-            # Получаем room_name из Bnovo (например: "1116", "816", "2019")
+            # Получаем room_name из Bnovo (например: "Поклонная 9 - 3х комнатный Gold Suite")
             room_name = booking.get('room_name', '')
             
             # Находим наш апартамент по bnovo_name (полное совпадение)
@@ -195,7 +195,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 skipped_bookings += 1
                 continue
             
-            apartment_id = room['id']
+            # Используем номер апартамента как ID (как в отчетности для собственников)
+            apartment_id = room['number']
             
             # Извлекаем даты из dates объекта
             dates = booking.get('dates', {})
