@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import BnovoBookingWidget from '@/components/BnovoBookingWidget';
+import BookingCalendar from '@/components/booking/BookingCalendar';
 
 interface Room {
   name: string;
@@ -23,6 +23,7 @@ interface Room {
   video?: string;
   description?: string;
   bookingUrl?: string;
+  roomId?: string;
 }
 
 interface RoomCardProps {
@@ -245,7 +246,12 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
       </Dialog>
 
       {showBookingWidget && (
-        <BnovoBookingWidget onClose={() => setShowBookingWidget(false)} />
+        <BookingCalendar
+          roomId={room.roomId || 'default'}
+          roomName={room.subtitle || room.name}
+          pricePerNight={parseInt(room.price.replace(/\D/g, '')) || 18000}
+          onClose={() => setShowBookingWidget(false)}
+        />
       )}
     </Card>
   );

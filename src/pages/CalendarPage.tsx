@@ -5,6 +5,7 @@ import BookingCalendar from '@/components/calendar/BookingCalendar';
 import BookingForm from '@/components/calendar/BookingForm';
 import BookingDetailsDialog from '@/components/calendar/BookingDetailsDialog';
 import AdminLogin from '@/components/AdminLogin';
+import BnovoSyncButton from '@/components/admin/BnovoSyncButton';
 
 const AUTH_KEY = 'premium_apartments_admin_auth';
 
@@ -201,6 +202,7 @@ export default function CalendarPage() {
             <p className="text-slate-300">Управление бронированиями апартаментов</p>
           </div>
           <div className="flex items-center gap-2">
+            <BnovoSyncButton />
             {!isAddingBooking && (
               <Button
                 onClick={() => setIsAddingBooking(true)}
