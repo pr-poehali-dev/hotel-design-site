@@ -44,29 +44,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT apartment_id, check_in, check_out
-            FROM t_p9202093_hotel_design_site.bookings
-            WHERE status != 'cancelled'
-            AND check_out >= CURRENT_DATE
-            ORDER BY apartment_id, check_in
+            SELECT DISTINCT room_id
+            FROM t_p9202093_hotel_design_site.availability_calendar
         ''')
         
-        bookings = cursor.fetchall()
+        all_apartments = [str(row[0]) for row in cursor.fetchall()]
+        
+        start_date = datetime.now().date()
+        end_date = start_date + timedelta(days=365)
+        
+        cursor.execute('''
+            SELECT room_id, date, is_available, price
+            FROM t_p9202093_hotel_design_site.availability_calendar
+            WHERE date >= %s AND date < %s
+            ORDER BY room_id, date
+        ''', (start_date, end_date))
+        
+        calendar_data = cursor.fetchall()
         
         availability = {}
         
-        for apartment_id, check_in, check_out in bookings:
-            if str(apartment_id) not in availability:
-                availability[str(apartment_id)] = {}
+        for room_id, date, is_available, price in calendar_data:
+            if str(room_id) not in availability:
+                availability[str(room_id)] = {}
             
-            current_date = check_in
-            while current_date < check_out:
-                date_str = current_date.isoformat()
-                availability[str(apartment_id)][date_str] = {
-                    'available': False,
-                    'price': 8500
-                }
-                current_date += timedelta(days=1)
+            availability[str(room_id)][date.isoformat()] = {
+                'available': is_available,
+                'price': float(price) if price else 8500
+            }
         
         cursor.close()
         conn.close()
