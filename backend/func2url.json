@@ -1,4 +1,6 @@
 {
+  "sync-bnovo-to-db": "https://functions.poehali.dev/2faa4887-dddc-4f5a-8a48-3073dd398dbd",
+  "apartment-availability": "https://functions.poehali.dev/76c58b68-2c97-40a0-96b0-e94d934c808f",
   "bnovo-sync": "https://functions.poehali.dev/1e2206b5-e53c-426d-8e9d-197fa3e17839",
   "bookings": "https://functions.poehali.dev/42f08a7b-0e59-4277-b467-1ceb942afe5e",
   "cron-archive": "https://functions.poehali.dev/86a95679-b4d6-4861-a71e-c7e9b4a7c8f0",
