@@ -1,10 +1,12 @@
 import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
-import BnovoBookingWidget from '@/components/BnovoBookingWidget';
 import { useState, useEffect, useRef } from 'react';
 
-const BookingPromoSection = () => {
-  const [showBookingWidget, setShowBookingWidget] = useState(false);
+interface BookingPromoSectionProps {
+  onNavigate: (section: string) => void;
+}
+
+const BookingPromoSection = ({ onNavigate }: BookingPromoSectionProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -72,7 +74,7 @@ const BookingPromoSection = () => {
                   isVisible ? 'animate-pulse' : ''
                 }`}></div>
                 <FizzyButton
-                  onClick={() => setShowBookingWidget(true)}
+                  onClick={() => onNavigate('booking')}
                   icon={<Icon name="Sparkles" size={20} />}
                   className="text-lg px-8 py-6 relative z-10 shadow-2xl shadow-gold-500/50"
                 >
@@ -113,9 +115,6 @@ const BookingPromoSection = () => {
         </div>
       </div>
 
-      {showBookingWidget && (
-        <BnovoBookingWidget onClose={() => setShowBookingWidget(false)} />
-      )}
     </section>
   );
 };

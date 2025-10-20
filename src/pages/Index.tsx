@@ -52,7 +52,7 @@ const Index = () => {
         <>
           <HeroSection onNavigate={setCurrentSection} />
           <ApartmentsSlider onNavigate={setCurrentSection} />
-          <BookingPromoSection />
+          <BookingPromoSection onNavigate={setCurrentSection} />
           <CulturalSliderSection />
         </>
       )}

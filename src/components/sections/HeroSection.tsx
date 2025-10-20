@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
-import BnovoBookingWidget from '@/components/BnovoBookingWidget';
 
 interface HeroSectionProps {
   onNavigate: (section: string) => void;
@@ -9,7 +8,6 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onNavigate }: HeroSectionProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showBookingWidget, setShowBookingWidget] = useState(false);
 
   const slides = [
     {
@@ -80,7 +78,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
           <FizzyButton
-            onClick={() => setShowBookingWidget(true)}
+            onClick={() => onNavigate('booking')}
             icon={<Icon name="Calendar" size={20} />}
           >
             Забронировать апартаменты
