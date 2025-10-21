@@ -216,8 +216,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 continue
             
             # Используем номер апартамента как ID (как в отчетности для собственников)
-            apartment_id = room['number']
-            room_id = room['id']  # UUID для availability_calendar
+            apartment_id = str(room['number'])
+            room_id = str(room['id'])  # UUID для availability_calendar
             
             # Извлекаем даты из dates объекта
             dates = booking.get('dates', {})
@@ -261,9 +261,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 adults = extra.get('adults', 2)
                 children = extra.get('children', 0)
                 
-                guest_name_escaped = guest_name.replace("'", "''")
-                guest_email_escaped = guest_email.replace("'", "''")
-                guest_phone_escaped = guest_phone.replace("'", "''")
+                guest_name_escaped = str(guest_name).replace("'", "''")
+                guest_email_escaped = str(guest_email).replace("'", "''")
+                guest_phone_escaped = str(guest_phone).replace("'", "''")
                 notes_escaped = json.dumps(booking, ensure_ascii=False)[:500].replace("'", "''")
                 
                 cur.execute(f"""
