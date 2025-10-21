@@ -219,7 +219,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     else:
                         auth_data = auth_response.json()
                         print(f'Bnovo auth data: {auth_data}')
-                        jwt_token = auth_data.get('token')
+                        jwt_token = auth_data.get('data', {}).get('access_token')
                         
                         if not jwt_token:
                             bnovo_error = 'No JWT token received'
