@@ -42,17 +42,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             apartment_id = query_params.get('apartment_id')
             
             if apartment_id:
-                cursor.execute("""
+                sql = f"""
                     SELECT * FROM t_p9202093_hotel_design_site.bookings 
-                    WHERE apartment_id = %s 
+                    WHERE apartment_id = '{apartment_id}' 
                     ORDER BY check_in DESC
-                """, (apartment_id,))
+                """
             else:
-                cursor.execute("""
+                sql = """
                     SELECT * FROM t_p9202093_hotel_design_site.bookings 
                     ORDER BY check_in DESC
-                """)
+                """
             
+            cursor.execute(sql)
             bookings = cursor.fetchall()
             
             result = []
@@ -111,19 +112,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'Missing booking id'})
                 }
             
-            cursor.execute("""
-                UPDATE t_p9202093_hotel_design_site.bookings 
-                SET is_prepaid = %s, 
-                    prepayment_amount = %s,
-                    prepayment_date = CURRENT_TIMESTAMP
-                WHERE id = %s
-                RETURNING id, is_prepaid, prepayment_amount
-            """, (
-                body_data.get('is_prepaid', False),
-                body_data.get('prepayment_amount', 0),
-                booking_id
-            ))
+            is_prepaid = 'true' if body_data.get('is_prepaid', False) else 'false'
+            prepayment_amount = body_data.get('prepayment_amount', 0)
             
+            sql = f"""
+                UPDATE t_p9202093_hotel_design_site.bookings 
+                SET is_prepaid = {is_prepaid}, 
+                    prepayment_amount = {prepayment_amount},
+                    prepayment_date = CURRENT_TIMESTAMP
+                WHERE id = '{booking_id}'
+                RETURNING id, is_prepaid, prepayment_amount
+            """
+            
+            cursor.execute(sql)
             updated_booking = cursor.fetchone()
             
             if not updated_booking:
@@ -154,10 +155,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body_data = json.loads(event.get('body', '{}'))
             
             apartment_id = body_data.get('apartment_id')
-            guest_name = body_data.get('guest_name')
+            guest_name = body_data.get('guest_name', '').replace("'", "''")
+            guest_email = body_data.get('guest_email', '').replace("'", "''")
+            guest_phone = body_data.get('guest_phone', '').replace("'", "''")
             check_in = body_data.get('check_in')
             check_out = body_data.get('check_out')
             total_amount = body_data.get('total_amount', 0)
+            aggregator_commission = body_data.get('aggregator_commission', 0)
+            is_prepaid = 'true' if body_data.get('is_prepaid', False) else 'false'
+            prepayment_amount = body_data.get('prepayment_amount', 0)
             
             if not all([apartment_id, guest_name, check_in, check_out]):
                 cursor.close()
@@ -168,26 +174,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'Missing required fields'})
                 }
             
-            cursor.execute("""
+            sql = f"""
                 INSERT INTO t_p9202093_hotel_design_site.bookings 
                 (id, apartment_id, guest_name, guest_email, guest_phone, check_in, check_out, 
                  accommodation_amount, total_amount, aggregator_commission, is_prepaid, prepayment_amount)
-                VALUES (gen_random_uuid()::text, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (gen_random_uuid()::text, '{apartment_id}', '{guest_name}', '{guest_email}', '{guest_phone}', 
+                        '{check_in}', '{check_out}', {total_amount}, {total_amount}, {aggregator_commission}, 
+                        {is_prepaid}, {prepayment_amount})
                 RETURNING id, apartment_id, guest_name, check_in, check_out
-            """, (
-                apartment_id,
-                guest_name,
-                body_data.get('guest_email'),
-                body_data.get('guest_phone'),
-                check_in,
-                check_out,
-                total_amount,
-                total_amount,
-                body_data.get('aggregator_commission', 0),
-                body_data.get('is_prepaid', False),
-                body_data.get('prepayment_amount', 0)
-            ))
+            """
             
+            cursor.execute(sql)
             new_booking = cursor.fetchone()
             conn.commit()
             cursor.close()
@@ -199,24 +196,108 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False,
                 'body': json.dumps({
                     'id': new_booking['id'],
-                    'apartment_id': new_booking['apartment_id'],
-                    'guest_name': new_booking['guest_name'],
-                    'check_in': str(new_booking['check_in']),
-                    'check_out': str(new_booking['check_out'])
+                    'apartmentId': new_booking['apartment_id'],
+                    'guestName': new_booking['guest_name'],
+                    'checkIn': str(new_booking['check_in']),
+                    'checkOut': str(new_booking['check_out'])
+                })
+            }
+        
+        if method == 'PATCH':
+            body_data = json.loads(event.get('body', '{}'))
+            booking_id = body_data.get('id')
+            expenses = body_data.get('expenses', {})
+            
+            if not booking_id:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Missing booking id'})
+                }
+            
+            maid = expenses.get('maid', 0)
+            laundry = expenses.get('laundry', 0)
+            hygiene = expenses.get('hygiene', 0)
+            transport = expenses.get('transport', 0)
+            compliment = expenses.get('compliment', 0)
+            other = expenses.get('other', 0)
+            other_note = expenses.get('otherNote', '').replace("'", "''")
+            
+            total_expenses = maid + laundry + hygiene + transport + compliment + other
+            
+            cursor.execute(f"""
+                SELECT total_amount, aggregator_commission 
+                FROM t_p9202093_hotel_design_site.bookings 
+                WHERE id = '{booking_id}'
+            """)
+            
+            booking_data = cursor.fetchone()
+            if not booking_data:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 404,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Booking not found'})
+                }
+            
+            total_amount = float(booking_data['total_amount']) if booking_data['total_amount'] else 0
+            commission = float(booking_data['aggregator_commission']) if booking_data['aggregator_commission'] else 0
+            owner_funds = total_amount - commission - total_expenses
+            
+            sql = f"""
+                UPDATE t_p9202093_hotel_design_site.bookings 
+                SET maid = {maid},
+                    laundry = {laundry},
+                    hygiene = {hygiene},
+                    transport = {transport},
+                    compliment = {compliment},
+                    other = {other},
+                    other_note = '{other_note}',
+                    owner_funds = {owner_funds}
+                WHERE id = '{booking_id}'
+                RETURNING id, maid, laundry, hygiene, transport, compliment, other, other_note, owner_funds
+            """
+            
+            cursor.execute(sql)
+            updated = cursor.fetchone()
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({
+                    'id': updated['id'],
+                    'expenses': {
+                        'maid': float(updated['maid']) if updated['maid'] else 0,
+                        'laundry': float(updated['laundry']) if updated['laundry'] else 0,
+                        'hygiene': float(updated['hygiene']) if updated['hygiene'] else 0,
+                        'transport': float(updated['transport']) if updated['transport'] else 0,
+                        'compliment': float(updated['compliment']) if updated['compliment'] else 0,
+                        'other': float(updated['other']) if updated['other'] else 0,
+                        'otherNote': updated['other_note'] or ''
+                    },
+                    'ownerFunds': float(updated['owner_funds']) if updated['owner_funds'] else 0
                 })
             }
         
         cursor.close()
         conn.close()
+        
         return {
             'statusCode': 405,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'error': 'Method not allowed'})
         }
-    
+        
     except Exception as e:
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': str(e)})
+            'body': json.dumps({'error': f'Server error: {str(e)}'})
         }
