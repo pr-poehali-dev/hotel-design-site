@@ -59,7 +59,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             for booking in bookings:
                 total = float(booking['total_amount']) if booking['total_amount'] else 0
                 commission = float(booking['aggregator_commission']) if booking['aggregator_commission'] else 0
-                owner_funds = total - commission
+                owner_funds = float(booking['owner_funds']) if booking.get('owner_funds') is not None else (total - commission)
                 
                 result.append({
                     'id': booking['id'],
