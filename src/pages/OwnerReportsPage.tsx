@@ -224,13 +224,7 @@ export default function OwnerReportsPage() {
               {filteredBookings.map((booking) => (
                 <Card 
                   key={booking.id} 
-                  className="p-4 cursor-pointer hover:bg-charcoal-700/50 transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Clicked booking:', booking.id, booking);
-                    setSelectedBooking(booking);
-                  }}
+                  className="p-4"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -239,14 +233,10 @@ export default function OwnerReportsPage() {
                         {new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}
                       </p>
                       <button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setSelectedBooking(booking);
-                        }}
-                        className="mt-2 text-xs bg-gold-500 text-charcoal-900 px-3 py-1 rounded-full font-semibold flex items-center gap-1"
+                        onClick={() => setSelectedBooking(booking)}
+                        className="mt-2 text-xs text-gold-500 hover:text-gold-400 flex items-center gap-1 transition-colors"
                       >
-                        <Icon name="Eye" size={14} />
+                        <Icon name="Eye" size={12} />
                         Детализация
                       </button>
                     </div>
