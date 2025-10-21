@@ -3,10 +3,12 @@
     {
       "name": "Get apartment availability",
       "method": "GET",
-      "path": "/?room_id=test&month=1&year=2026",
+      "path": "/?room_id=1759775560156&month=12&year=2025",
       "expectedStatus": 200,
       "expectedBody": {
-        "calendar": []
+        "apartment": {
+          "id": "1759775560156"
+        }
       },
       "bodyMatcher": "partial"
     }
