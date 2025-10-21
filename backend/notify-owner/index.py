@@ -180,14 +180,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'parse_mode': 'HTML'
             }
             
+            print(f'Sending to Telegram: {telegram_chat_id}')
             response = requests.post(telegram_url, json=telegram_payload, timeout=10)
+            print(f'Telegram response: {response.status_code} - {response.text}')
             
             if response.status_code == 200:
                 results['telegram'] = 'sent'
             else:
                 results['telegram'] = f'failed: {response.text}'
         except Exception as e:
+            print(f'Telegram error: {str(e)}')
             results['telegram'] = f'failed: {str(e)}'
+    else:
+        print(f'Telegram config missing - token: {bool(telegram_bot_token)}, chat_id: {bool(telegram_chat_id)}')
     
     return {
         'statusCode': 200,
