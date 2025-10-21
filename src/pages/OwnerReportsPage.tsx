@@ -21,6 +21,17 @@ export default function OwnerReportsPage() {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null);
   
+  useEffect(() => {
+    console.log('Selected booking changed:', selectedBooking);
+  }, [selectedBooking]);
+  
+  useEffect(() => {
+    console.log('Bookings loaded:', bookings.length);
+    if (bookings.length > 0) {
+      console.log('First booking sample:', bookings[0]);
+    }
+  }, [bookings]);
+  
   const generateMonthOptions = () => {
     const months = [];
     const now = new Date();
@@ -63,7 +74,9 @@ export default function OwnerReportsPage() {
         const bookingsResponse = await fetch(`https://functions.poehali.dev/42f08a7b-0e59-4277-b467-1ceb942afe5e?apartment_id=${apartmentId}`);
         if (bookingsResponse.ok) {
           const data = await bookingsResponse.json();
+          console.log('Raw bookings data:', data);
           const filteredBookings = (data || []).filter((b: any) => b.showToGuest);
+          console.log('Filtered bookings:', filteredBookings);
           setBookings(filteredBookings);
         }
       } catch (err) {
