@@ -21,15 +21,16 @@
     <link rel="shortcut icon" type="image/jpeg" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg">
     
     <!-- PWA Meta Tags для иконки на главном экране -->
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="P9">
-    <link rel="apple-touch-icon" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=2">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=2">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=2">
-    <link rel="apple-touch-icon" sizes="167x167" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=2">
-    <link rel="manifest" href="/manifest.json?v=2">
+    <meta name="apple-mobile-web-app-title" content="P9 Апартаменты">
+    <link rel="apple-touch-icon" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=3">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=3">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=3">
+    <link rel="apple-touch-icon" sizes="167x167" href="https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/143e469d-5802-4200-9887-ffd01c3e42aa.jpg?v=3">
+    <link rel="manifest" href="/manifest.json?v=3">
     
     <meta property="og:title" content="Апартаменты на Поклонной 9 посуточно | ENZO Отель">
     <meta property="og:description" content="Апартаменты на короткий срок в Москве на ул. Поклонная 9. Рядом с Парком Победы, метро Парк Победы, Крокус фитнес. Посуточная аренда в ENZO отеле.">
@@ -202,6 +203,21 @@
 <body>
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('PWA: Service Worker registered successfully:', registration.scope);
+        })
+        .catch(error => {
+          console.log('PWA: Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
