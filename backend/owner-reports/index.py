@@ -239,6 +239,7 @@ def handle_bookings_api(method: str, params: Dict, event: Dict, cur, conn) -> Di
                     'isBase64Encoded': False
                 }
             
+            cur.execute('DELETE FROM availability_calendar WHERE booking_id = %s', (booking_id,))
             cur.execute('DELETE FROM bookings WHERE id = %s AND apartment_id = %s', (booking_id, apartment_id))
             conn.commit()
             
