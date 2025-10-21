@@ -188,11 +188,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             # Получаем room_name из Bnovo (это номер апартамента, например: "1401", "906")
             room_name_raw = booking.get('room_name', '')
-            room_number = str(room_name_raw).replace("'", "''") if room_name_raw else ''
+            room_number_original = str(room_name_raw) if room_name_raw else ''
+            
+            # Маппинг для разных форматов названий из Bnovo
+            room_number = room_number_original
+            if 'Поклонная 9-816' in room_number_original:
+                room_number = '816'
+            elif 'Апартамент студия Матч Поинт' in room_number_original:
+                room_number = '1157'  # или другой номер если известен
+            elif 'Мат Поинт 1157' in room_number_original:
+                room_number = '1157'
+            elif 'Энитэо-193' in room_number_original:
+                room_number = '193'
+            
+            room_number_escaped = room_number.replace("'", "''")
             
             # Находим наш апартамент по номеру
             cur.execute(
-                f"SELECT id, number, bnovo_name FROM t_p9202093_hotel_design_site.rooms WHERE number = '{room_number}'"
+                f"SELECT id, number, bnovo_name FROM t_p9202093_hotel_design_site.rooms WHERE number = '{room_number_escaped}'"
             )
             room = cur.fetchone()
             
