@@ -58,7 +58,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'room_id': room_id,
                 'name': bnovo_name if bnovo_name else number,
                 'number': number,
-                'price': int(price) if price else 8500,
+                'price': int(float(price)) if price else 0,
                 'max_guests': max_guests or 2,
                 'bedrooms': bedrooms or 1,
                 'bathrooms': bathrooms or 1
