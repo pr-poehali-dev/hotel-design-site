@@ -198,41 +198,63 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             bnovo_error = None
             if bnovo_account_id and bnovo_password:
                 try:
-                    bnovo_payload = {
-                        'account_id': bnovo_account_id,
-                        'password': bnovo_password,
-                        'room_id': apartment_id,
-                        'arrival': check_in,
-                        'departure': check_out,
-                        'guest': {
-                            'name': guest_name,
-                            'email': guest_email,
-                            'phone': guest_phone
-                        },
-                        'price': total_amount,
-                        'currency': 'RUB',
-                        'status': 'confirmed'
+                    # Шаг 1: Авторизация и получение JWT токена
+                    auth_payload = {
+                        'id': int(bnovo_account_id),
+                        'password': bnovo_password
                     }
                     
-                    print(f'Sending to Bnovo: {bnovo_payload}')
-                    
-                    bnovo_response = requests.post(
-                        'https://online.bnovo.ru/api/orders/create',
-                        json=bnovo_payload,
+                    auth_response = requests.post(
+                        'https://api.pms.bnovo.ru/api/v1/auth',
+                        json=auth_payload,
                         timeout=10
                     )
                     
-                    print(f'Bnovo response status: {bnovo_response.status_code}')
-                    print(f'Bnovo response body: {bnovo_response.text}')
+                    print(f'Bnovo auth status: {auth_response.status_code}')
                     
-                    if bnovo_response.status_code == 200:
-                        bnovo_data = bnovo_response.json()
-                        bnovo_order_id = bnovo_data.get('id')
+                    if auth_response.status_code != 200:
+                        bnovo_error = f'Auth failed: {auth_response.text}'
+                        print(bnovo_error)
                     else:
-                        bnovo_error = f'Status {bnovo_response.status_code}: {bnovo_response.text}'
+                        auth_data = auth_response.json()
+                        jwt_token = auth_data.get('token')
+                        
+                        if not jwt_token:
+                            bnovo_error = 'No JWT token received'
+                            print(bnovo_error)
+                        else:
+                            # Шаг 2: Создание бронирования с JWT токеном
+                            booking_payload = {
+                                'room_id': int(apartment_id),
+                                'arrival': check_in,
+                                'departure': check_out,
+                                'guest_name': guest_name,
+                                'guest_email': guest_email,
+                                'guest_phone': guest_phone,
+                                'price': total_amount,
+                                'status': 'confirmed'
+                            }
+                            
+                            print(f'Creating booking in Bnovo: {booking_payload}')
+                            
+                            booking_response = requests.post(
+                                'https://api.pms.bnovo.ru/api/v1/orders',
+                                json=booking_payload,
+                                headers={'Authorization': f'Bearer {jwt_token}'},
+                                timeout=10
+                            )
+                            
+                            print(f'Bnovo booking status: {booking_response.status_code}')
+                            print(f'Bnovo booking response: {booking_response.text}')
+                            
+                            if booking_response.status_code in [200, 201]:
+                                booking_data = booking_response.json()
+                                bnovo_order_id = booking_data.get('id')
+                            else:
+                                bnovo_error = f'Booking failed: {booking_response.text}'
                 except Exception as e:
                     bnovo_error = str(e)
-                    print(f'Bnovo sync failed: {bnovo_error}')
+                    print(f'Bnovo sync exception: {bnovo_error}')
             
             cursor.close()
             conn.close()
