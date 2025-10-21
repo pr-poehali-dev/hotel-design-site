@@ -1,0 +1,15 @@
+{
+  "tests": [
+    {
+      "name": "Get calendar data",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "calendar": "array",
+        "total": "number"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

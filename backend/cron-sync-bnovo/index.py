@@ -257,57 +257,48 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     ON CONFLICT (id) DO NOTHING
                 """)
                 synced_bookings += 1
-                
-                # Обновляем календарь доступности (используем room_id = UUID)
-                cur.execute(f"""
-                    INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
-                    (room_id, date, is_available, booking_id, price)
-                    SELECT '{room_id}', generate_series('{check_in}'::date, '{check_out}'::date - interval '1 day', '1 day')::date, false, '{booking_id}', {booking.get('amount', 0)}
-                    ON CONFLICT (room_id, date) 
-                    DO UPDATE SET is_available = false, booking_id = EXCLUDED.booking_id
-                """)
-                updated_calendar += 1
         
-        # Обновляем календарь для всех существующих бронирований из Bnovo
-        print("[CRON] Updating calendar for existing Bnovo bookings...")
+        # Обновляем новый календарь для всех существующих бронирований из Bnovo
+        print("[CRON] Updating NEW calendar_bnovo for existing Bnovo bookings...")
         
-        # Сначала удаляем все старые записи из календаря для бронирований Bnovo
+        # Сначала очищаем старые записи из нового календаря
         cur.execute("""
-            DELETE FROM t_p9202093_hotel_design_site.availability_calendar 
+            DELETE FROM t_p9202093_hotel_design_site.calendar_bnovo 
             WHERE booking_id IN (SELECT id FROM t_p9202093_hotel_design_site.bookings WHERE source = 'bnovo')
         """)
         
-        # Получаем все бронирования и вручную заполняем календарь
+        # Получаем все бронирования и заполняем новый календарь
         cur.execute("""
-            SELECT b.id, b.check_in, b.check_out, b.total_amount, r.id as room_id
+            SELECT b.id, b.bnovo_id, b.apartment_id, b.check_in, b.check_out, b.guest_name, b.total_amount
             FROM t_p9202093_hotel_design_site.bookings b
-            JOIN t_p9202093_hotel_design_site.rooms r ON b.apartment_id = r.number
             WHERE b.source = 'bnovo'
+              AND b.apartment_id IN (SELECT number FROM t_p9202093_hotel_design_site.rooms)
         """)
         bnovo_bookings = cur.fetchall()
         
         calendar_inserts = []
         for booking in bnovo_bookings:
             booking_id = booking['id']
+            bnovo_id = booking['bnovo_id'] or ''
+            apartment_id = booking['apartment_id']
+            guest_name = (booking['guest_name'] or '').replace("'", "''")
             check_in = booking['check_in'] if isinstance(booking['check_in'], date) else datetime.strptime(booking['check_in'], '%Y-%m-%d').date()
             check_out = booking['check_out'] if isinstance(booking['check_out'], date) else datetime.strptime(booking['check_out'], '%Y-%m-%d').date()
-            room_id = booking['room_id']
             price = booking['total_amount'] or 0
             
             current_date = check_in
             while current_date < check_out:
-                calendar_inserts.append(f"('{room_id}', '{current_date}', false, '{booking_id}', {price})")
+                calendar_inserts.append(f"('{apartment_id}', '{current_date}', false, '{booking_id}', '{bnovo_id}', '{guest_name}', {price})")
                 current_date += timedelta(days=1)
         
         if calendar_inserts:
-            # Удаляем дубликаты перед вставкой (берём последнее бронирование для каждой даты/комнаты)
+            # Удаляем дубликаты (берём последнее бронирование для каждой даты/апартамента)
             unique_inserts = {}
             for insert_str in calendar_inserts:
-                # Парсим строку вида "('room_id', 'date', false, 'booking_id', price)"
                 parts = insert_str.strip('()').split(',')
-                room_id = parts[0].strip().strip("'")
+                apartment_id_val = parts[0].strip().strip("'")
                 date_val = parts[1].strip().strip("'")
-                key = f"{room_id}_{date_val}"
+                key = f"{apartment_id_val}_{date_val}"
                 unique_inserts[key] = insert_str
             
             # Вставляем пачками по 500 записей
@@ -316,12 +307,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             for i in range(0, len(unique_list), batch_size):
                 batch = unique_list[i:i+batch_size]
                 cur.execute(f"""
-                    INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
-                    (room_id, date, is_available, booking_id, price)
+                    INSERT INTO t_p9202093_hotel_design_site.calendar_bnovo 
+                    (apartment_id, date, is_available, booking_id, bnovo_id, guest_name, price)
                     VALUES {','.join(batch)}
                 """)
         
-        print(f"[CRON] Calendar updated: {len(calendar_inserts)} date entries created")
+        print(f"[CRON] NEW calendar_bnovo updated: {len(unique_inserts)} date entries created")
         
         conn.commit()
         cur.close()
