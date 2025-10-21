@@ -155,22 +155,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         if method == 'POST':
+            cursor.close()
+            conn.close()
+            
             body_data = json.loads(event.get('body', '{}'))
             
             apartment_id = body_data.get('apartment_id')
-            guest_name = body_data.get('guest_name', '').replace("'", "''")
-            guest_email = body_data.get('guest_email', '').replace("'", "''")
-            guest_phone = body_data.get('guest_phone', '').replace("'", "''")
+            guest_name = body_data.get('guest_name', '')
+            guest_email = body_data.get('guest_email', '')
+            guest_phone = body_data.get('guest_phone', '')
             check_in = body_data.get('check_in')
             check_out = body_data.get('check_out')
             total_amount = body_data.get('total_amount', 0)
-            aggregator_commission = body_data.get('aggregator_commission', 0)
-            is_prepaid = 'true' if body_data.get('is_prepaid', False) else 'false'
-            prepayment_amount = body_data.get('prepayment_amount', 0)
             
             if not all([apartment_id, guest_name, check_in, check_out]):
-                cursor.close()
-                conn.close()
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -198,9 +196,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 notification_sent = notify_response.status_code == 200
             except Exception as e:
                 print(f'Notification failed: {str(e)}')
-            
-            cursor.close()
-            conn.close()
             
             return {
                 'statusCode': 201,
