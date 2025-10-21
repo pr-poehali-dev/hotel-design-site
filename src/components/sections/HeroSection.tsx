@@ -78,7 +78,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
           <FizzyButton
-            onClick={() => onNavigate('booking')}
+            onClick={() => onNavigate('rooms')}
             icon={<Icon name="Calendar" size={20} />}
           >
             Забронировать апартаменты
