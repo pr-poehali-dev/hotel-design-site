@@ -3,7 +3,11 @@ import { Button } from '@/components/ui/button';
 import { RefreshCw, Check, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-const BnovoSyncButton = () => {
+interface BnovoSyncButtonProps {
+  onSyncComplete?: () => void;
+}
+
+const BnovoSyncButton = ({ onSyncComplete }: BnovoSyncButtonProps) => {
   const [loading, setLoading] = useState(false);
   const [lastSync, setLastSync] = useState<Date | null>(null);
   const { toast } = useToast();
@@ -27,6 +31,9 @@ const BnovoSyncButton = () => {
           title: 'Синхронизация завершена',
           description: `Загружено бронирований: ${data.synced_bookings}, обновлено дней в календаре: ${data.updated_calendar}`,
         });
+        if (onSyncComplete) {
+          onSyncComplete();
+        }
       } else {
         throw new Error(data.error || 'Неизвестная ошибка');
       }

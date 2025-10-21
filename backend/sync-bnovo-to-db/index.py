@@ -127,25 +127,32 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         synced_rooms = 0
         updated_calendar = 0
         
-        # Синхронизируем бронирования
+        # Получаем все существующие bnovo_id за один запрос
+        cur.execute(
+            "SELECT bnovo_id FROM t_p9202093_hotel_design_site.bookings WHERE bnovo_id IS NOT NULL"
+        )
+        existing_bnovo_ids = set(row['bnovo_id'] for row in cur.fetchall())
+        
+        # Подготавливаем данные для batch insert
+        bookings_to_insert = []
+        calendar_updates = []
+        
         for booking in bookings_list:
             if not isinstance(booking, dict):
                 continue
+                
             bnovo_booking_id = booking.get('id')
+            if bnovo_booking_id in existing_bnovo_ids:
+                continue
+                
             room_id = str(booking.get('room_id', ''))
-            
-            # Проверяем, существует ли бронирование
-            cur.execute(
-                "SELECT id FROM t_p9202093_hotel_design_site.bookings WHERE bnovo_id = %s",
-                (bnovo_booking_id,)
-            )
-            existing = cur.fetchone()
-            
-            # Извлекаем даты из разных возможных полей
             check_in = booking.get('check_in') or booking.get('arrival') or booking.get('check_in_date')
             check_out = booking.get('check_out') or booking.get('departure') or booking.get('check_out_date')
             
-            # Извлекаем данные гостя из вложенного объекта если есть
+            if not check_in or not check_out:
+                continue
+            
+            # Извлекаем данные гостя
             guest_data = booking.get('guest', {})
             if isinstance(guest_data, dict):
                 guest_name = guest_data.get('name', guest_data.get('full_name', ''))
@@ -156,44 +163,43 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 guest_email = ''
                 guest_phone = ''
             
-            if not existing and check_in and check_out:
-                # Создаём новое бронирование
-                booking_id = f"bnovo_{bnovo_booking_id}"
-                
+            booking_id = f"bnovo_{bnovo_booking_id}"
+            
+            bookings_to_insert.append((
+                booking_id, bnovo_booking_id, room_id, check_in, check_out,
+                guest_name, guest_email, guest_phone,
+                booking.get('guests', booking.get('guests_count', 1)),
+                booking.get('amount', booking.get('price', 0)),
+                booking.get('amount', booking.get('total', 0)),
+                'confirmed', 'bnovo',
+                json.dumps(booking, ensure_ascii=False)[:500]
+            ))
+            
+            if room_id:
+                calendar_updates.append((room_id, check_in, check_out, booking_id, booking.get('price', 0)))
+        
+        # Batch insert бронирований
+        if bookings_to_insert:
+            psycopg2.extras.execute_batch(cur, """
+                INSERT INTO t_p9202093_hotel_design_site.bookings 
+                (id, bnovo_id, apartment_id, check_in, check_out, guest_name, guest_email, 
+                 guest_phone, guests_count, accommodation_amount, total_amount, status, source, notes)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id) DO NOTHING
+            """, bookings_to_insert, page_size=100)
+            synced_bookings = len(bookings_to_insert)
+        
+        # Batch update календаря
+        if calendar_updates:
+            for room_id, check_in, check_out, booking_id, price in calendar_updates:
                 cur.execute("""
-                    INSERT INTO t_p9202093_hotel_design_site.bookings 
-                    (id, bnovo_id, apartment_id, check_in, check_out, guest_name, guest_email, 
-                     guest_phone, guests_count, accommodation_amount, total_amount, status, source, notes)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (id) DO NOTHING
-                """, (
-                    booking_id,
-                    bnovo_booking_id,
-                    room_id,
-                    check_in,
-                    check_out,
-                    guest_name,
-                    guest_email,
-                    guest_phone,
-                    booking.get('guests', booking.get('guests_count', 1)),
-                    booking.get('amount', booking.get('price', 0)),
-                    booking.get('amount', booking.get('total', 0)),
-                    'confirmed',
-                    'bnovo',
-                    json.dumps(booking, ensure_ascii=False)[:500]  # Сохраняем полные данные в notes
-                ))
-                synced_bookings += 1
-                
-                # Обновляем календарь доступности
-                if check_in and check_out and room_id:
-                    cur.execute("""
-                        INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
-                        (room_id, date, is_available, booking_id, price)
-                        SELECT %s, generate_series(%s::date, %s::date - interval '1 day', '1 day')::date, false, %s, %s
-                        ON CONFLICT (room_id, date) 
-                        DO UPDATE SET is_available = false, booking_id = EXCLUDED.booking_id
-                    """, (room_id, check_in, check_out, booking_id, booking.get('price', 0)))
-                    updated_calendar += 1
+                    INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
+                    (room_id, date, is_available, booking_id, price)
+                    SELECT %s, generate_series(%s::date, %s::date - interval '1 day', '1 day')::date, false, %s, %s
+                    ON CONFLICT (room_id, date) 
+                    DO UPDATE SET is_available = false, booking_id = EXCLUDED.booking_id
+                """, (room_id, check_in, check_out, booking_id, price))
+            updated_calendar = len(calendar_updates)
         
         conn.commit()
         cur.close()
