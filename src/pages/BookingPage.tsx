@@ -90,7 +90,8 @@ export default function BookingPage() {
     if (!calendar) return false;
     const dateStr = format(date, 'yyyy-MM-dd');
     const dayData = calendar.days.find(d => d.date === dateStr);
-    return dayData?.is_available ?? false;
+    // Если дня нет в календаре - он свободен, если есть - проверяем is_available
+    return dayData ? dayData.is_available : true;
   };
 
   const handleDateClick = (date: Date) => {
