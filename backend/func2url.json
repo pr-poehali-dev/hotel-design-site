@@ -1,4 +1,5 @@
 {
+  "send-push-notification": "https://functions.poehali.dev/36f610d6-e5b4-4e1a-852d-7cba847873cd",
   "send-guest-confirmation": "https://functions.poehali.dev/e349f36e-85b3-4c36-b488-07397019b5c0",
   "send-booking-confirmation": "https://functions.poehali.dev/247fe753-02a4-4d5a-b9b2-b2182701293b",
   "notify-owner": "https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f",

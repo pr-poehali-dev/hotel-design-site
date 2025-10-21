@@ -14,6 +14,7 @@ import Footer from '@/components/sections/Footer';
 import FallingLeaves from '@/components/effects/FallingLeaves';
 import ShareButtons from '@/components/ShareButtons';
 import P9AppBanner from '@/components/P9AppBanner';
+import PushNotificationPrompt from '@/components/PushNotificationPrompt';
 import { rooms } from '@/data/roomsData';
 
 const Index = () => {
@@ -91,6 +92,7 @@ const Index = () => {
       </section>
 
       <Footer />
+      <PushNotificationPrompt />
     </div>
   );
 };
