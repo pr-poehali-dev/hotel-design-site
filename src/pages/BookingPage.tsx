@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FizzyButton } from '@/components/ui/fizzy-button';
+
 import Icon from '@/components/ui/icon';
 import Header from '@/components/sections/Header';
 import { 
@@ -17,7 +17,6 @@ import {
   endOfWeek,
   isBefore,
   startOfDay,
-  addDays,
   differenceInDays
 } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -36,7 +35,6 @@ interface Calendar {
 
 export default function BookingPage() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const roomId = searchParams.get('room');
   
   const [calendar, setCalendar] = useState<Calendar | null>(null);
@@ -52,7 +50,7 @@ export default function BookingPage() {
 
   useEffect(() => {
     if (!roomId) {
-      navigate('/');
+      window.location.href = '/';
       return;
     }
 
@@ -75,7 +73,7 @@ export default function BookingPage() {
     };
 
     fetchCalendar();
-  }, [roomId, navigate]);
+  }, [roomId]);
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -174,7 +172,7 @@ export default function BookingPage() {
 
       if (response.ok) {
         alert('Бронирование успешно создано! Мы свяжемся с вами в ближайшее время.');
-        navigate('/');
+        window.location.href = '/';
       } else {
         const error = await response.json();
         alert(`Ошибка: ${error.message || 'Не удалось создать бронирование'}`);
@@ -206,7 +204,7 @@ export default function BookingPage() {
         <Header />
         <div className="container mx-auto px-4 py-20 text-center">
           <h1 className="text-2xl text-white mb-4">Апартамент не найден</h1>
-          <Button onClick={() => navigate('/')}>Вернуться на главную</Button>
+          <Button onClick={() => window.location.href = '/'}>Вернуться на главную</Button>
         </div>
       </div>
     );
@@ -221,7 +219,7 @@ export default function BookingPage() {
           <div className="mb-8">
             <Button 
               variant="outline" 
-              onClick={() => navigate('/')}
+              onClick={() => window.location.href = '/'}
               className="mb-4 bg-charcoal-800 border-gold-500/20 text-white hover:bg-charcoal-700"
             >
               <Icon name="ArrowLeft" size={18} className="mr-2" />
@@ -383,14 +381,14 @@ export default function BookingPage() {
                   />
                 </div>
 
-                <FizzyButton
+                <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full bg-gold-500 hover:bg-gold-600 text-white font-semibold"
                   disabled={!checkInDate || !checkOutDate || submitting}
-                  icon={<Icon name="Calendar" size={18} />}
                 >
+                  <Icon name="Calendar" size={18} className="mr-2" />
                   {submitting ? 'Отправка...' : 'Забронировать'}
-                </FizzyButton>
+                </Button>
               </form>
             </Card>
           </div>
