@@ -232,16 +232,23 @@ export default function OwnerReportsPage() {
                     setSelectedBooking(booking);
                   }}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
                       <p className="font-semibold text-white">{booking.guestName}</p>
                       <p className="text-sm text-gray-400">
                         {new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelectedBooking(booking);
+                        }}
+                        className="mt-2 text-xs bg-gold-500 text-charcoal-900 px-3 py-1 rounded-full font-semibold flex items-center gap-1"
+                      >
                         <Icon name="Eye" size={14} />
-                        Нажмите для детализации
-                      </p>
+                        Детализация
+                      </button>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-gold-500">{(booking.ownerFunds || 0).toLocaleString('ru')} ₽</p>
