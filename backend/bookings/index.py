@@ -195,7 +195,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             notification_sent = False
             try:
-                notify_url = 'https://functions.poehali.dev/notify-owner'
+                notify_url = 'https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f'
                 notify_payload = {
                     'booking_id': new_booking['id'],
                     'guest_name': guest_name,
