@@ -211,12 +211,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     )
                     
                     print(f'Bnovo auth status: {auth_response.status_code}')
+                    print(f'Bnovo auth response: {auth_response.text}')
                     
                     if auth_response.status_code != 200:
                         bnovo_error = f'Auth failed: {auth_response.text}'
                         print(bnovo_error)
                     else:
                         auth_data = auth_response.json()
+                        print(f'Bnovo auth data: {auth_data}')
                         jwt_token = auth_data.get('token')
                         
                         if not jwt_token:
