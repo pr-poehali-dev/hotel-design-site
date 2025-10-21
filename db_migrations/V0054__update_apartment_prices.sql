@@ -1,0 +1,10 @@
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 35000 WHERE number = '1116';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 18000 WHERE number = '1311';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 20000 WHERE number = '1401';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 30000 WHERE number = '1522';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 30000 WHERE number = '2110';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 22000 WHERE number = '2111';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 22000 WHERE number = '2119';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 25000 WHERE number = '2817';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 30000 WHERE number = '816';
+UPDATE t_p9202093_hotel_design_site.rooms SET price_per_night = 16000 WHERE number = '906';
