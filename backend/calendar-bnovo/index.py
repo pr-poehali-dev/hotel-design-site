@@ -3,12 +3,13 @@ import os
 import psycopg2
 import psycopg2.extras
 from typing import Dict, Any
+from collections import defaultdict
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Get calendar data from calendar_bnovo table (Bnovo bookings calendar)
-    Args: event with httpMethod, queryStringParameters (month, year, apartment_id)
-    Returns: HTTP response with calendar data grouped by apartment and date
+    Business: Get calendar data from availability_calendar table grouped by apartment
+    Args: event with httpMethod, queryStringParameters (start_date, end_date)
+    Returns: HTTP response with calendar data grouped by room_id
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -42,51 +43,59 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     
-    # Получаем параметры фильтрации
+    # Получаем параметры
     query_params = event.get('queryStringParameters', {}) or {}
-    month = query_params.get('month')
-    year = query_params.get('year')
-    apartment_id = query_params.get('apartment_id')
+    start_date = query_params.get('start_date')
+    end_date = query_params.get('end_date')
     
     # Строим WHERE условие
     where_conditions = []
-    
-    if month and year:
-        where_conditions.append(f"EXTRACT(MONTH FROM date) = {month} AND EXTRACT(YEAR FROM date) = {year}")
-    
-    if apartment_id and apartment_id != 'all':
-        apartment_id_escaped = apartment_id.replace("'", "''")
-        where_conditions.append(f"apartment_id = '{apartment_id_escaped}'")
+    if start_date:
+        start_date_escaped = start_date.replace("'", "''")
+        where_conditions.append(f"date >= '{start_date_escaped}'")
+    if end_date:
+        end_date_escaped = end_date.replace("'", "''")
+        where_conditions.append(f"date <= '{end_date_escaped}'")
     
     where_clause = f"WHERE {' AND '.join(where_conditions)}" if where_conditions else ""
     
-    # Получаем данные из календаря
+    # Получаем данные из календаря с информацией о бронированиях
     cur.execute(f"""
         SELECT 
-            apartment_id,
-            date,
-            is_available,
-            booking_id,
-            bnovo_id,
-            guest_name,
-            price
-        FROM t_p9202093_hotel_design_site.calendar_bnovo
+            ac.room_id,
+            ac.date,
+            ac.is_available,
+            ac.booking_id,
+            ac.price,
+            b.guest_name
+        FROM t_p9202093_hotel_design_site.availability_calendar ac
+        LEFT JOIN t_p9202093_hotel_design_site.bookings b ON ac.booking_id = b.id
         {where_clause}
-        ORDER BY apartment_id, date
+        ORDER BY ac.room_id, ac.date
     """)
     
     rows = cur.fetchall()
-    calendar_data = []
+    
+    # Группируем по room_id
+    calendars_dict = defaultdict(list)
     
     for row in rows:
-        calendar_data.append({
-            'apartment_id': row['apartment_id'],
+        room_id = row['room_id']
+        calendars_dict[room_id].append({
             'date': str(row['date']),
             'is_available': row['is_available'],
+            'price': float(row['price']) if row['price'] else 0,
             'booking_id': row['booking_id'],
-            'bnovo_id': row['bnovo_id'],
-            'guest_name': row['guest_name'],
-            'price': float(row['price']) if row['price'] else 0
+            'guest_name': row['guest_name']
+        })
+    
+    # Преобразуем в список календарей
+    calendars = []
+    for room_id, days in calendars_dict.items():
+        calendars.append({
+            'room_id': room_id,
+            'room_name': f'Апартамент {room_id}',
+            'days': days
         })
     
     cur.close()
@@ -97,7 +106,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
         'isBase64Encoded': False,
         'body': json.dumps({
-            'calendar': calendar_data,
-            'total': len(calendar_data)
-        })
+            'calendars': calendars,
+            'total_rooms': len(calendars)
+        }, ensure_ascii=False)
     }
