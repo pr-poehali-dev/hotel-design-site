@@ -286,6 +286,45 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 })
             }
         
+        if method == 'DELETE':
+            query_params = event.get('queryStringParameters', {}) or {}
+            booking_id = query_params.get('id')
+            
+            if not booking_id:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Missing booking id'})
+                }
+            
+            cursor.execute(f"""
+                DELETE FROM t_p9202093_hotel_design_site.bookings 
+                WHERE id = '{booking_id}'
+                RETURNING id
+            """)
+            
+            deleted = cursor.fetchone()
+            if not deleted:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 404,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Booking not found'})
+                }
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'success': True, 'id': deleted['id']})
+            }
+        
         cursor.close()
         conn.close()
         
