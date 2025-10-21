@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import BookingCalendar from '@/components/booking/BookingCalendar';
+import BnovoBookingWidget from '@/components/BnovoBookingWidget';
 
 interface Room {
   name: string;
@@ -36,7 +36,6 @@ interface RoomCardProps {
 const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: RoomCardProps) => {
   const [open, setOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [showBookingWidget, setShowBookingWidget] = useState(false);
   
   return (
     <Card 
@@ -144,13 +143,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           </Dialog>
         )}
         
-        <FizzyButton 
-          className="w-full mt-4"
-          onClick={() => setShowBookingWidget(true)}
-          icon={<Icon name="Calendar" size={18} />}
-        >
-          Забронировать
-        </FizzyButton>
+        <BnovoBookingWidget roomId={room.roomId} />
       </div>
 
       <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
@@ -217,14 +210,6 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
         </DialogContent>
       </Dialog>
 
-      {showBookingWidget && (
-        <BookingCalendar
-          roomId={room.roomId || 'default'}
-          roomName={room.subtitle || room.name}
-          pricePerNight={parseInt(room.price.replace(/\D/g, '')) || 18000}
-          onClose={() => setShowBookingWidget(false)}
-        />
-      )}
     </Card>
   );
 };
