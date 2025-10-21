@@ -176,28 +176,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'Missing required fields'})
                 }
             
-            sql = f"""
-                INSERT INTO t_p9202093_hotel_design_site.bookings 
-                (id, apartment_id, guest_name, guest_email, guest_phone, check_in, check_out, 
-                 accommodation_amount, total_amount, aggregator_commission, is_prepaid, prepayment_amount)
-                VALUES (gen_random_uuid()::text, '{apartment_id}', '{guest_name}', '{guest_email}', '{guest_phone}', 
-                        '{check_in}', '{check_out}', {total_amount}, {total_amount}, {aggregator_commission}, 
-                        {is_prepaid}, {prepayment_amount})
-                RETURNING id, apartment_id, guest_name, check_in, check_out
-            """
-            
-            cursor.execute(sql)
-            new_booking = cursor.fetchone()
-            conn.commit()
-            
             cursor.close()
             conn.close()
+            
+            import uuid
+            booking_id = str(uuid.uuid4())
             
             notification_sent = False
             try:
                 notify_url = 'https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f'
                 notify_payload = {
-                    'booking_id': new_booking['id'],
+                    'booking_id': booking_id,
                     'guest_name': guest_name,
                     'guest_email': guest_email,
                     'guest_phone': guest_phone,
@@ -218,11 +207,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'isBase64Encoded': False,
                 'body': json.dumps({
-                    'id': new_booking['id'],
-                    'apartmentId': new_booking['apartment_id'],
-                    'guestName': new_booking['guest_name'],
-                    'checkIn': str(new_booking['check_in']),
-                    'checkOut': str(new_booking['check_out']),
+                    'id': booking_id,
+                    'apartmentId': apartment_id,
+                    'guestName': guest_name,
+                    'checkIn': check_in,
+                    'checkOut': check_out,
                     'notificationSent': notification_sent
                 })
             }
