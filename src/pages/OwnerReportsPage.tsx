@@ -3,6 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { BookingRecord } from '@/types/booking';
 import Icon from '@/components/ui/icon';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export default function OwnerReportsPage() {
   const { apartmentId } = useParams<{ apartmentId: string }>();
@@ -13,6 +19,7 @@ export default function OwnerReportsPage() {
   const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string } | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null);
   
   const generateMonthOptions = () => {
     const months = [];
@@ -208,12 +215,20 @@ export default function OwnerReportsPage() {
           ) : (
             <div className="space-y-3">
               {filteredBookings.map((booking) => (
-                <Card key={booking.id} className="p-4">
+                <Card 
+                  key={booking.id} 
+                  className="p-4 cursor-pointer hover:bg-charcoal-700/50 transition-colors"
+                  onClick={() => setSelectedBooking(booking)}
+                >
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <p className="font-semibold text-white">{booking.guestName}</p>
                       <p className="text-sm text-gray-400">
                         {new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                        <Icon name="Eye" size={14} />
+                        Нажмите для детализации
                       </p>
                     </div>
                     <div className="text-right">
@@ -266,6 +281,91 @@ export default function OwnerReportsPage() {
           </div>
         )}
       </div>
+
+      {/* Модальное окно с расшифровкой */}
+      <Dialog open={!!selectedBooking} onOpenChange={(open) => !open && setSelectedBooking(null)}>
+        <DialogContent className="bg-charcoal-900 border-gold-500/20 text-white max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <Icon name="Receipt" size={24} className="text-gold-500" />
+              Детализация расходов
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedBooking && (
+            <div className="space-y-4">
+              <div className="bg-charcoal-800 p-4 rounded-lg">
+                <p className="text-sm text-gray-400">Период</p>
+                <p className="text-white font-semibold">
+                  {new Date(selectedBooking.checkIn).toLocaleDateString('ru')} — {new Date(selectedBooking.checkOut).toLocaleDateString('ru')}
+                </p>
+                <p className="text-sm text-gray-400 mt-2">Гость</p>
+                <p className="text-white">{selectedBooking.guestName || 'Не указано'}</p>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center pb-2 border-b border-gray-700">
+                  <span className="text-gray-400">Общая сумма</span>
+                  <span className="text-white font-semibold">{selectedBooking.totalAmount.toLocaleString('ru')} ₽</span>
+                </div>
+                
+                <div className="flex justify-between items-center text-red-400">
+                  <span>Комиссия агрегатора</span>
+                  <span>- {selectedBooking.aggregatorCommission.toLocaleString('ru')} ₽</span>
+                </div>
+
+                {selectedBooking.expenses && (
+                  <>
+                    {selectedBooking.expenses.maid > 0 && (
+                      <div className="flex justify-between items-center text-red-400">
+                        <span>Горничная</span>
+                        <span>- {selectedBooking.expenses.maid.toLocaleString('ru')} ₽</span>
+                      </div>
+                    )}
+                    {selectedBooking.expenses.laundry > 0 && (
+                      <div className="flex justify-between items-center text-red-400">
+                        <span>Прачка</span>
+                        <span>- {selectedBooking.expenses.laundry.toLocaleString('ru')} ₽</span>
+                      </div>
+                    )}
+                    {selectedBooking.expenses.hygiene > 0 && (
+                      <div className="flex justify-between items-center text-red-400">
+                        <span>Гигиена</span>
+                        <span>- {selectedBooking.expenses.hygiene.toLocaleString('ru')} ₽</span>
+                      </div>
+                    )}
+                    {selectedBooking.expenses.transport > 0 && (
+                      <div className="flex justify-between items-center text-red-400">
+                        <span>Транспорт</span>
+                        <span>- {selectedBooking.expenses.transport.toLocaleString('ru')} ₽</span>
+                      </div>
+                    )}
+                    {selectedBooking.expenses.compliment > 0 && (
+                      <div className="flex justify-between items-center text-red-400">
+                        <span>Комплимент</span>
+                        <span>- {selectedBooking.expenses.compliment.toLocaleString('ru')} ₽</span>
+                      </div>
+                    )}
+                    {selectedBooking.expenses.other > 0 && (
+                      <div className="flex justify-between items-center text-red-400">
+                        <span>Прочее {selectedBooking.expenses.otherNote && `(${selectedBooking.expenses.otherNote})`}</span>
+                        <span>- {selectedBooking.expenses.other.toLocaleString('ru')} ₽</span>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                <div className="flex justify-between items-center pt-3 border-t border-gold-500/30">
+                  <span className="text-gold-500 font-bold">К получению</span>
+                  <span className="text-gold-500 font-bold text-xl">
+                    {(selectedBooking.ownerFunds || 0).toLocaleString('ru')} ₽
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

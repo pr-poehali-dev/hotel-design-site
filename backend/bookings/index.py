@@ -76,7 +76,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'prepaymentAmount': float(booking['prepayment_amount']) if booking.get('prepayment_amount') else 0,
                     'prepaymentDate': str(booking['prepayment_date']) if booking.get('prepayment_date') else None,
                     'showToGuest': True,
-                    'paymentStatus': 'paid' if booking.get('is_prepaid', False) else 'pending'
+                    'paymentStatus': 'paid' if booking.get('is_prepaid', False) else 'pending',
+                    'expenses': {
+                        'maid': float(booking['maid']) if booking.get('maid') else 0,
+                        'laundry': float(booking['laundry']) if booking.get('laundry') else 0,
+                        'hygiene': float(booking['hygiene']) if booking.get('hygiene') else 0,
+                        'transport': float(booking['transport']) if booking.get('transport') else 0,
+                        'compliment': float(booking['compliment']) if booking.get('compliment') else 0,
+                        'other': float(booking['other']) if booking.get('other') else 0,
+                        'otherNote': booking.get('other_note') or ''
+                    }
                 })
             
             cursor.close()

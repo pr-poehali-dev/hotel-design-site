@@ -30,6 +30,15 @@ export interface BookingRecord {
   showToGuest: boolean;
   paymentStatus?: 'pending' | 'paid' | 'partial';
   paymentCompletedAt?: string | null;
+  expenses?: {
+    maid: number;
+    laundry: number;
+    hygiene: number;
+    transport: number;
+    compliment: number;
+    other: number;
+    otherNote: string;
+  };
 }
 
 export interface MonthlyReport {
