@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BookingsHeader from '@/components/bookings/BookingsHeader';
-import BookingsCalendarView from '@/components/bookings/BookingsCalendarView';
 
 const BookingsManagementPage = () => {
   const navigate = useNavigate();
@@ -18,7 +17,9 @@ const BookingsManagementPage = () => {
       <BookingsHeader />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <BookingsCalendarView />
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">Календарь бронирований временно отключен</p>
+        </div>
       </div>
     </div>
   );
