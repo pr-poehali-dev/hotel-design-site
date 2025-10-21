@@ -95,16 +95,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Dates are already booked'})
             }
         
-        cursor.execute(f"SELECT bnovo_name, number FROM t_p9202093_hotel_design_site.rooms WHERE id = '{apartment_id}'")
+        cursor.execute(f"SELECT bnovo_name, number, price_per_night FROM t_p9202093_hotel_design_site.rooms WHERE id = '{apartment_id}'")
         room_data = cursor.fetchone()
         apartment_name = room_data[0] if room_data and room_data[0] else (room_data[1] if room_data else apartment_id)
-        
-        cursor.close()
-        conn.close()
+        price_per_night = float(room_data[2]) if room_data and room_data[2] else 8500
         
         guests_count = adults + children
-        total_amount = 0
         booking_id = str(int(time.time() * 1000))
+        
+        nights = (check_out_date - check_in_date).days
+        total_amount = price_per_night * nights
+        
+        cursor.execute('''
+            INSERT INTO t_p9202093_hotel_design_site.bookings 
+            (id, apartment_id, check_in, check_out, guest_name, guest_email, guest_phone, 
+             guests_count, accommodation_amount, total_amount, source, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (booking_id, str(apartment_id), check_in, check_out, guest_name, guest_email, 
+              guest_phone, guests_count, total_amount, total_amount, source, 'pending'))
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
         
         import requests
         try:
