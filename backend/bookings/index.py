@@ -195,6 +195,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             bnovo_password = os.environ.get('BNOVO_PASSWORD')
             
             bnovo_order_id = None
+            bnovo_error = None
             if bnovo_account_id and bnovo_password:
                 try:
                     bnovo_payload = {
@@ -213,17 +214,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'status': 'confirmed'
                     }
                     
+                    print(f'Sending to Bnovo: {bnovo_payload}')
+                    
                     bnovo_response = requests.post(
                         'https://online.bnovo.ru/api/orders/create',
                         json=bnovo_payload,
                         timeout=10
                     )
                     
+                    print(f'Bnovo response status: {bnovo_response.status_code}')
+                    print(f'Bnovo response body: {bnovo_response.text}')
+                    
                     if bnovo_response.status_code == 200:
                         bnovo_data = bnovo_response.json()
                         bnovo_order_id = bnovo_data.get('id')
+                    else:
+                        bnovo_error = f'Status {bnovo_response.status_code}: {bnovo_response.text}'
                 except Exception as e:
-                    print(f'Bnovo sync failed: {str(e)}')
+                    bnovo_error = str(e)
+                    print(f'Bnovo sync failed: {bnovo_error}')
             
             cursor.close()
             conn.close()
