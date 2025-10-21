@@ -177,9 +177,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'Missing required fields'})
                 }
             
-            cursor.close()
-            conn.close()
-            
             booking_id = str(uuid.uuid4())
             
             notification_sent = False
@@ -201,6 +198,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 notification_sent = notify_response.status_code == 200
             except Exception as e:
                 print(f'Notification failed: {str(e)}')
+            
+            cursor.close()
+            conn.close()
             
             return {
                 'statusCode': 201,
