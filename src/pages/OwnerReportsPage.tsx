@@ -3,12 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { BookingRecord } from '@/types/booking';
 import Icon from '@/components/ui/icon';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
 export default function OwnerReportsPage() {
   const { apartmentId } = useParams<{ apartmentId: string }>();
@@ -300,21 +294,29 @@ export default function OwnerReportsPage() {
         )}
       </div>
 
-      {/* Модальное окно с расшифровкой */}
-      <Dialog open={!!selectedBooking} onOpenChange={(open) => {
-        console.log('Dialog onOpenChange:', open, selectedBooking);
-        if (!open) setSelectedBooking(null);
-      }}>
-        <DialogContent className="bg-charcoal-900 border-gold-500/20 text-white max-w-lg w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-xl flex items-center gap-2">
-              <Icon name="Receipt" size={24} className="text-gold-500" />
-              Детализация расходов
-            </DialogTitle>
-          </DialogHeader>
-          
-          {selectedBooking && (
-            <div className="space-y-4">
+      {/* Слайд-панель с расшифровкой */}
+      {selectedBooking && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 animate-in fade-in"
+          onClick={() => setSelectedBooking(null)}
+        >
+          <div 
+            className="fixed bottom-0 left-0 right-0 bg-charcoal-900 rounded-t-3xl max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Шапка */}
+            <div className="sticky top-0 bg-charcoal-900 border-b border-gold-500/20 p-4 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Icon name="Receipt" size={24} className="text-gold-500" />
+                <h3 className="text-lg font-bold text-white">Детализация расходов</h3>
+              </div>
+              <button onClick={() => setSelectedBooking(null)} className="p-2 hover:bg-charcoal-800 rounded-lg">
+                <Icon name="X" size={24} className="text-gray-400" />
+              </button>
+            </div>
+            
+            <div className="p-4 space-y-4">
+              {/* Информация о бронировании */}
               <div className="bg-charcoal-800 p-4 rounded-lg">
                 <p className="text-sm text-gray-400">Период</p>
                 <p className="text-white font-semibold">
@@ -324,15 +326,16 @@ export default function OwnerReportsPage() {
                 <p className="text-white">{selectedBooking.guestName || 'Не указано'}</p>
               </div>
 
+              {/* Расшифровка */}
               <div className="space-y-2">
                 <div className="flex justify-between items-center pb-2 border-b border-gray-700">
                   <span className="text-gray-400">Общая сумма</span>
-                  <span className="text-white font-semibold">{selectedBooking.totalAmount.toLocaleString('ru')} ₽</span>
+                  <span className="text-white font-semibold">{selectedBooking.totalAmount?.toLocaleString('ru') || 0} ₽</span>
                 </div>
                 
                 <div className="flex justify-between items-center text-red-400">
                   <span>Комиссия агрегатора</span>
-                  <span>- {selectedBooking.aggregatorCommission.toLocaleString('ru')} ₽</span>
+                  <span>- {selectedBooking.aggregatorCommission?.toLocaleString('ru') || 0} ₽</span>
                 </div>
 
                 {selectedBooking.expenses && (
@@ -383,10 +386,13 @@ export default function OwnerReportsPage() {
                   </span>
                 </div>
               </div>
+              
+              {/* Отступ снизу для комфортного скролла */}
+              <div className="h-8"></div>
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
