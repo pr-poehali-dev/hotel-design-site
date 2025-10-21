@@ -96,6 +96,7 @@ const AddBookingDialog = ({
 
   const handlePricePerNightChange = (price: string) => {
     const priceNum = parseFloat(price);
+    const nights = calculateNights();
     if (nights > 0 && !isNaN(priceNum)) {
       const totalAmount = (priceNum * nights).toFixed(2);
       const serviceFee = parseFloat(formData.service_fee_percent) || 0;
@@ -104,6 +105,29 @@ const AddBookingDialog = ({
     } else {
       setFormData({ ...formData, price_per_night: price });
     }
+  };
+
+  const handleDateChange = (field: 'check_in' | 'check_out', value: string) => {
+    const newFormData = { ...formData, [field]: value };
+    
+    const checkIn = field === 'check_in' ? new Date(value) : new Date(formData.check_in);
+    const checkOut = field === 'check_out' ? new Date(value) : new Date(formData.check_out);
+    
+    if (value && (field === 'check_in' ? formData.check_out : formData.check_in)) {
+      const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime());
+      const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      const priceNum = parseFloat(formData.price_per_night);
+      if (nights > 0 && !isNaN(priceNum)) {
+        const totalAmount = (priceNum * nights).toFixed(2);
+        const serviceFee = parseFloat(formData.service_fee_percent) || 0;
+        const ownerFunds = (parseFloat(totalAmount) * (1 - serviceFee / 100)).toFixed(2);
+        setFormData({ ...newFormData, total_amount: totalAmount, owner_funds: ownerFunds });
+        return;
+      }
+    }
+    
+    setFormData(newFormData);
   };
 
   const handleSubmit = () => {
@@ -162,7 +186,7 @@ const AddBookingDialog = ({
                 id="check_in"
                 type="date"
                 value={formData.check_in}
-                onChange={(e) => setFormData({ ...formData, check_in: e.target.value })}
+                onChange={(e) => handleDateChange('check_in', e.target.value)}
               />
             </div>
 
@@ -172,7 +196,7 @@ const AddBookingDialog = ({
                 id="check_out"
                 type="date"
                 value={formData.check_out}
-                onChange={(e) => setFormData({ ...formData, check_out: e.target.value })}
+                onChange={(e) => handleDateChange('check_out', e.target.value)}
               />
             </div>
           </div>
