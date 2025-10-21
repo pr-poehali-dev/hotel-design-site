@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from typing import Dict, Any
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -179,7 +180,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor.close()
             conn.close()
             
-            import uuid
             booking_id = str(uuid.uuid4())
             
             notification_sent = False
