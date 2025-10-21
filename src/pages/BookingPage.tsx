@@ -56,7 +56,7 @@ export default function BookingPage() {
 
     const fetchCalendar = async () => {
       try {
-        const response = await fetch(`https://d5d7u99ltjlnmpijdqeg.apigw.yandexcloud.net/bnovo/calendars`);
+        const response = await fetch(`https://functions.poehali.dev/cb06df00-bb06-4e01-a02d-f31057ae60af`);
         const data = await response.json();
         console.log('Все календари:', data.calendars);
         console.log('Ищем roomId:', roomId);
@@ -159,7 +159,7 @@ export default function BookingPage() {
 
     setSubmitting(true);
     try {
-      const response = await fetch('https://d5d7u99ltjlnmpijdqeg.apigw.yandexcloud.net/bookings/create', {
+      const response = await fetch('https://functions.poehali.dev/5a3ff68a-6bba-444f-a0a4-7dd5e4569530', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
