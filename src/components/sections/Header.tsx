@@ -2,12 +2,12 @@ import Icon from '@/components/ui/icon';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 
 interface HeaderProps {
-  navigation: Array<{ id: string; label: string; icon: string }>;
-  currentSection: string;
-  onNavigate: (section: string) => void;
+  navigation?: Array<{ id: string; label: string; icon: string }>;
+  currentSection?: string;
+  onNavigate?: (section: string) => void;
 }
 
-const Header = ({ navigation, currentSection, onNavigate }: HeaderProps) => {
+const Header = ({ navigation = [], currentSection = '', onNavigate = () => {} }: HeaderProps) => {
   return (
     <header className="bg-charcoal-900 text-white shadow-2xl relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-gold-500/10 to-transparent"></div>
