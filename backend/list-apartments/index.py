@@ -54,8 +54,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         for row in rows:
             room_id, number, bnovo_name, price, max_guests, bedrooms, bathrooms = row
             apartments.append({
-                'id': number,
-                'room_id': room_id,
+                'id': room_id,
                 'name': bnovo_name if bnovo_name else number,
                 'number': number,
                 'price': int(float(price)) if price else 0,
