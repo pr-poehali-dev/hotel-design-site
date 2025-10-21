@@ -33,11 +33,16 @@ interface Calendar {
   days: AvailabilityDay[];
 }
 
+interface RoomDetails {
+  price_per_night: number;
+}
+
 export default function BookingPage() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get('room');
   
   const [calendar, setCalendar] = useState<Calendar | null>(null);
+  const [roomDetails, setRoomDetails] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
@@ -76,7 +81,20 @@ export default function BookingPage() {
       }
     };
 
+    const fetchRoomDetails = async () => {
+      try {
+        const response = await fetch(`https://functions.poehali.dev/7cb67a25-c7f6-4902-8274-277a31ef2bcf?room_id=${roomId}`);
+        const data = await response.json();
+        if (data.apartments && data.apartments.length > 0) {
+          setRoomDetails({ price_per_night: data.apartments[0].price_per_night || 0 });
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки деталей апартамента:', error);
+      }
+    };
+
     fetchCalendar();
+    fetchRoomDetails();
   }, [roomId]);
 
   const monthStart = startOfMonth(currentMonth);
@@ -170,7 +188,7 @@ export default function BookingPage() {
           guest_phone: guestPhone,
           check_in: format(checkInDate, 'yyyy-MM-dd'),
           check_out: format(checkOutDate, 'yyyy-MM-dd'),
-          total_amount: 0,
+          total_amount: totalPrice,
           aggregator_commission: 0
         })
       });
@@ -192,6 +210,8 @@ export default function BookingPage() {
   };
 
   const totalNights = checkInDate && checkOutDate ? differenceInDays(checkOutDate, checkInDate) : 0;
+  const pricePerNight = roomDetails?.price_per_night || 0;
+  const totalPrice = totalNights * pricePerNight;
 
   if (loading) {
     return (
@@ -310,7 +330,7 @@ export default function BookingPage() {
               </h2>
 
               {checkInDate && checkOutDate ? (
-                <div className="mb-6 p-4 bg-charcoal-900/50 rounded-lg">
+                <div className="mb-6 p-4 bg-charcoal-900/50 rounded-lg space-y-3">
                   <div className="flex justify-between text-white mb-2">
                     <span>Заезд:</span>
                     <span className="font-semibold">{format(checkInDate, 'dd MMM yyyy', { locale: ru })}</span>
@@ -319,10 +339,24 @@ export default function BookingPage() {
                     <span>Выезд:</span>
                     <span className="font-semibold">{format(checkOutDate, 'dd MMM yyyy', { locale: ru })}</span>
                   </div>
-                  <div className="flex justify-between text-gold-400 font-bold">
+                  <div className="flex justify-between text-white mb-2">
                     <span>Ночей:</span>
-                    <span>{totalNights}</span>
+                    <span className="font-semibold">{totalNights}</span>
                   </div>
+                  {pricePerNight > 0 && (
+                    <>
+                      <div className="flex justify-between text-gray-400 text-sm">
+                        <span>{pricePerNight.toLocaleString()} ₽ × {totalNights} ночей</span>
+                        <span>{totalPrice.toLocaleString()} ₽</span>
+                      </div>
+                      <div className="pt-3 border-t border-gold-500/20">
+                        <div className="flex justify-between text-gold-400 font-bold text-lg">
+                          <span>Итого:</span>
+                          <span>{totalPrice.toLocaleString()} ₽</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="mb-6 p-4 bg-charcoal-900/50 rounded-lg text-center text-gray-400">
