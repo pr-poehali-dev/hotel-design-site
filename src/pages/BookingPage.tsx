@@ -83,10 +83,13 @@ export default function BookingPage() {
 
     const fetchRoomDetails = async () => {
       try {
-        const response = await fetch(`https://functions.poehali.dev/7cb67a25-c7f6-4902-8274-277a31ef2bcf?room_id=${roomId}`);
+        const response = await fetch(`https://functions.poehali.dev/7cb67a25-c7f6-4902-8274-277a31ef2bcf`);
         const data = await response.json();
         if (data.apartments && data.apartments.length > 0) {
-          setRoomDetails({ price_per_night: data.apartments[0].price_per_night || 0 });
+          const room = data.apartments.find((apt: any) => apt.room_id === roomId);
+          if (room) {
+            setRoomDetails({ price_per_night: room.price || 0 });
+          }
         }
       } catch (error) {
         console.error('Ошибка загрузки деталей апартамента:', error);
