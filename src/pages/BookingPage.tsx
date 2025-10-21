@@ -181,7 +181,7 @@ export default function BookingPage() {
 
     setSubmitting(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/42f08a7b-0e59-4277-b467-1ceb942afe5e', {
+      const response = await fetch('https://functions.poehali.dev/5a3ff68a-6bba-444f-a0a4-7dd5e4569530', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -191,8 +191,9 @@ export default function BookingPage() {
           guest_phone: guestPhone,
           check_in: format(checkInDate, 'yyyy-MM-dd'),
           check_out: format(checkOutDate, 'yyyy-MM-dd'),
-          total_amount: totalPrice,
-          aggregator_commission: 0
+          adults: adults,
+          children: 0,
+          source: 'website'
         })
       });
 
