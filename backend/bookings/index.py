@@ -3,6 +3,8 @@ import os
 from typing import Dict, Any
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import requests
+from datetime import datetime
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -187,6 +189,42 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor.execute(sql)
             new_booking = cursor.fetchone()
             conn.commit()
+            
+            # Синхронизация с Bnovo
+            bnovo_account_id = os.environ.get('BNOVO_ACCOUNT_ID')
+            bnovo_password = os.environ.get('BNOVO_PASSWORD')
+            
+            bnovo_order_id = None
+            if bnovo_account_id and bnovo_password:
+                try:
+                    bnovo_payload = {
+                        'account_id': bnovo_account_id,
+                        'password': bnovo_password,
+                        'room_id': apartment_id,
+                        'arrival': check_in,
+                        'departure': check_out,
+                        'guest': {
+                            'name': guest_name,
+                            'email': guest_email,
+                            'phone': guest_phone
+                        },
+                        'price': total_amount,
+                        'currency': 'RUB',
+                        'status': 'confirmed'
+                    }
+                    
+                    bnovo_response = requests.post(
+                        'https://online.bnovo.ru/api/orders/create',
+                        json=bnovo_payload,
+                        timeout=10
+                    )
+                    
+                    if bnovo_response.status_code == 200:
+                        bnovo_data = bnovo_response.json()
+                        bnovo_order_id = bnovo_data.get('id')
+                except Exception as e:
+                    print(f'Bnovo sync failed: {str(e)}')
+            
             cursor.close()
             conn.close()
             
@@ -199,7 +237,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'apartmentId': new_booking['apartment_id'],
                     'guestName': new_booking['guest_name'],
                     'checkIn': str(new_booking['check_in']),
-                    'checkOut': str(new_booking['check_out'])
+                    'checkOut': str(new_booking['check_out']),
+                    'bnovoOrderId': bnovo_order_id
                 })
             }
         
