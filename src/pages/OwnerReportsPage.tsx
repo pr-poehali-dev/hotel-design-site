@@ -234,7 +234,7 @@ export default function OwnerReportsPage() {
                       </p>
                       <button 
                         onClick={() => setSelectedBooking(booking)}
-                        className="mt-2 text-xs text-gold-500 hover:text-gold-400 flex items-center gap-1 transition-colors"
+                        className="mt-2 text-xs bg-charcoal-900 text-gold-500 hover:bg-charcoal-950 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
                       >
                         <Icon name="Eye" size={12} />
                         Детализация
