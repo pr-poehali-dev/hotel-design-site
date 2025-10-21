@@ -53,6 +53,11 @@ const AddBookingDialog = ({
     if (apartment && apartment.price > 0) {
       const pricePerNight = apartment.price.toString();
       const nights = calculateNights();
+      
+      const currentGuests = parseInt(formData.guests_count) || 1;
+      const maxGuests = apartment.max_guests || 10;
+      const guestsCount = currentGuests > maxGuests ? maxGuests.toString() : formData.guests_count;
+      
       if (nights > 0) {
         const totalAmount = (apartment.price * nights).toFixed(2);
         const serviceFee = parseFloat(formData.service_fee_percent) || 0;
@@ -62,10 +67,11 @@ const AddBookingDialog = ({
           apartment_id: apartmentNumber, 
           price_per_night: pricePerNight,
           total_amount: totalAmount,
-          owner_funds: ownerFunds
+          owner_funds: ownerFunds,
+          guests_count: guestsCount
         });
       } else {
-        setFormData({ ...formData, apartment_id: apartmentNumber, price_per_night: pricePerNight });
+        setFormData({ ...formData, apartment_id: apartmentNumber, price_per_night: pricePerNight, guests_count: guestsCount });
       }
     } else {
       setFormData({ ...formData, apartment_id: apartmentNumber });
@@ -211,11 +217,16 @@ const AddBookingDialog = ({
               id="guests_count"
               type="number"
               min="1"
-              max="10"
+              max={formData.apartment_id ? (apartments.find(apt => apt.number === formData.apartment_id)?.max_guests || 10) : 10}
               placeholder="2"
               value={formData.guests_count}
               onChange={(e) => setFormData({ ...formData, guests_count: e.target.value })}
             />
+            {formData.apartment_id && apartments.find(apt => apt.number === formData.apartment_id)?.max_guests && (
+              <p className="text-xs text-charcoal-500 mt-1">
+                Макс. {apartments.find(apt => apt.number === formData.apartment_id)?.max_guests} {apartments.find(apt => apt.number === formData.apartment_id)?.max_guests === 1 ? 'гость' : apartments.find(apt => apt.number === formData.apartment_id)?.max_guests! < 5 ? 'гостя' : 'гостей'}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
