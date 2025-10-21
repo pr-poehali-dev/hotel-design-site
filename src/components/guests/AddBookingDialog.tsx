@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -34,6 +34,42 @@ const AddBookingDialog = ({
     service_fee_percent: '20',
     owner_funds: '',
   });
+  const [apartments, setApartments] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('https://functions.poehali.dev/7cb67a25-c7f6-4902-8274-277a31ef2bcf')
+      .then(res => res.json())
+      .then(data => {
+        if (data.apartments) {
+          setApartments(data.apartments);
+        }
+      })
+      .catch(err => console.error('Failed to load apartments:', err));
+  }, []);
+
+  const handleApartmentChange = (apartmentNumber: string) => {
+    const apartment = apartments.find(apt => apt.number === apartmentNumber);
+    if (apartment && apartment.price > 0) {
+      const pricePerNight = apartment.price.toString();
+      const nights = calculateNights();
+      if (nights > 0) {
+        const totalAmount = (apartment.price * nights).toFixed(2);
+        const serviceFee = parseFloat(formData.service_fee_percent) || 0;
+        const ownerFunds = (parseFloat(totalAmount) * (1 - serviceFee / 100)).toFixed(2);
+        setFormData({ 
+          ...formData, 
+          apartment_id: apartmentNumber, 
+          price_per_night: pricePerNight,
+          total_amount: totalAmount,
+          owner_funds: ownerFunds
+        });
+      } else {
+        setFormData({ ...formData, apartment_id: apartmentNumber, price_per_night: pricePerNight });
+      }
+    } else {
+      setFormData({ ...formData, apartment_id: apartmentNumber });
+    }
+  };
 
   const calculateNights = () => {
     if (!formData.check_in || !formData.check_out) return 0;
@@ -104,13 +140,19 @@ const AddBookingDialog = ({
         <div className="space-y-4">
           <div>
             <Label htmlFor="apartment_id">Номер апартамента *</Label>
-            <Input
+            <select
               id="apartment_id"
-              type="text"
-              placeholder="2119"
               value={formData.apartment_id}
-              onChange={(e) => setFormData({ ...formData, apartment_id: e.target.value })}
-            />
+              onChange={(e) => handleApartmentChange(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <option value="">Выберите апартамент</option>
+              {apartments.map(apt => (
+                <option key={apt.number} value={apt.number}>
+                  {apt.number} {apt.name && apt.name !== apt.number ? `- ${apt.name}` : ''} {apt.price > 0 ? `(${apt.price}₽/ночь)` : ''}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
