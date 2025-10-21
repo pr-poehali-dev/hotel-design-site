@@ -33,6 +33,7 @@ const AddBookingDialog = ({
     total_amount: '',
     service_fee_percent: '20',
     owner_funds: '',
+    guests_count: '1',
   });
   const [apartments, setApartments] = useState<any[]>([]);
 
@@ -148,6 +149,7 @@ const AddBookingDialog = ({
       total_amount: '',
       service_fee_percent: '20',
       owner_funds: '',
+      guests_count: '1',
     });
   };
 
@@ -185,6 +187,7 @@ const AddBookingDialog = ({
               <Input
                 id="check_in"
                 type="date"
+                min={new Date().toISOString().split('T')[0]}
                 value={formData.check_in}
                 onChange={(e) => handleDateChange('check_in', e.target.value)}
               />
@@ -195,10 +198,24 @@ const AddBookingDialog = ({
               <Input
                 id="check_out"
                 type="date"
+                min={formData.check_in || new Date().toISOString().split('T')[0]}
                 value={formData.check_out}
                 onChange={(e) => handleDateChange('check_out', e.target.value)}
               />
             </div>
+          </div>
+
+          <div>
+            <Label htmlFor="guests_count">Количество гостей *</Label>
+            <Input
+              id="guests_count"
+              type="number"
+              min="1"
+              max="10"
+              placeholder="2"
+              value={formData.guests_count}
+              onChange={(e) => setFormData({ ...formData, guests_count: e.target.value })}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
