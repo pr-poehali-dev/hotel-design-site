@@ -95,6 +95,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Dates are already booked'})
             }
         
+        cursor.execute(f"SELECT bnovo_name, number FROM t_p9202093_hotel_design_site.rooms WHERE id = '{apartment_id}'")
+        room_data = cursor.fetchone()
+        apartment_name = room_data[0] if room_data and room_data[0] else (room_data[1] if room_data else apartment_id)
+        
         cursor.close()
         conn.close()
         
@@ -111,7 +115,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'guest_email': guest_email,
                 'guest_phone': guest_phone,
                 'apartment_id': apartment_id,
-                'apartment_name': apartment_id,
+                'apartment_name': apartment_name,
                 'check_in': check_in,
                 'check_out': check_out,
                 'total_amount': total_amount

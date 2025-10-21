@@ -155,9 +155,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         if method == 'POST':
-            cursor.close()
-            conn.close()
-            
             body_data = json.loads(event.get('body', '{}'))
             
             apartment_id = body_data.get('apartment_id')
@@ -169,11 +166,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             total_amount = body_data.get('total_amount', 0)
             
             if not all([apartment_id, guest_name, check_in, check_out]):
+                cursor.close()
+                conn.close()
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                     'body': json.dumps({'error': 'Missing required fields'})
                 }
+            
+            cursor.execute(f"SELECT bnovo_name, number FROM t_p9202093_hotel_design_site.rooms WHERE id = '{apartment_id}'")
+            room_data = cursor.fetchone()
+            apartment_name = room_data[0] if room_data and room_data[0] else (room_data[1] if room_data else apartment_id)
+            
+            cursor.close()
+            conn.close()
             
             booking_id = str(uuid.uuid4())
             
@@ -186,7 +192,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'guest_email': guest_email,
                     'guest_phone': guest_phone,
                     'apartment_id': apartment_id,
-                    'apartment_name': apartment_id,
+                    'apartment_name': apartment_name,
                     'check_in': check_in,
                     'check_out': check_out,
                     'total_amount': total_amount
