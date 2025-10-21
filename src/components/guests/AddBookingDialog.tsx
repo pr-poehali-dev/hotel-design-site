@@ -34,6 +34,7 @@ const AddBookingDialog = ({
     service_fee_percent: '20',
     owner_funds: '',
     guests_count: '1',
+    guest_comment: '',
   });
   const [apartments, setApartments] = useState<any[]>([]);
 
@@ -156,6 +157,7 @@ const AddBookingDialog = ({
       service_fee_percent: '20',
       owner_funds: '',
       guests_count: '1',
+      guest_comment: '',
     });
   };
 
@@ -197,6 +199,7 @@ const AddBookingDialog = ({
                 value={formData.check_in}
                 onChange={(e) => handleDateChange('check_in', e.target.value)}
               />
+              <p className="text-xs text-charcoal-500 mt-1">Заселение с 15:00</p>
             </div>
 
             <div>
@@ -208,6 +211,7 @@ const AddBookingDialog = ({
                 value={formData.check_out}
                 onChange={(e) => handleDateChange('check_out', e.target.value)}
               />
+              <p className="text-xs text-charcoal-500 mt-1">Выезд до 12:00</p>
             </div>
           </div>
 
@@ -308,6 +312,21 @@ const AddBookingDialog = ({
                 Автоматически рассчитывается
               </p>
             </div>
+          </div>
+
+          <div>
+            <Label htmlFor="guest_comment">Комментарий для гостя</Label>
+            <textarea
+              id="guest_comment"
+              placeholder="Напр.: Код от домофона 1234, паркуйтесь справа от входа..."
+              value={formData.guest_comment}
+              onChange={(e) => setFormData({ ...formData, guest_comment: e.target.value })}
+              rows={3}
+              className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+            />
+            <p className="text-xs text-charcoal-500 mt-1">
+              Дополнительная информация для гостя о заселении
+            </p>
           </div>
         </div>
 
