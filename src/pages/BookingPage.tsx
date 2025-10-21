@@ -180,22 +180,31 @@ export default function BookingPage() {
     if (!checkInDate || !checkOutDate) return;
 
     setSubmitting(true);
+    
+    const bookingData = {
+      apartment_id: roomId,
+      guest_name: guestName,
+      guest_email: guestEmail,
+      guest_phone: guestPhone,
+      check_in: format(checkInDate, 'yyyy-MM-dd'),
+      check_out: format(checkOutDate, 'yyyy-MM-dd'),
+      adults: adults,
+      children: 0,
+      source: 'website'
+    };
+    
+    console.log('🚀 Отправка бронирования:', bookingData);
+    console.log('📡 URL:', 'https://functions.poehali.dev/5a3ff68a-6bba-444f-a0a4-7dd5e4569530');
+    
     try {
       const response = await fetch('https://functions.poehali.dev/5a3ff68a-6bba-444f-a0a4-7dd5e4569530', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          apartment_id: roomId,
-          guest_name: guestName,
-          guest_email: guestEmail,
-          guest_phone: guestPhone,
-          check_in: format(checkInDate, 'yyyy-MM-dd'),
-          check_out: format(checkOutDate, 'yyyy-MM-dd'),
-          adults: adults,
-          children: 0,
-          source: 'website'
-        })
+        body: JSON.stringify(bookingData)
       });
+      
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         alert('Бронирование успешно создано! Апартамент забронирован на выбранные даты.');
