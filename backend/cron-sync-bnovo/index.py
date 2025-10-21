@@ -169,6 +169,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         skipped_bookings = 0
         updated_calendar = 0
         
+        # Временная отладка: собираем все уникальные room_name из Bnovo
+        unique_room_names = set()
+        for b in all_bookings:
+            if isinstance(b, dict) and b.get('room_name'):
+                unique_room_names.add(str(b.get('room_name')))
+        print(f"[DEBUG] Unique room_name values from Bnovo: {sorted(unique_room_names)}")
+        
         # Синхронизируем бронирования  
         for booking in all_bookings:
             if not isinstance(booking, dict):
