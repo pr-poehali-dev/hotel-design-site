@@ -23,14 +23,14 @@ import { ru } from 'date-fns/locale';
 
 interface AvailabilityDay {
   date: string;
-  available: boolean;
+  is_available: boolean;
   price?: number;
 }
 
 interface Calendar {
   room_id: string;
   room_name: string;
-  availability: AvailabilityDay[];
+  days: AvailabilityDay[];
 }
 
 export default function BookingPage() {
@@ -89,8 +89,8 @@ export default function BookingPage() {
   const isDateAvailable = (date: Date): boolean => {
     if (!calendar) return false;
     const dateStr = format(date, 'yyyy-MM-dd');
-    const dayData = calendar.availability.find(d => d.date === dateStr);
-    return dayData?.available ?? false;
+    const dayData = calendar.days.find(d => d.date === dateStr);
+    return dayData?.is_available ?? false;
   };
 
   const handleDateClick = (date: Date) => {
