@@ -119,8 +119,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn.close()
         
         import requests
+        
         try:
-            notify_url = 'https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f'
+            notify_owner_url = 'https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f'
             notify_payload = {
                 'booking_id': booking_id,
                 'guest_name': guest_name,
@@ -133,9 +134,26 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'total_amount': total_amount
             }
             
-            requests.post(notify_url, json=notify_payload, timeout=5)
+            requests.post(notify_owner_url, json=notify_payload, timeout=5)
         except Exception as e:
-            print(f'Notification failed: {str(e)}')
+            print(f'Owner notification failed: {str(e)}')
+        
+        try:
+            send_guest_confirmation_url = 'https://functions.poehali.dev/e349f36e-85b3-4c36-b488-07397019b5c0'
+            guest_payload = {
+                'guest_email': guest_email,
+                'guest_name': guest_name,
+                'booking_id': booking_id,
+                'apartment_name': apartment_name,
+                'check_in': check_in,
+                'check_out': check_out,
+                'total_amount': total_amount,
+                'guest_phone': guest_phone
+            }
+            
+            requests.post(send_guest_confirmation_url, json=guest_payload, timeout=5)
+        except Exception as e:
+            print(f'Guest confirmation failed: {str(e)}')
         
         return {
             'statusCode': 201,

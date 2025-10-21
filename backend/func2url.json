@@ -1,4 +1,5 @@
 {
+  "send-guest-confirmation": "https://functions.poehali.dev/e349f36e-85b3-4c36-b488-07397019b5c0",
   "send-booking-confirmation": "https://functions.poehali.dev/247fe753-02a4-4d5a-b9b2-b2182701293b",
   "notify-owner": "https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f",
   "calendar-bnovo": "https://functions.poehali.dev/cb06df00-bb06-4e01-a02d-f31057ae60af",
