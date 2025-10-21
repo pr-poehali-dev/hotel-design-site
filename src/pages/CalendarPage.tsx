@@ -5,23 +5,27 @@ import Icon from '@/components/ui/icon';
 import AdminLogin from '@/components/AdminLogin';
 import BnovoSyncButton from '@/components/admin/BnovoSyncButton';
 import BnovoSyncSettings from '@/components/admin/BnovoSyncSettings';
-import { 
-  startOfMonth, 
-  endOfMonth, 
-  eachDayOfInterval, 
-  format, 
-  isSameDay,
-  addMonths,
-  subMonths,
-  isWithinInterval,
-  startOfWeek,
-  endOfWeek,
-  isBefore,
-  startOfDay
-} from 'date-fns';
+import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 const AUTH_KEY = 'premium_apartments_admin_auth';
+
+const APARTMENT_NAMES: Record<string, string> = {
+  '1116': 'Апартамент студия Матч Поинт',
+  '1157': 'Мат Поинт 1157',
+  '816': 'Поклонная 9-816',
+  '133': 'Поклонная 9-133',
+  '906': 'Поклонная 9-906',
+  '2111': 'Поклонная 9-2111',
+  '2119': 'Поклонная 9-2119',
+  '2019': 'Поклонная 9-2019',
+  '1401': 'Поклонная 9-1401',
+  '2110': 'Поклонная 9-2110',
+  '1522': 'Поклонная 9-1522',
+  '2817': 'Поклонная 9-2817',
+  '1311': 'Поклонная 9-1311',
+  '193': 'Энитэо-193'
+};
 
 interface Booking {
   id: string;
@@ -33,12 +37,10 @@ interface Booking {
   is_prepaid?: boolean;
   show_to_guest?: boolean;
   bnovo_id?: string;
-}
-
-interface Apartment {
-  apartmentId: string;
-  ownerName: string;
-  commissionRate: number;
+  guests_count?: number;
+  owner_funds?: number;
+  aggregator_commission?: number;
+  our_commission?: number;
 }
 
 export default function CalendarPage() {
@@ -47,23 +49,35 @@ export default function CalendarPage() {
   });
 
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [apartments, setApartments] = useState<Apartment[]>([]);
   const [loading, setLoading] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [selectedApartment, setSelectedApartment] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [showOnlyVisible, setShowOnlyVisible] = useState(false);
 
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
-  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
-  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
-  
-  const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
-  const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  const generateMonthOptions = () => {
+    const months = [];
+    const now = new Date();
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push(date);
+    }
+    return months;
+  };
 
-  const filteredApartments = selectedApartment === 'all' 
-    ? apartments 
-    : apartments.filter(apt => apt.apartmentId === selectedApartment);
+  const monthOptions = generateMonthOptions();
+  const currentMonth = selectedMonth.toLocaleDateString('ru', { month: 'long', year: 'numeric' });
+  const isCurrentMonth = selectedMonth.getMonth() === new Date().getMonth() && selectedMonth.getFullYear() === new Date().getFullYear();
+
+  const filteredBookings = bookings.filter(b => {
+    const checkIn = new Date(b.check_in);
+    const matchesMonth = checkIn.getMonth() === selectedMonth.getMonth() && checkIn.getFullYear() === selectedMonth.getFullYear();
+    const matchesApartment = selectedApartment === 'all' || b.apartment_id === selectedApartment;
+    const matchesVisibility = !showOnlyVisible || b.show_to_guest;
+    return matchesMonth && matchesApartment && matchesVisibility;
+  });
+
+  const uniqueApartments = Array.from(new Set(bookings.map(b => b.apartment_id))).sort();
 
   const loadBookings = async () => {
     setLoading(true);
@@ -80,22 +94,9 @@ export default function CalendarPage() {
     }
   };
 
-  const loadApartments = async () => {
-    try {
-      const response = await fetch('https://functions.poehali.dev/03cef8fb-0be9-49db-bf4a-2867e6e483e5');
-      if (response.ok) {
-        const data = await response.json();
-        setApartments(data || []);
-      }
-    } catch (error) {
-      console.error('Failed to load apartments:', error);
-    }
-  };
-
   useEffect(() => {
     if (isAuthenticated) {
       loadBookings();
-      loadApartments();
     }
   }, [isAuthenticated]);
 
@@ -109,65 +110,15 @@ export default function CalendarPage() {
     localStorage.removeItem(AUTH_KEY);
   };
 
-  const getBookingsForDay = (day: Date, apartmentId: string) => {
-    return bookings.filter(booking => {
-      if (booking.apartment_id !== apartmentId) return false;
-      
-      const checkIn = new Date(booking.check_in);
-      const checkOut = new Date(booking.check_out);
-      
-      return isWithinInterval(day, { start: checkIn, end: checkOut }) ||
-             isSameDay(day, checkIn) ||
-             isSameDay(day, checkOut);
-    });
-  };
-
-  const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
-  const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-  const handleToday = () => setCurrentMonth(new Date());
-
-  const getCellColor = (bookingsForDay: Booking[], day: Date) => {
-    if (bookingsForDay.length === 0) return 'bg-white/5 hover:bg-white/10';
-    
-    const today = startOfDay(new Date());
-    const isPast = isBefore(day, today);
-    
-    if (isPast) {
-      return 'bg-gray-500/20 hover:bg-gray-500/30 border border-gray-500/40';
-    }
-    
-    return 'bg-green-500/20 hover:bg-green-500/30 border border-green-500/40';
-  };
-
-  const getBookingBadgeColor = (booking: Booking, day: Date) => {
-    const today = startOfDay(new Date());
-    const checkIn = startOfDay(new Date(booking.check_in));
-    const isPast = isBefore(day, today);
-    const isUpcoming = !isBefore(checkIn, today);
-    
-    if (isPast) {
-      return 'bg-gray-600/40';
-    }
-    
-    if (isUpcoming) {
-      if (booking.is_prepaid) {
-        return 'bg-emerald-600/50 border border-emerald-400/30';
-      }
-      return 'bg-orange-600/50 border border-orange-400/30';
-    }
-    
-    return 'bg-green-600/40';
-  };
-
   const handleDeleteBooking = async (booking: Booking) => {
     if (!confirm(`Удалить бронирование ${booking.guest_name}?`)) return;
-    
+
     try {
       const response = await fetch(
         `https://functions.poehali.dev/e027968a-93da-4665-8c14-1432cbf823c9?method=DELETE&id=${booking.id}&apartment_id=${booking.apartment_id}`,
         { method: 'DELETE' }
       );
-      
+
       if (response.ok) {
         setSelectedBooking(null);
         await loadBookings();
@@ -191,7 +142,7 @@ export default function CalendarPage() {
           show_to_guest: !booking.show_to_guest
         })
       });
-      
+
       if (response.ok) {
         await loadBookings();
         setSelectedBooking(prev => prev ? { ...prev, show_to_guest: !prev.show_to_guest } : null);
@@ -204,232 +155,275 @@ export default function CalendarPage() {
     }
   };
 
+  const getApartmentName = (apartmentId: string) => {
+    return APARTMENT_NAMES[apartmentId] || `Апартамент ${apartmentId}`;
+  };
+
+  const totalAmount = filteredBookings.reduce((sum, b) => sum + (b.owner_funds || 0), 0);
+  const paidAmount = filteredBookings.filter(b => b.is_prepaid).reduce((sum, b) => sum + (b.owner_funds || 0), 0);
+
   if (!isAuthenticated) {
     return <AdminLogin onLogin={handleLogin} />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Календарь бронирований</h1>
-            <p className="text-slate-300">Управление бронированиями из Бново</p>
+    <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
+      <div className="bg-charcoal-900 border-b border-gold-500/20 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center">
+                <span className="text-xl font-bold text-charcoal-900">P9</span>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white">Календарь бронирований</h1>
+                <p className="text-xs text-gray-400">Управление бронированиями из Бново</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <BnovoSyncButton onSyncComplete={loadBookings} />
+              <button onClick={handleLogout} className="p-2 hover:bg-charcoal-800 rounded-lg">
+                <Icon name="LogOut" size={20} className="text-gray-400" />
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <BnovoSyncButton onSyncComplete={loadBookings} />
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="hover:scale-105 active:scale-95 transition-all duration-200"
-            >
-              <Icon name="LogOut" size={16} />
-              Выйти
-            </Button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <BnovoSyncSettings />
+
+        <div className="mb-4 mt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Icon name="Calendar" size={20} className="text-gold-500" />
+            <span className="text-white font-semibold">Выбор периода</span>
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {monthOptions.map((month, index) => {
+              const isSelected = month.getMonth() === selectedMonth.getMonth() && month.getFullYear() === selectedMonth.getFullYear();
+              const isCurrent = month.getMonth() === new Date().getMonth() && month.getFullYear() === new Date().getFullYear();
+              const label = month.toLocaleDateString('ru', { month: 'short', year: 'numeric' });
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => setSelectedMonth(month)}
+                  className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
+                    isSelected
+                      ? 'bg-gold-500 text-charcoal-900 font-semibold'
+                      : 'bg-charcoal-800 text-gray-400 hover:bg-charcoal-700'
+                  }`}
+                >
+                  {label}
+                  {isCurrent && isSelected && (
+                    <span className="ml-1 text-xs">●</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <BnovoSyncSettings />
+        <div className="mb-4 flex gap-2">
+          <select
+            value={selectedApartment}
+            onChange={(e) => setSelectedApartment(e.target.value)}
+            className="bg-charcoal-800 border border-gold-500/20 text-white rounded-lg px-4 py-2"
+          >
+            <option value="all">Все апартаменты</option>
+            {uniqueApartments.map(aptId => (
+              <option key={aptId} value={aptId}>
+                {getApartmentName(aptId)}
+              </option>
+            ))}
+          </select>
+          
+          <button
+            onClick={() => setShowOnlyVisible(!showOnlyVisible)}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              showOnlyVisible
+                ? 'bg-gold-500 text-charcoal-900 font-semibold'
+                : 'bg-charcoal-800 text-gray-400 hover:bg-charcoal-700'
+            }`}
+          >
+            {showOnlyVisible ? 'Показать все' : 'Только видимые владельцам'}
+          </button>
+        </div>
 
-        <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6 shadow-lg">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <Button onClick={handlePrevMonth} variant="outline" size="sm">
-                  <Icon name="ChevronLeft" size={16} />
-                </Button>
-                <h2 className="text-2xl font-bold text-white min-w-[200px] text-center">
-                  {format(currentMonth, 'LLLL yyyy', { locale: ru })}
-                </h2>
-                <Button onClick={handleNextMonth} variant="outline" size="sm">
-                  <Icon name="ChevronRight" size={16} />
-                </Button>
-                <Button onClick={handleToday} variant="outline" size="sm">
-                  Сегодня
-                </Button>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <select
-                  value={selectedApartment}
-                  onChange={(e) => setSelectedApartment(e.target.value)}
-                  className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2 text-sm"
-                >
-                  <option value="all">Все апартаменты</option>
-                  {apartments.map(apt => (
-                    <option key={apt.apartmentId} value={apt.apartmentId}>
-                      {apt.apartmentId}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <Card className="bg-gradient-to-br from-gold-500 to-gold-600 border-0 p-6">
+            <div className="text-center">
+              <p className="text-sm text-charcoal-900/80 mb-2">Итого к получению владельцам</p>
+              <p className="text-3xl font-bold text-charcoal-900">{totalAmount.toLocaleString('ru')} ₽</p>
             </div>
+          </Card>
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 border-0 p-6">
+            <div className="text-center">
+              <p className="text-sm text-white/80 mb-2">Уже оплачено</p>
+              <p className="text-3xl font-bold text-white">{paidAmount.toLocaleString('ru')} ₽</p>
+            </div>
+          </Card>
+        </div>
 
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-white">Загрузка бронирований...</p>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {filteredApartments.map(apartment => (
-                  <div key={apartment.apartmentId} className="space-y-2">
-                    <div className="flex items-center justify-between px-2">
-                      <h3 className="text-lg font-semibold text-white">
-                        {apartment.apartmentId}
-                      </h3>
-                      <span className="text-sm text-slate-300">
-                        {apartment.ownerName}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-7 gap-1">
-                      {weekDays.map(day => (
-                        <div 
-                          key={day} 
-                          className="text-center text-xs font-semibold text-slate-400 py-2"
-                        >
-                          {day}
-                        </div>
-                      ))}
-
-                      {days.map((day, idx) => {
-                        const bookingsForDay = getBookingsForDay(day, apartment.apartmentId);
-                        const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
-                        const isToday = isSameDay(day, new Date());
-
-                        return (
-                          <div
-                            key={idx}
-                            onClick={() => {
-                              if (bookingsForDay.length > 0) {
-                                setSelectedBooking(bookingsForDay[0]);
-                              }
-                            }}
-                            className={`
-                              min-h-[60px] p-1 rounded cursor-pointer transition-all duration-200
-                              ${getCellColor(bookingsForDay, day)}
-                              ${!isCurrentMonth ? 'opacity-30' : ''}
-                              ${isToday ? 'ring-2 ring-blue-500' : ''}
-                            `}
-                          >
-                            <div className="text-xs text-white font-medium mb-1">
-                              {format(day, 'd')}
-                            </div>
-                            {bookingsForDay.length > 0 && (
-                              <div className="space-y-0.5">
-                                {bookingsForDay.map(booking => (
-                                  <div 
-                                    key={booking.id}
-                                    className={`text-[10px] text-white/90 rounded px-1 py-0.5 truncate ${getBookingBadgeColor(booking, day)}`}
-                                    title={`${booking.guest_name || 'Гость'}`}
-                                  >
-                                    {booking.guest_name?.split(' ')[0] || 'Гость'}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-lg font-semibold text-white">Бронирования за {currentMonth}</h2>
+            {isCurrentMonth && (
+              <span className="text-xs bg-gold-500/20 text-gold-500 px-2 py-1 rounded-full">Текущий период</span>
             )}
+            <span className="text-xs bg-charcoal-800 text-gray-400 px-2 py-1 rounded-full">
+              {filteredBookings.length} шт.
+            </span>
+          </div>
 
-            <div className="flex items-center gap-4 pt-4 border-t border-white/20 flex-wrap">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-emerald-600/50 border border-emerald-400/30 rounded"></div>
-                <span className="text-sm text-slate-300">Оплачено</span>
+          {loading ? (
+            <Card className="p-8 text-center">
+              <div className="w-16 h-16 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-white">Загрузка бронирований...</p>
+            </Card>
+          ) : filteredBookings.length === 0 ? (
+            <Card className="p-8 text-center">
+              <Icon name="FileText" size={48} className="text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-400">Нет бронирований за выбранный период</p>
+            </Card>
+          ) : (
+            <div className="space-y-3">
+              {filteredBookings.map((booking) => (
+                <Card 
+                  key={booking.id} 
+                  className={`p-4 cursor-pointer hover:bg-charcoal-800/70 transition-colors ${
+                    !booking.show_to_guest ? 'opacity-50 border-red-500/30' : ''
+                  }`}
+                  onClick={() => setSelectedBooking(booking)}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-white">{booking.guest_name || 'Гость'}</p>
+                        {!booking.show_to_guest && (
+                          <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Скрыто</span>
+                        )}
+                        {booking.bnovo_id && (
+                          <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Бново</span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-400">
+                        {getApartmentName(booking.apartment_id)}
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        {format(new Date(booking.check_in), 'dd.MM.yyyy', { locale: ru })} - {format(new Date(booking.check_out), 'dd.MM.yyyy', { locale: ru })}
+                      </p>
+                      {booking.guests_count && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          Гостей: {booking.guests_count}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-gold-500">{(booking.owner_funds || 0).toLocaleString('ru')} ₽</p>
+                      <p className="text-xs text-gray-400">Всего: {booking.total_amount?.toLocaleString('ru')} ₽</p>
+                      {booking.is_prepaid && (
+                        <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full mt-1 inline-block">Оплачено</span>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {selectedBooking && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedBooking(null)}>
+          <Card className="bg-charcoal-900 border-gold-500/20 p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-white">Детали бронирования</h3>
+                <button onClick={() => setSelectedBooking(null)} className="text-gray-400 hover:text-white">
+                  <Icon name="X" size={20} />
+                </button>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-orange-600/50 border border-orange-400/30 rounded"></div>
-                <span className="text-sm text-slate-300">Не оплачено</span>
+
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-gray-400">Гость</p>
+                  <p className="text-white font-semibold">{selectedBooking.guest_name || 'Не указано'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Апартамент</p>
+                  <p className="text-white font-semibold">{getApartmentName(selectedBooking.apartment_id)}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-400">Заезд</p>
+                    <p className="text-white font-semibold">
+                      {format(new Date(selectedBooking.check_in), 'dd.MM.yyyy', { locale: ru })}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">Выезд</p>
+                    <p className="text-white font-semibold">
+                      {format(new Date(selectedBooking.check_out), 'dd.MM.yyyy', { locale: ru })}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Сумма владельцу</p>
+                  <p className="text-white font-semibold">{(selectedBooking.owner_funds || 0).toLocaleString('ru')} ₽</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Общая сумма</p>
+                  <p className="text-white font-semibold">{selectedBooking.total_amount?.toLocaleString('ru')} ₽</p>
+                </div>
+                {selectedBooking.aggregator_commission !== undefined && (
+                  <div>
+                    <p className="text-sm text-gray-400">Комиссия агрегатора</p>
+                    <p className="text-white font-semibold">{selectedBooking.aggregator_commission?.toLocaleString('ru')} ₽</p>
+                  </div>
+                )}
+                {selectedBooking.our_commission !== undefined && (
+                  <div>
+                    <p className="text-sm text-gray-400">Наша комиссия</p>
+                    <p className="text-white font-semibold">{selectedBooking.our_commission?.toLocaleString('ru')} ₽</p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm text-gray-400">Источник</p>
+                  <p className="text-white font-semibold">
+                    {selectedBooking.bnovo_id ? `Бново (ID: ${selectedBooking.bnovo_id})` : 'Вручную'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Видимость для владельца</p>
+                  <p className="text-white font-semibold">
+                    {selectedBooking.show_to_guest ? 'Видно в отчётах' : 'Скрыто из отчётов'}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-gray-600/40 rounded"></div>
-                <span className="text-sm text-slate-300">Прошедшие</span>
+
+              <div className="flex gap-2 pt-4 border-t border-white/20">
+                <Button
+                  onClick={() => handleToggleVisibility(selectedBooking)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <Icon name={selectedBooking.show_to_guest ? 'EyeOff' : 'Eye'} size={16} />
+                  {selectedBooking.show_to_guest ? 'Скрыть' : 'Показать'}
+                </Button>
+                <Button
+                  onClick={() => handleDeleteBooking(selectedBooking)}
+                  variant="outline"
+                  className="flex-1 text-red-400 hover:text-red-300"
+                >
+                  <Icon name="Trash2" size={16} />
+                  Удалить
+                </Button>
               </div>
             </div>
-          </div>
-        </Card>
-
-        {selectedBooking && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedBooking(null)}>
-            <Card className="bg-charcoal-900 border-gold-500/20 p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-white">Детали бронирования</h3>
-                  <button onClick={() => setSelectedBooking(null)} className="text-gray-400 hover:text-white">
-                    <Icon name="X" size={20} />
-                  </button>
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-gray-400">Гость</p>
-                    <p className="text-white font-semibold">{selectedBooking.guest_name || 'Не указано'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Апартамент</p>
-                    <p className="text-white font-semibold">{selectedBooking.apartment_id}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-400">Заезд</p>
-                      <p className="text-white font-semibold">
-                        {format(new Date(selectedBooking.check_in), 'dd.MM.yyyy', { locale: ru })}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">Выезд</p>
-                      <p className="text-white font-semibold">
-                        {format(new Date(selectedBooking.check_out), 'dd.MM.yyyy', { locale: ru })}
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Сумма</p>
-                    <p className="text-white font-semibold">{selectedBooking.total_amount?.toLocaleString('ru')} ₽</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Источник</p>
-                    <p className="text-white font-semibold">
-                      {selectedBooking.bnovo_id ? `Бново (ID: ${selectedBooking.bnovo_id})` : 'Вручную'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Видимость для владельца</p>
-                    <p className="text-white font-semibold">
-                      {selectedBooking.show_to_guest ? 'Видно в отчётах' : 'Скрыто из отчётов'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-4 border-t border-white/20">
-                  <Button
-                    onClick={() => handleToggleVisibility(selectedBooking)}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    <Icon name={selectedBooking.show_to_guest ? 'EyeOff' : 'Eye'} size={16} />
-                    {selectedBooking.show_to_guest ? 'Скрыть' : 'Показать'}
-                  </Button>
-                  <Button
-                    onClick={() => handleDeleteBooking(selectedBooking)}
-                    variant="outline"
-                    className="flex-1 text-red-400 hover:text-red-300"
-                  >
-                    <Icon name="Trash2" size={16} />
-                    Удалить
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
-        )}
-      </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
