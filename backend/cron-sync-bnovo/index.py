@@ -334,6 +334,65 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         print(f"[CRON] NEW calendar_bnovo updated: {len(unique_inserts)} date entries created")
         
+        # Обновляем availability_calendar для фронтенда
+        print("[CRON] Updating availability_calendar for frontend...")
+        
+        # Сначала очищаем старые записи из availability_calendar для Bnovo бронирований
+        cur.execute("""
+            DELETE FROM t_p9202093_hotel_design_site.availability_calendar 
+            WHERE booking_id IN (SELECT id FROM t_p9202093_hotel_design_site.bookings WHERE source = 'bnovo')
+        """)
+        
+        # Получаем room_id из rooms по apartment_id (number)
+        cur.execute("""
+            SELECT b.id as booking_id, r.id as room_id, b.check_in, b.check_out, b.total_amount
+            FROM t_p9202093_hotel_design_site.bookings b
+            JOIN t_p9202093_hotel_design_site.rooms r ON b.apartment_id = r.number
+            WHERE b.source = 'bnovo'
+        """)
+        room_bookings = cur.fetchall()
+        
+        availability_inserts = []
+        for rb in room_bookings:
+            booking_id = rb['booking_id']
+            room_id = rb['room_id']
+            check_in = rb['check_in'] if isinstance(rb['check_in'], date) else datetime.strptime(rb['check_in'], '%Y-%m-%d').date()
+            check_out = rb['check_out'] if isinstance(rb['check_out'], date) else datetime.strptime(rb['check_out'], '%Y-%m-%d').date()
+            price = rb['total_amount'] or 0
+            
+            current_date = check_in
+            while current_date < check_out:
+                availability_inserts.append(f"('{room_id}', '{current_date}', false, '{booking_id}', {price})")
+                current_date += timedelta(days=1)
+        
+        if availability_inserts:
+            # Удаляем дубликаты
+            unique_avail = {}
+            for insert_str in availability_inserts:
+                parts = insert_str.strip('()').split(',')
+                room_id_val = parts[0].strip().strip("'")
+                date_val = parts[1].strip().strip("'")
+                key = f"{room_id_val}_{date_val}"
+                unique_avail[key] = insert_str
+            
+            # Вставляем пачками
+            batch_size = 500
+            unique_avail_list = list(unique_avail.values())
+            for i in range(0, len(unique_avail_list), batch_size):
+                batch = unique_avail_list[i:i+batch_size]
+                cur.execute(f"""
+                    INSERT INTO t_p9202093_hotel_design_site.availability_calendar 
+                    (room_id, date, is_available, booking_id, price)
+                    VALUES {','.join(batch)}
+                    ON CONFLICT (room_id, date) DO UPDATE SET
+                        is_available = EXCLUDED.is_available,
+                        booking_id = EXCLUDED.booking_id,
+                        price = EXCLUDED.price
+                """)
+        
+        print(f"[CRON] availability_calendar updated: {len(unique_avail)} date entries created")
+        updated_calendar = len(unique_avail)
+        
         conn.commit()
         cur.close()
         conn.close()
