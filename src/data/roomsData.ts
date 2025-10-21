@@ -70,7 +70,7 @@ export const rooms: Room[] = [
     subtitle: 'Bearbrick Studio',
     price: 'от 15 000 ₽',
     features: ['55 кв.м', '21 этаж', 'Для 1-3 гостей'],
-    roomId: '1759774533761',
+    roomId: '1759775530117',
     image: 'https://cdn.poehali.dev/files/a4100017-9df0-4397-92e6-d2aeaa753c75.JPG',
     gallery: [
       'https://cdn.poehali.dev/files/a4100017-9df0-4397-92e6-d2aeaa753c75.JPG',
@@ -105,6 +105,7 @@ export const rooms: Room[] = [
     subtitle: 'Fireplace Luxury',
     price: 'от 30 000 ₽',
     features: ['85 кв.м.', '21 этаж', 'Для 1-5 гостей'],
+    roomId: '1759774533761',
     image: 'https://cdn.poehali.dev/files/b6a25376-5125-4ebb-bfdf-9a419c0ae887.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/b6a25376-5125-4ebb-bfdf-9a419c0ae887.jpeg',
