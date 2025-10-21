@@ -1,4 +1,5 @@
 {
+  "send-booking-confirmation": "https://functions.poehali.dev/247fe753-02a4-4d5a-b9b2-b2182701293b",
   "notify-owner": "https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f",
   "calendar-bnovo": "https://functions.poehali.dev/cb06df00-bb06-4e01-a02d-f31057ae60af",
   "sync-bnovo-rates": "https://functions.poehali.dev/1ba1af50-08d7-4d68-b540-a0e059d359df",

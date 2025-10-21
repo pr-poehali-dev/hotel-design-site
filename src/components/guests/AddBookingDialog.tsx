@@ -15,6 +15,7 @@ interface AddBookingDialogProps {
   onOpenChange: (open: boolean) => void;
   guestId: number;
   guestName: string;
+  guestEmail?: string;
   onSubmit: (bookingData: any) => void;
 }
 
@@ -23,6 +24,7 @@ const AddBookingDialog = ({
   onOpenChange,
   guestId,
   guestName,
+  guestEmail,
   onSubmit,
 }: AddBookingDialogProps) => {
   const [formData, setFormData] = useState({
@@ -145,6 +147,8 @@ const AddBookingDialog = ({
     
     onSubmit({
       guest_id: guestId,
+      guest_name: guestName,
+      guest_email: guestEmail,
       ...formData,
     });
     

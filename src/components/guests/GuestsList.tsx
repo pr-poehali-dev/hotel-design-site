@@ -24,7 +24,7 @@ interface GuestsListProps {
   onResetPassword: (email: string) => void;
   onDeleteGuest: (id: number) => void;
   onEditBooking: (guestId: number, booking: any) => void;
-  onAddBooking: (guestId: number, guestName: string) => void;
+  onAddBooking: (guestId: number, guestName: string, guestEmail?: string) => void;
   onDeleteBooking: (bookingId: string) => void;
   onClearSearch: () => void;
   onCreateCredentials: (guest: Guest) => void;
@@ -112,7 +112,7 @@ const GuestsList = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onAddBooking(guest.id, guest.name)}
+                  onClick={() => onAddBooking(guest.id, guest.name, guest.email)}
                   className="mt-2 text-xs text-gold-600 hover:text-gold-700 hover:bg-gold-50 h-6 px-2"
                 >
                   <Icon name="Plus" size={12} className="mr-1" />

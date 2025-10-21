@@ -1,19 +1,22 @@
 import { useState } from 'react';
 
 const API_URL = 'https://functions.poehali.dev/a0648fb1-e2c4-4c52-86e7-e96230f139d2';
+const EMAIL_API_URL = 'https://functions.poehali.dev/247fe753-02a4-4d5a-b9b2-b2182701293b';
 
 export const useBookingActions = (toast: any, loadGuests: () => void) => {
   const [editingBooking, setEditingBooking] = useState<any>(null);
   const [selectedGuestId, setSelectedGuestId] = useState<number>(0);
   const [selectedGuestName, setSelectedGuestName] = useState<string>('');
+  const [selectedGuestEmail, setSelectedGuestEmail] = useState<string>('');
 
   const handleEditBooking = (guestId: number, booking: any) => {
     setEditingBooking(booking);
   };
 
-  const handleAddBooking = (guestId: number, guestName: string) => {
+  const handleAddBooking = (guestId: number, guestName: string, guestEmail: string = '') => {
     setSelectedGuestId(guestId);
     setSelectedGuestName(guestName);
+    setSelectedGuestEmail(guestEmail);
   };
 
   const handleCreateBooking = async (bookingData: any) => {
@@ -27,9 +30,24 @@ export const useBookingActions = (toast: any, loadGuests: () => void) => {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        fetch(EMAIL_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            guest_email: bookingData.guest_email,
+            guest_name: bookingData.guest_name,
+            apartment_id: bookingData.apartment_id,
+            check_in: bookingData.check_in,
+            check_out: bookingData.check_out,
+            total_amount: bookingData.total_amount,
+            guests_count: bookingData.guests_count,
+            guest_comment: bookingData.guest_comment
+          })
+        }).catch(() => {});
+
         toast({
           title: 'Успешно!',
-          description: 'Бронирование создано. Гость увидит его в своём личном кабинете.',
+          description: 'Бронирование создано. Гость получит письмо с подтверждением.',
         });
         
         setSelectedGuestId(0);
@@ -132,6 +150,7 @@ export const useBookingActions = (toast: any, loadGuests: () => void) => {
     setEditingBooking,
     selectedGuestId,
     selectedGuestName,
+    selectedGuestEmail,
     handleEditBooking,
     handleAddBooking,
     handleCreateBooking,

@@ -53,6 +53,7 @@ const GuestsManagement = () => {
     setEditingBooking,
     selectedGuestId,
     selectedGuestName,
+    selectedGuestEmail,
     handleEditBooking,
     handleAddBooking,
     handleCreateBooking,
@@ -79,8 +80,8 @@ const GuestsManagement = () => {
     setShowEditBookingDialog(true);
   };
 
-  const onAddBooking = (guestId: number, guestName: string) => {
-    handleAddBooking(guestId, guestName);
+  const onAddBooking = (guestId: number, guestName: string, guestEmail?: string) => {
+    handleAddBooking(guestId, guestName, guestEmail);
     setShowAddBookingDialog(true);
   };
 
@@ -248,6 +249,7 @@ const GuestsManagement = () => {
         onOpenChange={setShowAddBookingDialog}
         guestId={selectedGuestId}
         guestName={selectedGuestName}
+        guestEmail={selectedGuestEmail}
         onSubmit={onCreateBooking}
       />
 
