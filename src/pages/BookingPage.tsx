@@ -58,12 +58,16 @@ export default function BookingPage() {
       try {
         const response = await fetch(`https://d5d7u99ltjlnmpijdqeg.apigw.yandexcloud.net/bnovo/calendars`);
         const data = await response.json();
+        console.log('Все календари:', data.calendars);
+        console.log('Ищем roomId:', roomId);
         const roomCalendar = data.calendars.find((cal: Calendar) => cal.room_id === roomId);
+        console.log('Найденный календарь:', roomCalendar);
         
         if (roomCalendar) {
           setCalendar(roomCalendar);
         } else {
           console.error('Календарь для данного апартамента не найден');
+          console.log('Доступные room_id:', data.calendars.map((c: Calendar) => c.room_id));
         }
       } catch (error) {
         console.error('Ошибка загрузки календаря:', error);
