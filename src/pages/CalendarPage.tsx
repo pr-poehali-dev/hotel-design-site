@@ -142,7 +142,7 @@ export default function CalendarPage() {
             <option value="all">Все апартаменты ({calendars.length})</option>
             {calendars.map(cal => (
               <option key={cal.room_id} value={cal.room_id}>
-                {getApartmentName(cal.room_id)}
+                {cal.room_name}
               </option>
             ))}
           </select>
@@ -184,7 +184,7 @@ export default function CalendarPage() {
             {filteredCalendars.map((calendar) => (
               <Card key={calendar.room_id} className="p-6 bg-charcoal-800/50 border-gold-500/20">
                 <h3 className="text-lg font-bold text-gold-400 mb-4">
-                  {getApartmentName(calendar.room_id)}
+                  {calendar.room_name}
                 </h3>
                 
                 <div className="space-y-6">
