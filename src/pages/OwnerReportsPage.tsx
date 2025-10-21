@@ -218,7 +218,12 @@ export default function OwnerReportsPage() {
                 <Card 
                   key={booking.id} 
                   className="p-4 cursor-pointer hover:bg-charcoal-700/50 transition-colors"
-                  onClick={() => setSelectedBooking(booking)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Clicked booking:', booking.id, booking);
+                    setSelectedBooking(booking);
+                  }}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -283,8 +288,11 @@ export default function OwnerReportsPage() {
       </div>
 
       {/* Модальное окно с расшифровкой */}
-      <Dialog open={!!selectedBooking} onOpenChange={(open) => !open && setSelectedBooking(null)}>
-        <DialogContent className="bg-charcoal-900 border-gold-500/20 text-white max-w-lg">
+      <Dialog open={!!selectedBooking} onOpenChange={(open) => {
+        console.log('Dialog onOpenChange:', open, selectedBooking);
+        if (!open) setSelectedBooking(null);
+      }}>
+        <DialogContent className="bg-charcoal-900 border-gold-500/20 text-white max-w-lg w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl flex items-center gap-2">
               <Icon name="Receipt" size={24} className="text-gold-500" />
