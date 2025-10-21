@@ -232,36 +232,13 @@ export default function OwnerReportsPage() {
                       <p className="text-sm text-gray-400">
                         {new Date(booking.checkIn).toLocaleDateString('ru')} - {new Date(booking.checkOut).toLocaleDateString('ru')}
                       </p>
-                      <div className="flex gap-2 mt-2">
-                        <button 
-                          onClick={() => setSelectedBooking(booking)}
-                          className="text-xs bg-charcoal-900 text-gold-500 hover:bg-charcoal-950 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
-                        >
-                          <Icon name="Eye" size={12} />
-                          Детализация
-                        </button>
-                        <button 
-                          onClick={async () => {
-                            if (!confirm('Удалить это бронирование?')) return;
-                            try {
-                              const response = await fetch(`https://functions.poehali.dev/42f08a7b-0e59-4277-b467-1ceb942afe5e?id=${booking.id}`, {
-                                method: 'DELETE'
-                              });
-                              if (response.ok) {
-                                setBookings(prev => prev.filter(b => b.id !== booking.id));
-                              } else {
-                                alert('Ошибка удаления');
-                              }
-                            } catch (err) {
-                              alert('Ошибка удаления');
-                            }
-                          }}
-                          className="text-xs bg-red-900/30 text-red-400 hover:bg-red-900/50 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
-                        >
-                          <Icon name="Trash2" size={12} />
-                          Удалить
-                        </button>
-                      </div>
+                      <button 
+                        onClick={() => setSelectedBooking(booking)}
+                        className="mt-2 text-xs bg-charcoal-900 text-gold-500 hover:bg-charcoal-950 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
+                      >
+                        <Icon name="Eye" size={12} />
+                        Детализация
+                      </button>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-gold-500">{(booking.ownerFunds || 0).toLocaleString('ru')} ₽</p>
