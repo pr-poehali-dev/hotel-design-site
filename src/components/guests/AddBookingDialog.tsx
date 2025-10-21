@@ -169,7 +169,7 @@ const AddBookingDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-playfair text-2xl">Новое бронирование</DialogTitle>
           <p className="text-sm text-charcoal-600">для гостя: {guestName}</p>
