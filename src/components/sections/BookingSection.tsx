@@ -195,7 +195,7 @@ const BookingSection = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          apartment_id: parseInt(selectedApartment),
+          apartment_id: selectedApartment,
           check_in: checkIn,
           check_out: checkOut,
           guest_name: contactInfo.name,
