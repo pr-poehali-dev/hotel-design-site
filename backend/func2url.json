@@ -1,4 +1,5 @@
 {
+  "notify-owner": "https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f",
   "calendar-bnovo": "https://functions.poehali.dev/cb06df00-bb06-4e01-a02d-f31057ae60af",
   "sync-bnovo-rates": "https://functions.poehali.dev/1ba1af50-08d7-4d68-b540-a0e059d359df",
   "check-availability": "https://functions.poehali.dev/c8a4acdb-ddbe-41e1-b4d8-a6e6055be8c6",

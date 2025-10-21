@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "Send owner notification",
+      "method": "POST",
+      "body": {
+        "booking_id": "test-123",
+        "guest_name": "Тестовый Гость",
+        "guest_email": "test@example.com",
+        "guest_phone": "+79991234567",
+        "apartment_id": "1759775560156",
+        "apartment_name": "Комфорт",
+        "check_in": "2025-11-01",
+        "check_out": "2025-11-03",
+        "total_amount": 5000
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
