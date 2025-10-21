@@ -36,8 +36,10 @@ interface RoomCardProps {
 const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: RoomCardProps) => {
   const [open, setOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [showBookingWidget, setShowBookingWidget] = useState(false);
   
   return (
+    <>
     <Card 
       className="overflow-hidden shadow-2xl border-0 bg-white hover:shadow-3xl transition-all duration-300 group"
       onMouseEnter={() => onHoverChange(true)}
@@ -143,7 +145,13 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           </Dialog>
         )}
         
-        <BnovoBookingWidget roomId={room.roomId} />
+        <FizzyButton 
+          className="w-full mt-4"
+          onClick={() => setShowBookingWidget(true)}
+          icon={<Icon name="Calendar" size={18} />}
+        >
+          Забронировать
+        </FizzyButton>
       </div>
 
       <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
@@ -211,6 +219,11 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
       </Dialog>
 
     </Card>
+    
+    {showBookingWidget && (
+      <BnovoBookingWidget onClose={() => setShowBookingWidget(false)} />
+    )}
+    </>
   );
 };
 

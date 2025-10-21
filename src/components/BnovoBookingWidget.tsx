@@ -3,6 +3,7 @@ import Icon from '@/components/ui/icon';
 
 interface BnovoBookingWidgetProps {
   onClose: () => void;
+  roomId?: string;
 }
 
 declare global {
@@ -11,29 +12,51 @@ declare global {
   }
 }
 
-const BnovoBookingWidget = ({ onClose }: BnovoBookingWidgetProps) => {
+const BnovoBookingWidget = ({ onClose, roomId }: BnovoBookingWidgetProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const initialized = useRef(false);
+  const widgetInstance = useRef<any>(null);
 
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
 
     const loadScript = () => {
+      // Проверяем, не загружен ли уже скрипт
+      const existingScript = document.querySelector('script[src*="booking_iframe.js"]');
+      
+      if (existingScript && window.BookingIframe) {
+        // Скрипт уже загружен, сразу инициализируем виджет
+        initWidget();
+        return;
+      }
+
       const script = document.createElement('script');
       script.src = 'https://widget.reservationsteps.ru/iframe/library/dist/booking_iframe.js';
       script.async = true;
       script.onload = () => {
-        setTimeout(() => {
-          if (window.BookingIframe) {
-            const BnovoBookFrame = new window.BookingIframe({
+        initWidget();
+      };
+      script.onerror = () => {
+        console.error('Ошибка загрузки скрипта Bnovo');
+        setIsLoading(false);
+      };
+      document.head.appendChild(script);
+    };
+
+    const initWidget = () => {
+      setTimeout(() => {
+        const container = document.getElementById('booking_iframe');
+        if (window.BookingIframe && container) {
+          try {
+            widgetInstance.current = new window.BookingIframe({
               html_id: 'booking_iframe',
               uid: 'c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981',
               lang: 'ru',
               width: 'auto',
               height: 'auto',
-              rooms: '',
-              IsMobile: '0',
+              rooms: roomId || '',
+              IsMobile: window.innerWidth < 768 ? '1' : '0',
               scroll_to_rooms: '0',
               fixed_header_selector: '',
               fixed_mobile_header_width: 800,
@@ -42,23 +65,25 @@ const BnovoBookingWidget = ({ onClose }: BnovoBookingWidgetProps) => {
               fixed_mobile_footer_width: 800,
               fixed_mobile_footer_selector: ''
             });
-            BnovoBookFrame.init();
+            widgetInstance.current.init();
+            setIsLoading(false);
+          } catch (error) {
+            console.error('Ошибка инициализации виджета Bnovo:', error);
             setIsLoading(false);
           }
-        }, 100);
-      };
-      document.body.appendChild(script);
+        }
+      }, 300);
     };
 
     loadScript();
 
     return () => {
-      const existingScript = document.querySelector('script[src*="booking_iframe.js"]');
-      if (existingScript) {
-        existingScript.remove();
+      // Очищаем только инстанс виджета, но не удаляем скрипт
+      if (widgetInstance.current && widgetInstance.current.destroy) {
+        widgetInstance.current.destroy();
       }
     };
-  }, []);
+  }, [roomId]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
