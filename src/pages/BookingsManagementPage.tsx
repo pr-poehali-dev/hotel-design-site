@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BookingsHeader from '@/components/bookings/BookingsHeader';
-import GuestsManagement from '@/components/guests/GuestsManagement';
+import BookingsCalendarView from '@/components/bookings/BookingsCalendarView';
 
 const BookingsManagementPage = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const BookingsManagementPage = () => {
       <BookingsHeader />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <GuestsManagement />
+        <BookingsCalendarView />
       </div>
     </div>
   );
