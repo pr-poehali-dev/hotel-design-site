@@ -130,7 +130,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         </div>
                         <div class="info-row">
                             <span class="info-label">Дата заезда:</span>
-                            <span class="info-value">{check_in_formatted} (после 14:00)</span>
+                            <span class="info-value">{check_in_formatted} (после 15:00)</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Дата выезда:</span>
@@ -149,7 +149,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     <div class="highlight-box">
                         <strong>⏰ Важная информация:</strong>
                         <ul style="margin: 10px 0 0 0; padding-left: 20px;">
-                            <li>Заезд: с 14:00</li>
+                            <li>Заезд: с 15:00</li>
                             <li>Выезд: до 12:00</li>
                             <li>При заезде необходим паспорт</li>
                         </ul>
@@ -159,7 +159,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         <p><strong>📞 Остались вопросы?</strong></p>
                         <p>Свяжитесь с нами:</p>
                         <p>📧 Email: poklonapart@mail.ru</p>
-                        <p>📱 Телефон: +7 (XXX) XXX-XX-XX</p>
+                        <p>📱 Телефон: +7 (914) 196-51-72</p>
                     </div>
                     
                     <p style="margin-top: 30px; color: #666;">
