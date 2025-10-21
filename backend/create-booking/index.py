@@ -111,7 +111,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         ''', (
             booking_id, str(apartment_id), check_in, check_out,
             guest_name, guest_email, guest_phone,
-            guests_count, 'pending', source,
+            guests_count, 'confirmed', source,
             total_amount, total_amount
         ))
         

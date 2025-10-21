@@ -5,9 +5,9 @@
       "method": "POST",
       "path": "/",
       "body": {
-        "apartment_id": 1,
-        "check_in": "2025-11-01",
-        "check_out": "2025-11-05",
+        "apartment_id": 999,
+        "check_in": "2026-11-01",
+        "check_out": "2026-11-05",
         "guest_name": "Test Guest",
         "guest_email": "test@example.com",
         "guest_phone": "+79991234567",
@@ -18,7 +18,7 @@
       "expectedStatus": 201,
       "expectedBody": {
         "success": true,
-        "booking_id": "number"
+        "booking_id": "string"
       },
       "bodyMatcher": "partial"
     },

@@ -176,7 +176,7 @@ export default function BookingPage() {
       });
 
       if (response.ok) {
-        alert('Бронирование успешно создано! Мы свяжемся с вами в ближайшее время.');
+        alert('Бронирование успешно создано! Апартамент забронирован на выбранные даты.');
         window.location.href = '/';
       } else {
         const error = await response.json();
