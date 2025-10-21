@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -37,6 +38,15 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
   const [open, setOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [showBookingWidget, setShowBookingWidget] = useState(false);
+  const navigate = useNavigate();
+
+  const handleBooking = () => {
+    if (room.roomId) {
+      navigate(`/booking?room=${room.roomId}`);
+    } else {
+      setShowBookingWidget(true);
+    }
+  };
   
   return (
     <>
@@ -147,7 +157,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
         
         <FizzyButton 
           className="w-full mt-4"
-          onClick={() => setShowBookingWidget(true)}
+          onClick={handleBooking}
           icon={<Icon name="Calendar" size={18} />}
         >
           Забронировать
