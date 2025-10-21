@@ -72,51 +72,69 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Failed to get Bnovo token'})
             }
         
-        # Получаем бронирования
+        # Получаем бронирования с пагинацией
         date_from = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         date_to = (datetime.now() + timedelta(days=90)).strftime('%Y-%m-%d')
         
-        params = urllib.parse.urlencode({
-            'date_from': date_from,
-            'date_to': date_to,
-            'limit': 20,
-            'offset': 0
-        })
-        bookings_url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
+        all_bookings = []
+        offset = 0
+        limit = 100
         
-        bookings_request = urllib.request.Request(
-            bookings_url,
-            headers={
-                'Authorization': f'Bearer {jwt_token}',
-                'Accept': 'application/json'
-            }
-        )
-        
-        with urllib.request.urlopen(bookings_request, timeout=30) as response:
-            bookings_data = json.loads(response.read().decode())
-        
-        # Bnovo возвращает данные в формате {'data': {'bookings': [...]}} или {'bookings': [...]}
-        if isinstance(bookings_data, dict):
-            # Сначала проверяем data.bookings
-            if 'data' in bookings_data and isinstance(bookings_data['data'], dict):
-                bookings_list = bookings_data['data'].get('bookings', [])
+        while True:
+            params = urllib.parse.urlencode({
+                'date_from': date_from,
+                'date_to': date_to,
+                'limit': limit,
+                'offset': offset
+            })
+            bookings_url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
+            
+            bookings_request = urllib.request.Request(
+                bookings_url,
+                headers={
+                    'Authorization': f'Bearer {jwt_token}',
+                    'Accept': 'application/json'
+                }
+            )
+            
+            with urllib.request.urlopen(bookings_request, timeout=30) as response:
+                bookings_data = json.loads(response.read().decode())
+            
+            # Bnovo возвращает данные в формате {'data': {'bookings': [...]}} или {'bookings': [...]}
+            if isinstance(bookings_data, dict):
+                # Сначала проверяем data.bookings
+                if 'data' in bookings_data and isinstance(bookings_data['data'], dict):
+                    current_batch = bookings_data['data'].get('bookings', [])
+                else:
+                    # Если нет, то просто bookings
+                    current_batch = bookings_data.get('bookings', bookings_data.get('data', []))
             else:
-                # Если нет, то просто bookings
-                bookings_list = bookings_data.get('bookings', bookings_data.get('data', []))
-        else:
-            bookings_list = bookings_data
+                current_batch = bookings_data
+            
+            # Проверяем, что current_batch это список
+            if not isinstance(current_batch, list):
+                return {
+                    'statusCode': 500,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({
+                        'error': 'Invalid bookings data format',
+                        'type': str(type(current_batch)),
+                        'raw_response': str(bookings_data)[:500]
+                    })
+                }
+            
+            if not current_batch:
+                break
+            
+            all_bookings.extend(current_batch)
+            
+            # Если получили меньше чем limit, значит это последняя страница
+            if len(current_batch) < limit:
+                break
+            
+            offset += limit
         
-        # Проверяем, что bookings_list это список
-        if not isinstance(bookings_list, list):
-            return {
-                'statusCode': 500,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({
-                    'error': 'Invalid bookings data format',
-                    'type': str(type(bookings_list)),
-                    'raw_response': str(bookings_data)[:500]
-                })
-            }
+        bookings_list = all_bookings
         
         # Подключаемся к базе данных
         conn = psycopg2.connect(database_url)
