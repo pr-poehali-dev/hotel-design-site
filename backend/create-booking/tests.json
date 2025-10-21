@@ -6,8 +6,8 @@
       "path": "/",
       "body": {
         "apartment_id": 999,
-        "check_in": "2026-11-01",
-        "check_out": "2026-11-05",
+        "check_in": "2027-05-15",
+        "check_out": "2027-05-20",
         "guest_name": "Test Guest",
         "guest_email": "test@example.com",
         "guest_phone": "+79991234567",

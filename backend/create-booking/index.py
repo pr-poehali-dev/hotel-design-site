@@ -95,31 +95,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Dates are already booked'})
             }
         
+        cursor.close()
+        conn.close()
+        
         guests_count = adults + children
         total_amount = 0
         booking_id = str(int(time.time() * 1000))
         
-        cursor.execute('''
-            INSERT INTO bookings (
-                id, apartment_id, check_in, check_out, 
-                guest_name, guest_email, guest_phone,
-                guests_count, status, source, 
-                accommodation_amount, total_amount,
-                created_at
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
-            RETURNING id
-        ''', (
-            booking_id, str(apartment_id), check_in, check_out,
-            guest_name, guest_email, guest_phone,
-            guests_count, 'confirmed', source,
-            total_amount, total_amount
-        ))
-        
-        booking_id = cursor.fetchone()[0]
-        conn.commit()
-        
-        cursor.close()
-        conn.close()
+        import requests
+        try:
+            notify_url = 'https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f'
+            notify_payload = {
+                'booking_id': booking_id,
+                'guest_name': guest_name,
+                'guest_email': guest_email,
+                'guest_phone': guest_phone,
+                'apartment_id': apartment_id,
+                'apartment_name': apartment_id,
+                'check_in': check_in,
+                'check_out': check_out,
+                'total_amount': total_amount
+            }
+            
+            requests.post(notify_url, json=notify_payload, timeout=5)
+        except Exception as e:
+            print(f'Notification failed: {str(e)}')
         
         return {
             'statusCode': 201,
