@@ -1,9 +1,9 @@
 import json
 import os
 from typing import Dict, Any
-import urllib.request
-import urllib.parse
-import urllib.error
+import urllib.request as url_request
+import urllib.parse as url_parse
+import urllib.error as url_error
 import base64
 from datetime import datetime, timedelta
 
@@ -44,7 +44,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'password': password
         }
         
-        auth_request = urllib.request.Request(
+        auth_request = url_request.Request(
             auth_url,
             data=json.dumps(auth_payload).encode('utf-8'),
             headers={
@@ -54,7 +54,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             method='POST'
         )
         
-        with urllib.request.urlopen(auth_request, timeout=30) as auth_response:
+        with url_request.urlopen(auth_request, timeout=30) as auth_response:
             auth_data = json.loads(auth_response.read().decode())
         
         # Получаем JWT токен из data.access_token
@@ -79,7 +79,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         date_to = (datetime.now() + timedelta(days=90)).strftime('%Y-%m-%d')
         
         # Формируем URL с параметрами (limit max 20)
-        params = urllib.parse.urlencode({
+        params = url_parse.urlencode({
             'date_from': date_from,
             'date_to': date_to,
             'limit': 20,
@@ -87,7 +87,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         })
         url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
         
-        request_obj = urllib.request.Request(
+        request_obj = url_request.Request(
             url,
             headers={
                 'Authorization': f'Bearer {jwt_token}',
@@ -95,7 +95,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         )
         
-        with urllib.request.urlopen(request_obj, timeout=30) as response:
+        with url_request.urlopen(request_obj, timeout=30) as response:
             data = json.loads(response.read().decode())
         
         return {
@@ -110,7 +110,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }, ensure_ascii=False)
         }
     
-    except urllib.error.HTTPError as e:
+    except url_error.HTTPError as e:
         error_body = e.read().decode('utf-8', errors='ignore') if e.fp else ''
         return {
             'statusCode': 200,
