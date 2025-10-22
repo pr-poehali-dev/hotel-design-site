@@ -140,7 +140,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
                 Подробнее
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh]">
+            <DialogContent className="sm:!max-w-4xl max-h-[90vh]">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-playfair text-charcoal-900">{room.name}</DialogTitle>
               </DialogHeader>
@@ -163,7 +163,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
       </div>
 
       <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
-        <DialogContent className="max-w-[90vw] w-full max-h-[90vh] p-0 border-0">
+        <DialogContent className="sm:!max-w-[90vw] max-h-[90vh] p-0 border-0">
           <div className="relative w-full h-[85vh] bg-black flex items-center justify-center rounded-lg overflow-hidden">
             <img
               src={room.gallery ? room.gallery[currentImageIndex % (room.gallery.length)] : room.image}

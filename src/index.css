@@ -117,9 +117,7 @@
     h6,
     p,
     span,
-    div,
-    a,
-    button {
+    a {
       transform: translateY(-2px);
     }
   }
