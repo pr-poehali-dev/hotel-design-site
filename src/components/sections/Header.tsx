@@ -46,9 +46,14 @@ const Header = ({ navigation = [], currentSection = '', onNavigate = () => {} }:
               onClick={() => setShowAppMenu(true)}
               variant="ghost"
               size="sm"
-              className="md:hidden text-gold-400 hover:text-gold-300 hover:bg-gold-500/10"
+              className="md:hidden text-gold-400 hover:text-gold-300 hover:bg-gold-500/10 flex items-center gap-2 px-3"
             >
-              <Icon name="Download" size={20} />
+              <Icon name="Download" size={18} />
+              <span className="text-xs font-medium">Скачать приложение</span>
+              <div className="flex items-center gap-1">
+                <Icon name="Apple" size={14} />
+                <Icon name="Smartphone" size={14} />
+              </div>
             </Button>
             <nav className="hidden md:flex space-x-2">
               {navigation.map((item) => (
