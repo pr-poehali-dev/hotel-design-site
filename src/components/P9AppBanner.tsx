@@ -30,7 +30,7 @@ const P9AppBanner = () => {
             </div>
           </div>
 
-          <p className="text-white/95 mb-5 leading-relaxed">
+          <p className="text-charcoal-900 mb-5 leading-relaxed">
             Скачайте приложение P9 на свой телефон для быстрого доступа к бронированию и всем функциям
           </p>
 
