@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
+import AdminLogin from '@/components/AdminLogin';
+
+const AUTH_KEY = 'premium_apartments_admin_auth';
 
 interface Owner {
   id: number;
@@ -13,6 +16,9 @@ interface Owner {
 }
 
 export default function AdminOwnersPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem(AUTH_KEY) === 'true';
+  });
   const [owners, setOwners] = useState<Owner[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -27,6 +33,16 @@ export default function AdminOwnersPage() {
     email: '',
     phone: ''
   });
+
+  const handleLogin = () => {
+    localStorage.setItem(AUTH_KEY, 'true');
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem(AUTH_KEY);
+    setIsAuthenticated(false);
+  };
 
   const loadOwners = async () => {
     try {
@@ -43,8 +59,14 @@ export default function AdminOwnersPage() {
   };
 
   useEffect(() => {
-    loadOwners();
-  }, []);
+    if (isAuthenticated) {
+      loadOwners();
+    }
+  }, [isAuthenticated]);
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={handleLogin} />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,6 +204,13 @@ export default function AdminOwnersPage() {
               >
                 <Icon name="Plus" size={20} />
                 Добавить инвестора
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
+              >
+                <Icon name="LogOut" size={20} />
+                Выход
               </button>
             </div>
           </div>
