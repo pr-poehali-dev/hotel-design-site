@@ -39,10 +39,10 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowAppDialog(true)}
-                className="flex items-center gap-1 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors backdrop-blur-sm"
+                className="flex items-center justify-center gap-1 md:gap-2 px-3 md:px-4 py-2 md:py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors backdrop-blur-sm min-w-[44px]"
                 title="Скачать приложение"
               >
-                <Icon name="Download" size={16} className="md:w-[18px] md:h-[18px]" />
+                <Icon name="Download" size={18} className="text-white" />
                 <span className="hidden md:inline text-xs md:text-sm font-medium">Приложение</span>
               </button>
               <button
@@ -64,7 +64,7 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
       </div>
 
     <Dialog open={showAppDialog} onOpenChange={setShowAppDialog}>
-      <DialogContent className="max-w-sm w-[95vw]">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Icon name="Smartphone" size={24} className="text-gold-600" />
@@ -114,7 +114,7 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
     </Dialog>
 
     <Dialog open={showIOSInstructions} onOpenChange={setShowIOSInstructions}>
-      <DialogContent className="max-w-md w-[95vw] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
             <Icon name="Apple" size={24} className="text-charcoal-900 md:w-7 md:h-7" />
@@ -175,7 +175,7 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
     </Dialog>
 
     <Dialog open={showAndroidInstructions} onOpenChange={setShowAndroidInstructions}>
-      <DialogContent className="max-w-md w-[95vw] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
             <Icon name="Smartphone" size={24} className="text-green-600 md:w-7 md:h-7" />
