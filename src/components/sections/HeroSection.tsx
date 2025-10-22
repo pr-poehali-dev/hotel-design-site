@@ -8,6 +8,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onNavigate }: HeroSectionProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [weather, setWeather] = useState<{ temp: number; condition: string } | null>(null);
 
   const slides = [
     {
@@ -40,6 +41,34 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
     return () => clearInterval(interval);
   }, [slides.length]);
 
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const response = await fetch(
+          'https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&current_weather=true'
+        );
+        const data = await response.json();
+        const temp = Math.round(data.current_weather.temperature);
+        const weatherCode = data.current_weather.weathercode;
+        
+        let condition = 'sun';
+        if (weatherCode >= 61 && weatherCode <= 67) {
+          condition = 'rain';
+        } else if (weatherCode >= 2 && weatherCode <= 3) {
+          condition = 'cloud';
+        } else if (weatherCode >= 71 && weatherCode <= 77) {
+          condition = 'snow';
+        }
+        
+        setWeather({ temp, condition });
+      } catch (error) {
+        console.error('Failed to fetch weather:', error);
+      }
+    };
+
+    fetchWeather();
+  }, []);
+
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
@@ -67,6 +96,18 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-transparent to-charcoal-900/40"></div>
 
       <div className="relative z-10 text-center text-white px-6 max-w-4xl">
+        <div className="flex items-center justify-center gap-3 mb-4 text-base md:text-xl font-inter text-gold-300 animate-fade-in">
+          <span className="uppercase tracking-wider">Зима близко - А у нас уютно и тепло</span>
+          {weather && (
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+              <span className="font-semibold">{weather.temp}°C</span>
+              {weather.condition === 'sun' && <Icon name="Sun" size={20} className="text-yellow-400" />}
+              {weather.condition === 'cloud' && <Icon name="Cloud" size={20} className="text-gray-300" />}
+              {weather.condition === 'rain' && <Icon name="CloudRain" size={20} className="text-blue-300" />}
+              {weather.condition === 'snow' && <Icon name="Snowflake" size={20} className="text-blue-200" />}
+            </div>
+          )}
+        </div>
         <h2 className="text-4xl md:text-8xl font-playfair font-bold mb-6 animate-fade-in">
           Роскошь и <span className="text-gold-400">Элегантность</span>
         </h2>
