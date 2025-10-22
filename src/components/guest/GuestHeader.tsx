@@ -54,14 +54,14 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
               </button>
             </div>
           </div>
-        <div className="border-t border-white/30 pt-3 md:pt-4">
-          <h1 className="text-lg md:text-2xl font-bold font-playfair mb-1">Личный кабинет гостя</h1>
-          <p className="text-gold-100 text-xs md:text-sm">
-            {guestName || guestEmail ? `Добро пожаловать, ${guestName || guestEmail}!` : 'Вся информация о вашем бронировании'}
-          </p>
+          <div className="border-t border-white/30 pt-3 md:pt-4">
+            <h1 className="text-lg md:text-2xl font-bold font-playfair mb-1">Личный кабинет гостя</h1>
+            <p className="text-gold-100 text-xs md:text-sm">
+              {guestName || guestEmail ? `Добро пожаловать, ${guestName || guestEmail}!` : 'Вся информация о вашем бронировании'}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
     <Dialog open={showAppDialog} onOpenChange={setShowAppDialog}>
       <DialogContent className="max-w-sm w-[95vw]">
