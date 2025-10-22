@@ -67,7 +67,7 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
       </div>
 
     <Dialog open={showAppDialog} onOpenChange={setShowAppDialog}>
-      <DialogContent className="!w-[calc(100vw-2rem)] max-w-sm !left-[50%] !translate-x-[-50%]">
+      <DialogContent className="w-[calc(100vw-3rem)] max-w-sm sm:w-full">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Icon name="Smartphone" size={24} className="text-gold-600" />
@@ -117,7 +117,7 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
     </Dialog>
 
     <Dialog open={showIOSInstructions} onOpenChange={setShowIOSInstructions}>
-      <DialogContent className="!w-[calc(100vw-2rem)] max-w-md max-h-[90vh] overflow-y-auto !left-[50%] !translate-x-[-50%]">
+      <DialogContent className="w-[calc(100vw-3rem)] max-w-md max-h-[90vh] overflow-y-auto sm:w-full">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
             <Icon name="Apple" size={24} className="text-charcoal-900 md:w-7 md:h-7" />
@@ -178,7 +178,7 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
     </Dialog>
 
     <Dialog open={showAndroidInstructions} onOpenChange={setShowAndroidInstructions}>
-      <DialogContent className="!w-[calc(100vw-2rem)] max-w-md max-h-[90vh] overflow-y-auto !left-[50%] !translate-x-[-50%]">
+      <DialogContent className="w-[calc(100vw-3rem)] max-w-md max-h-[90vh] overflow-y-auto sm:w-full">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
             <Icon name="Smartphone" size={24} className="text-green-600 md:w-7 md:h-7" />
