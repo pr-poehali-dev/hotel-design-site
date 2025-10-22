@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 const P9AppBanner = () => {
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
@@ -60,17 +60,17 @@ const P9AppBanner = () => {
         </div>
       </div>
 
-      <Dialog open={showIOSInstructions} onOpenChange={setShowIOSInstructions}>
-        <DialogContent className="max-w-md w-[95vw] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
+      <Sheet open={showIOSInstructions} onOpenChange={setShowIOSInstructions}>
+        <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2 text-xl md:text-2xl">
               <Icon name="Apple" size={24} className="text-charcoal-900 md:w-7 md:h-7" />
               Установка на iOS
-            </DialogTitle>
-            <DialogDescription className="text-sm">
+            </SheetTitle>
+            <SheetDescription className="text-sm">
               Добавьте ярлык P9 на рабочий стол iPhone
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
           
           <div className="space-y-4 md:space-y-5 py-2 md:py-4">
             <div className="flex gap-3 md:gap-4 items-start">
@@ -118,20 +118,20 @@ const P9AppBanner = () => {
               </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
 
-      <Dialog open={showAndroidInstructions} onOpenChange={setShowAndroidInstructions}>
-        <DialogContent className="max-w-md w-[95vw] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
+      <Sheet open={showAndroidInstructions} onOpenChange={setShowAndroidInstructions}>
+        <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2 text-xl md:text-2xl">
               <Icon name="Smartphone" size={24} className="text-green-600 md:w-7 md:h-7" />
               Установка на Android
-            </DialogTitle>
-            <DialogDescription className="text-sm">
+            </SheetTitle>
+            <SheetDescription className="text-sm">
               Добавьте ярлык P9 на рабочий стол Android
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
           
           <div className="space-y-4 md:space-y-5 py-2 md:py-4">
             <div className="flex gap-3 md:gap-4 items-start">
@@ -179,8 +179,8 @@ const P9AppBanner = () => {
               </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     </>
   );
 };

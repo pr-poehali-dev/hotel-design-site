@@ -4,12 +4,12 @@ import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import { useState } from 'react';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import BnovoBookingWidget from '@/components/BnovoBookingWidget';
 
@@ -35,7 +35,7 @@ interface RoomCardProps {
 
 const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: RoomCardProps) => {
   const [open, setOpen] = useState(false);
-  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [imageSheetOpen, setImageSheetOpen] = useState(false);
   const [showBookingWidget, setShowBookingWidget] = useState(false);
 
   const handleBooking = () => {
@@ -59,7 +59,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
             <div 
               className="h-full bg-cover bg-center transition-all duration-500 cursor-pointer"
               style={{ backgroundImage: `url(${room.gallery[currentImageIndex % room.gallery.length]})` }}
-              onClick={() => setImageModalOpen(true)}
+              onClick={() => setImageSheetOpen(true)}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/60 to-transparent group-hover:from-charcoal-900/70 transition-all duration-300"></div>
               <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
@@ -106,7 +106,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
           <div 
             className="h-full bg-cover bg-center cursor-pointer"
             style={{ backgroundImage: `url(${room.image})` }}
-            onClick={() => setImageModalOpen(true)}
+            onClick={() => setImageSheetOpen(true)}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/60 to-transparent group-hover:from-charcoal-900/70 transition-all duration-300"></div>
             <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
@@ -133,24 +133,24 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
 
         
         {room.description && (
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
               <Button variant="outline" className="w-full mt-6 border-gold-500 text-gold-600 hover:bg-gold-50 font-semibold">
                 <Icon name="FileText" size={18} className="mr-2" />
                 Подробнее
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:!max-w-4xl max-h-[90vh]">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-playfair text-charcoal-900">{room.name}</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="h-[70vh] pr-4">
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle className="text-2xl font-playfair text-charcoal-900">{room.name}</SheetTitle>
+              </SheetHeader>
+              <ScrollArea className="h-[calc(100vh-8rem)] mt-6 pr-4">
                 <div className="prose prose-charcoal max-w-none">
                   <p className="whitespace-pre-wrap text-charcoal-700 leading-relaxed">{room.description}</p>
                 </div>
               </ScrollArea>
-            </DialogContent>
-          </Dialog>
+            </SheetContent>
+          </Sheet>
         )}
         
         <FizzyButton 
@@ -162,9 +162,9 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
         </FizzyButton>
       </div>
 
-      <Dialog open={imageModalOpen} onOpenChange={setImageModalOpen}>
-        <DialogContent className="sm:!max-w-[90vw] max-h-[90vh] p-0 border-0">
-          <div className="relative w-full h-[85vh] bg-black flex items-center justify-center rounded-lg overflow-hidden">
+      <Sheet open={imageSheetOpen} onOpenChange={setImageSheetOpen}>
+        <SheetContent side="bottom" className="h-[95vh] p-0">
+          <div className="relative w-full h-full bg-black flex items-center justify-center">
             <img
               src={room.gallery ? room.gallery[currentImageIndex % (room.gallery.length)] : room.image}
               alt={room.name}
@@ -215,16 +215,9 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
                 </div>
               </>
             )}
-            
-            <button
-              onClick={() => setImageModalOpen(false)}
-              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full p-3 transition-all z-10"
-            >
-              <Icon name="X" size={24} />
-            </button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
 
     </Card>
     
