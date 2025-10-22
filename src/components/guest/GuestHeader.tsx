@@ -42,11 +42,11 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
                   console.log('Download button clicked');
                   setShowAppDialog(true);
                 }}
-                className="flex items-center justify-center gap-1.5 md:gap-2 px-3 py-2 bg-white/30 hover:bg-white/40 active:bg-white/50 rounded-lg transition-colors backdrop-blur-sm shadow-md border border-white/20"
+                className="flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-white hover:bg-white/90 text-gold-700 rounded-lg transition-all shadow-lg border-2 border-gold-200 font-semibold text-sm"
                 aria-label="Скачать приложение"
               >
-                <Icon name="Download" size={20} className="text-white shrink-0" />
-                <span className="hidden md:inline text-sm font-medium text-white">Приложение</span>
+                <Icon name="Download" size={20} className="shrink-0" />
+                <span className="hidden md:inline">Приложение</span>
               </button>
               <button
                 onClick={onLogout}
