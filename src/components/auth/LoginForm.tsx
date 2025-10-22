@@ -94,21 +94,6 @@ const LoginForm = ({ onLogin, error }: LoginFormProps) => {
             Войти
           </FizzyButton>
         </form>
-
-        <div className="mt-5 sm:mt-6 p-3 sm:p-4 bg-charcoal-700 rounded-lg border border-gray-600">
-          <p className="text-xs sm:text-sm text-gray-400 mb-2">
-            <Icon name="Info" size={14} className="inline mr-1" />
-            Тестовые аккаунты:
-          </p>
-          <div className="space-y-1 text-xs sm:text-sm">
-            <p className="text-gray-300">
-              <span className="font-semibold">Администратор:</span> hab-agent@mail.ru
-            </p>
-            <p className="text-gray-300">
-              <span className="font-semibold">Горничная:</span> savasteeva020202@yandex.ru / 89261781426
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
