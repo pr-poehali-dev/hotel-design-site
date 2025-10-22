@@ -39,10 +39,11 @@ const GuestHeader = ({ guestName, guestEmail, onLogout }: GuestHeaderProps) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowAppDialog(true)}
-                className="md:hidden flex items-center gap-1 px-2.5 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors backdrop-blur-sm"
+                className="flex items-center gap-1 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors backdrop-blur-sm"
                 title="Скачать приложение"
               >
-                <Icon name="Download" size={16} />
+                <Icon name="Download" size={16} className="md:w-[18px] md:h-[18px]" />
+                <span className="hidden md:inline text-xs md:text-sm font-medium">Приложение</span>
               </button>
               <button
                 onClick={onLogout}
