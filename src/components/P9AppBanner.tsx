@@ -78,8 +78,8 @@ const P9AppBanner = () => {
                 1
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold mb-1 text-sm md:text-base">Откройте меню Safari</h4>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <h4 className="font-semibold mb-1 text-sm md:text-base text-charcoal-900">Откройте меню Safari</h4>
+                <p className="text-xs md:text-sm text-charcoal-800">
                   Нажмите на кнопку <Icon name="Share" size={14} className="inline mx-1" /> "Поделиться" внизу экрана
                 </p>
               </div>
@@ -90,8 +90,8 @@ const P9AppBanner = () => {
                 2
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold mb-1 text-sm md:text-base">Найдите нужный пункт</h4>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <h4 className="font-semibold mb-1 text-sm md:text-base text-charcoal-900">Найдите нужный пункт</h4>
+                <p className="text-xs md:text-sm text-charcoal-800">
                   Пролистайте список и выберите <Icon name="PlusSquare" size={14} className="inline mx-1" /> "На экран Домой"
                 </p>
               </div>
@@ -102,8 +102,8 @@ const P9AppBanner = () => {
                 3
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold mb-1 text-sm md:text-base">Подтвердите добавление</h4>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <h4 className="font-semibold mb-1 text-sm md:text-base text-charcoal-900">Подтвердите добавление</h4>
+                <p className="text-xs md:text-sm text-charcoal-800">
                   Нажмите "Добавить" в правом верхнем углу. Готово! <Icon name="CheckCircle" size={14} className="inline mx-1 text-green-600" />
                 </p>
               </div>
@@ -139,8 +139,8 @@ const P9AppBanner = () => {
                 1
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold mb-1 text-sm md:text-base">Откройте меню Chrome</h4>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <h4 className="font-semibold mb-1 text-sm md:text-base text-charcoal-900">Откройте меню Chrome</h4>
+                <p className="text-xs md:text-sm text-charcoal-800">
                   Нажмите на три точки <Icon name="MoreVertical" size={14} className="inline mx-1" /> в правом верхнем углу браузера
                 </p>
               </div>
@@ -151,8 +151,8 @@ const P9AppBanner = () => {
                 2
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold mb-1 text-sm md:text-base">Установите приложение</h4>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <h4 className="font-semibold mb-1 text-sm md:text-base text-charcoal-900">Установите приложение</h4>
+                <p className="text-xs md:text-sm text-charcoal-800">
                   Выберите <Icon name="Download" size={14} className="inline mx-1" /> "Установить приложение" или "Добавить на главный экран"
                 </p>
               </div>
@@ -163,8 +163,8 @@ const P9AppBanner = () => {
                 3
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold mb-1 text-sm md:text-base">Подтвердите установку</h4>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <h4 className="font-semibold mb-1 text-sm md:text-base text-charcoal-900">Подтвердите установку</h4>
+                <p className="text-xs md:text-sm text-charcoal-800">
                   Нажмите "Установить" или "Добавить". Готово! <Icon name="CheckCircle" size={14} className="inline mx-1 text-green-600" />
                 </p>
               </div>
