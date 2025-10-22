@@ -90,6 +90,27 @@ const OwnerDashboardPage = () => {
           </FizzyButton>
         </div>
 
+        <Card className="bg-gradient-to-r from-gold-500 to-amber-500 border-0 text-white">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+              <Icon name="Bell" size={20} />
+              Push-уведомления
+            </CardTitle>
+            <CardDescription className="text-white/90 text-xs md:text-sm">
+              Отправляйте акции и специальные предложения всем подписчикам
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FizzyButton
+              onClick={() => navigate('/push-notifications')}
+              className="w-full bg-white text-gold-600 hover:bg-white/90 text-sm md:text-base font-semibold"
+              icon={<Icon name="Send" size={16} />}
+            >
+              Создать уведомление
+            </FizzyButton>
+          </CardContent>
+        </Card>
+
         {apartments.length === 0 ? (
           <Card>
             <CardHeader>
