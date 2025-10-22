@@ -94,15 +94,9 @@ const OwnerLoginPage = () => {
             >
               {loading ? 'Вход...' : 'Войти'}
             </FizzyButton>
-            <div className="text-center text-sm text-gray-600">
-              Нет аккаунта?{' '}
-              <button
-                type="button"
-                onClick={() => navigate('/owner-register')}
-                className="text-blue-600 hover:underline"
-              >
-                Зарегистрироваться
-              </button>
+            <div className="text-center text-sm text-gray-500 mt-4">
+              <Icon name="Info" size={14} className="inline mr-1" />
+              Аккаунты создаются администратором
             </div>
           </form>
         </CardContent>

@@ -11,7 +11,6 @@ const ReportsPage = React.lazy(() => import("./pages/ReportsPage"));
 const OwnersPage = React.lazy(() => import("./pages/OwnersPage"));
 const OwnerReportsPage = React.lazy(() => import("./pages/OwnerReportsPage"));
 const OwnerLoginPage = React.lazy(() => import("./pages/OwnerLoginPage"));
-const OwnerRegisterPage = React.lazy(() => import("./pages/OwnerRegisterPage"));
 const OwnerDashboardPage = React.lazy(() => import("./pages/OwnerDashboardPage"));
 const HousekeepingTable = React.lazy(() => import("./pages/HousekeepingTable"));
 const CheckInInstructionsPage = React.lazy(() => import("./pages/CheckInInstructionsPage"));
@@ -60,7 +59,6 @@ const App = () => (
             <Route path="/owners" element={<OwnersPage />} />
             <Route path="/owner/:apartmentId" element={<OwnerReportsPage />} />
             <Route path="/owner-login" element={<OwnerLoginPage />} />
-            <Route path="/owner-register" element={<OwnerRegisterPage />} />
             <Route path="/owner-dashboard" element={<OwnerDashboardPage />} />
             <Route path="/housekeeping" element={<HousekeepingTable />} />
             <Route path="/check-in-instructions" element={<CheckInInstructionsPage />} />
