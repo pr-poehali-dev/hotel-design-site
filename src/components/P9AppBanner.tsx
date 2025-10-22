@@ -61,58 +61,58 @@ const P9AppBanner = () => {
       </div>
 
       <Dialog open={showIOSInstructions} onOpenChange={setShowIOSInstructions}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md w-[95vw] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-2xl">
-              <Icon name="Apple" size={28} className="text-charcoal-900" />
+            <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
+              <Icon name="Apple" size={24} className="text-charcoal-900 md:w-7 md:h-7" />
               Установка на iOS
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm">
               Добавьте ярлык P9 на рабочий стол iPhone
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-5 py-4">
-            <div className="flex gap-4 items-start">
-              <div className="w-10 h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg">
+          <div className="space-y-4 md:space-y-5 py-2 md:py-4">
+            <div className="flex gap-3 md:gap-4 items-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg text-sm md:text-base">
                 1
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Откройте меню Safari</h4>
-                <p className="text-sm text-muted-foreground">
-                  Нажмите на кнопку <Icon name="Share" size={16} className="inline mx-1" /> "Поделиться" внизу экрана
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold mb-1 text-sm md:text-base">Откройте меню Safari</h4>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Нажмите на кнопку <Icon name="Share" size={14} className="inline mx-1" /> "Поделиться" внизу экрана
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4 items-start">
-              <div className="w-10 h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg">
+            <div className="flex gap-3 md:gap-4 items-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg text-sm md:text-base">
                 2
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Найдите нужный пункт</h4>
-                <p className="text-sm text-muted-foreground">
-                  Пролистайте список и выберите <Icon name="PlusSquare" size={16} className="inline mx-1" /> "На экран Домой"
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold mb-1 text-sm md:text-base">Найдите нужный пункт</h4>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Пролистайте список и выберите <Icon name="PlusSquare" size={14} className="inline mx-1" /> "На экран Домой"
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4 items-start">
-              <div className="w-10 h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg">
+            <div className="flex gap-3 md:gap-4 items-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg text-sm md:text-base">
                 3
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Подтвердите добавление</h4>
-                <p className="text-sm text-muted-foreground">
-                  Нажмите "Добавить" в правом верхнем углу. Готово! <Icon name="CheckCircle" size={16} className="inline mx-1 text-green-600" />
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold mb-1 text-sm md:text-base">Подтвердите добавление</h4>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Нажмите "Добавить" в правом верхнем углу. Готово! <Icon name="CheckCircle" size={14} className="inline mx-1 text-green-600" />
                 </p>
               </div>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-6">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 md:p-4 mt-4 md:mt-6">
               <div className="flex gap-2 items-start">
-                <Icon name="Lightbulb" size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-amber-900">
+                <Icon name="Lightbulb" size={18} className="text-amber-600 flex-shrink-0 mt-0.5 md:w-5 md:h-5" />
+                <p className="text-xs md:text-sm text-amber-900">
                   <strong>Совет:</strong> Теперь иконка P9 будет на главном экране как обычное приложение!
                 </p>
               </div>
@@ -122,58 +122,58 @@ const P9AppBanner = () => {
       </Dialog>
 
       <Dialog open={showAndroidInstructions} onOpenChange={setShowAndroidInstructions}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md w-[95vw] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-2xl">
-              <Icon name="Smartphone" size={28} className="text-green-600" />
+            <DialogTitle className="flex items-center gap-2 text-xl md:text-2xl">
+              <Icon name="Smartphone" size={24} className="text-green-600 md:w-7 md:h-7" />
               Установка на Android
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm">
               Добавьте ярлык P9 на рабочий стол Android
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-5 py-4">
-            <div className="flex gap-4 items-start">
-              <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg">
+          <div className="space-y-4 md:space-y-5 py-2 md:py-4">
+            <div className="flex gap-3 md:gap-4 items-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg text-sm md:text-base">
                 1
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Откройте меню Chrome</h4>
-                <p className="text-sm text-muted-foreground">
-                  Нажмите на три точки <Icon name="MoreVertical" size={16} className="inline mx-1" /> в правом верхнем углу браузера
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold mb-1 text-sm md:text-base">Откройте меню Chrome</h4>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Нажмите на три точки <Icon name="MoreVertical" size={14} className="inline mx-1" /> в правом верхнем углу браузера
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4 items-start">
-              <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg">
+            <div className="flex gap-3 md:gap-4 items-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg text-sm md:text-base">
                 2
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Установите приложение</h4>
-                <p className="text-sm text-muted-foreground">
-                  Выберите <Icon name="Download" size={16} className="inline mx-1" /> "Установить приложение" или "Добавить на главный экран"
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold mb-1 text-sm md:text-base">Установите приложение</h4>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Выберите <Icon name="Download" size={14} className="inline mx-1" /> "Установить приложение" или "Добавить на главный экран"
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4 items-start">
-              <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg">
+            <div className="flex gap-3 md:gap-4 items-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg text-sm md:text-base">
                 3
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Подтвердите установку</h4>
-                <p className="text-sm text-muted-foreground">
-                  Нажмите "Установить" или "Добавить". Готово! <Icon name="CheckCircle" size={16} className="inline mx-1 text-green-600" />
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold mb-1 text-sm md:text-base">Подтвердите установку</h4>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Нажмите "Установить" или "Добавить". Готово! <Icon name="CheckCircle" size={14} className="inline mx-1 text-green-600" />
                 </p>
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4 mt-4 md:mt-6">
               <div className="flex gap-2 items-start">
-                <Icon name="Info" size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-blue-900">
+                <Icon name="Info" size={18} className="text-blue-600 flex-shrink-0 mt-0.5 md:w-5 md:h-5" />
+                <p className="text-xs md:text-sm text-blue-900">
                   <strong>Альтернатива:</strong> Если не видите кнопку установки, попробуйте открыть сайт в Chrome браузере
                 </p>
               </div>
