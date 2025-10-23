@@ -46,6 +46,8 @@ export default function AdminDashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem(AUTH_KEY) === 'true';
   });
+  
+  console.log('AdminDashboardPage v2.0 loaded');
 
   const [guests, setGuests] = useState<Guest[]>([]);
   const [selectedGuest, setSelectedGuest] = useState<GuestWithBookings | null>(null);

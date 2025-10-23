@@ -2,7 +2,7 @@
   "name": "P9 Апартаменты | ENZO Отель Москва",
   "short_name": "P9 Апартаменты",
   "description": "Премиум апартаменты на Поклонной 9 - бронирование, акции, личный кабинет. 5 звёзд рядом с Парком Победы",
-  "start_url": "/",
+  "start_url": "/?v=2.0",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#D4AF37",
