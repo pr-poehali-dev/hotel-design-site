@@ -1,5 +1,5 @@
 {
-  "delete-aurora-apartment": "https://functions.poehali.dev/d82aecdf-ee68-43a2-be23-5b95a94fc5bf",
+  "guest-management": "https://functions.poehali.dev/bec6ed09-6635-419d-bf79-01a96e536747",
   "send-guest-confirmation": "https://functions.poehali.dev/e349f36e-85b3-4c36-b488-07397019b5c0",
   "send-booking-confirmation": "https://functions.poehali.dev/247fe753-02a4-4d5a-b9b2-b2182701293b",
   "notify-owner": "https://functions.poehali.dev/d5dc60a9-f757-4cdf-bde4-995f24309d3f",
