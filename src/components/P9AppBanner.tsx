@@ -109,14 +109,7 @@ const P9AppBanner = () => {
               </div>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 md:p-4 mt-4 md:mt-6">
-              <div className="flex gap-2 items-start">
-                <Icon name="Lightbulb" size={18} className="text-amber-600 flex-shrink-0 mt-0.5 md:w-5 md:h-5" />
-                <p className="text-xs md:text-sm text-amber-900">
-                  <strong>Совет:</strong> Теперь иконка P9 будет на главном экране как обычное приложение!
-                </p>
-              </div>
-            </div>
+
           </div>
         </SheetContent>
       </Sheet>
