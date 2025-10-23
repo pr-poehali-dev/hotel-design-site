@@ -12,7 +12,6 @@ const AUTH_KEY = 'premium_apartments_admin_auth';
 const APARTMENT_NAMES: Record<string, string> = {
   '1116': 'Поклонная 9 - 3х комнатный Gold Suite',
   '816': 'Поклонная 9 - 3х комнатный Panorama Suite',
-  '2019': 'Поклонная 9 - 2х комнатный Aurora',
   '2111': 'Поклонная 9 - 3х комнатный Family Joy',
   '2110': 'Поклонная 9 - 3х комнатный Fireplace Luxury',
   '1401': 'Поклонная 9 - 2х комнатный Mirror Studio',

@@ -16,7 +16,6 @@ import { useCheckInInstructions } from '@/hooks/useCheckInInstructions';
 import { useFileUpload } from '@/hooks/useFileUpload';
 
 const apartments = [
-  { id: '2019', name: '2х комнатный 2019' },
   { id: '1116', name: '3х комнатный 1116' },
   { id: '2119', name: '2х комнатный 2119' },
   { id: '2110', name: '3х комнатный 2110' },

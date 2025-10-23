@@ -63,7 +63,7 @@ export default function InvestorForm({
           <Input
             value={formData.apartment_number}
             onChange={(e) => onChange({ ...formData, apartment_number: e.target.value })}
-            placeholder="2019"
+            placeholder="2119"
             className="bg-white/10 border-white/20 text-white"
           />
         </div>

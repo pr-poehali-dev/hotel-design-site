@@ -8,7 +8,6 @@ import Icon from '@/components/ui/icon';
 const API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
 
 const apartments = [
-  { id: '2019', name: '2х комнатный 2019' },
   { id: '1116', name: '3х комнатный 1116' },
   { id: '2119', name: '2х комнатный 2119' },
   { id: '2110', name: '3х комнатный 2110' },

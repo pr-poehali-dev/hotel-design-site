@@ -43,7 +43,7 @@ export default function OwnerForm({
             onChange={(e) =>
               onChange({ ...formData, apartmentId: e.target.value })
             }
-            placeholder="2019"
+            placeholder="1759775560156"
             className="bg-white/10 border-white/20 text-white"
             disabled={!isNew}
           />
