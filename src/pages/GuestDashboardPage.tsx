@@ -1,325 +1,501 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
-import GuestHeader from '@/components/guest/GuestHeader';
-import LoyaltyCard from '@/components/guest/LoyaltyCard';
-import CurrentBookingCard from '@/components/guest/CurrentBookingCard';
-import BookingHistoryTab from '@/components/guest/BookingHistoryTab';
 
 const BOOKINGS_API_URL = 'https://functions.poehali.dev/5fb527bf-818a-4b1a-b986-bd90154ba94b';
-const PDF_API_URL = 'https://functions.poehali.dev/658336cf-3e08-480b-b90b-f72aa814a865';
-const CANCEL_BOOKING_API_URL = 'https://functions.poehali.dev/edd37769-9243-46e7-997b-a12c73b0cae2';
-const INSTRUCTIONS_API_URL = 'https://functions.poehali.dev/a629b99f-4972-4b9b-a55e-469c3d770ca7';
+const GUEST_API_URL = 'https://functions.poehali.dev/bec6ed09-6635-419d-bf79-01a96e536747';
 
 interface Booking {
   id: string;
   apartment_id: string;
+  apartment_name?: string;
+  room_number?: string;
   check_in: string;
   check_out: string;
   guest_name: string;
-  guest_email: string;
-  guest_phone: string;
   total_amount?: number;
-  early_check_in?: number;
-  late_check_out?: number;
-  parking?: number;
-  show_to_guest?: boolean;
-  created_at?: string;
   status?: string;
+  created_at?: string;
 }
 
-interface Instruction {
-  images: string[];
+interface GuestUser {
+  id: number;
+  email: string;
+  name: string;
+  phone: string;
+  username?: string;
+  is_vip: boolean;
+  guest_type: string;
+  total_bookings: number;
+  total_spent: string;
+  promo_codes?: any[];
+  assigned_apartments?: string[];
 }
 
-const GuestDashboardPage = () => {
-  const [booking, setBooking] = useState<Booking | null>(null);
-  const [allBookings, setAllBookings] = useState<Booking[]>([]);
-  const [instruction, setInstruction] = useState<Instruction | null>(null);
+export default function GuestDashboardPage() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'bookings' | 'profile'>('bookings');
+  const [guestUser, setGuestUser] = useState<GuestUser | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [guestUser, setGuestUser] = useState<any>(null);
-  const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null);
-  const [cancellingBooking, setCancellingBooking] = useState<string | null>(null);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: '',
+    phone: '',
+    password: ''
+  });
 
   useEffect(() => {
-    const loadData = async () => {
-      const userStr = localStorage.getItem('guest_user');
-      const token = localStorage.getItem('guest_token');
-      
-      if (!userStr || !token) {
-        window.location.href = '/guest-login';
-        return;
-      }
-
-      const user = JSON.parse(userStr);
-      setGuestUser(user);
-
-      let currentBooking: Booking | null = null;
-
-      try {
-        const bookingsResponse = await fetch(BOOKINGS_API_URL, {
-          method: 'GET',
-          headers: {
-            'X-User-Email': user.email
-          }
-        });
-        
-        const bookingsData = await bookingsResponse.json();
-        
-        if (bookingsData.success && bookingsData.bookings.length > 0) {
-          setAllBookings(bookingsData.bookings);
-          
-          currentBooking = bookingsData.bookings.find((b: Booking) => 
-            new Date(b.check_in) >= new Date()
-          ) || bookingsData.bookings[0];
-          
-          setBooking(currentBooking);
-        } else {
-          const mockBooking: Booking = {
-            id: '1',
-            apartment_id: '816',
-            check_in: '2025-10-10',
-            check_out: '2025-10-15',
-            guest_name: user.name || 'Гость',
-            guest_email: user.email,
-            guest_phone: user.phone || '',
-          };
-          currentBooking = mockBooking;
-          setBooking(mockBooking);
-          setAllBookings([mockBooking]);
-        }
-      } catch (error) {
-        console.error('Ошибка загрузки бронирований:', error);
-        const mockBooking: Booking = {
-          id: '1',
-          apartment_id: '816',
-          check_in: '2025-10-10',
-          check_out: '2025-10-15',
-          guest_name: user.name || 'Гость',
-          guest_email: user.email,
-          guest_phone: user.phone || '',
-        };
-        currentBooking = mockBooking;
-        setBooking(mockBooking);
-        setAllBookings([mockBooking]);
-      }
-
-      if (currentBooking) {
-        try {
-          const response = await fetch(`${INSTRUCTIONS_API_URL}?apartment_id=${currentBooking.apartment_id}`);
-          const data = await response.json();
-          
-          if (data && data.images) {
-            setInstruction({ images: data.images });
-          }
-        } catch (error) {
-          console.error('Ошибка загрузки инструкций:', error);
-        }
-      }
-
-      setLoading(false);
-    };
-
-    loadData();
+    loadGuestData();
   }, []);
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  const loadGuestData = async () => {
+    const userStr = localStorage.getItem('guest_user');
+    const token = localStorage.getItem('guest_token');
+    
+    if (!userStr || !token) {
+      navigate('/guest-login');
+      return;
+    }
+
+    const user = JSON.parse(userStr);
+    
+    try {
+      setLoading(true);
+      
+      // Загружаем полные данные гостя
+      const guestResponse = await fetch(`${GUEST_API_URL}?id=${user.id}`);
+      if (guestResponse.ok) {
+        const guestData = await guestResponse.json();
+        setGuestUser(guestData);
+        setProfileForm({
+          name: guestData.name || '',
+          phone: guestData.phone || '',
+          password: ''
+        });
+        
+        // Брони из ответа guest API
+        if (guestData.bookings) {
+          setBookings(guestData.bookings);
+        }
+      } else {
+        // Fallback на старый формат
+        setGuestUser(user);
+        
+        // Загружаем брони старым способом
+        const bookingsResponse = await fetch(BOOKINGS_API_URL, {
+          headers: { 'X-User-Email': user.email }
+        });
+        if (bookingsResponse.ok) {
+          const bookingsData = await bookingsResponse.json();
+          if (bookingsData.success) {
+            setBookings(bookingsData.bookings || []);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки данных:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const getDaysUntilCheckIn = () => {
-    if (!booking) return 0;
-    const checkIn = new Date(booking.check_in);
-    const today = new Date();
-    const diffTime = checkIn.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+  const handleUpdateProfile = async () => {
+    if (!guestUser) return;
+
+    try {
+      const updateData: any = {
+        id: guestUser.id,
+        name: profileForm.name,
+        phone: profileForm.phone
+      };
+
+      if (profileForm.password) {
+        updateData.password = profileForm.password;
+      }
+
+      const response = await fetch(GUEST_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateData)
+      });
+
+      if (response.ok) {
+        alert('Профиль обновлён');
+        setEditingProfile(false);
+        setProfileForm({ ...profileForm, password: '' });
+        await loadGuestData();
+      } else {
+        alert('Ошибка при обновлении профиля');
+      }
+    } catch (error) {
+      console.error('Ошибка обновления:', error);
+      alert('Ошибка при обновлении профиля');
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('guest_user');
     localStorage.removeItem('guest_token');
-    window.location.href = '/guest-login';
+    navigate('/guest-login');
   };
 
-  const downloadBookingPdf = async (bookingId: string) => {
-    if (!guestUser) return;
-    
-    setDownloadingPdf(bookingId);
-    
-    try {
-      const response = await fetch(PDF_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          booking_id: bookingId,
-          guest_email: guestUser.email
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        const linkSource = `data:application/pdf;base64,${data.pdf}`;
-        const downloadLink = document.createElement('a');
-        downloadLink.href = linkSource;
-        downloadLink.download = data.filename || `booking_${bookingId}.pdf`;
-        downloadLink.click();
-      } else {
-        alert('Ошибка: ' + (data.error || 'Не удалось создать PDF'));
-      }
-    } catch (error) {
-      alert('Не удалось скачать подтверждение');
-    } finally {
-      setDownloadingPdf(null);
-    }
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
   };
 
-  const handleCancelBooking = async (bookingId: string) => {
-    if (!guestUser) return;
-    
-    const confirmed = window.confirm('Вы уверены, что хотите отменить это бронирование?');
-    if (!confirmed) return;
-    
-    setCancellingBooking(bookingId);
-    
-    try {
-      const response = await fetch(CANCEL_BOOKING_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          booking_id: bookingId,
-          guest_email: guestUser.email
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        alert('Бронирование успешно отменено');
-        
-        setAllBookings(prev => 
-          prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled' } : b)
-        );
-        
-        if (booking?.id === bookingId) {
-          setBooking(prev => prev ? { ...prev, status: 'cancelled' } : null);
-        }
-      } else {
-        alert('Ошибка: ' + (data.error || 'Не удалось отменить бронирование'));
-      }
-    } catch (error) {
-      alert('Не удалось отменить бронирование');
-    } finally {
-      setCancellingBooking(null);
-    }
+  const getDaysUntil = (dateStr: string) => {
+    const days = Math.ceil((new Date(dateStr).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    return days;
   };
+
+  const getBookingStatus = (booking: Booking) => {
+    const checkInDate = new Date(booking.check_in);
+    const checkOutDate = new Date(booking.check_out);
+    const today = new Date();
+
+    if (checkOutDate < today) return 'completed';
+    if (checkInDate <= today && checkOutDate >= today) return 'active';
+    return 'upcoming';
+  };
+
+  const activeBookings = bookings.filter(b => ['active', 'upcoming'].includes(getBookingStatus(b)));
+  const pastBookings = bookings.filter(b => getBookingStatus(b) === 'completed');
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Icon name="Loader2" size={48} className="animate-spin text-gold-500 mx-auto mb-4" />
-          <p className="text-gray-600">Загрузка...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-white text-xl">Загрузка...</div>
       </div>
     );
   }
 
-  if (!booking) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="max-w-md text-center p-6">
-          <Icon name="AlertCircle" size={48} className="text-gold-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">Бронирование не найдено</h2>
-          <p className="text-gray-600">Проверьте ссылку или обратитесь к администратору</p>
-        </div>
-      </div>
-    );
+  if (!guestUser) {
+    return null;
   }
-
-  const daysUntil = getDaysUntilCheckIn();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <GuestHeader 
-        guestName={guestUser?.name}
-        guestEmail={guestUser?.email}
-        onLogout={handleLogout}
-      />
-
-      <div className="max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-8 space-y-4 md:space-y-6">
-        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-          <LoyaltyCard bookingsCount={allBookings.length} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Header */}
+      <div className="bg-white/10 backdrop-blur-md border-b border-white/20">
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                Добро пожаловать, {guestUser.name}!
+              </h1>
+              <div className="flex gap-2">
+                {guestUser.is_vip && (
+                  <span className="px-3 py-1 bg-yellow-500/20 text-yellow-300 text-sm rounded-full">
+                    ⭐ VIP
+                  </span>
+                )}
+                <span className="px-3 py-1 bg-blue-500/20 text-blue-300 text-sm rounded-full">
+                  {guestUser.total_bookings} {guestUser.total_bookings === 1 ? 'бронь' : 'броней'}
+                </span>
+              </div>
+            </div>
+            <Button 
+              onClick={handleLogout}
+              variant="outline"
+              className="text-white border-white/30 hover:bg-white/10"
+            >
+              <Icon name="LogOut" size={16} />
+              Выход
+            </Button>
+          </div>
         </div>
+      </div>
 
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
-          <CurrentBookingCard
-            booking={booking}
-            formatDate={formatDate}
-            daysUntil={daysUntil}
-            downloadingPdf={downloadingPdf}
-            onDownloadPdf={downloadBookingPdf}
-            cancellingBooking={cancellingBooking}
-            onCancelBooking={handleCancelBooking}
-          />
+      {/* Navigation Tabs */}
+      <div className="bg-white/5 border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex gap-1">
+            <button
+              onClick={() => setActiveTab('bookings')}
+              className={`px-6 py-3 text-sm font-medium transition-colors ${
+                activeTab === 'bookings'
+                  ? 'text-white bg-white/10 border-b-2 border-purple-500'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Icon name="Calendar" size={16} className="inline mr-2" />
+              Мои брони
+            </button>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-6 py-3 text-sm font-medium transition-colors ${
+                activeTab === 'profile'
+                  ? 'text-white bg-white/10 border-b-2 border-purple-500'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Icon name="User" size={16} className="inline mr-2" />
+              Профиль
+            </button>
+          </div>
         </div>
+      </div>
 
-        {instruction && instruction.images && instruction.images.length > 0 && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-            <Card className="shadow-lg">
-              <CardHeader className="pb-3 md:pb-6">
-                <CardTitle className="flex items-center gap-2 text-lg md:text-2xl">
-                  <Icon name="Image" size={18} className="text-gold-600 md:w-5 md:h-5" />
-                  Фотографии апартамента
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                  {instruction.images.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="animate-in fade-in zoom-in-95 duration-500"
-                      style={{ animationDelay: `${idx * 100}ms` }}
-                    >
-                      <img
-                        src={img}
-                        alt={`Апартамент ${idx + 1}`}
-                        className="w-full h-36 md:h-48 object-cover rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
-                        onClick={() => window.open(img, '_blank')}
-                      />
-                    </div>
+      {/* Content */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {activeTab === 'bookings' ? (
+          <div className="space-y-8">
+            {/* Active/Upcoming Bookings */}
+            {activeBookings.length > 0 && (
+              <div>
+                <h2 className="text-xl font-bold text-white mb-4">Активные и предстоящие</h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {activeBookings.map((booking) => {
+                    const status = getBookingStatus(booking);
+                    const daysUntil = getDaysUntil(booking.check_in);
+                    
+                    return (
+                      <Card key={booking.id} className="bg-white/10 border-white/20 p-6 hover:bg-white/15 transition-colors">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-white mb-1">
+                              {booking.apartment_name || booking.room_number || `Апартамент ${booking.apartment_id}`}
+                            </h3>
+                            {status === 'active' ? (
+                              <span className="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded">
+                                <Icon name="CheckCircle" size={12} className="mr-1" />
+                                Активная бронь
+                              </span>
+                            ) : daysUntil <= 7 ? (
+                              <span className="inline-flex items-center px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded">
+                                <Icon name="Clock" size={12} className="mr-1" />
+                                Через {daysUntil} {daysUntil === 1 ? 'день' : 'дней'}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">
+                                <Icon name="Calendar" size={12} className="mr-1" />
+                                Предстоящая
+                              </span>
+                            )}
+                          </div>
+                          {booking.total_amount && (
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-white">{booking.total_amount.toLocaleString()} ₽</div>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="flex items-center text-white/80">
+                            <Icon name="Calendar" size={16} className="mr-2 text-purple-400" />
+                            <span className="text-sm">
+                              {formatDate(booking.check_in)} — {formatDate(booking.check_out)}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center text-white/80">
+                            <Icon name="Clock" size={16} className="mr-2 text-purple-400" />
+                            <span className="text-sm">
+                              {Math.ceil((new Date(booking.check_out).getTime() - new Date(booking.check_in).getTime()) / (1000 * 60 * 60 * 24))} ночей
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-white/10 flex gap-2">
+                          <Button 
+                            size="sm" 
+                            className="flex-1 bg-purple-600 hover:bg-purple-700"
+                            onClick={() => window.open(`https://reservationsteps.ru/`, '_blank')}
+                          >
+                            <Icon name="ExternalLink" size={14} />
+                            Детали брони
+                          </Button>
+                          {status === 'upcoming' && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="text-white border-white/30 hover:bg-white/10"
+                            >
+                              <Icon name="RotateCcw" size={14} />
+                              Повторить
+                            </Button>
+                          )}
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Past Bookings */}
+            {pastBookings.length > 0 && (
+              <div>
+                <h2 className="text-xl font-bold text-white mb-4">История бронирований</h2>
+                <div className="space-y-3">
+                  {pastBookings.map((booking) => (
+                    <Card key={booking.id} className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
+                      <div className="flex justify-between items-center">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-white mb-1">
+                            {booking.apartment_name || booking.room_number || `Апартамент ${booking.apartment_id}`}
+                          </h4>
+                          <div className="text-sm text-white/60">
+                            {formatDate(booking.check_in)} — {formatDate(booking.check_out)}
+                          </div>
+                        </div>
+                        {booking.total_amount && (
+                          <div className="text-white font-medium mr-4">
+                            {booking.total_amount.toLocaleString()} ₽
+                          </div>
+                        )}
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="text-white border-white/30 hover:bg-white/10"
+                        >
+                          <Icon name="RotateCcw" size={14} />
+                          Повторить
+                        </Button>
+                      </div>
+                    </Card>
                   ))}
                 </div>
-              </CardContent>
+              </div>
+            )}
+
+            {bookings.length === 0 && (
+              <Card className="bg-white/5 border-white/10 p-12">
+                <div className="text-center">
+                  <Icon name="Calendar" size={64} className="mx-auto mb-4 text-white/20" />
+                  <h3 className="text-xl font-semibold text-white mb-2">У вас пока нет бронирований</h3>
+                  <p className="text-white/60 mb-6">Забронируйте свой первый апартамент!</p>
+                  <Button 
+                    onClick={() => navigate('/')}
+                    className="bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Icon name="Search" size={16} />
+                    Выбрать апартамент
+                  </Button>
+                </div>
+              </Card>
+            )}
+          </div>
+        ) : (
+          <div className="max-w-2xl mx-auto">
+            <Card className="bg-white/10 border-white/20 p-6">
+              <h2 className="text-2xl font-bold text-white mb-6">Мой профиль</h2>
+
+              {!editingProfile ? (
+                <div className="space-y-4">
+                  <div className="p-4 bg-white/5 rounded-lg">
+                    <div className="text-white/60 text-sm mb-1">ФИО</div>
+                    <div className="text-white font-medium">{guestUser.name}</div>
+                  </div>
+
+                  <div className="p-4 bg-white/5 rounded-lg">
+                    <div className="text-white/60 text-sm mb-1">Email</div>
+                    <div className="text-white">{guestUser.email}</div>
+                  </div>
+
+                  <div className="p-4 bg-white/5 rounded-lg">
+                    <div className="text-white/60 text-sm mb-1">Телефон</div>
+                    <div className="text-white">{guestUser.phone || 'Не указан'}</div>
+                  </div>
+
+                  {guestUser.username && (
+                    <div className="p-4 bg-white/5 rounded-lg">
+                      <div className="text-white/60 text-sm mb-1">Логин</div>
+                      <div className="text-white">{guestUser.username}</div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <div className="text-purple-300 text-sm mb-1">Всего броней</div>
+                      <div className="text-white text-2xl font-bold">{guestUser.total_bookings}</div>
+                    </div>
+                    <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <div className="text-green-300 text-sm mb-1">Потрачено</div>
+                      <div className="text-white text-2xl font-bold">{parseFloat(guestUser.total_spent).toLocaleString()} ₽</div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={() => setEditingProfile(true)}
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Icon name="Edit" size={16} />
+                    Редактировать профиль
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-white text-sm mb-2 block">ФИО</label>
+                    <Input
+                      value={profileForm.name}
+                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-white text-sm mb-2 block">Телефон</label>
+                    <Input
+                      value={profileForm.phone}
+                      onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                      placeholder="+7 999 123-45-67"
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-white text-sm mb-2 block">
+                      Новый пароль (оставьте пустым, чтобы не менять)
+                    </label>
+                    <Input
+                      type="password"
+                      value={profileForm.password}
+                      onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })}
+                      placeholder="••••••••"
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={handleUpdateProfile}
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                    >
+                      <Icon name="Check" size={16} />
+                      Сохранить
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setEditingProfile(false);
+                        setProfileForm({
+                          name: guestUser.name,
+                          phone: guestUser.phone,
+                          password: ''
+                        });
+                      }}
+                      variant="outline"
+                      className="flex-1 text-white border-white/30"
+                    >
+                      <Icon name="X" size={16} />
+                      Отмена
+                    </Button>
+                  </div>
+                </div>
+              )}
             </Card>
           </div>
         )}
-
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-          <Card className="shadow-lg">
-            <CardHeader className="pb-3 md:pb-6">
-              <CardTitle className="flex items-center gap-2 text-lg md:text-2xl">
-                <Icon name="History" size={18} className="text-gold-600 md:w-5 md:h-5" />
-                История бронирований
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <BookingHistoryTab
-                bookings={allBookings}
-                formatDate={formatDate}
-                downloadingPdf={downloadingPdf}
-                onDownloadPdf={downloadBookingPdf}
-                cancellingBooking={cancellingBooking}
-                onCancelBooking={handleCancelBooking}
-              />
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );
-};
-
-export default GuestDashboardPage;
+}
