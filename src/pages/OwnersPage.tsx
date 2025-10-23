@@ -248,6 +248,33 @@ export default function OwnersPage() {
     });
   };
 
+  const handleDeleteAurora = async () => {
+    if (!confirm('Удалить апартамент "2х комнатный Aurora" и все связанные данные?')) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/d82aecdf-ee68-43a2-be23-5b95a94fc5bf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Успешно удалено:\n- Апартамент: ${result.deleted.apartment}\n- Записей календаря: ${result.deleted.calendar_records}\n- Записей уборок: ${result.deleted.cleaning_history}`);
+        await loadOwners();
+      } else {
+        alert('Ошибка при удалении');
+      }
+    } catch (error) {
+      console.error('Failed to delete Aurora:', error);
+      alert('Ошибка при удалении');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSaveInvestor = async () => {
     if (!investorForm.username || !investorForm.password || !investorForm.full_name) {
       alert('Заполните обязательные поля: логин, пароль, ФИО');
@@ -347,6 +374,17 @@ export default function OwnersPage() {
           onAddNew={handleAddNew}
           onLogout={handleLogout}
         />
+
+        <div className="mb-6 bg-red-500/20 border border-red-500 rounded-lg p-4">
+          <p className="text-white mb-3">Временная кнопка для удаления апартамента Aurora</p>
+          <button
+            onClick={handleDeleteAurora}
+            disabled={loading}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
+          >
+            {loading ? 'Удаление...' : 'Удалить Aurora'}
+          </button>
+        </div>
 
         {showInvestorSection && (
           <InvestorSection
