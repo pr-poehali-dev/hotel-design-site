@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UpdateNotification from "@/components/UpdateNotification";
+import { startVersionChecking, reloadApp } from "@/utils/versionCheck";
 
 const Index = React.lazy(() => import("./pages/Index"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
@@ -41,12 +43,26 @@ const AdminDashboardPage = React.lazy(() => import("./pages/AdminDashboardPage")
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+const App = () => {
+  const [showUpdateNotification, setShowUpdateNotification] = React.useState(false);
+
+  React.useEffect(() => {
+    startVersionChecking(() => {
+      setShowUpdateNotification(true);
+    });
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <UpdateNotification
+          show={showUpdateNotification}
+          onUpdate={reloadApp}
+          onDismiss={() => setShowUpdateNotification(false)}
+        />
+        <BrowserRouter>
         <React.Suspense fallback={
           <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 flex items-center justify-center">
             <div className="text-center">
@@ -95,6 +111,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
