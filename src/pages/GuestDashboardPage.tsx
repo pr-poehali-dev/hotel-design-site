@@ -51,7 +51,14 @@ export default function GuestDashboardPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullStartY, setPullStartY] = useState(0);
   const [pullDistance, setPullDistance] = useState(0);
+  const [hasVibrated, setHasVibrated] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const triggerHaptic = () => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+  };
 
   useEffect(() => {
     loadGuestData();
@@ -122,6 +129,11 @@ export default function GuestDashboardPage() {
     if (distance > 0 && distance < 120) {
       setPullDistance(distance);
       e.preventDefault();
+      
+      if (distance > 80 && !hasVibrated) {
+        triggerHaptic();
+        setHasVibrated(true);
+      }
     }
   };
 
@@ -132,6 +144,7 @@ export default function GuestDashboardPage() {
     }
     setPullStartY(0);
     setPullDistance(0);
+    setHasVibrated(false);
   };
 
   const handleUpdateProfile = async () => {
