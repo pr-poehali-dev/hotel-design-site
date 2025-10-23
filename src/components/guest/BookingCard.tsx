@@ -30,16 +30,16 @@ export default function BookingCard({ booking, status, daysUntil, formatDate }: 
   };
 
   return (
-    <Card className="bg-white/10 border-white/20 p-6 hover:bg-white/15 transition-colors">
-      <div className="flex justify-between items-start mb-4">
+    <Card className="bg-white/10 border-white/20 p-4 md:p-6 hover:bg-white/15 transition-colors">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 mb-4">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white mb-1">
+          <h3 className="text-base md:text-lg font-semibold text-white mb-2">
             {booking.apartment_name || booking.room_number || `Апартамент ${booking.apartment_id}`}
           </h3>
           {status === 'active' ? (
             <span className="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded">
               <Icon name="CheckCircle" size={12} className="mr-1" />
-              Активная бронь
+              Активная
             </span>
           ) : daysUntil !== undefined && daysUntil <= 7 ? (
             <span className="inline-flex items-center px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded">
@@ -49,48 +49,48 @@ export default function BookingCard({ booking, status, daysUntil, formatDate }: 
           ) : (
             <span className="inline-flex items-center px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">
               <Icon name="Calendar" size={12} className="mr-1" />
-              Предстоящая
+              Скоро
             </span>
           )}
         </div>
         {booking.total_amount && (
-          <div className="text-right">
-            <div className="text-2xl font-bold text-white">{booking.total_amount.toLocaleString()} ₽</div>
+          <div className="text-left md:text-right">
+            <div className="text-xl md:text-2xl font-bold text-white">{booking.total_amount.toLocaleString()} ₽</div>
           </div>
         )}
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center text-white/80">
-          <Icon name="Calendar" size={16} className="mr-2 text-purple-400" />
-          <span className="text-sm">
+      <div className="space-y-2 md:space-y-3 mb-4">
+        <div className="flex items-start md:items-center text-white/80">
+          <Icon name="Calendar" size={16} className="mr-2 text-purple-400 flex-shrink-0 mt-0.5 md:mt-0" />
+          <span className="text-xs md:text-sm leading-relaxed">
             {formatDate(booking.check_in)} — {formatDate(booking.check_out)}
           </span>
         </div>
 
         <div className="flex items-center text-white/80">
-          <Icon name="Clock" size={16} className="mr-2 text-purple-400" />
-          <span className="text-sm">{getNights()} ночей</span>
+          <Icon name="Clock" size={16} className="mr-2 text-purple-400 flex-shrink-0" />
+          <span className="text-xs md:text-sm">{getNights()} ночей</span>
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-white/10 flex gap-2">
+      <div className="flex flex-col md:flex-row gap-2">
         <Button 
           size="sm" 
-          className="flex-1 bg-purple-600 hover:bg-purple-700"
+          className="flex-1 bg-purple-600 hover:bg-purple-700 h-9"
           onClick={() => window.open(`https://reservationsteps.ru/`, '_blank')}
         >
           <Icon name="ExternalLink" size={14} />
-          Детали брони
+          <span className="ml-1">Детали</span>
         </Button>
         {status === 'upcoming' && (
           <Button 
             size="sm" 
             variant="outline"
-            className="text-white border-white/30 hover:bg-white/10"
+            className="flex-1 text-white border-white/30 hover:bg-white/10 h-9"
           >
             <Icon name="RotateCcw" size={14} />
-            Повторить
+            <span className="ml-1">Повторить</span>
           </Button>
         )}
       </div>

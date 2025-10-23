@@ -44,90 +44,90 @@ export default function ProfileTab({
 }: ProfileTabProps) {
   return (
     <div className="max-w-2xl mx-auto">
-      <Card className="bg-white/10 border-white/20 p-6">
-        <h2 className="text-2xl font-bold text-white mb-6">Мой профиль</h2>
+      <Card className="bg-white/10 border-white/20 p-4 md:p-6">
+        <h2 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6">Мой профиль</h2>
 
         {!editingProfile ? (
-          <div className="space-y-4">
-            <div className="p-4 bg-white/5 rounded-lg">
-              <div className="text-white/60 text-sm mb-1">ФИО</div>
-              <div className="text-white font-medium">{guestUser.name}</div>
+          <div className="space-y-3 md:space-y-4">
+            <div className="p-3 md:p-4 bg-white/5 rounded-lg">
+              <div className="text-white/60 text-xs md:text-sm mb-1">ФИО</div>
+              <div className="text-white font-medium text-sm md:text-base">{guestUser.name}</div>
             </div>
 
-            <div className="p-4 bg-white/5 rounded-lg">
-              <div className="text-white/60 text-sm mb-1">Email</div>
-              <div className="text-white">{guestUser.email}</div>
+            <div className="p-3 md:p-4 bg-white/5 rounded-lg">
+              <div className="text-white/60 text-xs md:text-sm mb-1">Email</div>
+              <div className="text-white text-sm md:text-base break-all">{guestUser.email}</div>
             </div>
 
-            <div className="p-4 bg-white/5 rounded-lg">
-              <div className="text-white/60 text-sm mb-1">Телефон</div>
-              <div className="text-white">{guestUser.phone || 'Не указан'}</div>
+            <div className="p-3 md:p-4 bg-white/5 rounded-lg">
+              <div className="text-white/60 text-xs md:text-sm mb-1">Телефон</div>
+              <div className="text-white text-sm md:text-base">{guestUser.phone || 'Не указан'}</div>
             </div>
 
             {guestUser.username && (
-              <div className="p-4 bg-white/5 rounded-lg">
-                <div className="text-white/60 text-sm mb-1">Логин</div>
-                <div className="text-white">{guestUser.username}</div>
+              <div className="p-3 md:p-4 bg-white/5 rounded-lg">
+                <div className="text-white/60 text-xs md:text-sm mb-1">Логин</div>
+                <div className="text-white text-sm md:text-base">{guestUser.username}</div>
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                <div className="text-purple-300 text-sm mb-1">Всего броней</div>
-                <div className="text-white text-2xl font-bold">{guestUser.total_bookings}</div>
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
+              <div className="p-3 md:p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                <div className="text-purple-300 text-xs md:text-sm mb-1">Всего броней</div>
+                <div className="text-white text-xl md:text-2xl font-bold">{guestUser.total_bookings}</div>
               </div>
-              <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-                <div className="text-green-300 text-sm mb-1">Потрачено</div>
-                <div className="text-white text-2xl font-bold">{parseFloat(guestUser.total_spent).toLocaleString()} ₽</div>
+              <div className="p-3 md:p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <div className="text-green-300 text-xs md:text-sm mb-1">Потрачено</div>
+                <div className="text-white text-xl md:text-2xl font-bold">{parseFloat(guestUser.total_spent).toLocaleString()} ₽</div>
               </div>
             </div>
 
             <Button 
               onClick={onEdit}
-              className="w-full bg-purple-600 hover:bg-purple-700"
+              className="w-full bg-purple-600 hover:bg-purple-700 h-11"
             >
               <Icon name="Edit" size={16} />
-              Редактировать профиль
+              Редактировать
             </Button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             <div>
-              <label className="text-white text-sm mb-2 block">ФИО</label>
+              <label className="text-white text-xs md:text-sm mb-2 block">ФИО</label>
               <Input
                 value={profileForm.name}
                 onChange={(e) => onFormChange({ ...profileForm, name: e.target.value })}
-                className="bg-white/10 border-white/20 text-white"
+                className="bg-white/10 border-white/20 text-white h-10 md:h-11"
               />
             </div>
 
             <div>
-              <label className="text-white text-sm mb-2 block">Телефон</label>
+              <label className="text-white text-xs md:text-sm mb-2 block">Телефон</label>
               <Input
                 value={profileForm.phone}
                 onChange={(e) => onFormChange({ ...profileForm, phone: e.target.value })}
                 placeholder="+7 999 123-45-67"
-                className="bg-white/10 border-white/20 text-white"
+                className="bg-white/10 border-white/20 text-white h-10 md:h-11"
               />
             </div>
 
             <div>
-              <label className="text-white text-sm mb-2 block">
-                Новый пароль (оставьте пустым, чтобы не менять)
+              <label className="text-white text-xs md:text-sm mb-2 block">
+                Новый пароль (оставьте пустым)
               </label>
               <Input
                 type="password"
                 value={profileForm.password}
                 onChange={(e) => onFormChange({ ...profileForm, password: e.target.value })}
                 placeholder="••••••••"
-                className="bg-white/10 border-white/20 text-white"
+                className="bg-white/10 border-white/20 text-white h-10 md:h-11"
               />
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-3 pt-2">
               <Button 
                 onClick={onSave}
-                className="flex-1 bg-green-600 hover:bg-green-700"
+                className="flex-1 bg-green-600 hover:bg-green-700 h-11"
               >
                 <Icon name="Check" size={16} />
                 Сохранить
@@ -135,7 +135,7 @@ export default function ProfileTab({
               <Button 
                 onClick={onCancel}
                 variant="outline"
-                className="flex-1 text-white border-white/30"
+                className="flex-1 text-white border-white/30 h-11"
               >
                 <Icon name="X" size={16} />
                 Отмена

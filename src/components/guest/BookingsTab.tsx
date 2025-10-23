@@ -37,11 +37,11 @@ export default function BookingsTab({
   const pastBookings = bookings.filter(b => getBookingStatus(b) === 'completed');
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {activeBookings.length > 0 && (
         <div>
-          <h2 className="text-xl font-bold text-white mb-4">Активные и предстоящие</h2>
-          <div className="grid md:grid-cols-2 gap-4">
+          <h2 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4">Активные и предстоящие</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             {activeBookings.map((booking) => {
               const status = getBookingStatus(booking);
               const daysUntil = getDaysUntil(booking.check_in);
@@ -62,8 +62,8 @@ export default function BookingsTab({
 
       {pastBookings.length > 0 && (
         <div>
-          <h2 className="text-xl font-bold text-white mb-4">История бронирований</h2>
-          <div className="space-y-3">
+          <h2 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4">История бронирований</h2>
+          <div className="space-y-2 md:space-y-3">
             {pastBookings.map((booking) => (
               <PastBookingCard
                 key={booking.id}
@@ -76,14 +76,14 @@ export default function BookingsTab({
       )}
 
       {bookings.length === 0 && (
-        <Card className="bg-white/5 border-white/10 p-12">
+        <Card className="bg-white/5 border-white/10 p-8 md:p-12">
           <div className="text-center">
-            <Icon name="Calendar" size={64} className="mx-auto mb-4 text-white/20" />
-            <h3 className="text-xl font-semibold text-white mb-2">У вас пока нет бронирований</h3>
-            <p className="text-white/60 mb-6">Забронируйте свой первый апартамент!</p>
+            <Icon name="Calendar" size={48} className="mx-auto mb-4 text-white/20 md:w-16 md:h-16" />
+            <h3 className="text-lg md:text-xl font-semibold text-white mb-2">У вас пока нет бронирований</h3>
+            <p className="text-sm md:text-base text-white/60 mb-4 md:mb-6">Забронируйте свой первый апартамент!</p>
             <Button 
               onClick={() => navigate('/')}
-              className="bg-purple-600 hover:bg-purple-700"
+              className="bg-purple-600 hover:bg-purple-700 w-full md:w-auto"
             >
               <Icon name="Search" size={16} />
               Выбрать апартамент
