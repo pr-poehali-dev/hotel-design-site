@@ -5,12 +5,14 @@ interface AdminDashboardHeaderProps {
   isMobileMenuOpen: boolean;
   onToggleMobileMenu: () => void;
   onLogout: () => void;
+  onClearCache?: () => void;
 }
 
 export default function AdminDashboardHeader({
   isMobileMenuOpen,
   onToggleMobileMenu,
-  onLogout
+  onLogout,
+  onClearCache
 }: AdminDashboardHeaderProps) {
   return (
     <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-lg border-b border-white/10">
@@ -27,6 +29,19 @@ export default function AdminDashboardHeader({
           </div>
           
           <div className="flex items-center gap-2">
+            {onClearCache && (
+              <Button
+                onClick={onClearCache}
+                variant="ghost"
+                size="sm"
+                className="hidden md:flex text-white/70 hover:text-white hover:bg-white/10"
+                title="Очистить кеш и обновить"
+              >
+                <Icon name="RefreshCw" size={18} />
+                <span className="hidden lg:inline ml-2">Обновить</span>
+              </Button>
+            )}
+            
             <Button
               onClick={onToggleMobileMenu}
               variant="ghost"
