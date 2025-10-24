@@ -20,6 +20,8 @@ const InstructionsListPage = React.lazy(() => import("./pages/InstructionsListPa
 
 const AdminLoginPage = React.lazy(() => import("./pages/AdminLoginPage"));
 const AdminDashboardPage = React.lazy(() => import("./pages/AdminDashboardPage"));
+const GuestLoginPage = React.lazy(() => import("./pages/GuestLoginPage"));
+const GuestDashboardPage = React.lazy(() => import("./pages/GuestDashboardPage"));
 const FortuneWheelPage = React.lazy(() => import("./pages/FortuneWheelPage"));
 const MyPromoCodesPage = React.lazy(() => import("./pages/MyPromoCodesPage"));
 const LoyaltyProgram = React.lazy(() => import("./pages/LoyaltyProgram"));
@@ -79,6 +81,8 @@ const App = () => {
 
             <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
+            <Route path="/guest-login" element={<GuestLoginPage />} />
+            <Route path="/guest-dashboard" element={<GuestDashboardPage />} />
             <Route path="/fortune-wheel" element={<FortuneWheelPage />} />
             <Route path="/my-promo-codes" element={<MyPromoCodesPage />} />
             <Route path="/loyalty-program" element={<LoyaltyProgram />} />
