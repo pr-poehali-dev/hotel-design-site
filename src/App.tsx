@@ -17,11 +17,7 @@ const OwnerDashboardPage = React.lazy(() => import("./pages/OwnerDashboardPage")
 const HousekeepingTable = React.lazy(() => import("./pages/HousekeepingTable"));
 const CheckInInstructionsPage = React.lazy(() => import("./pages/CheckInInstructionsPage"));
 const InstructionsListPage = React.lazy(() => import("./pages/InstructionsListPage"));
-const GuestDashboardPage = React.lazy(() => import("./pages/GuestDashboardPage"));
-const GuestLoginPage = React.lazy(() => import("./pages/GuestLoginPage"));
-const GuestRegisterPage = React.lazy(() => import("./pages/GuestRegisterPage"));
-const GuestForgotPasswordPage = React.lazy(() => import("./pages/GuestForgotPasswordPage"));
-const GuestResetPasswordPage = React.lazy(() => import("./pages/GuestResetPasswordPage"));
+
 const BookingsManagementPage = React.lazy(() => import("./pages/BookingsManagementPage"));
 const AdminLoginPage = React.lazy(() => import("./pages/AdminLoginPage"));
 const FortuneWheelPage = React.lazy(() => import("./pages/FortuneWheelPage"));
@@ -38,7 +34,7 @@ const AdminOwnersPage = React.lazy(() => import("./pages/AdminOwnersPage"));
 const HashTestPage = React.lazy(() => import("./pages/HashTestPage"));
 const BookingPage = React.lazy(() => import("./pages/BookingPage"));
 const PushNotificationsPage = React.lazy(() => import("./pages/PushNotificationsPage"));
-const AdminDashboardPage = React.lazy(() => import("./pages/AdminDashboardPage"));
+
 
 const queryClient = new QueryClient();
 
@@ -80,11 +76,7 @@ const App = () => {
             <Route path="/housekeeping" element={<HousekeepingTable />} />
             <Route path="/check-in-instructions" element={<CheckInInstructionsPage />} />
             <Route path="/instructions-list" element={<InstructionsListPage />} />
-            <Route path="/guest-dashboard" element={<GuestDashboardPage />} />
-            <Route path="/guest-login" element={<GuestLoginPage />} />
-            <Route path="/guest-register" element={<GuestRegisterPage />} />
-            <Route path="/guest-forgot-password" element={<GuestForgotPasswordPage />} />
-            <Route path="/guest-reset-password" element={<GuestResetPasswordPage />} />
+
             <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="/bookings" element={<BookingsManagementPage />} />
             <Route path="/fortune-wheel" element={<FortuneWheelPage />} />
@@ -101,8 +93,7 @@ const App = () => {
             <Route path="/hash-test" element={<HashTestPage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/push-notifications" element={<PushNotificationsPage />} />
-            <Route path="/guest-management" element={<AdminDashboardPage />} />
-            <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
