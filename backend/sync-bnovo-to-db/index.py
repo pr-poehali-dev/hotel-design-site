@@ -314,12 +314,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     except Exception as e:
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f'ERROR in sync-bnovo-to-db: {type(e).__name__}: {str(e)}')
+        print(f'Traceback:\n{error_trace}')
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({
                 'success': False,
                 'error': str(e),
-                'error_type': type(e).__name__
+                'error_type': type(e).__name__,
+                'traceback': error_trace
             })
         }
