@@ -49,8 +49,8 @@ const GuestCard = ({ guest, isSelected, onClick }: GuestCardProps) => {
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-gray-900 font-semibold truncate">{guest.name}</h3>
             {guest.is_vip && (
-              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 text-xs">
-                <Icon name="Crown" size={12} className="mr-1" />
+              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 px-3 py-1 text-sm font-bold shadow-lg">
+                <Icon name="Crown" size={16} className="mr-1" />
                 VIP
               </Badge>
             )}

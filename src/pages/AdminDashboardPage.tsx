@@ -315,6 +315,8 @@ const AdminDashboardPage = () => {
                   isSelected={selectedGuest?.id === guest.id}
                   onClick={() => {
                     setSelectedGuest(guest);
+                    setEditingGuest(guest);
+                    setDialogOpen(true);
                     setShowMobileDetails(true);
                   }}
                 />
