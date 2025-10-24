@@ -100,29 +100,6 @@ const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
         </div>
       </Card>
 
-      <Card className="bg-white border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Icon name="Info" size={20} className="text-purple-600" />
-          Контактная информация
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-            <Icon name="Mail" size={18} className="text-gray-600" />
-            <div>
-              <p className="text-xs text-gray-500">Email</p>
-              <p className="text-gray-900">{guest.email}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-            <Icon name="Phone" size={18} className="text-gray-600" />
-            <div>
-              <p className="text-xs text-gray-500">Телефон</p>
-              <p className="text-gray-900">{guest.phone}</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-
       {(guest.login || guest.password) && (
         <Card className="bg-cyan-50 border-cyan-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -151,29 +128,6 @@ const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
           </div>
         </Card>
       )}
-
-      {guest.notes && (
-        <Card className="bg-white border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Icon name="FileText" size={20} className="text-purple-600" />
-            Заметки
-          </h3>
-          <p className="text-gray-700 whitespace-pre-wrap">{guest.notes}</p>
-        </Card>
-      )}
-
-      <Card className="bg-white border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Icon name="Clock" size={20} className="text-purple-600" />
-          Дополнительно
-        </h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-600">Дата регистрации:</span>
-            <span className="text-gray-900 font-medium">{formatDate(guest.created_at)}</span>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 };
