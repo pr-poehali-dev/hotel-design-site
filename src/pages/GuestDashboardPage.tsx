@@ -45,14 +45,9 @@ const GuestDashboardPage = () => {
       const response = await fetch(`https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c`);
       const data = await response.json();
       
-      console.log('All guests from API:', data.guests);
-      console.log('Looking for guestId:', guestId);
-      
       if (data.guests) {
-        const guest = data.guests.find((g: any) => g.id === guestId);
-        console.log('Found guest:', guest);
+        const guest = data.guests.find((g: any) => String(g.id) === String(guestId));
         if (guest) {
-          console.log('Bonus points from guest:', guest.bonus_points);
           setBonusPoints(guest.bonus_points || 0);
           setIsVip(guest.is_vip);
         }
