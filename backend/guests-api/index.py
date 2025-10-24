@@ -90,8 +90,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             phone = body_data.get('phone', '').replace("'", "''")
             is_vip = body_data.get('is_vip', False)
             notes = body_data.get('notes', '').replace("'", "''")
-            login = body_data.get('login', '').replace("'", "''")
-            password = body_data.get('password', '').replace("'", "''")
+            login = body_data.get('login', '')
+            password = body_data.get('password', '')
+            bonus_points = body_data.get('bonus_points', 0)
             
             if not name or not email or not phone:
                 return {
@@ -101,8 +102,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            login_part = f"'{login}'" if login else 'NULL'
-            password_part = f"'{password}'" if password else 'NULL'
+            if login:
+                login_escaped = login.replace("'", "''")
+                login_part = f"'{login_escaped}'"
+            else:
+                login_part = 'NULL'
+            
+            if password:
+                password_escaped = password.replace("'", "''")
+                password_part = f"'{password_escaped}'"
+            else:
+                password_part = 'NULL'
             
             insert_query = f"""
                 INSERT INTO guests (name, email, phone, is_vip, notes, login, password, bonus_points, created_at, updated_at)
@@ -147,12 +157,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             phone = body_data.get('phone', '').replace("'", "''")
             is_vip = body_data.get('is_vip', False)
             notes = body_data.get('notes', '').replace("'", "''")
-            login = body_data.get('login', '').replace("'", "''")
-            password = body_data.get('password', '').replace("'", "''")
+            login = body_data.get('login', '')
+            password = body_data.get('password', '')
             bonus_points = body_data.get('bonus_points', 0)
             
-            login_part = f"login = '{login}'" if login else 'login = NULL'
-            password_part = f"password = '{password}'" if password else 'password = NULL'
+            if login:
+                login_escaped = login.replace("'", "''")
+                login_part = f"login = '{login_escaped}'"
+            else:
+                login_part = 'login = NULL'
+            
+            if password:
+                password_escaped = password.replace("'", "''")
+                password_part = f"password = '{password_escaped}'"
+            else:
+                password_part = 'password = NULL'
             
             update_query = f"""
                 UPDATE guests 
