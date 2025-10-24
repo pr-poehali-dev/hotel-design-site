@@ -129,11 +129,14 @@ const GuestDashboardPage = () => {
                 <div className="flex items-center gap-2 mb-2">
                   <h3 className="text-xl font-bold text-gray-900">VIP статус активен</h3>
                 </div>
-                <p className="text-gray-700 text-sm mb-4 leading-relaxed">
-                  Поздравляем! Вы являетесь VIP гостем премиум апартаментов на Поклонной 9. 
-                  При каждом заселении от 3х ночей Вы получите повышенный комплимент. 
-                  А также Вам будут начислены баллы 1 балл=1 рублю, которые Вы сможете списывать за будущее проживание.
-                </p>
+                <div className="text-gray-700 text-sm mb-4 leading-relaxed">
+                  <p className="mb-3">Поздравляем! Вы являетесь VIP гостем премиум апартаментов на Поклонной 9.</p>
+                  <ol className="list-decimal list-inside space-y-2">
+                    <li>При каждом заселении от 3х ночей Вы получите повышенный комплимент.</li>
+                    <li>Вам будут начисляться баллы, где 1 балл = 1 рублю.</li>
+                  </ol>
+                  <p className="mt-3">Вы сможете списывать баллы за будущее проживание.</p>
+                </div>
                 <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-yellow-200 shadow-sm">
                   <Icon name="Star" size={24} className="text-yellow-600" />
                   <div>
