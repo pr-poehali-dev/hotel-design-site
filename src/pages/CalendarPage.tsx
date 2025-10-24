@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import AdminLogin from '@/components/AdminLogin';
-import BnovoSyncButton from '@/components/admin/BnovoSyncButton';
 import { format, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -116,12 +115,9 @@ export default function CalendarPage() {
                 <p className="text-xs text-gray-400">Календарь бронирований из Бново</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <BnovoSyncButton onSyncComplete={loadCalendars} />
-              <button onClick={handleLogout} className="p-2 hover:bg-charcoal-800 rounded-lg">
-                <Icon name="LogOut" size={20} className="text-gray-400" />
-              </button>
-            </div>
+            <button onClick={handleLogout} className="p-2 hover:bg-charcoal-800 rounded-lg">
+              <Icon name="LogOut" size={20} className="text-gray-400" />
+            </button>
           </div>
         </div>
       </div>
