@@ -71,8 +71,8 @@ const Footer = () => {
                   href="/admin-login" 
                   className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
-                  <Icon name="Settings" size={14} />
-                  Управление гостями
+                  <Icon name="ShieldCheck" size={14} />
+                  Панель управления
                 </a>
                 <a 
                   href="/admin/owners" 
