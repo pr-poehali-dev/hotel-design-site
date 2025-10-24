@@ -78,7 +78,6 @@ const App = () => {
             <Route path="/instructions-list" element={<InstructionsListPage />} />
 
             <Route path="/admin-login" element={<AdminLoginPage />} />
-            <Route path="/bookings" element={<BookingsManagementPage />} />
             <Route path="/fortune-wheel" element={<FortuneWheelPage />} />
             <Route path="/my-promo-codes" element={<MyPromoCodesPage />} />
             <Route path="/loyalty-program" element={<LoyaltyProgram />} />
