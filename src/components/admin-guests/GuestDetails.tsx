@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,12 @@ import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import { Guest } from '@/types/guest';
 import { useToast } from '@/hooks/use-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface GuestDetailsProps {
   guest: Guest;
@@ -19,7 +25,34 @@ const GuestDetails = ({ guest, onEdit, onDelete, onUpdate }: GuestDetailsProps) 
   const { toast } = useToast();
   const [bonusAmount, setBonusAmount] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+  const [showBookingDialog, setShowBookingDialog] = useState(false);
   
+  const loadGuestBookings = async () => {
+    setLoadingBookings(true);
+    try {
+      const response = await fetch(`https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c?guest_id=${guest.id}`);
+      const data = await response.json();
+      setBookings(data.bookings || []);
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить бронирования',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoadingBookings(false);
+    }
+  };
+
+  useEffect(() => {
+    loadGuestBookings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guest.id]);
+
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return 'Нет данных';
     return new Date(dateStr).toLocaleDateString('ru-RU', {
@@ -27,6 +60,11 @@ const GuestDetails = ({ guest, onEdit, onDelete, onUpdate }: GuestDetailsProps) 
       month: 'long',
       year: 'numeric'
     });
+  };
+
+  const handleBookingClick = (booking: any) => {
+    setSelectedBooking(booking);
+    setShowBookingDialog(true);
   };
 
   const handleBonusChange = async (amount: number) => {
@@ -221,6 +259,131 @@ const GuestDetails = ({ guest, onEdit, onDelete, onUpdate }: GuestDetailsProps) 
           </div>
         </Card>
       )}
+
+      <Card className="bg-white border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <Icon name="Calendar" size={20} className="text-gray-600" />
+          История бронирований ({bookings.length})
+        </h3>
+        
+        {loadingBookings ? (
+          <div className="text-center py-8 text-gray-500">Загрузка...</div>
+        ) : bookings.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">Нет бронирований</div>
+        ) : (
+          <div className="space-y-2">
+            {bookings.map((booking) => (
+              <div
+                key={booking.id}
+                onClick={() => handleBookingClick(booking)}
+                className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors border border-gray-200"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-semibold text-gray-900">
+                        {formatDate(booking.check_in)} — {formatDate(booking.check_out)}
+                      </p>
+                      <Badge className="bg-blue-100 text-blue-700 border-blue-300">
+                        {booking.apartment_id}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      {booking.guests_count || 1} {booking.guests_count === 1 ? 'гость' : 'гостей'} · {booking.status === 'confirmed' ? 'Подтверждено' : booking.status}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-gray-900">{booking.total_amount.toLocaleString('ru-RU')} ₽</p>
+                    <p className="text-xs text-gray-500">{booking.source === 'bnovo' ? 'Bnovo' : 'Прямое'}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Детали бронирования</DialogTitle>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs text-gray-500">Заезд</Label>
+                  <p className="font-semibold">{formatDate(selectedBooking.check_in)}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500">Выезд</Label>
+                  <p className="font-semibold">{formatDate(selectedBooking.check_out)}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500">Апартаменты</Label>
+                  <p className="font-semibold">{selectedBooking.apartment_id}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500">Гостей</Label>
+                  <p className="font-semibold">{selectedBooking.guests_count || 1}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500">Статус</Label>
+                  <p className="font-semibold">{selectedBooking.status === 'confirmed' ? 'Подтверждено' : selectedBooking.status}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500">Источник</Label>
+                  <p className="font-semibold">{selectedBooking.source === 'bnovo' ? 'Bnovo' : 'Прямое бронирование'}</p>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-semibold mb-3">Финансы</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Проживание:</span>
+                    <span className="font-semibold">{selectedBooking.accommodation_amount?.toLocaleString('ru-RU')} ₽</span>
+                  </div>
+                  {selectedBooking.early_check_in > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Ранний заезд:</span>
+                      <span className="font-semibold">{selectedBooking.early_check_in?.toLocaleString('ru-RU')} ₽</span>
+                    </div>
+                  )}
+                  {selectedBooking.late_check_out > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Поздний выезд:</span>
+                      <span className="font-semibold">{selectedBooking.late_check_out?.toLocaleString('ru-RU')} ₽</span>
+                    </div>
+                  )}
+                  {selectedBooking.parking > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Парковка:</span>
+                      <span className="font-semibold">{selectedBooking.parking?.toLocaleString('ru-RU')} ₽</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between pt-2 border-t">
+                    <span className="font-semibold">Итого:</span>
+                    <span className="font-bold text-lg">{selectedBooking.total_amount?.toLocaleString('ru-RU')} ₽</span>
+                  </div>
+                </div>
+              </div>
+
+              {selectedBooking.notes && (
+                <div className="border-t pt-4">
+                  <Label className="text-xs text-gray-500">Заметки</Label>
+                  <p className="text-gray-700 mt-1">{selectedBooking.notes}</p>
+                </div>
+              )}
+
+              <div className="border-t pt-4">
+                <Label className="text-xs text-gray-500">ID бронирования</Label>
+                <p className="font-mono text-sm text-gray-600">{selectedBooking.id}</p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
