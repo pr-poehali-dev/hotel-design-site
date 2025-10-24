@@ -168,35 +168,7 @@ const GuestDashboardPage = () => {
           </div>
         )}
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border-purple-500/20 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <Icon name="Gift" size={24} className="text-purple-400" />
-              <h3 className="text-lg font-semibold text-white">Программа лояльности</h3>
-            </div>
-            <p className="text-white/60 text-sm mb-4">Участвуйте в программе лояльности и получайте бонусы</p>
-            <Button
-              onClick={() => navigate('/loyalty-program')}
-              className="w-full bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border-purple-500/30"
-            >
-              Подробнее
-            </Button>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl border-blue-500/20 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <Icon name="MapPin" size={24} className="text-blue-400" />
-              <h3 className="text-lg font-semibold text-white">Локация</h3>
-            </div>
-            <p className="text-white/60 text-sm mb-4">Узнайте больше о расположении наших апартаментов</p>
-            <Button
-              onClick={() => navigate('/location')}
-              className="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border-blue-500/30"
-            >
-              На карте
-            </Button>
-          </Card>
-
+        <div className="mt-12">
           <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border-green-500/20 p-6">
             <div className="flex items-center gap-3 mb-3">
               <Icon name="MessageCircle" size={24} className="text-green-400" />

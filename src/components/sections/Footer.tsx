@@ -28,12 +28,6 @@ const Footer = () => {
                   <Icon name="User" size={14} />
                   Личный кабинет
                 </a>
-                <a 
-                  href="#" 
-                  className="block text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
-                >
-                  Афиша досуга
-                </a>
               </div>
             </div>
 

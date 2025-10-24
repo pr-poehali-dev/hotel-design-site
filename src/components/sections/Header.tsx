@@ -43,6 +43,15 @@ const Header = ({ navigation = [], currentSection = '', onNavigate = () => {} }:
           </a>
           <div className="flex items-center space-x-2 md:space-x-4">
             <Button
+              onClick={() => window.location.href = '/guest-login'}
+              variant="ghost"
+              size="sm"
+              className="text-gold-400 hover:text-gold-300 hover:bg-gold-500/10 flex items-center gap-2 px-3"
+            >
+              <Icon name="User" size={16} />
+              <span className="text-sm font-medium">Личный кабинет</span>
+            </Button>
+            <Button
               onClick={() => setShowAppMenu(true)}
               variant="ghost"
               size="sm"
