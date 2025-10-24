@@ -123,6 +123,35 @@ const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
         </div>
       </Card>
 
+      {(guest.login || guest.password) && (
+        <Card className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 backdrop-blur-xl border-cyan-500/20 p-6">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <Icon name="Key" size={20} className="text-cyan-400" />
+            Данные для входа
+          </h3>
+          <div className="space-y-4">
+            {guest.login && (
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                <Icon name="User" size={18} className="text-white/60" />
+                <div className="flex-1">
+                  <p className="text-xs text-white/50">Логин</p>
+                  <p className="text-white font-mono">{guest.login}</p>
+                </div>
+              </div>
+            )}
+            {guest.password && (
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                <Icon name="Lock" size={18} className="text-white/60" />
+                <div className="flex-1">
+                  <p className="text-xs text-white/50">Пароль</p>
+                  <p className="text-white font-mono">{guest.password}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
+
       {guest.notes && (
         <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">

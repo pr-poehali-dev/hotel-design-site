@@ -20,6 +20,8 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
     name: '',
     email: '',
     phone: '',
+    login: '',
+    password: '',
     is_vip: false,
     notes: ''
   });
@@ -30,6 +32,8 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
         name: guest.name,
         email: guest.email,
         phone: guest.phone,
+        login: guest.login || '',
+        password: guest.password || '',
         is_vip: guest.is_vip,
         notes: guest.notes
       });
@@ -38,6 +42,8 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
         name: '',
         email: '',
         phone: '',
+        login: '',
+        password: '',
         is_vip: false,
         notes: ''
       });
@@ -101,6 +107,35 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
               className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
               placeholder="+7 (999) 123-45-67"
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="login" className="text-white/80">
+                Логин
+              </Label>
+              <Input
+                id="login"
+                value={formData.login}
+                onChange={(e) => setFormData({ ...formData, login: e.target.value })}
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+                placeholder="Логин для входа"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-white/80">
+                Пароль
+              </Label>
+              <Input
+                id="password"
+                type="text"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+                placeholder="Пароль для входа"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">

@@ -3,6 +3,8 @@ export interface Guest {
   name: string;
   email: string;
   phone: string;
+  login?: string;
+  password?: string;
   is_vip: boolean;
   bookings_count: number;
   total_revenue: number;
