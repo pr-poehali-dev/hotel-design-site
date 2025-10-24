@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import AdminLogin from '@/components/AdminLogin';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -32,6 +33,21 @@ interface CalendarDay {
   guest_name?: string;
 }
 
+interface BookingDetails {
+  id: string;
+  apartment_id: string;
+  guest_name: string;
+  guest_email: string;
+  guest_phone: string;
+  check_in: string;
+  check_out: string;
+  guests_count: number;
+  total_amount: number;
+  source: string;
+  status: string;
+  created_at: string;
+}
+
 interface RoomCalendar {
   room_id: string;
   room_name: string;
@@ -47,6 +63,9 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedApartment, setSelectedApartment] = useState<string>('all');
+  const [selectedBooking, setSelectedBooking] = useState<BookingDetails | null>(null);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [loadingBooking, setLoadingBooking] = useState(false);
 
   const loadCalendars = async () => {
     setLoading(true);
@@ -74,6 +93,27 @@ export default function CalendarPage() {
       loadCalendars();
     }
   }, [isAuthenticated, currentMonth]);
+
+  const loadBookingDetails = async (bookingId: string) => {
+    setLoadingBooking(true);
+    setBookingDialogOpen(true);
+    try {
+      const response = await fetch(
+        `https://functions.poehali.dev/42f08a7b-0e59-4277-b467-1ceb942afe5e?booking_id=${bookingId}`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setSelectedBooking(data[0]);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load booking details:', error);
+    } finally {
+      setLoadingBooking(false);
+    }
+  };
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -216,12 +256,17 @@ export default function CalendarPage() {
                             return (
                               <div
                                 key={day.toISOString()}
+                                onClick={() => {
+                                  if (dayData?.booking_id) {
+                                    loadBookingDetails(dayData.booking_id);
+                                  }
+                                }}
                                 className={`
                                   p-2 text-center rounded-lg border transition-all
                                   ${!isCurrentMonth ? 'opacity-30' : ''}
                                   ${isToday ? 'ring-2 ring-gold-500' : ''}
                                   ${dayData?.is_available === false 
-                                    ? 'bg-red-500/20 border-red-500/30' 
+                                    ? 'bg-red-500/20 border-red-500/30 cursor-pointer hover:bg-red-500/30' 
                                     : 'bg-green-500/20 border-green-500/30'
                                   }
                                 `}
@@ -261,7 +306,7 @@ export default function CalendarPage() {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-red-500/20 border border-red-500/30 rounded"></div>
-              <span className="text-sm text-gray-300">Занято</span>
+              <span className="text-sm text-gray-300">Занято (клик для деталей)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 ring-2 ring-gold-500 rounded"></div>
@@ -269,6 +314,126 @@ export default function CalendarPage() {
             </div>
           </div>
         </Card>
+
+        {/* Модальное окно с деталями бронирования */}
+        <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
+          <DialogContent className="max-w-md bg-charcoal-800 border-gold-500/20">
+            <DialogHeader>
+              <DialogTitle className="text-gold-400">Детали бронирования</DialogTitle>
+            </DialogHeader>
+            
+            {loadingBooking ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-12 h-12 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : selectedBooking ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">ID бронирования</p>
+                    <p className="text-sm text-white font-mono break-all">{selectedBooking.id}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">Источник</p>
+                    <p className="text-sm text-white">
+                      {selectedBooking.source === 'bnovo' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500/20 border border-blue-500/30 rounded">
+                          <Icon name="Database" size={14} />
+                          Bnovo
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 border border-green-500/30 rounded">
+                          <Icon name="Globe" size={14} />
+                          Сайт
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-700 pt-4">
+                  <p className="text-xs text-gray-400 mb-2">Гость</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Icon name="User" size={16} className="text-gold-400" />
+                      <span className="text-white">{selectedBooking.guest_name || 'Не указано'}</span>
+                    </div>
+                    {selectedBooking.guest_email && (
+                      <div className="flex items-center gap-2">
+                        <Icon name="Mail" size={16} className="text-gold-400" />
+                        <a href={`mailto:${selectedBooking.guest_email}`} className="text-blue-400 hover:underline">
+                          {selectedBooking.guest_email}
+                        </a>
+                      </div>
+                    )}
+                    {selectedBooking.guest_phone && (
+                      <div className="flex items-center gap-2">
+                        <Icon name="Phone" size={16} className="text-gold-400" />
+                        <a href={`tel:${selectedBooking.guest_phone}`} className="text-blue-400 hover:underline">
+                          {selectedBooking.guest_phone}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-700 pt-4">
+                  <p className="text-xs text-gray-400 mb-2">Даты проживания</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Icon name="CalendarArrowDown" fallback="CalendarCheck" size={16} className="text-green-400" />
+                      <span className="text-white">
+                        Заезд: {format(new Date(selectedBooking.check_in), 'dd MMMM yyyy', { locale: ru })}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="CalendarArrowUp" fallback="CalendarX" size={16} className="text-red-400" />
+                      <span className="text-white">
+                        Выезд: {format(new Date(selectedBooking.check_out), 'dd MMMM yyyy', { locale: ru })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-700 pt-4 grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">Гостей</p>
+                    <p className="text-white font-semibold">{selectedBooking.guests_count || 'Не указано'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">Сумма</p>
+                    <p className="text-gold-400 font-bold text-lg">
+                      {selectedBooking.total_amount ? `${selectedBooking.total_amount.toLocaleString('ru-RU')} ₽` : 'Не указано'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-700 pt-4">
+                  <p className="text-xs text-gray-400 mb-1">Статус</p>
+                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
+                    selectedBooking.status === 'confirmed' 
+                      ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                      : selectedBooking.status === 'pending'
+                      ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                      : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
+                  }`}>
+                    {selectedBooking.status === 'confirmed' ? 'Подтверждено' : 
+                     selectedBooking.status === 'pending' ? 'Ожидает' : 
+                     selectedBooking.status}
+                  </span>
+                </div>
+
+                <div className="text-xs text-gray-500 pt-2">
+                  Создано: {format(new Date(selectedBooking.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                Не удалось загрузить данные
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
