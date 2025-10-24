@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import FortuneWheelBonus from '@/components/games/FortuneWheelBonus';
+import ScratchCards from '@/components/games/ScratchCards';
 
 interface Booking {
   id: string;
@@ -18,26 +20,29 @@ const GuestDashboardPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [guestName, setGuestName] = useState('');
+  const [guestId, setGuestId] = useState('');
   const [isVip, setIsVip] = useState(false);
   const [bonusPoints, setBonusPoints] = useState(0);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [completedBookings, setCompletedBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const authenticated = localStorage.getItem('guestAuthenticated');
     const name = localStorage.getItem('guestName');
-    const guestId = localStorage.getItem('guestId');
+    const id = localStorage.getItem('guestId');
     const vip = localStorage.getItem('guestIsVip') === 'true';
 
-    if (!authenticated || !guestId) {
+    if (!authenticated || !id) {
       navigate('/guest-login');
       return;
     }
 
     setGuestName(name || 'Гость');
+    setGuestId(id);
     setIsVip(vip);
-    loadGuestData(guestId);
-    loadBookings(guestId);
+    loadGuestData(id);
+    loadBookings(id);
   }, [navigate]);
 
   const loadGuestData = async (guestId: string) => {
@@ -63,7 +68,14 @@ const GuestDashboardPage = () => {
       const data = await response.json();
       
       if (data.bookings) {
+        const now = new Date();
+        const completed = data.bookings.filter((b: Booking) => {
+          const checkOut = new Date(b.check_out);
+          return checkOut < now && b.status === 'completed';
+        });
+        
         setBookings(data.bookings);
+        setCompletedBookings(completed);
       }
     } catch (error) {
       console.error('Error loading bookings:', error);
@@ -75,6 +87,10 @@ const GuestDashboardPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handlePointsUpdate = (newPoints: number) => {
+    setBonusPoints(newPoints);
   };
 
   const handleLogout = () => {
@@ -148,6 +164,18 @@ const GuestDashboardPage = () => {
             </div>
           </Card>
         )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <FortuneWheelBonus guestId={guestId} onPointsUpdate={handlePointsUpdate} />
+          
+          {completedBookings.length > 0 && (
+            <ScratchCards
+              guestId={guestId}
+              bookingId={completedBookings[0].id}
+              onPointsUpdate={handlePointsUpdate}
+            />
+          )}
+        </div>
 
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">Мои бронирования</h2>

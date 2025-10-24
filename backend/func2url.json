@@ -1,4 +1,6 @@
 {
+  "fortune-wheel-bonus": "https://functions.poehali.dev/76a63047-54d9-43c8-ab3d-9b36904f1fb3",
+  "scratch-cards": "https://functions.poehali.dev/89112d1f-1a35-49dd-98b0-9579b4ac652d",
   "guest-auth": "https://functions.poehali.dev/c69650aa-9810-4925-a291-4c97eb656645",
   "guests-api": "https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c",
   "send-booking-confirmation": "https://functions.poehali.dev/247fe753-02a4-4d5a-b9b2-b2182701293b",

@@ -1,0 +1,12 @@
+{
+  "tests": [{
+    "name": "Check spin availability",
+    "method": "GET",
+    "path": "/?guest_id=test-guest-123",
+    "expectedStatus": 200,
+    "expectedBody": {
+      "can_spin": "boolean"
+    },
+    "bodyMatcher": "partial"
+  }]
+}
