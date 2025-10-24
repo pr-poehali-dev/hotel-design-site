@@ -349,6 +349,10 @@ const AdminDashboardPage = () => {
                   setDialogOpen(true);
                 }}
                 onDelete={() => handleDeleteGuest(selectedGuest)}
+                onUpdate={(updatedGuest) => {
+                  setGuests(guests.map(g => g.id === updatedGuest.id ? updatedGuest : g));
+                  setSelectedGuest(updatedGuest);
+                }}
               />
             ) : (
               <div className="flex items-center justify-center h-96">

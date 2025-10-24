@@ -1,16 +1,25 @@
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import { Guest } from '@/types/guest';
+import { useToast } from '@/hooks/use-toast';
 
 interface GuestDetailsProps {
   guest: Guest;
   onEdit: () => void;
   onDelete: () => void;
+  onUpdate?: (updatedGuest: Guest) => void;
 }
 
-const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
+const GuestDetails = ({ guest, onEdit, onDelete, onUpdate }: GuestDetailsProps) => {
+  const { toast } = useToast();
+  const [bonusAmount, setBonusAmount] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return 'Нет данных';
     return new Date(dateStr).toLocaleDateString('ru-RU', {
@@ -18,6 +27,56 @@ const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
       month: 'long',
       year: 'numeric'
     });
+  };
+
+  const handleBonusChange = async (amount: number) => {
+    if (amount === 0) return;
+    
+    setIsProcessing(true);
+    const newBonusPoints = Math.max(0, (guest.bonus_points || 0) + amount);
+    
+    try {
+      const response = await fetch('https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: guest.id,
+          name: guest.name,
+          email: guest.email,
+          phone: guest.phone,
+          is_vip: guest.is_vip,
+          notes: guest.notes,
+          login: guest.login || '',
+          password: guest.password || '',
+          bonus_points: newBonusPoints
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.guest) {
+        toast({
+          title: amount > 0 ? 'Баллы начислены' : 'Баллы списаны',
+          description: `${Math.abs(amount)} баллов ${amount > 0 ? 'начислено' : 'списано'}`,
+        });
+        
+        if (onUpdate) {
+          onUpdate(data.guest);
+        }
+        
+        setBonusAmount('');
+      } else {
+        throw new Error(data.error || 'Ошибка обновления баллов');
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка',
+        description: 'Не удалось обновить баллы',
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -88,12 +147,48 @@ const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
             <Icon name="Star" size={20} className="text-yellow-600" />
             Бонусные баллы
           </h3>
-          <div className="flex items-center gap-3 p-4 rounded-lg bg-white">
+          <div className="flex items-center gap-3 p-4 rounded-lg bg-white mb-4">
             <Icon name="Award" size={24} className="text-yellow-600" />
             <div>
               <p className="text-xs text-gray-500">Доступно для списания</p>
               <p className="text-3xl font-bold text-gray-900">{(guest.bonus_points || 0).toLocaleString('ru-RU')} ₽</p>
             </div>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs text-gray-600">Начислить/списать баллы</Label>
+                <Input
+                  type="number"
+                  placeholder="100"
+                  value={bonusAmount}
+                  onChange={(e) => setBonusAmount(e.target.value)}
+                  className="bg-white border-gray-300 text-gray-900 mt-1"
+                />
+              </div>
+              <div className="flex items-end gap-2">
+                <Button
+                  onClick={() => handleBonusChange(parseInt(bonusAmount) || 0)}
+                  disabled={!bonusAmount || isProcessing}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                  size="sm"
+                >
+                  <Icon name="Plus" size={16} className="mr-1" />
+                  Начислить
+                </Button>
+                <Button
+                  onClick={() => handleBonusChange(-(parseInt(bonusAmount) || 0))}
+                  disabled={!bonusAmount || isProcessing || (guest.bonus_points || 0) === 0}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                  size="sm"
+                >
+                  <Icon name="Minus" size={16} className="mr-1" />
+                  Списать
+                </Button>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500">Укажите количество баллов для начисления или списания</p>
           </div>
         </Card>
       )}
