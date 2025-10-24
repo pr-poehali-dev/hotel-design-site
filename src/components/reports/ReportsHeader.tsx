@@ -19,6 +19,7 @@ interface ReportsHeaderProps {
   loading: boolean;
   onShowAllToOwner: () => void;
   onArchiveMonth: () => void;
+  onSyncBnovo: () => void;
   onLogout: () => void;
 }
 
@@ -32,6 +33,7 @@ const ReportsHeader = ({
   loading,
   onShowAllToOwner,
   onArchiveMonth,
+  onSyncBnovo,
   onLogout
 }: ReportsHeaderProps) => {
   const navigate = useNavigate();
@@ -91,6 +93,14 @@ const ReportsHeader = ({
             </select>
             {selectedMonth === 'current' && (
               <>
+                <FizzyButton
+                  onClick={onSyncBnovo}
+                  variant="secondary"
+                  icon={<Icon name="RefreshCw" size={18} />}
+                  disabled={loading}
+                >
+                  Синхронизация Bnovo
+                </FizzyButton>
                 <FizzyButton
                   onClick={onShowAllToOwner}
                   variant="secondary"

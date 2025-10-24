@@ -191,12 +191,41 @@ Premium Apartments`;
     }
   };
 
+  const handleSyncBnovo = async () => {
+    if (!confirm('Синхронизировать данные из Bnovo?\n\nЭто обновит бронирования и создаст учетные записи для гостей.')) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/2faa4887-dddc-4f5a-8a48-3073dd398dbd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        alert(`✅ Синхронизация завершена!\n\nБронирований: ${data.synced_bookings}\nГостей создано: ${data.created_guests}\nКалендарь обновлён: ${data.updated_calendar} записей`);
+        await loadBookings();
+      } else {
+        alert(`❌ Ошибка синхронизации: ${data.error || 'Неизвестная ошибка'}`);
+      }
+    } catch (error) {
+      console.error('Failed to sync with Bnovo:', error);
+      alert('❌ Ошибка при синхронизации с Bnovo');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     handleSaveBooking,
     handleDeleteBooking,
     handleMarkAsPaid,
     handleArchiveMonth,
     handleSendReport,
-    handleShowAllToOwner
+    handleShowAllToOwner,
+    handleSyncBnovo
   };
 };

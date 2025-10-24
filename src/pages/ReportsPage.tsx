@@ -37,7 +37,8 @@ const ReportsPage = () => {
     handleMarkAsPaid,
     handleArchiveMonth,
     handleSendReport,
-    handleShowAllToOwner
+    handleShowAllToOwner,
+    handleSyncBnovo
   } = useReportsActions({
     selectedApartment,
     bookings,
@@ -89,6 +90,7 @@ const ReportsPage = () => {
         loading={loading}
         onShowAllToOwner={handleShowAllToOwner}
         onArchiveMonth={handleArchiveMonth}
+        onSyncBnovo={handleSyncBnovo}
         onLogout={handleLogout}
       />
 
