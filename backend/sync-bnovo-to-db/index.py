@@ -13,33 +13,45 @@ def generate_password(length: int = 8) -> str:
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
+def clean_string(s: str) -> str:
+    import re
+    return re.sub(r'[^0-9a-zA-Z@._]', '', s)
+
 def create_or_get_guest(cur, guest_name: str, guest_email: str, guest_phone: str) -> Tuple[str, str, str]:
     if not guest_email and not guest_phone:
         return '', '', ''
     
-    search_field = guest_email if guest_email else guest_phone
-    search_column = 'email' if guest_email else 'phone'
+    clean_phone = clean_string(guest_phone) if guest_phone else ''
     
-    query = f"SELECT id, email, phone, password FROM t_p9202093_hotel_design_site.guests WHERE {search_column} = '{search_field}'"
+    query = f"""
+        SELECT id, login, email, phone, password, notes 
+        FROM t_p9202093_hotel_design_site.guests 
+        WHERE regexp_replace(phone, '[^0-9]', '', 'g') = '{clean_phone}'
+        AND (notes IS NULL OR notes NOT LIKE '%[ДУБЛИКАТ]%')
+        LIMIT 1
+    """
     cur.execute(query)
     existing_guest = cur.fetchone()
     
     if existing_guest:
         guest_id = existing_guest['id']
-        login = existing_guest['email'] if existing_guest['email'] else existing_guest['phone']
+        login = existing_guest['login'] if existing_guest.get('login') else (existing_guest['email'] if existing_guest['email'] else existing_guest['phone'])
         password = existing_guest.get('password') if existing_guest.get('password') else ''
         print(f'Found existing guest: {guest_id}, login: {login}')
         return guest_id, login, password
     
     guest_id = str(uuid.uuid4())
     password = generate_password()
-    login = guest_email if guest_email else guest_phone
+    
+    email_for_db = guest_email if guest_email and '@' in guest_email else clean_phone
+    login = clean_string(guest_email if guest_email and '@' in guest_email else guest_phone)
     
     guest_name_escaped = guest_name.replace("'", "''")
-    guest_email_escaped = guest_email.replace("'", "''")
-    guest_phone_escaped = guest_phone.replace("'", "''")
+    email_escaped = email_for_db.replace("'", "''")
+    phone_escaped = guest_phone.replace("'", "''")
+    login_escaped = login.replace("'", "''")
     
-    insert_query = f"INSERT INTO t_p9202093_hotel_design_site.guests (id, name, email, phone, password, bonus_points, is_vip) VALUES ('{guest_id}', '{guest_name_escaped}', '{guest_email_escaped}', '{guest_phone_escaped}', '{password}', 0, false)"
+    insert_query = f"INSERT INTO t_p9202093_hotel_design_site.guests (id, name, email, phone, login, password, bonus_points, is_vip) VALUES ('{guest_id}', '{guest_name_escaped}', '{email_escaped}', '{phone_escaped}', '{login_escaped}', '{password}', 0, false)"
     cur.execute(insert_query)
     
     print(f'Created new guest: {guest_id}, login: {login}, password: {password}')
