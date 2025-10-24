@@ -12,6 +12,7 @@ export interface Guest {
   notes: string;
   created_at: string;
   avatar_color?: string;
+  bonus_points?: number;
 }
 
 export interface GuestStats {

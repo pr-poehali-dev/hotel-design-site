@@ -23,7 +23,8 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
     login: '',
     password: '',
     is_vip: false,
-    notes: ''
+    notes: '',
+    bonus_points: 0
   });
 
   useEffect(() => {
@@ -35,7 +36,8 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
         login: guest.login || '',
         password: guest.password || '',
         is_vip: guest.is_vip,
-        notes: guest.notes
+        notes: guest.notes,
+        bonus_points: guest.bonus_points || 0
       });
     } else {
       setFormData({
@@ -45,7 +47,8 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
         login: '',
         password: '',
         is_vip: false,
-        notes: ''
+        notes: '',
+        bonus_points: 0
       });
     }
   }, [guest, open]);
@@ -151,18 +154,38 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-            <div className="flex items-center gap-2">
-              <Icon name="Crown" size={20} className="text-yellow-600" />
-              <Label htmlFor="is_vip" className="text-gray-900 font-semibold cursor-pointer">
-                VIP статус
-              </Label>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+              <div className="flex items-center gap-2">
+                <Icon name="Crown" size={20} className="text-yellow-600" />
+                <Label htmlFor="is_vip" className="text-gray-900 font-semibold cursor-pointer">
+                  VIP статус
+                </Label>
+              </div>
+              <Switch
+                id="is_vip"
+                checked={formData.is_vip}
+                onCheckedChange={(checked) => setFormData({ ...formData, is_vip: checked })}
+              />
             </div>
-            <Switch
-              id="is_vip"
-              checked={formData.is_vip}
-              onCheckedChange={(checked) => setFormData({ ...formData, is_vip: checked })}
-            />
+
+            {formData.is_vip && (
+              <div className="space-y-2">
+                <Label htmlFor="bonus_points" className="text-gray-700 flex items-center gap-2">
+                  <Icon name="Star" size={16} className="text-yellow-600" />
+                  Бонусные баллы (1 балл = 1 рубль)
+                </Label>
+                <Input
+                  id="bonus_points"
+                  type="number"
+                  min="0"
+                  value={formData.bonus_points}
+                  onChange={(e) => setFormData({ ...formData, bonus_points: parseInt(e.target.value) || 0 })}
+                  className="bg-white border-gray-300 text-gray-900"
+                  placeholder="0"
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex gap-3 pt-4">

@@ -105,8 +105,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             password_part = f"'{password}'" if password else 'NULL'
             
             insert_query = f"""
-                INSERT INTO guests (name, email, phone, is_vip, notes, login, password, created_at, updated_at)
-                VALUES ('{name}', '{email}', '{phone}', {is_vip}, '{notes}', {login_part}, {password_part}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                INSERT INTO guests (name, email, phone, is_vip, notes, login, password, bonus_points, created_at, updated_at)
+                VALUES ('{name}', '{email}', '{phone}', {is_vip}, '{notes}', {login_part}, {password_part}, {bonus_points}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 RETURNING *
             """
             
@@ -149,6 +149,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             notes = body_data.get('notes', '').replace("'", "''")
             login = body_data.get('login', '').replace("'", "''")
             password = body_data.get('password', '').replace("'", "''")
+            bonus_points = body_data.get('bonus_points', 0)
             
             login_part = f"login = '{login}'" if login else 'login = NULL'
             password_part = f"password = '{password}'" if password else 'password = NULL'
@@ -162,6 +163,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     notes = '{notes}',
                     {login_part},
                     {password_part},
+                    bonus_points = {bonus_points},
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = {guest_id}
                 RETURNING *

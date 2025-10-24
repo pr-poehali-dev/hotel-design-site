@@ -18,6 +18,8 @@ const GuestDashboardPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [guestName, setGuestName] = useState('');
+  const [isVip, setIsVip] = useState(false);
+  const [bonusPoints, setBonusPoints] = useState(0);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,6 +27,7 @@ const GuestDashboardPage = () => {
     const authenticated = localStorage.getItem('guestAuthenticated');
     const name = localStorage.getItem('guestName');
     const guestId = localStorage.getItem('guestId');
+    const vip = localStorage.getItem('guestIsVip') === 'true';
 
     if (!authenticated || !guestId) {
       navigate('/guest-login');
@@ -32,8 +35,27 @@ const GuestDashboardPage = () => {
     }
 
     setGuestName(name || 'Гость');
+    setIsVip(vip);
+    loadGuestData(guestId);
     loadBookings(guestId);
   }, [navigate]);
+
+  const loadGuestData = async (guestId: string) => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c`);
+      const data = await response.json();
+      
+      if (data.guests) {
+        const guest = data.guests.find((g: any) => g.id === guestId);
+        if (guest) {
+          setBonusPoints(guest.bonus_points || 0);
+          setIsVip(guest.is_vip);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading guest data:', error);
+    }
+  };
 
   const loadBookings = async (guestId: string) => {
     try {
@@ -97,6 +119,33 @@ const GuestDashboardPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {isVip && (
+          <Card className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-xl border-yellow-500/20 p-6 mb-8">
+            <div className="flex items-start gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Icon name="Crown" size={32} className="text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-xl font-bold text-white">VIP статус активен</h3>
+                </div>
+                <p className="text-white/80 text-sm mb-4 leading-relaxed">
+                  Поздравляем! Вы являетесь VIP гостем премиум апартаментов на Поклонной 9. 
+                  При каждом заселении от 3х ночей Вы получите повышенный комплимент. 
+                  А также Вам будут начислены баллы 1 балл=1 рублю, которые Вы сможете списывать за будущее проживание.
+                </p>
+                <div className="flex items-center gap-3 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
+                  <Icon name="Star" size={24} className="text-yellow-400" />
+                  <div>
+                    <p className="text-white/60 text-xs">Ваши бонусные баллы</p>
+                    <p className="text-2xl font-bold text-white">{bonusPoints.toLocaleString('ru-RU')} ₽</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">Мои бронирования</h2>
           <p className="text-white/60">Здесь вы можете увидеть все ваши бронирования</p>

@@ -82,6 +82,22 @@ const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
         </div>
       </Card>
 
+      {guest.is_vip && (
+        <Card className="bg-yellow-50 border-yellow-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Icon name="Star" size={20} className="text-yellow-600" />
+            Бонусные баллы
+          </h3>
+          <div className="flex items-center gap-3 p-4 rounded-lg bg-white">
+            <Icon name="Award" size={24} className="text-yellow-600" />
+            <div>
+              <p className="text-xs text-gray-500">Доступно для списания</p>
+              <p className="text-3xl font-bold text-gray-900">{(guest.bonus_points || 0).toLocaleString('ru-RU')} ₽</p>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {(guest.login || guest.password) && (
         <Card className="bg-cyan-50 border-cyan-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
