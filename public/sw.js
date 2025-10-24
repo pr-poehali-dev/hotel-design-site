@@ -1,4 +1,4 @@
-const CACHE_NAME = 'p9-apartments-v5';
+const CACHE_NAME = 'p9-apartments-v6';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -31,11 +31,13 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
+  // Игнорируем админские страницы полностью
   if (url.pathname.includes('/guest') || url.pathname.includes('/admin') || url.pathname.includes('/bookings')) {
-    event.respondWith(
-      fetch(event.request, { cache: 'no-store' })
-        .catch(() => caches.match(event.request))
-    );
+    return;
+  }
+  
+  // Игнорируем внешние запросы
+  if (url.origin !== self.location.origin) {
     return;
   }
   
@@ -53,7 +55,10 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => {
-        return caches.match(event.request);
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+        });
       })
   );
 });
