@@ -1,4 +1,4 @@
-const CACHE_NAME = 'p9-apartments-v3';
+const CACHE_NAME = 'p9-apartments-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -31,8 +31,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
-  if (url.pathname.startsWith('/guest-management') || url.pathname.startsWith('/admin-dashboard')) {
-    event.respondWith(fetch(event.request));
+  if (url.pathname.includes('/guest') || url.pathname.includes('/admin') || url.pathname.includes('/bookings')) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .catch(() => caches.match(event.request))
+    );
     return;
   }
   
