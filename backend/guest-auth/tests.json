@@ -1,0 +1,36 @@
+{
+  "tests": [
+    {
+      "name": "Test successful login",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "login": "testuser",
+        "password": "testpass"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "guest": {
+          "id": "string",
+          "name": "string"
+        }
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test missing credentials",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "login": "",
+        "password": ""
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "success": false
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

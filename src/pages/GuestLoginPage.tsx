@@ -19,10 +19,10 @@ const GuestLoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c', {
+      const response = await fetch('https://functions.poehali.dev/c69650aa-9810-4925-a291-4c97eb656645', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'login', login, password })
+        body: JSON.stringify({ login, password })
       });
 
       const data = await response.json();
@@ -31,6 +31,9 @@ const GuestLoginPage = () => {
         localStorage.setItem('guestAuthenticated', 'true');
         localStorage.setItem('guestId', data.guest.id);
         localStorage.setItem('guestName', data.guest.name);
+        localStorage.setItem('guestEmail', data.guest.email);
+        localStorage.setItem('guestPhone', data.guest.phone);
+        localStorage.setItem('guestIsVip', data.guest.is_vip);
         
         toast({
           title: 'Успешный вход',

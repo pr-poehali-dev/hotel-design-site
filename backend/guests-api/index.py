@@ -90,6 +90,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             phone = body_data.get('phone', '').replace("'", "''")
             is_vip = body_data.get('is_vip', False)
             notes = body_data.get('notes', '').replace("'", "''")
+            login = body_data.get('login', '').replace("'", "''")
+            password = body_data.get('password', '').replace("'", "''")
             
             if not name or not email or not phone:
                 return {
@@ -99,9 +101,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
+            login_part = f"'{login}'" if login else 'NULL'
+            password_part = f"'{password}'" if password else 'NULL'
+            
             insert_query = f"""
-                INSERT INTO guests (name, email, phone, is_vip, notes, created_at, updated_at)
-                VALUES ('{name}', '{email}', '{phone}', {is_vip}, '{notes}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                INSERT INTO guests (name, email, phone, is_vip, notes, login, password, created_at, updated_at)
+                VALUES ('{name}', '{email}', '{phone}', {is_vip}, '{notes}', {login_part}, {password_part}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 RETURNING *
             """
             
@@ -142,6 +147,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             phone = body_data.get('phone', '').replace("'", "''")
             is_vip = body_data.get('is_vip', False)
             notes = body_data.get('notes', '').replace("'", "''")
+            login = body_data.get('login', '').replace("'", "''")
+            password = body_data.get('password', '').replace("'", "''")
+            
+            login_part = f"login = '{login}'" if login else 'login = NULL'
+            password_part = f"password = '{password}'" if password else 'password = NULL'
             
             update_query = f"""
                 UPDATE guests 
@@ -150,6 +160,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     phone = '{phone}', 
                     is_vip = {is_vip}, 
                     notes = '{notes}',
+                    {login_part},
+                    {password_part},
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = {guest_id}
                 RETURNING *
