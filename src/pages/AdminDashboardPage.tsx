@@ -92,6 +92,41 @@ const AdminDashboardPage = () => {
     });
   };
 
+  const handleSyncBnovo = async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/2faa4887-dddc-4f5a-8a48-3073dd398dbd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        toast({
+          title: 'Синхронизация завершена',
+          description: `Бронирований: ${data.synced_bookings}, Гостей: ${data.created_guests}`
+        });
+        await loadGuests();
+      } else {
+        toast({
+          title: 'Ошибка синхронизации',
+          description: data.error || 'Неизвестная ошибка',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('Failed to sync with Bnovo:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось синхронизировать с Bnovo',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const handleSaveGuest = async (guestData: Partial<Guest>) => {
     try {
       if (editingGuest) {
@@ -200,6 +235,15 @@ const AdminDashboardPage = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                onClick={handleSyncBnovo}
+                disabled={isRefreshing}
+                className="bg-blue-500 hover:bg-blue-600 text-white hidden md:flex"
+                size="sm"
+              >
+                <Icon name="RefreshCw" size={16} className={isRefreshing ? 'animate-spin' : ''} />
+                <span className="ml-2">Синхронизация Bnovo</span>
+              </Button>
               <Button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
