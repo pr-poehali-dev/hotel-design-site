@@ -74,7 +74,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Получаем данные для подключения
         database_url = os.environ.get('DATABASE_URL', '')
         account_id = os.environ.get('BNOVO_ACCOUNT_ID', '')
-        password = os.environ.get('BNOVO_PASSWORD', '')
+        bnovo_password = os.environ.get('BNOVO_PASSWORD', '')
+        
+        print(f'Starting sync: database_url={bool(database_url)}, account_id={bool(account_id)}, password={bool(bnovo_password)}')
         
         if not database_url:
             return {
@@ -83,11 +85,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'DATABASE_URL not configured'})
             }
         
+        if not account_id or not bnovo_password:
+            return {
+                'statusCode': 500,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'BNOVO credentials not configured'})
+            }
+        
         # Авторизация в Bnovo
         auth_url = 'https://api.pms.bnovo.ru/api/v1/auth'
         auth_payload = {
             'id': int(account_id),
-            'password': password
+            'password': bnovo_password
         }
         
         auth_request = urllib.request.Request(
