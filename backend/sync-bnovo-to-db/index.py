@@ -1,10 +1,43 @@
 import json
 import os
-from typing import Dict, Any
+import uuid
+import secrets
+import string
+from typing import Dict, Any, Tuple
 import urllib.request
 import urllib.parse
 import urllib.error
 from datetime import datetime, timedelta
+
+def generate_password(length: int = 8) -> str:
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def create_or_get_guest(cur, guest_name: str, guest_email: str, guest_phone: str) -> Tuple[str, str, str]:
+    if not guest_email and not guest_phone:
+        return '', '', ''
+    
+    search_field = guest_email if guest_email else guest_phone
+    search_column = 'email' if guest_email else 'phone'
+    
+    query = f"SELECT id, email, phone, password FROM t_p9202093_hotel_design_site.guests WHERE {search_column} = '{search_field}'"
+    cur.execute(query)
+    existing_guest = cur.fetchone()
+    
+    if existing_guest:
+        guest_id = existing_guest['id']
+        login = existing_guest['email'] if existing_guest['email'] else existing_guest['phone']
+        password = existing_guest['password'] if existing_guest.get('password') else ''
+        return guest_id, login, password
+    
+    guest_id = str(uuid.uuid4())
+    password = generate_password()
+    login = guest_email if guest_email else guest_phone
+    
+    insert_query = f"INSERT INTO t_p9202093_hotel_design_site.guests (id, name, email, phone, password, bonus_points, is_vip) VALUES ('{guest_id}', '{guest_name}', '{guest_email}', '{guest_phone}', '{password}', 0, false)"
+    cur.execute(insert_query)
+    
+    return guest_id, login, password
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -144,6 +177,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         synced_bookings = 0
         synced_rooms = 0
         updated_calendar = 0
+        created_guests = 0
         
         # Получаем все существующие bnovo_id за один запрос
         cur.execute(
@@ -180,6 +214,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 guest_name = str(guest_data) if guest_data else ''
                 guest_email = ''
                 guest_phone = ''
+            
+            # Создаём или получаем гостя
+            if guest_name and (guest_email or guest_phone):
+                try:
+                    guest_id, guest_login, guest_password = create_or_get_guest(cur, guest_name, guest_email, guest_phone)
+                    if guest_id:
+                        created_guests += 1
+                except Exception as e:
+                    print(f'Failed to create guest: {str(e)}')
             
             booking_id = f"bnovo_{bnovo_booking_id}"
             
@@ -231,6 +274,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'synced_bookings': synced_bookings,
                 'synced_rooms': synced_rooms,
                 'updated_calendar': updated_calendar,
+                'created_guests': created_guests,
                 'total_bookings_from_bnovo': len(bookings_list)
             }, ensure_ascii=False)
         }
