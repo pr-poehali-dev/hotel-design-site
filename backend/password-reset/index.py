@@ -148,12 +148,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         body_data = json.loads(event.get('body', '{}'))
-        action = body_data.get('action')
+        action = body_data.get('action', 'request_reset')
         
         conn = get_db_connection()
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         
-        if action == 'request_reset':
+        user_type = body_data.get('user_type', 'owner')
+        
+        if action == 'request_reset' or body_data.get('email'):
             email = body_data.get('email', '').lower().strip()
             
             if not email:
@@ -166,10 +168,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'Email обязателен'})
                 }
             
-            cursor.execute(
-                "SELECT id FROM t_p9202093_hotel_design_site.guest_users WHERE email = %s",
-                (email,)
-            )
+            if user_type == 'guest':
+                cursor.execute(
+                    "SELECT id FROM t_p9202093_hotel_design_site.guests WHERE email = %s",
+                    (email,)
+                )
+            else:
+                cursor.execute(
+                    "SELECT id FROM t_p9202093_hotel_design_site.guest_users WHERE email = %s",
+                    (email,)
+                )
             user = cursor.fetchone()
             
             if not user:
@@ -190,14 +198,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             token = generate_token()
             expires_at = datetime.now() + timedelta(hours=1)
             
-            cursor.execute(
-                """
-                INSERT INTO t_p9202093_hotel_design_site.password_reset_tokens 
-                (guest_user_id, token, expires_at) 
-                VALUES (%s, %s, %s)
-                """,
-                (user['id'], token, expires_at)
-            )
+            if user_type == 'guest':
+                cursor.execute(
+                    """
+                    INSERT INTO t_p9202093_hotel_design_site.password_reset_tokens 
+                    (guest_id, token, expires_at) 
+                    VALUES (%s, %s, %s)
+                    """,
+                    (user['id'], token, expires_at)
+                )
+            else:
+                cursor.execute(
+                    """
+                    INSERT INTO t_p9202093_hotel_design_site.password_reset_tokens 
+                    (guest_user_id, token, expires_at) 
+                    VALUES (%s, %s, %s)
+                    """,
+                    (user['id'], token, expires_at)
+                )
             conn.commit()
             
             try:
@@ -255,7 +273,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             cursor.execute(
                 """
-                SELECT guest_user_id, expires_at, used 
+                SELECT guest_user_id, guest_id, expires_at, used 
                 FROM t_p9202093_hotel_design_site.password_reset_tokens 
                 WHERE token = %s
                 """,
@@ -299,16 +317,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'Токен истёк. Запросите новый'})
                 }
             
-            password_hash = hash_password(new_password)
-            
-            cursor.execute(
-                """
-                UPDATE t_p9202093_hotel_design_site.guest_users 
-                SET password_hash = %s, updated_at = CURRENT_TIMESTAMP 
-                WHERE id = %s
-                """,
-                (password_hash, reset_token['guest_user_id'])
-            )
+            if reset_token.get('guest_id'):
+                cursor.execute(
+                    """
+                    UPDATE t_p9202093_hotel_design_site.guests 
+                    SET password = %s
+                    WHERE id = %s
+                    """,
+                    (new_password, reset_token['guest_id'])
+                )
+            else:
+                password_hash = hash_password(new_password)
+                cursor.execute(
+                    """
+                    UPDATE t_p9202093_hotel_design_site.guest_users 
+                    SET password_hash = %s, updated_at = CURRENT_TIMESTAMP 
+                    WHERE id = %s
+                    """,
+                    (password_hash, reset_token['guest_user_id'])
+                )
             
             cursor.execute(
                 """

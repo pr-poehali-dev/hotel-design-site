@@ -11,6 +11,9 @@ const GuestLoginPage = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -58,6 +61,44 @@ const GuestLoginPage = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsResetting(true);
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/00f1c03b-e81c-4016-b7a3-2d06f576b4ab', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resetEmail, user_type: 'guest' })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Письмо отправлено',
+          description: 'Проверьте вашу почту для восстановления пароля',
+        });
+        setShowResetForm(false);
+        setResetEmail('');
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка',
+          description: data.message || 'Не удалось отправить письмо',
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка',
+        description: 'Не удалось отправить запрос',
+      });
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -128,6 +169,16 @@ const GuestLoginPage = () => {
             </Button>
 
             <div className="text-center mt-4">
+              <button
+                type="button"
+                onClick={() => setShowResetForm(!showResetForm)}
+                className="text-sm text-gold-600 hover:text-gold-700 underline"
+              >
+                Забыли пароль?
+              </button>
+            </div>
+
+            <div className="text-center mt-2">
               <Button
                 type="button"
                 variant="ghost"
@@ -139,6 +190,54 @@ const GuestLoginPage = () => {
               </Button>
             </div>
           </form>
+
+          {showResetForm && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Восстановление пароля</h3>
+              <form onSubmit={handlePasswordReset} className="space-y-3">
+                <div>
+                  <Label htmlFor="resetEmail" className="text-xs">Email</Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    placeholder="Введите ваш email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                    className="mt-1"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="submit"
+                    size="sm"
+                    className="flex-1"
+                    disabled={isResetting}
+                  >
+                    {isResetting ? (
+                      <>
+                        <Icon name="Loader2" size={16} className="mr-1 animate-spin" />
+                        Отправка...
+                      </>
+                    ) : (
+                      'Отправить'
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setShowResetForm(false);
+                      setResetEmail('');
+                    }}
+                  >
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <p className="text-xs text-gray-600 text-center">
