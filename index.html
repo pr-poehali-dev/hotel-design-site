@@ -204,30 +204,16 @@
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 
-<!-- PWA Service Worker Registration -->
+<!-- PWA Service Worker - DISABLED -->
 <script>
+  // Полностью отключаем Service Worker для всего сайта
   if ('serviceWorker' in navigator) {
-    const currentPath = window.location.pathname;
-    const isAdminPage = currentPath.includes('/guest') || 
-                       currentPath.includes('/admin') || 
-                       currentPath.includes('/bookings');
-    
-    if (!isAdminPage) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
-            console.log('PWA: Service Worker registered successfully:', registration.scope);
-          })
-          .catch(error => {
-            console.log('PWA: Service Worker registration failed:', error);
-          });
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(reg => {
+        reg.unregister();
+        console.log('PWA: Service Worker unregistered');
       });
-    } else {
-      // Для админских страниц — отключаем Service Worker
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(reg => reg.unregister());
-      });
-    }
+    });
   }
 </script>
 
