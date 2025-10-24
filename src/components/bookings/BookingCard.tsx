@@ -10,15 +10,13 @@ interface BookingCardProps {
   onEdit: (booking: Booking) => void;
   onDelete: (id: string) => void;
   onManageInstructions: (apartmentId: string, guestName: string) => void;
-  onOpenGuestDashboard: (bookingId: string) => void;
 }
 
 const BookingCard = ({ 
   booking, 
   onEdit, 
   onDelete, 
-  onManageInstructions, 
-  onOpenGuestDashboard 
+  onManageInstructions
 }: BookingCardProps) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -126,14 +124,6 @@ const BookingCard = ({
               guestEmail={booking.guest_email}
               guestName={booking.guest_name}
             />
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onOpenGuestDashboard(booking.id)}
-            >
-              <Icon name="ExternalLink" size={16} className="mr-2" />
-              Открыть кабинет
-            </Button>
             <Button 
               variant="outline" 
               size="sm"

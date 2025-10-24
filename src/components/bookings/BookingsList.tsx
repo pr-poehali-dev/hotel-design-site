@@ -10,7 +10,6 @@ interface BookingsListProps {
   onEdit: (booking: Booking) => void;
   onDelete: (id: string) => void;
   onManageInstructions: (apartmentId: string, guestName: string) => void;
-  onOpenGuestDashboard: (bookingId: string) => void;
 }
 
 const BookingsList = ({ 
@@ -18,8 +17,7 @@ const BookingsList = ({
   onAddNew, 
   onEdit, 
   onDelete, 
-  onManageInstructions, 
-  onOpenGuestDashboard 
+  onManageInstructions
 }: BookingsListProps) => {
   if (bookings.length === 0) {
     return (
@@ -46,7 +44,6 @@ const BookingsList = ({
           onEdit={onEdit}
           onDelete={onDelete}
           onManageInstructions={onManageInstructions}
-          onOpenGuestDashboard={onOpenGuestDashboard}
         />
       ))}
     </>
