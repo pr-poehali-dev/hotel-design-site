@@ -192,6 +192,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         )
         existing_bnovo_ids = set(row['bnovo_id'] for row in cur.fetchall())
         
+        # Создаём гостей для ВСЕХ бронирований из Bnovo (новых и существующих)
+        for booking in bookings_list:
+            if not isinstance(booking, dict):
+                continue
+            
+            guest_data = booking.get('guest', {})
+            if isinstance(guest_data, dict):
+                guest_name = guest_data.get('name', guest_data.get('full_name', ''))
+                guest_email = guest_data.get('email', '')
+                guest_phone = guest_data.get('phone', '')
+            else:
+                guest_name = str(guest_data) if guest_data else ''
+                guest_email = ''
+                guest_phone = ''
+            
+            if guest_name and (guest_email or guest_phone):
+                try:
+                    guest_id, guest_login, guest_password = create_or_get_guest(cur, guest_name, guest_email, guest_phone)
+                    if guest_id:
+                        created_guests += 1
+                except Exception as e:
+                    print(f'Failed to create guest for {guest_name}: {str(e)}')
+        
         # Подготавливаем данные для batch insert
         bookings_to_insert = []
         calendar_updates = []
@@ -221,15 +244,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 guest_name = str(guest_data) if guest_data else ''
                 guest_email = ''
                 guest_phone = ''
-            
-            # Создаём или получаем гостя
-            if guest_name and (guest_email or guest_phone):
-                try:
-                    guest_id, guest_login, guest_password = create_or_get_guest(cur, guest_name, guest_email, guest_phone)
-                    if guest_id:
-                        created_guests += 1
-                except Exception as e:
-                    print(f'Failed to create guest: {str(e)}')
             
             booking_id = f"bnovo_{bnovo_booking_id}"
             
