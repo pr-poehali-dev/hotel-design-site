@@ -30,7 +30,7 @@ const AdminLoginPage = () => {
 
       // Перенаправляем на страницу управления
       setTimeout(() => {
-        navigate('/bookings');
+        navigate('/admin-dashboard');
       }, 500);
     } else {
       toast({
