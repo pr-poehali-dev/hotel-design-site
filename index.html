@@ -206,7 +206,7 @@
 
 <!-- PWA Service Worker - DISABLED -->
 <script>
-  // Полностью отключаем Service Worker для всего сайта
+  // Полностью отключаем Service Worker и очищаем кеши
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(registrations => {
       registrations.forEach(reg => {
@@ -214,7 +214,23 @@
         console.log('PWA: Service Worker unregistered');
       });
     });
+    
+    // Удаляем все кеши
+    caches.keys().then(cacheNames => {
+      cacheNames.forEach(cacheName => {
+        caches.delete(cacheName);
+        console.log('Cache deleted:', cacheName);
+      });
+    });
   }
+  
+  // Обработка ошибок динамического импорта - перезагрузка страницы
+  window.addEventListener('error', (event) => {
+    if (event.message && event.message.includes('Failed to fetch dynamically imported module')) {
+      console.log('Module load error detected, reloading...');
+      window.location.reload();
+    }
+  });
 </script>
 
 <!-- Yandex.Metrika counter -->
