@@ -47,18 +47,30 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             search = event.get('queryStringParameters', {}).get('search', '') if event.get('queryStringParameters') else ''
             filter_type = event.get('queryStringParameters', {}).get('filter', 'all') if event.get('queryStringParameters') else 'all'
             
-            query = "SELECT * FROM guests WHERE 1=1"
+            query = """
+                SELECT 
+                    g.*,
+                    COUNT(DISTINCT b.id) as bookings_count,
+                    COALESCE(SUM(b.total_amount), 0) as total_revenue,
+                    MAX(b.check_out) as last_visit
+                FROM guests g
+                LEFT JOIN bookings b ON (
+                    b.guest_email = g.email 
+                    OR b.guest_phone = g.phone
+                )
+                WHERE 1=1
+            """
             
             if search:
                 search_pattern = f"%{search}%"
-                query += f" AND (name ILIKE '{search_pattern}' OR email ILIKE '{search_pattern}' OR phone ILIKE '{search_pattern}')"
+                query += f" AND (g.name ILIKE '{search_pattern}' OR g.email ILIKE '{search_pattern}' OR g.phone ILIKE '{search_pattern}')"
             
             if filter_type == 'vip':
-                query += " AND is_vip = TRUE"
+                query += " AND g.is_vip = TRUE"
             elif filter_type == 'regular':
-                query += " AND is_vip = FALSE"
+                query += " AND g.is_vip = FALSE"
             
-            query += " ORDER BY created_at DESC"
+            query += " GROUP BY g.id ORDER BY g.created_at DESC"
             
             cursor.execute(query)
             guests = cursor.fetchall()
