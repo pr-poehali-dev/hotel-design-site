@@ -61,42 +61,24 @@ const GuestDetails = ({ guest, onEdit, onDelete }: GuestDetailsProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-blue-50 border-blue-200 p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-100">
-                <Icon name="Calendar" size={20} className="text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Количество броней</p>
-                <p className="text-2xl font-bold text-gray-900">{guest.bookings_count}</p>
-              </div>
-            </div>
-          </Card>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+            <Icon name="Calendar" size={20} className="text-blue-600 mx-auto mb-1" />
+            <p className="text-xs text-gray-600">Броней</p>
+            <p className="text-xl font-bold text-gray-900">{guest.bookings_count}</p>
+          </div>
 
-          <Card className="bg-green-50 border-green-200 p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-100">
-                <Icon name="DollarSign" size={20} className="text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Общий доход</p>
-                <p className="text-2xl font-bold text-gray-900">{guest.total_revenue.toLocaleString('ru-RU')} ₽</p>
-              </div>
-            </div>
-          </Card>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+            <Icon name="DollarSign" size={20} className="text-green-600 mx-auto mb-1" />
+            <p className="text-xs text-gray-600">Доход</p>
+            <p className="text-xl font-bold text-gray-900">{guest.total_revenue.toLocaleString('ru-RU')} ₽</p>
+          </div>
 
-          <Card className="bg-purple-50 border-purple-200 p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-purple-100">
-                <Icon name="Clock" size={20} className="text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Последний визит</p>
-                <p className="text-sm font-semibold text-gray-900">{formatDate(guest.last_visit)}</p>
-              </div>
-            </div>
-          </Card>
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 text-center">
+            <Icon name="Clock" size={20} className="text-purple-600 mx-auto mb-1" />
+            <p className="text-xs text-gray-600">Последний визит</p>
+            <p className="text-xs font-semibold text-gray-900">{formatDate(guest.last_visit)}</p>
+          </div>
         </div>
       </Card>
 

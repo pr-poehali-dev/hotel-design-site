@@ -58,15 +58,15 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-gradient-to-br from-gray-900 to-gray-800 border-white/10 text-white max-w-lg">
+      <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <DialogTitle className="text-2xl font-bold text-gray-900">
             {guest ? 'Редактировать гостя' : 'Новый гость'}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-white/80">
+            <Label htmlFor="name" className="text-gray-700">
               Имя *
             </Label>
             <Input
@@ -74,13 +74,13 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
               placeholder="Иван Иванов"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white/80">
+            <Label htmlFor="email" className="text-gray-700">
               Email *
             </Label>
             <Input
@@ -89,13 +89,13 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
               placeholder="guest@example.com"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-white/80">
+            <Label htmlFor="phone" className="text-gray-700">
               Телефон *
             </Label>
             <Input
@@ -104,27 +104,27 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               required
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
               placeholder="+7 (999) 123-45-67"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="login" className="text-white/80">
+              <Label htmlFor="login" className="text-gray-700">
                 Логин
               </Label>
               <Input
                 id="login"
                 value={formData.login}
                 onChange={(e) => setFormData({ ...formData, login: e.target.value })}
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+                className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
                 placeholder="Логин для входа"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white/80">
+              <Label htmlFor="password" className="text-gray-700">
                 Пароль
               </Label>
               <Input
@@ -132,29 +132,29 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
                 type="text"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+                className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
                 placeholder="Пароль для входа"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes" className="text-white/80">
+            <Label htmlFor="notes" className="text-gray-700">
               Заметки
             </Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 min-h-[100px]"
+              className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 min-h-[100px]"
               placeholder="Дополнительная информация о госте..."
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20">
+          <div className="flex items-center justify-between p-4 rounded-lg bg-yellow-50 border border-yellow-200">
             <div className="flex items-center gap-2">
-              <Icon name="Crown" size={20} className="text-yellow-400" />
-              <Label htmlFor="is_vip" className="text-white font-semibold cursor-pointer">
+              <Icon name="Crown" size={20} className="text-yellow-600" />
+              <Label htmlFor="is_vip" className="text-gray-900 font-semibold cursor-pointer">
                 VIP статус
               </Label>
             </div>
@@ -170,13 +170,13 @@ const GuestDialog = ({ open, onClose, onSave, guest }: GuestDialogProps) => {
               type="button"
               onClick={onClose}
               variant="outline"
-              className="flex-1 bg-white/5 border-white/10 text-white hover:bg-white/10"
+              className="flex-1 bg-white border-gray-300 text-gray-700 hover:bg-gray-100"
             >
               Отмена
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0"
+              className="flex-1 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white border-0"
             >
               <Icon name="Save" size={18} className="mr-2" />
               {guest ? 'Сохранить' : 'Создать'}
