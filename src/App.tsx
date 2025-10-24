@@ -18,7 +18,6 @@ const HousekeepingTable = React.lazy(() => import("./pages/HousekeepingTable"));
 const CheckInInstructionsPage = React.lazy(() => import("./pages/CheckInInstructionsPage"));
 const InstructionsListPage = React.lazy(() => import("./pages/InstructionsListPage"));
 
-const BookingsManagementPage = React.lazy(() => import("./pages/BookingsManagementPage"));
 const AdminLoginPage = React.lazy(() => import("./pages/AdminLoginPage"));
 const FortuneWheelPage = React.lazy(() => import("./pages/FortuneWheelPage"));
 const MyPromoCodesPage = React.lazy(() => import("./pages/MyPromoCodesPage"));
