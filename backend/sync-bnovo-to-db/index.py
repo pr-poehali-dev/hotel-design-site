@@ -27,15 +27,22 @@ def create_or_get_guest(cur, guest_name: str, guest_email: str, guest_phone: str
     if existing_guest:
         guest_id = existing_guest['id']
         login = existing_guest['email'] if existing_guest['email'] else existing_guest['phone']
-        password = existing_guest['password'] if existing_guest.get('password') else ''
+        password = existing_guest.get('password') if existing_guest.get('password') else ''
+        print(f'Found existing guest: {guest_id}, login: {login}')
         return guest_id, login, password
     
     guest_id = str(uuid.uuid4())
     password = generate_password()
     login = guest_email if guest_email else guest_phone
     
-    insert_query = f"INSERT INTO t_p9202093_hotel_design_site.guests (id, name, email, phone, password, bonus_points, is_vip) VALUES ('{guest_id}', '{guest_name}', '{guest_email}', '{guest_phone}', '{password}', 0, false)"
+    guest_name_escaped = guest_name.replace("'", "''")
+    guest_email_escaped = guest_email.replace("'", "''")
+    guest_phone_escaped = guest_phone.replace("'", "''")
+    
+    insert_query = f"INSERT INTO t_p9202093_hotel_design_site.guests (id, name, email, phone, password, bonus_points, is_vip) VALUES ('{guest_id}', '{guest_name_escaped}', '{guest_email_escaped}', '{guest_phone_escaped}', '{password}', 0, false)"
     cur.execute(insert_query)
+    
+    print(f'Created new guest: {guest_id}, login: {login}, password: {password}')
     
     return guest_id, login, password
 
