@@ -34,62 +34,34 @@ const AdminDashboardPage = () => {
     if (isAuthenticated) {
       loadGuests();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
-  const loadGuests = () => {
-    const mockGuests: Guest[] = [
-      {
-        id: '1',
-        name: 'Александр Петров',
-        email: 'alex@example.com',
-        phone: '+7 (999) 123-45-67',
-        is_vip: true,
-        bookings_count: 15,
-        total_revenue: 450000,
-        last_visit: '2024-10-15',
-        notes: 'Постоянный клиент, предпочитает апартаменты с видом на парк',
-        created_at: '2023-05-10'
-      },
-      {
-        id: '2',
-        name: 'Мария Иванова',
-        email: 'maria@example.com',
-        phone: '+7 (999) 234-56-78',
-        is_vip: false,
-        bookings_count: 3,
-        total_revenue: 75000,
-        last_visit: '2024-09-20',
-        notes: '',
-        created_at: '2024-01-15'
-      },
-      {
-        id: '3',
-        name: 'Дмитрий Соколов',
-        email: 'dmitry@example.com',
-        phone: '+7 (999) 345-67-89',
-        is_vip: true,
-        bookings_count: 22,
-        total_revenue: 890000,
-        last_visit: '2024-10-22',
-        notes: 'VIP клиент, всегда заказывает дополнительные услуги',
-        created_at: '2022-11-05'
-      },
-      {
-        id: '4',
-        name: 'Елена Смирнова',
-        email: 'elena@example.com',
-        phone: '+7 (999) 456-78-90',
-        is_vip: false,
-        bookings_count: 1,
-        total_revenue: 25000,
-        last_visit: '2024-08-10',
-        notes: '',
-        created_at: '2024-08-01'
+  const loadGuests = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+      if (filter !== 'all') params.append('filter', filter);
+      
+      const response = await fetch(`https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c?${params}`);
+      const data = await response.json();
+      
+      const loadedGuests = data.guests.map((g: any) => ({
+        ...g,
+        id: g.id.toString()
+      }));
+      
+      setGuests(loadedGuests);
+      if (!selectedGuest && loadedGuests.length > 0) {
+        setSelectedGuest(loadedGuests[0]);
       }
-    ];
-    setGuests(mockGuests);
-    if (!selectedGuest && mockGuests.length > 0) {
-      setSelectedGuest(mockGuests[0]);
+    } catch (error) {
+      console.error('Error loading guests:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить гостей',
+        variant: 'destructive'
+      });
     }
   };
 
@@ -116,34 +88,58 @@ const AdminDashboardPage = () => {
     });
   };
 
-  const handleSaveGuest = (guestData: Partial<Guest>) => {
-    if (editingGuest) {
-      setGuests(prev => prev.map(g => g.id === editingGuest.id ? { ...g, ...guestData } : g));
-      toast({ title: 'Сохранено', description: 'Данные гостя обновлены' });
-    } else {
-      const newGuest: Guest = {
-        id: Date.now().toString(),
-        name: guestData.name || '',
-        email: guestData.email || '',
-        phone: guestData.phone || '',
-        is_vip: guestData.is_vip || false,
-        bookings_count: 0,
-        total_revenue: 0,
-        last_visit: null,
-        notes: guestData.notes || '',
-        created_at: new Date().toISOString()
-      };
-      setGuests(prev => [newGuest, ...prev]);
-      toast({ title: 'Создано', description: 'Новый гость добавлен' });
+  const handleSaveGuest = async (guestData: Partial<Guest>) => {
+    try {
+      if (editingGuest) {
+        const response = await fetch('https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...guestData, id: editingGuest.id })
+        });
+        const data = await response.json();
+        setGuests(prev => prev.map(g => g.id === editingGuest.id ? { ...data.guest, id: data.guest.id.toString() } : g));
+        toast({ title: 'Сохранено', description: 'Данные гостя обновлены' });
+      } else {
+        const response = await fetch('https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(guestData)
+        });
+        const data = await response.json();
+        const newGuest = { ...data.guest, id: data.guest.id.toString() };
+        setGuests(prev => [newGuest, ...prev]);
+        setSelectedGuest(newGuest);
+        toast({ title: 'Создано', description: 'Новый гость добавлен' });
+      }
+      setEditingGuest(null);
+      loadGuests();
+    } catch (error) {
+      console.error('Error saving guest:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось сохранить гостя',
+        variant: 'destructive'
+      });
     }
-    setEditingGuest(null);
   };
 
-  const handleDeleteGuest = (guest: Guest) => {
+  const handleDeleteGuest = async (guest: Guest) => {
     if (confirm(`Удалить гостя ${guest.name}?`)) {
-      setGuests(prev => prev.filter(g => g.id !== guest.id));
-      setSelectedGuest(null);
-      toast({ title: 'Удалено', description: 'Гость удален из системы' });
+      try {
+        await fetch(`https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c?id=${guest.id}`, {
+          method: 'DELETE'
+        });
+        setGuests(prev => prev.filter(g => g.id !== guest.id));
+        setSelectedGuest(null);
+        toast({ title: 'Удалено', description: 'Гость удален из системы' });
+      } catch (error) {
+        console.error('Error deleting guest:', error);
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось удалить гостя',
+          variant: 'destructive'
+        });
+      }
     }
   };
 

@@ -1,0 +1,22 @@
+{
+  "tests": [
+    {
+      "name": "Get all guests",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Search guests",
+      "method": "GET",
+      "path": "/?search=alex",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get filtered VIP guests",
+      "method": "GET",
+      "path": "/?filter=vip",
+      "expectedStatus": 200
+    }
+  ]
+}
