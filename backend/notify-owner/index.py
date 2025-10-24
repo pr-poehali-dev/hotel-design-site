@@ -47,6 +47,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     check_in = body_data.get('check_in')
     check_out = body_data.get('check_out')
     total_amount = body_data.get('total_amount', 0)
+    guest_login = body_data.get('guest_login', '')
+    guest_password = body_data.get('guest_password', '')
     
     if not all([booking_id, guest_name, apartment_id, check_in, check_out]):
         return {
@@ -193,6 +195,26 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             results['telegram'] = f'failed: {str(e)}'
     else:
         print(f'Telegram config missing - token: {bool(telegram_bot_token)}, chat_id: {bool(telegram_chat_id)}')
+    
+    if guest_email and guest_login and guest_password:
+        try:
+            confirmation_url = 'https://functions.poehali.dev/247fe753-02a4-4d5a-b9b2-b2182701293b'
+            confirmation_payload = {
+                'guest_email': guest_email,
+                'guest_name': guest_name,
+                'apartment_id': apartment_name,
+                'check_in': check_in,
+                'check_out': check_out,
+                'total_amount': str(total_amount),
+                'guests_count': '1',
+                'guest_login': guest_login,
+                'guest_password': guest_password
+            }
+            
+            conf_response = requests.post(confirmation_url, json=confirmation_payload, timeout=10)
+            results['guest_confirmation'] = 'sent' if conf_response.status_code == 200 else f'failed: {conf_response.text}'
+        except Exception as e:
+            results['guest_confirmation'] = f'failed: {str(e)}'
     
     return {
         'statusCode': 200,

@@ -43,6 +43,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     total_amount = body_data.get('total_amount', '0')
     guests_count = body_data.get('guests_count', '1')
     guest_comment = body_data.get('guest_comment', '')
+    guest_login = body_data.get('guest_login', '')
+    guest_password = body_data.get('guest_password', '')
     
     if not guest_email or not apartment_id:
         return {
@@ -81,6 +83,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
           </div>
           
           {f'<div style="background-color: #fff9e6; padding: 15px; border-left: 4px solid #C9A961; margin: 20px 0;"><h4 style="margin-top: 0; color: #C9A961;">Важная информация о заселении:</h4><p>{guest_comment}</p></div>' if guest_comment else ''}
+          
+          {f'<div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #C9A961;"><h3 style="color: #C9A961; margin-top: 0;">Доступ в личный кабинет</h3><p>Для вас создан личный кабинет, где вы можете отслеживать свои бронирования и бонусные баллы:</p><div style="background-color: white; padding: 15px; border-radius: 5px; margin: 10px 0;"><p style="margin: 5px 0;"><strong>Логин:</strong> ' + guest_login + '</p><p style="margin: 5px 0;"><strong>Пароль:</strong> ' + guest_password + '</p></div><p style="margin-top: 15px;"><a href="https://poklonnaya9.ru/guest-login" style="display: inline-block; padding: 12px 24px; background-color: #C9A961; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Войти в личный кабинет</a></p></div>' if guest_login and guest_password else ''}
           
           <div style="background-color: #e8f4f8; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="margin: 0;"><strong>✅ Администратор свяжется с вами для подтверждения бронирования в ближайшее время!</strong></p>

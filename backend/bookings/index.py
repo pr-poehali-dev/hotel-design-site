@@ -1,11 +1,44 @@
 import json
 import os
 import uuid
-from typing import Dict, Any
+import secrets
+import string
+from typing import Dict, Any, Tuple
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import requests
 from datetime import datetime
+
+def generate_password(length: int = 8) -> str:
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def create_or_get_guest(cursor, conn, guest_name: str, guest_email: str, guest_phone: str) -> Tuple[str, str, str]:
+    search_field = guest_email if guest_email else guest_phone
+    search_column = 'email' if guest_email else 'phone'
+    
+    query = f"SELECT id, email, phone FROM t_p9202093_hotel_design_site.guests WHERE {search_column} = '{search_field}'"
+    cursor.execute(query)
+    existing_guest = cursor.fetchone()
+    
+    if existing_guest:
+        guest_id = existing_guest[0]
+        login = existing_guest[1] if existing_guest[1] else existing_guest[2]
+        password_query = f"SELECT password FROM t_p9202093_hotel_design_site.guests WHERE id = '{guest_id}'"
+        cursor.execute(password_query)
+        password_data = cursor.fetchone()
+        password = password_data[0] if password_data else ''
+        return guest_id, login, password
+    
+    guest_id = str(uuid.uuid4())
+    password = generate_password()
+    login = guest_email if guest_email else guest_phone
+    
+    insert_query = f"INSERT INTO t_p9202093_hotel_design_site.guests (id, name, email, phone, password, bonus_points, is_vip) VALUES ('{guest_id}', '{guest_name}', '{guest_email}', '{guest_phone}', '{password}', 0, false)"
+    cursor.execute(insert_query)
+    conn.commit()
+    
+    return guest_id, login, password
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -178,6 +211,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             room_data = cursor.fetchone()
             apartment_name = room_data[0] if room_data and room_data[0] else (room_data[1] if room_data else apartment_id)
             
+            guest_login = ''
+            guest_password = ''
+            guest_id = ''
+            
+            if guest_email or guest_phone:
+                guest_id, guest_login, guest_password = create_or_get_guest(cursor, conn, guest_name, guest_email, guest_phone)
+            
             cursor.close()
             conn.close()
             
@@ -195,7 +235,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'apartment_name': apartment_name,
                     'check_in': check_in,
                     'check_out': check_out,
-                    'total_amount': total_amount
+                    'total_amount': total_amount,
+                    'guest_login': guest_login,
+                    'guest_password': guest_password
                 }
                 
                 notify_response = requests.post(notify_url, json=notify_payload, timeout=5)
@@ -213,7 +255,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'guestName': guest_name,
                     'checkIn': check_in,
                     'checkOut': check_out,
-                    'notificationSent': notification_sent
+                    'notificationSent': notification_sent,
+                    'guestId': guest_id
                 })
             }
         
