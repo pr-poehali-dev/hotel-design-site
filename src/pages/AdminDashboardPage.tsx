@@ -26,9 +26,13 @@ const AdminDashboardPage = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
-    const authKey = localStorage.getItem('premium_apartments_admin_auth');
-    setIsAuthenticated(authKey === 'authenticated');
-  }, []);
+    const authKey = localStorage.getItem('adminAuthenticated');
+    if (authKey === 'true') {
+      setIsAuthenticated(true);
+    } else {
+      navigate('/admin-login');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -70,7 +74,7 @@ const AdminDashboardPage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('premium_apartments_admin_auth');
+    localStorage.removeItem('adminAuthenticated');
     navigate('/admin-login');
   };
 
@@ -169,44 +173,44 @@ const AdminDashboardPage = () => {
   const stats = calculateStats();
 
   if (!isAuthenticated) {
-    return <AdminLogin onLogin={handleLogin} />;
+    return null;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-purple-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4wNSIvPjwvZz48L3N2Zz4=')] opacity-30" />
       
-      <div className="sticky top-0 z-50 backdrop-blur-xl bg-black/20 border-b border-white/10">
+      <div className="sticky top-0 z-50 backdrop-blur-xl bg-white/90 border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => setShowMobileMenu(!showMobileMenu)}
-                className="lg:hidden bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/10"
+                className="lg:hidden bg-gray-100 hover:bg-gray-200 text-gray-700"
                 size="sm"
               >
                 <Icon name="Menu" size={20} />
               </Button>
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
                 <Icon name="Users" size={24} className="text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">Управление гостями</h1>
-                <p className="text-sm text-white/60">Админ-панель</p>
+                <h1 className="text-xl font-bold text-gray-900">Управление гостями</h1>
+                <p className="text-sm text-gray-600">Админ-панель</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border-white/10 hidden md:flex"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 hidden md:flex"
                 size="sm"
               >
                 <Icon name="RefreshCw" size={16} className={isRefreshing ? 'animate-spin' : ''} />
               </Button>
               <Button
                 onClick={handleLogout}
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border-white/10"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700"
                 size="sm"
               >
                 <Icon name="LogOut" size={16} />
@@ -219,7 +223,7 @@ const AdminDashboardPage = () => {
       {showMobileMenu && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowMobileMenu(false)} />
-          <div className="absolute left-0 top-16 bottom-0 w-64 bg-gradient-to-br from-purple-900 to-pink-900 p-4 shadow-xl">
+          <div className="absolute left-0 top-16 bottom-0 w-64 bg-white p-4 shadow-xl">
             <Button
               onClick={() => {
                 setDialogOpen(true);
@@ -267,12 +271,12 @@ const AdminDashboardPage = () => {
           <div className="lg:col-span-1 space-y-4">
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <Input
                   placeholder="Поиск..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/40 focus:border-purple-500/50"
+                  className="pl-10 bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
                 />
               </div>
               <Button
@@ -280,7 +284,7 @@ const AdminDashboardPage = () => {
                   setDialogOpen(true);
                   setEditingGuest(null);
                 }}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white hidden lg:flex"
+                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white hidden lg:flex"
               >
                 <Icon name="Plus" size={18} />
               </Button>
@@ -294,9 +298,9 @@ const AdminDashboardPage = () => {
                   size="sm"
                   className={`flex-1 ${
                     filter === f
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20'
-                  } backdrop-blur-sm border-white/10`}
+                      ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
                   {f === 'all' ? 'Все' : f === 'vip' ? 'VIP' : 'Обычные'}
                 </Button>
@@ -316,7 +320,7 @@ const AdminDashboardPage = () => {
                 />
               ))}
               {filteredGuests.length === 0 && (
-                <div className="text-center py-12 text-white/60">
+                <div className="text-center py-12 text-gray-500">
                   <Icon name="Search" size={48} className="mx-auto mb-4 opacity-50" />
                   <p>Гостей не найдено</p>
                 </div>
@@ -324,11 +328,11 @@ const AdminDashboardPage = () => {
             </div>
           </div>
 
-          <div className={`lg:col-span-2 ${showMobileDetails ? 'fixed inset-0 z-50 bg-gradient-to-br from-purple-900 via-pink-800 to-purple-900 overflow-y-auto p-4 lg:relative lg:inset-auto lg:z-0 lg:p-0' : 'hidden lg:block'}`}>
+          <div className={`lg:col-span-2 ${showMobileDetails ? 'fixed inset-0 z-50 bg-white overflow-y-auto p-4 lg:relative lg:inset-auto lg:z-0 lg:p-0' : 'hidden lg:block'}`}>
             {showMobileDetails && (
               <Button
                 onClick={() => setShowMobileDetails(false)}
-                className="lg:hidden mb-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white"
+                className="lg:hidden mb-4 bg-gray-100 hover:bg-gray-200 text-gray-700"
                 size="sm"
               >
                 <Icon name="ArrowLeft" size={16} className="mr-2" />
@@ -346,7 +350,7 @@ const AdminDashboardPage = () => {
               />
             ) : (
               <div className="flex items-center justify-center h-96">
-                <div className="text-center text-white/60">
+                <div className="text-center text-gray-500">
                   <Icon name="Users" size={64} className="mx-auto mb-4 opacity-50" />
                   <p>Выберите гостя для просмотра деталей</p>
                 </div>
