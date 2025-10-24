@@ -2,8 +2,39 @@ import json
 import os
 import psycopg2
 import time
+import secrets
+import string
+import uuid
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
+
+def generate_password(length: int = 8) -> str:
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+def create_or_get_guest(cursor, conn, guest_name: str, guest_email: str, guest_phone: str) -> Tuple[str, str, str]:
+    search_field = guest_email if guest_email else guest_phone
+    search_column = 'email' if guest_email else 'phone'
+    
+    query = f"SELECT id, email, phone, password FROM t_p9202093_hotel_design_site.guests WHERE {search_column} = '{search_field}'"
+    cursor.execute(query)
+    existing_guest = cursor.fetchone()
+    
+    if existing_guest:
+        guest_id = existing_guest[0]
+        login = existing_guest[1] if existing_guest[1] else existing_guest[2]
+        password = existing_guest[3] if len(existing_guest) > 3 and existing_guest[3] else ''
+        return guest_id, login, password
+    
+    guest_id = str(uuid.uuid4())
+    password = generate_password()
+    login = guest_email if guest_email else guest_phone
+    
+    insert_query = f"INSERT INTO t_p9202093_hotel_design_site.guests (id, name, email, phone, password, bonus_points, is_vip) VALUES ('{guest_id}', '{guest_name}', '{guest_email}', '{guest_phone}', '{password}', 0, false)"
+    cursor.execute(insert_query)
+    conn.commit()
+    
+    return guest_id, login, password
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -106,6 +137,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         nights = (check_out_date - check_in_date).days
         total_amount = price_per_night * nights
         
+        guest_id, guest_login, guest_password = create_or_get_guest(cursor, conn, guest_name, guest_email, guest_phone)
+        
         cursor.execute('''
             INSERT INTO t_p9202093_hotel_design_site.bookings 
             (id, apartment_id, check_in, check_out, guest_name, guest_email, guest_phone, 
@@ -131,7 +164,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'apartment_name': apartment_name,
                 'check_in': check_in,
                 'check_out': check_out,
-                'total_amount': total_amount
+                'total_amount': total_amount,
+                'guest_login': guest_login,
+                'guest_password': guest_password
             }
             
             requests.post(notify_owner_url, json=notify_payload, timeout=5)
