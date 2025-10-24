@@ -91,16 +91,16 @@ const ReportsHeader = ({
                 </option>
               ))}
             </select>
+            <FizzyButton
+              onClick={onSyncBnovo}
+              variant="secondary"
+              icon={<Icon name="RefreshCw" size={18} />}
+              disabled={loading}
+            >
+              Синхронизация Bnovo
+            </FizzyButton>
             {selectedMonth === 'current' && (
               <>
-                <FizzyButton
-                  onClick={onSyncBnovo}
-                  variant="secondary"
-                  icon={<Icon name="RefreshCw" size={18} />}
-                  disabled={loading}
-                >
-                  Синхронизация Bnovo
-                </FizzyButton>
                 <FizzyButton
                   onClick={onShowAllToOwner}
                   variant="secondary"
