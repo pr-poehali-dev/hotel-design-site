@@ -114,7 +114,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             elif filter_type == 'regular':
                 query += " AND g.is_vip = FALSE"
             
-            query += " GROUP BY g.id ORDER BY g.created_at DESC"
+            query += " GROUP BY g.id ORDER BY g.id DESC"
             
             cursor.execute(query)
             guests = cursor.fetchall()

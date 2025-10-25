@@ -4,10 +4,8 @@ import uuid
 import secrets
 import string
 from typing import Dict, Any, Tuple
-import urllib.request
-import urllib.parse
-import urllib.error
 from datetime import datetime, timedelta
+import requests
 
 def generate_password(length: int = 8) -> str:
     alphabet = string.ascii_letters + string.digits
@@ -111,18 +109,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'password': bnovo_password
         }
         
-        auth_request = urllib.request.Request(
+        auth_response = requests.post(
             auth_url,
-            data=json.dumps(auth_payload).encode('utf-8'),
+            json=auth_payload,
             headers={
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            method='POST'
+            timeout=30
         )
-        
-        with urllib.request.urlopen(auth_request, timeout=30) as auth_response:
-            auth_data = json.loads(auth_response.read().decode())
+        auth_response.raise_for_status()
+        auth_data = auth_response.json()
         
         jwt_token = auth_data.get('data', {}).get('access_token')
         
@@ -139,27 +136,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         all_bookings = []
         offset = 0
-        limit = 100
+        limit = 20
         
         while True:
-            params = urllib.parse.urlencode({
+            params = {
                 'date_from': date_from,
                 'date_to': date_to,
                 'limit': limit,
                 'offset': offset
-            })
-            bookings_url = f'https://api.pms.bnovo.ru/api/v1/bookings?{params}'
+            }
             
-            bookings_request = urllib.request.Request(
-                bookings_url,
+            bookings_response = requests.get(
+                'https://api.pms.bnovo.ru/api/v1/bookings',
+                params=params,
                 headers={
                     'Authorization': f'Bearer {jwt_token}',
-                    'Accept': 'application/json'
-                }
+                    'Accept': '*/*',
+                    'User-Agent': 'Mozilla/5.0'
+                },
+                timeout=30
             )
             
-            with urllib.request.urlopen(bookings_request, timeout=30) as response:
-                bookings_data = json.loads(response.read().decode())
+            bookings_response.raise_for_status()
+            bookings_data = bookings_response.json()
             
             # Bnovo возвращает данные в формате {'data': {'bookings': [...]}} или {'bookings': [...]}
             if isinstance(bookings_data, dict):
