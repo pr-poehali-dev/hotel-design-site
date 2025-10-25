@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import confetti from 'canvas-confetti';
 
 interface FortuneWheelBonusProps {
   guestId: string;
@@ -97,6 +98,35 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
         setRotation(targetRotation);
 
         setTimeout(() => {
+          if (data.bonus_points >= 5000) {
+            confetti({
+              particleCount: 200,
+              spread: 100,
+              origin: { y: 0.6 },
+              colors: ['#FFD700', '#FFA500', '#FF6347', '#9333ea', '#3b82f6']
+            });
+            setTimeout(() => {
+              confetti({
+                particleCount: 100,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 }
+              });
+              confetti({
+                particleCount: 100,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 }
+              });
+            }, 250);
+          } else if (data.bonus_points >= 1000) {
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 }
+            });
+          }
+
           toast({
             title: '🎉 Поздравляем!',
             description: `Вы выиграли ${data.bonus_points.toLocaleString('ru-RU')} баллов!`,

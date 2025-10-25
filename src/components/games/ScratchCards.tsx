@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import confetti from 'canvas-confetti';
 
 interface ScratchCardsProps {
   guestId: string;
@@ -95,6 +96,35 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
           setWonPoints(data.bonus_points);
           setIsScratched(true);
           setIsScratching(false);
+
+          if (data.bonus_points >= 3000) {
+            confetti({
+              particleCount: 150,
+              spread: 100,
+              origin: { y: 0.6 },
+              colors: ['#FFD700', '#FFA500', '#FF6347']
+            });
+            setTimeout(() => {
+              confetti({
+                particleCount: 80,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 }
+              });
+              confetti({
+                particleCount: 80,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 }
+              });
+            }, 250);
+          } else if (data.bonus_points > 0) {
+            confetti({
+              particleCount: 80,
+              spread: 60,
+              origin: { y: 0.6 }
+            });
+          }
 
           toast({
             title: data.bonus_points > 0 ? '🎉 Поздравляем!' : '😔 Не повезло',
