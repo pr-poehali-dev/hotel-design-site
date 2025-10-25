@@ -28,6 +28,7 @@ const GuestDashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const authenticated = localStorage.getItem('guestAuthenticated');
@@ -123,6 +124,12 @@ const GuestDashboardPage = () => {
       filtered = bookings.filter(b => b.status === 'completed');
     } else if (filter === 'active') {
       filtered = bookings.filter(b => b.status !== 'completed');
+    }
+    
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(b => 
+        b.apartment?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
     
     const sorted = [...filtered].sort((a, b) => {
@@ -228,38 +235,59 @@ const GuestDashboardPage = () => {
             </div>
             
             {bookings.length > 0 && (
-              <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-1 overflow-x-auto">
-                <button
-                  onClick={() => setFilter('all')}
-                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
-                    filter === 'all'
-                      ? 'bg-gold-500 text-white shadow-lg'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  Все ({bookings.length})
-                </button>
-                <button
-                  onClick={() => setFilter('active')}
-                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
-                    filter === 'active'
-                      ? 'bg-gold-500 text-white shadow-lg'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  Активные ({activeCount})
-                </button>
-                <button
-                  onClick={() => setFilter('completed')}
-                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
-                    filter === 'completed'
-                      ? 'bg-gold-500 text-white shadow-lg'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  Завершенные ({completedCount})
-                </button>
-              </div>
+              <>
+                <div className="relative">
+                  <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                  <input
+                    type="text"
+                    placeholder="Поиск по названию апартаментов..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/50 transition-all"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                    >
+                      <Icon name="X" size={18} />
+                    </button>
+                  )}
+                </div>
+                
+                <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-1 overflow-x-auto">
+                  <button
+                    onClick={() => setFilter('all')}
+                    className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                      filter === 'all'
+                        ? 'bg-gold-500 text-white shadow-lg'
+                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    Все ({bookings.length})
+                  </button>
+                  <button
+                    onClick={() => setFilter('active')}
+                    className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                      filter === 'active'
+                        ? 'bg-gold-500 text-white shadow-lg'
+                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    Активные ({activeCount})
+                  </button>
+                  <button
+                    onClick={() => setFilter('completed')}
+                    className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                      filter === 'completed'
+                        ? 'bg-gold-500 text-white shadow-lg'
+                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    Завершенные ({completedCount})
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -289,18 +317,35 @@ const GuestDashboardPage = () => {
         ) : filteredBookings.length === 0 ? (
           <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-6 md:p-12">
             <div className="text-center">
-              <Icon name="Filter" size={48} className="mx-auto mb-3 md:w-16 md:h-16 md:mb-4 text-white/20" />
+              <Icon name={searchQuery ? 'Search' : 'Filter'} size={48} className="mx-auto mb-3 md:w-16 md:h-16 md:mb-4 text-white/20" />
               <h3 className="text-lg md:text-xl font-semibold text-white mb-2">Ничего не найдено</h3>
               <p className="text-white/60 mb-4 md:mb-6 text-sm md:text-base">
-                {filter === 'active' ? 'У вас нет активных бронирований' : 'У вас нет завершенных бронирований'}
+                {searchQuery 
+                  ? `Не найдено бронирований с "${searchQuery}"` 
+                  : filter === 'active' 
+                    ? 'У вас нет активных бронирований' 
+                    : 'У вас нет завершенных бронирований'}
               </p>
-              <Button
-                onClick={() => setFilter('all')}
-                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm md:text-base"
-              >
-                <Icon name="RotateCcw" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
-                Показать все
-              </Button>
+              <div className="flex gap-2 justify-center flex-wrap">
+                {searchQuery && (
+                  <Button
+                    onClick={() => setSearchQuery('')}
+                    className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm md:text-base"
+                  >
+                    <Icon name="X" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+                    Очистить поиск
+                  </Button>
+                )}
+                {filter !== 'all' && (
+                  <Button
+                    onClick={() => setFilter('all')}
+                    className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm md:text-base"
+                  >
+                    <Icon name="RotateCcw" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+                    Показать все
+                  </Button>
+                )}
+              </div>
             </div>
           </Card>
         ) : (
