@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
+import { playWinSound, playSpinSound } from '@/utils/soundEffects';
 
 interface FortuneWheelBonusProps {
   guestId: string;
@@ -81,6 +82,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
     if (!canSpin || isSpinning) return;
 
     setIsSpinning(true);
+    playSpinSound();
 
     try {
       const response = await fetch('https://functions.poehali.dev/76a63047-54d9-43c8-ab3d-9b36904f1fb3', {
@@ -99,6 +101,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
 
         setTimeout(() => {
           if (data.bonus_points >= 5000) {
+            playWinSound('big');
             confetti({
               particleCount: 200,
               spread: 100,
@@ -120,11 +123,14 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
               });
             }, 250);
           } else if (data.bonus_points >= 1000) {
+            playWinSound('medium');
             confetti({
               particleCount: 100,
               spread: 70,
               origin: { y: 0.6 }
             });
+          } else {
+            playWinSound('small');
           }
 
           toast({

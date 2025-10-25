@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
+import { playWinSound, playScratchSound } from '@/utils/soundEffects';
 
 interface ScratchCardsProps {
   guestId: string;
@@ -77,6 +78,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
     if (selectedCard === null || isScratching) return;
 
     setIsScratching(true);
+    playScratchSound();
 
     try {
       const response = await fetch('https://functions.poehali.dev/89112d1f-1a35-49dd-98b0-9579b4ac652d', {
@@ -98,6 +100,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
           setIsScratching(false);
 
           if (data.bonus_points >= 3000) {
+            playWinSound('big');
             confetti({
               particleCount: 150,
               spread: 100,
@@ -119,6 +122,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
               });
             }, 250);
           } else if (data.bonus_points > 0) {
+            playWinSound(data.bonus_points >= 2000 ? 'medium' : 'small');
             confetti({
               particleCount: 80,
               spread: 60,
