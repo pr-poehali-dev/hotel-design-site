@@ -164,23 +164,23 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
   };
 
   return (
-    <Card className="bg-gradient-to-br from-gold-900/30 to-gold-700/20 backdrop-blur-xl border-gold-500/30 p-8 shadow-2xl">
-      <div className="flex items-start gap-4 mb-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-gold-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl animate-pulse">
-          <Icon name="Sparkles" size={32} className="text-white" />
+    <Card className="bg-gradient-to-br from-gold-900/30 to-gold-700/20 backdrop-blur-xl border-gold-500/30 p-4 md:p-6 shadow-2xl">
+      <div className="flex items-start gap-3 mb-4">
+        <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+          <Icon name="Sparkles" size={20} className="text-white" />
         </div>
         <div className="flex-1">
-          <h3 className="text-3xl font-playfair font-bold text-white mb-2">Колесо Фортуны</h3>
-          <p className="text-gold-200 text-sm">Крутите раз в неделю и выигрывайте бонусные баллы!</p>
+          <h3 className="text-lg md:text-xl font-playfair font-bold text-white mb-1">Колесо Фортуны</h3>
+          <p className="text-gold-200 text-xs">Крутите раз в неделю и выигрывайте!</p>
         </div>
       </div>
 
-      <div className="relative w-80 h-80 mx-auto mb-8">
+      <div className="relative w-48 h-48 md:w-56 md:h-56 mx-auto mb-4">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="absolute w-80 h-80 bg-gradient-to-br from-gold-300/20 to-gold-600/20 rounded-full blur-2xl"></div>
+          <div className="absolute w-full h-full bg-gradient-to-br from-gold-300/20 to-gold-600/20 rounded-full blur-xl"></div>
           
           <div 
-            className="relative w-72 h-72 rounded-full shadow-2xl ring-4 ring-gold-400/50"
+            className="relative w-44 h-44 md:w-52 md:h-52 rounded-full shadow-2xl ring-2 ring-gold-400/50"
             style={{
               transform: `rotate(${rotation}deg)`,
               transition: isSpinning ? 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)' : 'none'
@@ -196,11 +196,11 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
                 }}
               >
                 <div
-                  className="absolute text-white font-bold text-base drop-shadow-lg"
+                  className="absolute text-white font-bold text-xs md:text-sm drop-shadow-lg"
                   style={{
                     top: '25%',
                     left: '50%',
-                    transform: `rotate(${index * 30 + 15}deg) translateY(-80px)`,
+                    transform: `rotate(${index * 30 + 15}deg) translateY(-55px)`,
                     transformOrigin: 'center'
                   }}
                 >
@@ -210,15 +210,15 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
             ))}
             
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-gold-300 to-gold-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white">
-                <Icon name="Star" size={36} className="text-white drop-shadow-lg" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-gold-300 to-gold-500 rounded-full shadow-2xl flex items-center justify-center border-2 border-white">
+                <Icon name="Star" size={20} className="text-white drop-shadow-lg" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 z-20">
-          <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[24px] border-l-transparent border-r-transparent border-t-red-600 drop-shadow-xl"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 z-20">
+          <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-red-600 drop-shadow-xl"></div>
         </div>
       </div>
 
@@ -226,29 +226,30 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
         <Button
           onClick={spinWheel}
           disabled={isSpinning}
-          className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold py-6 text-lg"
-          size="lg"
+          className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold py-3 md:py-4 text-sm md:text-base"
         >
           {isSpinning ? (
             <>
-              <Icon name="Loader2" size={20} className="mr-2 animate-spin" />
-              Крутим...
+              <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+              <span className="hidden sm:inline">Крутим...</span>
+              <span className="sm:hidden">...</span>
             </>
           ) : (
             <>
-              <Icon name="Play" size={20} className="mr-2" />
-              Крутить колесо
+              <Icon name="Play" size={18} className="mr-2" />
+              <span className="hidden sm:inline">Крутить колесо</span>
+              <span className="sm:hidden">Крутить</span>
             </>
           )}
         </Button>
       ) : (
         <div className="text-center">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-            <Icon name="Clock" size={48} className="mx-auto mb-3 text-white/40" />
-            <p className="text-white/60 text-sm mb-2">Следующая прокрутка через:</p>
-            <p className="text-2xl font-bold text-white mb-4">{timeLeft}</p>
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 md:p-4">
+            <Icon name="Clock" size={32} className="mx-auto mb-2 text-white/40" />
+            <p className="text-white/60 text-xs mb-1">Следующая прокрутка через:</p>
+            <p className="text-base md:text-lg font-bold text-white mb-2">{timeLeft}</p>
             {lastBonus && (
-              <p className="text-white/40 text-sm">
+              <p className="text-white/40 text-xs">
                 Последний выигрыш: {lastBonus.toLocaleString('ru-RU')} баллов
               </p>
             )}
