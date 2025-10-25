@@ -26,6 +26,7 @@ const GuestDashboardPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [completedBookings, setCompletedBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
 
   useEffect(() => {
     const authenticated = localStorage.getItem('guestAuthenticated');
@@ -114,6 +115,18 @@ const GuestDashboardPage = () => {
     });
   };
 
+  const getFilteredBookings = () => {
+    if (filter === 'all') return bookings;
+    if (filter === 'completed') {
+      return bookings.filter(b => b.status === 'completed');
+    }
+    return bookings.filter(b => b.status !== 'completed');
+  };
+
+  const filteredBookings = getFilteredBookings();
+  const activeCount = bookings.filter(b => b.status !== 'completed').length;
+  const completedCount = bookings.filter(b => b.status === 'completed').length;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
       <div className="sticky top-0 z-50 backdrop-blur-xl bg-black/20 border-b border-white/10">
@@ -184,9 +197,48 @@ const GuestDashboardPage = () => {
           )}
         </div>
 
-        <div className="mb-4 md:mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2">Мои бронирования</h2>
-          <p className="text-white/60 text-sm md:text-base">Здесь вы можете увидеть все ваши бронирования</p>
+        <div className="mb-4 md:mb-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-4">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Мои бронирования</h2>
+              <p className="text-white/60 text-sm md:text-base">Здесь вы можете увидеть все ваши бронирования</p>
+            </div>
+            
+            {bookings.length > 0 && (
+              <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-1">
+                <button
+                  onClick={() => setFilter('all')}
+                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all ${
+                    filter === 'all'
+                      ? 'bg-gold-500 text-white shadow-lg'
+                      : 'text-white/60 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  Все ({bookings.length})
+                </button>
+                <button
+                  onClick={() => setFilter('active')}
+                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all ${
+                    filter === 'active'
+                      ? 'bg-gold-500 text-white shadow-lg'
+                      : 'text-white/60 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  Активные ({activeCount})
+                </button>
+                <button
+                  onClick={() => setFilter('completed')}
+                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all ${
+                    filter === 'completed'
+                      ? 'bg-gold-500 text-white shadow-lg'
+                      : 'text-white/60 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  Завершенные ({completedCount})
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {isLoading ? (
@@ -211,9 +263,26 @@ const GuestDashboardPage = () => {
               </Button>
             </div>
           </Card>
+        ) : filteredBookings.length === 0 ? (
+          <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-6 md:p-12">
+            <div className="text-center">
+              <Icon name="Filter" size={48} className="mx-auto mb-3 md:w-16 md:h-16 md:mb-4 text-white/20" />
+              <h3 className="text-lg md:text-xl font-semibold text-white mb-2">Ничего не найдено</h3>
+              <p className="text-white/60 mb-4 md:mb-6 text-sm md:text-base">
+                {filter === 'active' ? 'У вас нет активных бронирований' : 'У вас нет завершенных бронирований'}
+              </p>
+              <Button
+                onClick={() => setFilter('all')}
+                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm md:text-base"
+              >
+                <Icon name="RotateCcw" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+                Показать все
+              </Button>
+            </div>
+          </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {bookings.map((booking) => (
+            {filteredBookings.map((booking) => (
               <Card key={booking.id} className="bg-white/5 backdrop-blur-xl border-white/10 p-6 hover:bg-white/10 transition-all">
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
