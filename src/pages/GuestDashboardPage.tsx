@@ -27,6 +27,7 @@ const GuestDashboardPage = () => {
   const [completedBookings, setCompletedBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
 
   useEffect(() => {
     const authenticated = localStorage.getItem('guestAuthenticated');
@@ -116,11 +117,21 @@ const GuestDashboardPage = () => {
   };
 
   const getFilteredBookings = () => {
-    if (filter === 'all') return bookings;
+    let filtered = bookings;
+    
     if (filter === 'completed') {
-      return bookings.filter(b => b.status === 'completed');
+      filtered = bookings.filter(b => b.status === 'completed');
+    } else if (filter === 'active') {
+      filtered = bookings.filter(b => b.status !== 'completed');
     }
-    return bookings.filter(b => b.status !== 'completed');
+    
+    const sorted = [...filtered].sort((a, b) => {
+      const dateA = new Date(a.check_in).getTime();
+      const dateB = new Date(b.check_in).getTime();
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+    
+    return sorted;
   };
 
   const filteredBookings = getFilteredBookings();
@@ -198,17 +209,29 @@ const GuestDashboardPage = () => {
         </div>
 
         <div className="mb-4 md:mb-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-4">
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Мои бронирования</h2>
-              <p className="text-white/60 text-sm md:text-base">Здесь вы можете увидеть все ваши бронирования</p>
+          <div className="flex flex-col gap-3 md:gap-4 mb-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Мои бронирования</h2>
+                <p className="text-white/60 text-sm md:text-base">Здесь вы можете увидеть все ваши бронирования</p>
+              </div>
+              
+              {bookings.length > 0 && (
+                <button
+                  onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
+                  className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 rounded-lg text-white text-xs md:text-sm font-medium transition-all self-start md:self-auto"
+                >
+                  <Icon name={sortOrder === 'newest' ? 'ArrowDownWideNarrow' : 'ArrowUpNarrowWide'} size={16} />
+                  <span>{sortOrder === 'newest' ? 'Сначала новые' : 'Сначала старые'}</span>
+                </button>
+              )}
             </div>
             
             {bookings.length > 0 && (
-              <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-1">
+              <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-1 overflow-x-auto">
                 <button
                   onClick={() => setFilter('all')}
-                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all ${
+                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
                     filter === 'all'
                       ? 'bg-gold-500 text-white shadow-lg'
                       : 'text-white/60 hover:text-white hover:bg-white/5'
@@ -218,7 +241,7 @@ const GuestDashboardPage = () => {
                 </button>
                 <button
                   onClick={() => setFilter('active')}
-                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all ${
+                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
                     filter === 'active'
                       ? 'bg-gold-500 text-white shadow-lg'
                       : 'text-white/60 hover:text-white hover:bg-white/5'
@@ -228,7 +251,7 @@ const GuestDashboardPage = () => {
                 </button>
                 <button
                   onClick={() => setFilter('completed')}
-                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all ${
+                  className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
                     filter === 'completed'
                       ? 'bg-gold-500 text-white shadow-lg'
                       : 'text-white/60 hover:text-white hover:bg-white/5'
