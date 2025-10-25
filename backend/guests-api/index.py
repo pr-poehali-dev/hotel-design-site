@@ -45,7 +45,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         if method == 'GET':
             query_params = event.get('queryStringParameters', {}) if event.get('queryStringParameters') else {}
-            guest_id = query_params.get('guest_id', '')
+            guest_id = query_params.get('guestId', '') or query_params.get('guest_id', '')
+            action = query_params.get('action', '')
+            
+            if guest_id and action == 'bookings':
+                guest_query = f"SELECT * FROM guests WHERE id = {guest_id}"
+                cursor.execute(guest_query)
+                guest = cursor.fetchone()
+                
+                if not guest:
+                    return {
+                        'statusCode': 404,
+                        'headers': headers,
+                        'body': json.dumps({'error': 'Guest not found'}),
+                        'isBase64Encoded': False
+                    }
+                
+                bookings_query = f"""
+                    SELECT * FROM bookings 
+                    WHERE guest_email = '{guest['email'].replace("'", "''")}' 
+                       OR guest_phone = '{guest['phone'].replace("'", "''")}'
+                    ORDER BY check_in DESC
+                """
+                cursor.execute(bookings_query)
+                bookings = cursor.fetchall()
+                
+                bookings_list = []
+                for booking in bookings:
+                    booking_dict = {}
+                    for key, value in booking.items():
+                        if hasattr(value, 'isoformat'):
+                            booking_dict[key] = value.isoformat()
+                        elif str(type(value)) == "<class 'decimal.Decimal'>":
+                            booking_dict[key] = float(value)
+                        else:
+                            booking_dict[key] = value
+                    bookings_list.append(booking_dict)
+                
+                return {
+                    'statusCode': 200,
+                    'headers': headers,
+                    'body': json.dumps({'bookings': bookings_list}),
+                    'isBase64Encoded': False
+                }
             
             if guest_id:
                 guest_query = f"SELECT * FROM guests WHERE id = {guest_id}"

@@ -249,18 +249,44 @@ const GuestDashboardPage = () => {
         )}
 
         <div className="mt-12">
-          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border-green-500/20 p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <Icon name="MessageCircle" size={24} className="text-green-400" />
-              <h3 className="text-lg font-semibold text-white">Поддержка</h3>
+          <Card className="bg-white p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Icon name="MessageCircle" size={28} className="text-gold-600" />
+              <h3 className="text-2xl font-playfair font-bold text-charcoal-900">Поддержка</h3>
             </div>
-            <p className="text-white/60 text-sm mb-4">Свяжитесь с нами через Telegram</p>
+            
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <Icon name="Phone" size={20} className="text-gold-600 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-gray-600 mb-1">Телефон</p>
+                  <a href="tel:+79141965172" className="text-sm font-semibold text-charcoal-900 hover:text-gold-600">+7 914 196-51-72</a>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <Icon name="Mail" size={20} className="text-gold-600 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-gray-600 mb-1">Email</p>
+                  <a href="mailto:hab-agent@mail.ru" className="text-sm font-semibold text-charcoal-900 hover:text-gold-600 break-all">hab-agent@mail.ru</a>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <Icon name="Send" size={20} className="text-gold-600 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-gray-600 mb-1">Telegram</p>
+                  <a href="https://t.me/apartamentsmsk" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-charcoal-900 hover:text-gold-600">@apartamentsmsk</a>
+                </div>
+              </div>
+            </div>
+            
             <Button
               onClick={() => window.open('https://t.me/apartamentsmsk', '_blank')}
-              className="w-full bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-500/30"
+              className="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white"
             >
-              <Icon name="Send" size={16} className="mr-2" />
-              Написать
+              <Icon name="MessageCircle" size={18} className="mr-2" />
+              Написать в Telegram
             </Button>
           </Card>
         </div>

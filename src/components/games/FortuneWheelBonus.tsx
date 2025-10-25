@@ -164,21 +164,23 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
   };
 
   return (
-    <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 backdrop-blur-xl border-white/10 p-6">
-      <div className="flex items-start gap-4 mb-6">
-        <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-          <Icon name="Sparkles" size={28} className="text-white" />
+    <Card className="bg-gradient-to-br from-gold-900/30 to-gold-700/20 backdrop-blur-xl border-gold-500/30 p-8 shadow-2xl">
+      <div className="flex items-start gap-4 mb-8">
+        <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-gold-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl animate-pulse">
+          <Icon name="Sparkles" size={32} className="text-white" />
         </div>
         <div className="flex-1">
-          <h3 className="text-2xl font-bold text-white mb-1">Колесо Фортуны</h3>
-          <p className="text-white/60 text-sm">Крути раз в неделю и получай бонусы!</p>
+          <h3 className="text-3xl font-playfair font-bold text-white mb-2">Колесо Фортуны</h3>
+          <p className="text-gold-200 text-sm">Крутите раз в неделю и выигрывайте бонусные баллы!</p>
         </div>
       </div>
 
-      <div className="relative w-80 h-80 mx-auto mb-6">
+      <div className="relative w-80 h-80 mx-auto mb-8">
         <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute w-80 h-80 bg-gradient-to-br from-gold-300/20 to-gold-600/20 rounded-full blur-2xl"></div>
+          
           <div 
-            className="relative w-72 h-72 rounded-full shadow-2xl"
+            className="relative w-72 h-72 rounded-full shadow-2xl ring-4 ring-gold-400/50"
             style={{
               transform: `rotate(${rotation}deg)`,
               transition: isSpinning ? 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)' : 'none'
@@ -187,14 +189,14 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
             {segments.map((segment, index) => (
               <div
                 key={index}
-                className={`absolute w-full h-full bg-gradient-to-br ${segment.color}`}
+                className={`absolute w-full h-full bg-gradient-to-br ${segment.color} shadow-inner`}
                 style={{
                   clipPath: `polygon(50% 50%, ${50 + 50 * Math.cos((index * 30 - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((index * 30 - 90) * Math.PI / 180)}%, ${50 + 50 * Math.cos(((index + 1) * 30 - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin(((index + 1) * 30 - 90) * Math.PI / 180)}%)`,
                   borderRadius: '50%'
                 }}
               >
                 <div
-                  className="absolute text-white font-bold text-sm"
+                  className="absolute text-white font-bold text-base drop-shadow-lg"
                   style={{
                     top: '25%',
                     left: '50%',
@@ -208,15 +210,15 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
             ))}
             
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center">
-                <Icon name="Star" size={32} className="text-gold-500" />
+              <div className="w-20 h-20 bg-gradient-to-br from-gold-300 to-gold-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white">
+                <Icon name="Star" size={36} className="text-white drop-shadow-lg" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 z-10">
-          <div className="w-0 h-0 border-l-8 border-r-8 border-t-16 border-l-transparent border-r-transparent border-t-red-500"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 z-20">
+          <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[24px] border-l-transparent border-r-transparent border-t-red-600 drop-shadow-xl"></div>
         </div>
       </div>
 
