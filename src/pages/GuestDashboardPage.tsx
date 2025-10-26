@@ -160,54 +160,53 @@ const GuestDashboardPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
       <div className="sticky top-0 z-50 backdrop-blur-xl bg-black/20 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-3 md:py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Icon name="User" size={20} className="text-white md:w-6 md:h-6" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Icon name="User" className="text-white w-5 h-5 sm:w-6 sm:h-6" />
               </div>
               <div>
-                <h1 className="text-base md:text-xl font-bold text-white">Личный кабинет</h1>
-                <p className="text-xs md:text-sm text-white/60">{guestName || 'Гость'}</p>
+                <h1 className="text-base sm:text-xl font-bold text-white">Личный кабинет</h1>
+                <p className="text-xs sm:text-sm text-white/60">{guestName || 'Гость'}</p>
               </div>
             </div>
             <Button
               onClick={handleLogout}
-              className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border-white/10 text-xs md:text-sm px-3 md:px-4"
+              className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border-white/10 text-xs sm:text-sm px-3 sm:px-4"
               size="sm"
             >
-              <Icon name="LogOut" size={14} className="mr-1 md:mr-2 md:w-4 md:h-4" />
+              <Icon name="LogOut" className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline">Выход</span>
-              <span className="sm:hidden">🚪</span>
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-4 md:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
         {isVip && (
-          <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200 p-4 md:p-6 mb-4 md:mb-8">
-            <div className="flex items-start gap-3 md:gap-4">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Icon name="Crown" size={24} className="text-white md:w-8 md:h-8" />
+          <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200 p-4 sm:p-6 mb-6">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Icon name="Crown" className="text-white w-6 h-6 sm:w-8 sm:h-8" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-base md:text-xl font-bold text-gray-900">VIP статус активен</h3>
+                  <h3 className="text-base sm:text-xl font-bold text-gray-900">VIP статус активен</h3>
                 </div>
-                <div className="text-gray-700 text-xs md:text-sm mb-3 md:mb-4 leading-relaxed">
-                  <p className="mb-2 md:mb-3">Поздравляем! Вы являетесь VIP гостем премиум апартаментов на Поклонной 9.</p>
-                  <ol className="list-decimal list-inside space-y-1 md:space-y-2 text-xs md:text-sm">
+                <div className="text-gray-700 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed">
+                  <p className="mb-2 sm:mb-3">Поздравляем! Вы являетесь VIP гостем премиум апартаментов на Поклонной 9.</p>
+                  <ol className="list-decimal list-inside space-y-1 sm:space-y-2 text-xs sm:text-sm">
                     <li>При каждом заселении от 3х ночей Вы получите повышенный комплимент.</li>
                     <li>Вам будут начисляться баллы, где 1 балл = 1 рублю.</li>
                   </ol>
-                  <p className="mt-2 md:mt-3">Вы сможете списывать баллы за будущее проживание.</p>
+                  <p className="mt-2 sm:mt-3">Вы сможете списывать баллы за будущее проживание.</p>
                 </div>
-                <div className="flex items-center gap-2 md:gap-3 p-3 md:p-4 bg-white rounded-lg border border-yellow-200 shadow-sm">
-                  <Icon name="Star" size={20} className="text-yellow-600 md:w-6 md:h-6" />
+                <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-lg border border-yellow-200 shadow-sm">
+                  <Icon name="Star" className="text-yellow-600 w-5 h-5 sm:w-6 sm:h-6" />
                   <div>
                     <p className="text-gray-600 text-xs">Ваши бонусные баллы</p>
-                    <p className="text-xl md:text-2xl font-bold text-gray-900">{(bonusPoints || 0).toLocaleString('ru-RU')} баллов</p>
+                    <p className="text-lg sm:text-2xl font-bold text-gray-900">{(bonusPoints || 0).toLocaleString('ru-RU')} баллов</p>
                   </div>
                 </div>
               </div>
@@ -216,7 +215,7 @@ const GuestDashboardPage = () => {
         )}
 
         {!isLoading && guestId && completedBookings.length > 0 && (
-          <div className="mb-4 md:mb-8 space-y-4">
+          <div className="mb-6 space-y-4">
             {completedBookings.map((booking) => (
               <ScratchCards
                 key={booking.id}
@@ -229,18 +228,18 @@ const GuestDashboardPage = () => {
           </div>
         )}
 
-        <div className="mb-4 md:mb-6">
-          <div className="flex flex-col gap-3 md:gap-4 mb-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="mb-6">
+          <div className="flex flex-col gap-3 sm:gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Мои бронирования</h2>
-                <p className="text-white/60 text-sm md:text-base">Здесь вы можете увидеть все ваши бронирования</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Мои бронирования</h2>
+                <p className="text-white/60 text-sm sm:text-base">Здесь вы можете увидеть все ваши бронирования</p>
               </div>
               
               {bookings.length > 0 && (
                 <button
                   onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
-                  className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 rounded-lg text-white text-xs md:text-sm font-medium transition-all self-start md:self-auto"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 rounded-lg text-white text-sm font-medium transition-all self-start sm:self-auto"
                 >
                   <Icon name={sortOrder === 'newest' ? 'ArrowDownWideNarrow' : 'ArrowUpNarrowWide'} size={16} />
                   <span>{sortOrder === 'newest' ? 'Сначала новые' : 'Сначала старые'}</span>
@@ -269,10 +268,10 @@ const GuestDashboardPage = () => {
                   )}
                 </div>
                 
-                <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-1 overflow-x-auto">
+                <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-1 overflow-x-auto scrollbar-hide">
                   <button
                     onClick={() => setFilter('all')}
-                    className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
                       filter === 'all'
                         ? 'bg-gold-500 text-white shadow-lg'
                         : 'text-white/60 hover:text-white hover:bg-white/5'
@@ -282,7 +281,7 @@ const GuestDashboardPage = () => {
                   </button>
                   <button
                     onClick={() => setFilter('active')}
-                    className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
                       filter === 'active'
                         ? 'bg-gold-500 text-white shadow-lg'
                         : 'text-white/60 hover:text-white hover:bg-white/5'
@@ -292,7 +291,7 @@ const GuestDashboardPage = () => {
                   </button>
                   <button
                     onClick={() => setFilter('completed')}
-                    className={`px-3 md:px-4 py-2 rounded-md text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
                       filter === 'completed'
                         ? 'bg-gold-500 text-white shadow-lg'
                         : 'text-white/60 hover:text-white hover:bg-white/5'
@@ -307,33 +306,33 @@ const GuestDashboardPage = () => {
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-8 md:py-12">
+          <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <Icon name="Loader2" size={36} className="animate-spin text-gold-500 mx-auto mb-3 md:w-12 md:h-12 md:mb-4" />
-              <p className="text-white/60 text-sm md:text-base">Загрузка...</p>
+              <Icon name="Loader2" className="animate-spin text-gold-500 mx-auto mb-4 w-10 h-10 sm:w-12 sm:h-12" />
+              <p className="text-white/60 text-sm sm:text-base">Загрузка...</p>
             </div>
           </div>
         ) : bookings.length === 0 ? (
-          <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-6 md:p-12">
+          <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-6 sm:p-12">
             <div className="text-center">
-              <Icon name="Calendar" size={48} className="mx-auto mb-3 md:w-16 md:h-16 md:mb-4 text-white/20" />
-              <h3 className="text-lg md:text-xl font-semibold text-white mb-2">Нет бронирований</h3>
-              <p className="text-white/60 mb-4 md:mb-6 text-sm md:text-base">У вас пока нет активных бронирований</p>
+              <Icon name="Calendar" className="mx-auto mb-4 w-12 h-12 sm:w-16 sm:h-16 text-white/20" />
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">Нет бронирований</h3>
+              <p className="text-white/60 mb-6 text-sm sm:text-base">У вас пока нет активных бронирований</p>
               <Button
                 onClick={() => navigate('/')}
-                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm md:text-base"
+                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm sm:text-base"
               >
-                <Icon name="Home" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+                <Icon name="Home" className="mr-2 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                 На главную
               </Button>
             </div>
           </Card>
         ) : filteredBookings.length === 0 ? (
-          <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-6 md:p-12">
+          <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-6 sm:p-12">
             <div className="text-center">
-              <Icon name={searchQuery ? 'Search' : 'Filter'} size={48} className="mx-auto mb-3 md:w-16 md:h-16 md:mb-4 text-white/20" />
-              <h3 className="text-lg md:text-xl font-semibold text-white mb-2">Ничего не найдено</h3>
-              <p className="text-white/60 mb-4 md:mb-6 text-sm md:text-base">
+              <Icon name={searchQuery ? 'Search' : 'Filter'} className="mx-auto mb-4 w-12 h-12 sm:w-16 sm:h-16 text-white/20" />
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">Ничего не найдено</h3>
+              <p className="text-white/60 mb-6 text-sm sm:text-base">
                 {searchQuery 
                   ? `Не найдено бронирований с "${searchQuery}"` 
                   : filter === 'active' 
@@ -344,18 +343,18 @@ const GuestDashboardPage = () => {
                 {searchQuery && (
                   <Button
                     onClick={() => setSearchQuery('')}
-                    className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm md:text-base"
+                    className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm sm:text-base"
                   >
-                    <Icon name="X" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+                    <Icon name="X" className="mr-2 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                     Очистить поиск
                   </Button>
                 )}
                 {filter !== 'all' && (
                   <Button
                     onClick={() => setFilter('all')}
-                    className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm md:text-base"
+                    className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-sm sm:text-base"
                   >
-                    <Icon name="RotateCcw" size={16} className="mr-2 md:w-[18px] md:h-[18px]" />
+                    <Icon name="RotateCcw" className="mr-2 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                     Показать все
                   </Button>
                 )}
@@ -363,14 +362,14 @@ const GuestDashboardPage = () => {
             </div>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {filteredBookings.map((booking) => (
-              <Card key={booking.id} className="bg-white/5 backdrop-blur-xl border-white/10 p-6 hover:bg-white/10 transition-all">
+              <Card key={booking.id} className="bg-white/5 backdrop-blur-xl border-white/10 p-4 sm:p-6 hover:bg-white/10 transition-all">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
-                    <Icon name="Building2" size={24} className="text-white" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
+                    <Icon name="Building2" className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  <div className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
                     booking.status === 'active' ? 'bg-green-500/20 text-green-400' :
                     booking.status === 'upcoming' ? 'bg-blue-500/20 text-blue-400' :
                     'bg-gray-500/20 text-gray-400'
@@ -380,23 +379,27 @@ const GuestDashboardPage = () => {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-semibold text-white mb-4">{booking.apartment || 'Апартаменты'}</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">{booking.apartment || 'Апартаменты'}</h3>
 
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Icon name="Calendar" size={16} className="text-white/40" />
-                    <span className="text-white/60">Заезд:</span>
-                    <span className="text-white font-medium">{booking.check_in ? formatDate(booking.check_in) : '-'}</span>
+                <div className="space-y-2.5">
+                  <div className="flex items-start gap-2 text-xs sm:text-sm">
+                    <Icon name="Calendar" className="text-white/40 w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <span className="text-white/60">Заезд: </span>
+                      <span className="text-white font-medium">{booking.check_in ? formatDate(booking.check_in) : '-'}</span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm">
-                    <Icon name="Calendar" size={16} className="text-white/40" />
-                    <span className="text-white/60">Выезд:</span>
-                    <span className="text-white font-medium">{booking.check_out ? formatDate(booking.check_out) : '-'}</span>
+                  <div className="flex items-start gap-2 text-xs sm:text-sm">
+                    <Icon name="Calendar" className="text-white/40 w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <span className="text-white/60">Выезд: </span>
+                      <span className="text-white font-medium">{booking.check_out ? formatDate(booking.check_out) : '-'}</span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm pt-3 border-t border-white/10">
-                    <Icon name="DollarSign" size={16} className="text-gold-400" />
+                  <div className="flex items-center gap-2 text-xs sm:text-sm pt-2.5 border-t border-white/10">
+                    <Icon name="DollarSign" className="text-gold-400 w-4 h-4" />
                     <span className="text-white/60">Стоимость:</span>
                     <span className="text-gold-400 font-bold">{(booking.total_amount || booking.total_price || 0).toLocaleString('ru-RU')} ₽</span>
                   </div>
@@ -406,44 +409,44 @@ const GuestDashboardPage = () => {
           </div>
         )}
 
-        <div className="mt-12">
-          <Card className="bg-white p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <Icon name="MessageCircle" size={28} className="text-gold-600" />
-              <h3 className="text-2xl font-playfair font-bold text-charcoal-900">Поддержка</h3>
+        <div className="mt-8 sm:mt-12">
+          <Card className="bg-white p-5 sm:p-8">
+            <div className="flex items-center gap-3 mb-5 sm:mb-6">
+              <Icon name="MessageCircle" className="text-gold-600 w-6 h-6 sm:w-7 sm:h-7" />
+              <h3 className="text-xl sm:text-2xl font-playfair font-bold text-charcoal-900">Поддержка</h3>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-4 mb-6">
-              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                <Icon name="Phone" size={20} className="text-gold-600 flex-shrink-0" />
-                <div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
+              <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                <Icon name="Phone" className="text-gold-600 flex-shrink-0 w-5 h-5" />
+                <div className="min-w-0">
                   <p className="text-xs text-gray-600 mb-1">Телефон</p>
-                  <a href="tel:+79141965172" className="text-sm font-semibold text-charcoal-900 hover:text-gold-600">+7 914 196-51-72</a>
+                  <a href="tel:+79141965172" className="text-xs sm:text-sm font-semibold text-charcoal-900 hover:text-gold-600 block truncate">+7 914 196-51-72</a>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                <Icon name="Mail" size={20} className="text-gold-600 flex-shrink-0" />
-                <div>
+              <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                <Icon name="Mail" className="text-gold-600 flex-shrink-0 w-5 h-5" />
+                <div className="min-w-0">
                   <p className="text-xs text-gray-600 mb-1">Email</p>
-                  <a href="mailto:hab-agent@mail.ru" className="text-sm font-semibold text-charcoal-900 hover:text-gold-600 break-all">hab-agent@mail.ru</a>
+                  <a href="mailto:hab-agent@mail.ru" className="text-xs sm:text-sm font-semibold text-charcoal-900 hover:text-gold-600 block truncate">hab-agent@mail.ru</a>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                <Icon name="Send" size={20} className="text-gold-600 flex-shrink-0" />
-                <div>
+              <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg sm:col-span-2 lg:col-span-1">
+                <Icon name="Send" className="text-gold-600 flex-shrink-0 w-5 h-5" />
+                <div className="min-w-0">
                   <p className="text-xs text-gray-600 mb-1">Telegram</p>
-                  <a href="https://t.me/apartamentsmsk" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-charcoal-900 hover:text-gold-600">@apartamentsmsk</a>
+                  <a href="https://t.me/apartamentsmsk" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm font-semibold text-charcoal-900 hover:text-gold-600 block truncate">@apartamentsmsk</a>
                 </div>
               </div>
             </div>
             
             <Button
               onClick={() => window.open('https://t.me/apartamentsmsk', '_blank')}
-              className="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white"
+              className="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white text-sm sm:text-base py-2.5 sm:py-3"
             >
-              <Icon name="MessageCircle" size={18} className="mr-2" />
+              <Icon name="MessageCircle" className="mr-2 w-[18px] h-[18px]" />
               Написать в Telegram
             </Button>
           </Card>
