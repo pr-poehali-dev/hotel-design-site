@@ -43,6 +43,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
   ];
 
   useEffect(() => {
+    if (!guestId) return;
     checkSpinAvailability();
     loadSpinHistory();
   }, [guestId]);
@@ -74,6 +75,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
   }, [nextSpinDate]);
 
   const checkSpinAvailability = async () => {
+    if (!guestId) return;
     try {
       const response = await fetch(`https://functions.poehali.dev/76a63047-54d9-43c8-ab3d-9b36904f1fb3?guest_id=${guestId}`);
       const data = await response.json();
@@ -87,6 +89,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
   };
 
   const loadSpinHistory = async () => {
+    if (!guestId) return;
     try {
       const response = await fetch(`https://functions.poehali.dev/76a63047-54d9-43c8-ab3d-9b36904f1fb3?guest_id=${guestId}&action=history`);
       const data = await response.json();
@@ -292,35 +295,38 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
 
           {showHistory && (
             <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gold-500/30 scrollbar-track-transparent">
-              {spinHistory.map((spin, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
-                      <Icon name="Star" size={14} className="text-white" />
+              {spinHistory.map((spin, index) => {
+                if (!spin || !spin.bonus_points || !spin.spin_date) return null;
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
+                        <Icon name="Star" size={14} className="text-white" />
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm">{(spin.bonus_points || 0).toLocaleString('ru-RU')} ₽</p>
+                        <p className="text-white/50 text-xs">
+                          {new Date(spin.spin_date).toLocaleDateString('ru-RU', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-white font-semibold text-sm">{spin.bonus_points.toLocaleString('ru-RU')} ₽</p>
-                      <p className="text-white/50 text-xs">
-                        {new Date(spin.spin_date).toLocaleDateString('ru-RU', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    </div>
+                    {spin.bonus_points >= 5000 && (
+                      <div className="px-2 py-1 bg-gold-500/20 rounded-md">
+                        <Icon name="Trophy" size={14} className="text-gold-400" />
+                      </div>
+                    )}
                   </div>
-                  {spin.bonus_points >= 5000 && (
-                    <div className="px-2 py-1 bg-gold-500/20 rounded-md">
-                      <Icon name="Trophy" size={14} className="text-gold-400" />
-                    </div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

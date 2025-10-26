@@ -22,10 +22,12 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!guestId || !bookingId) return;
     checkCardStatus();
   }, [guestId, bookingId]);
 
   const checkCardStatus = async () => {
+    if (!guestId || !bookingId) return;
     try {
       const response = await fetch(
         `https://functions.poehali.dev/89112d1f-1a35-49dd-98b0-9579b4ac652d?guest_id=${guestId}&booking_id=${bookingId}`
