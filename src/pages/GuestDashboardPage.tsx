@@ -86,6 +86,10 @@ const GuestDashboardPage = () => {
           return checkOut < now;
         });
         
+        console.log('All bookings:', data.bookings);
+        console.log('Completed bookings:', completed);
+        console.log('Current date:', now);
+        
         setBookings(data.bookings);
         setCompletedBookings(completed);
       } else {
