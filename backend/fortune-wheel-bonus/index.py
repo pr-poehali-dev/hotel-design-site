@@ -8,10 +8,10 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Fortune wheel with bonus points - spin once per week
-    Args: event with httpMethod, body (guest_id for POST), queryStringParameters (guest_id for GET)
+    Business: Fortune wheel with bonus points - spin once per week, get history
+    Args: event with httpMethod, body (guest_id for POST), queryStringParameters (guest_id for GET, action=history)
           context with request_id
-    Returns: HTTP response with spin result or next available time
+    Returns: HTTP response with spin result, next available time, or history
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -42,6 +42,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     if method == 'GET':
         query_params = event.get('queryStringParameters', {}) or {}
         guest_id = query_params.get('guest_id')
+        action = query_params.get('action', 'status')
         
         if not guest_id:
             cur.close()
@@ -63,6 +64,41 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'isBase64Encoded': False,
                 'body': json.dumps({'error': 'guest_id must be a valid integer'})
+            }
+        
+        if action == 'history':
+            cur.execute(
+                """
+                SELECT bonus_points, spin_date
+                FROM t_p9202093_hotel_design_site.fortune_wheel_bonus_spins
+                WHERE guest_id = %s
+                ORDER BY spin_date DESC
+                LIMIT 50
+                """,
+                (guest_id_int,)
+            )
+            
+            history = cur.fetchall()
+            
+            cur.close()
+            conn.close()
+            
+            history_list = [
+                {
+                    'bonus_points': row['bonus_points'],
+                    'spin_date': row['spin_date'].isoformat() if row['spin_date'] else None
+                }
+                for row in history
+            ]
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({
+                    'history': history_list,
+                    'total_spins': len(history_list)
+                })
             }
         
         cur.execute(

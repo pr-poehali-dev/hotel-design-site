@@ -6,6 +6,11 @@ import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
 import { playWinSound, playSpinSound } from '@/utils/soundEffects';
 
+interface SpinHistory {
+  bonus_points: number;
+  spin_date: string;
+}
+
 interface FortuneWheelBonusProps {
   guestId: string;
   onPointsUpdate: (newPoints: number) => void;
@@ -19,6 +24,8 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
   const [nextSpinDate, setNextSpinDate] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState('');
   const [lastBonus, setLastBonus] = useState<number | null>(null);
+  const [spinHistory, setSpinHistory] = useState<SpinHistory[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const segments = [
     { points: 500, color: 'from-blue-400 to-blue-600' },
@@ -37,6 +44,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
 
   useEffect(() => {
     checkSpinAvailability();
+    loadSpinHistory();
   }, [guestId]);
 
   useEffect(() => {
@@ -75,6 +83,19 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
       setLastBonus(data.last_bonus);
     } catch (error) {
       console.error('Error checking spin availability:', error);
+    }
+  };
+
+  const loadSpinHistory = async () => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/76a63047-54d9-43c8-ab3d-9b36904f1fb3?guest_id=${guestId}&action=history`);
+      const data = await response.json();
+      
+      if (data.history) {
+        setSpinHistory(data.history);
+      }
+    } catch (error) {
+      console.error('Error loading spin history:', error);
     }
   };
 
@@ -143,6 +164,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
           setNextSpinDate(data.next_spin_available);
           setLastBonus(data.bonus_points);
           setIsSpinning(false);
+          loadSpinHistory();
         }, 4000);
       } else {
         toast({
@@ -254,6 +276,53 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
               </p>
             )}
           </div>
+        </div>
+      )}
+
+      {spinHistory.length > 0 && (
+        <div className="mt-4">
+          <Button
+            onClick={() => setShowHistory(!showHistory)}
+            className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20"
+            size="sm"
+          >
+            <Icon name={showHistory ? 'ChevronUp' : 'History'} size={16} className="mr-2" />
+            {showHistory ? 'Скрыть историю' : `История вращений (${spinHistory.length})`}
+          </Button>
+
+          {showHistory && (
+            <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gold-500/30 scrollbar-track-transparent">
+              {spinHistory.map((spin, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-gold-400 to-gold-600 rounded-lg flex items-center justify-center">
+                      <Icon name="Star" size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold text-sm">{spin.bonus_points.toLocaleString('ru-RU')} ₽</p>
+                      <p className="text-white/50 text-xs">
+                        {new Date(spin.spin_date).toLocaleDateString('ru-RU', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  {spin.bonus_points >= 5000 && (
+                    <div className="px-2 py-1 bg-gold-500/20 rounded-md">
+                      <Icon name="Trophy" size={14} className="text-gold-400" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </Card>
