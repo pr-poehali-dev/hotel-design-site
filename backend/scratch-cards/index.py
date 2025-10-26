@@ -54,6 +54,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     conn = psycopg2.connect(database_url)
+    conn.set_session(autocommit=False)
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     
     if method == 'GET':
@@ -84,14 +85,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         if booking_id:
-            cur.execute(
-                """
+            # Escape single quotes in booking_id by doubling them
+            booking_id_escaped = booking_id.replace("'", "''")
+            
+            cur.execute(f"""
                 SELECT id, bonus_points, is_scratched, scratched_at
                 FROM t_p9202093_hotel_design_site.scratch_cards
-                WHERE guest_id = %s AND booking_id = %s
-                """,
-                (guest_id_int, booking_id)
-            )
+                WHERE guest_id = {guest_id_int} AND booking_id = '{booking_id_escaped}'
+                """)
             
             card = cur.fetchone()
             
@@ -121,15 +122,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 })
             }
         
-        cur.execute(
-            """
+        cur.execute(f"""
             SELECT id, booking_id, bonus_points, is_scratched, scratched_at, created_at
             FROM t_p9202093_hotel_design_site.scratch_cards
-            WHERE guest_id = %s
+            WHERE guest_id = {guest_id_int}
             ORDER BY created_at DESC
-            """,
-            (guest_id_int,)
-        )
+            """)
         
         cards = cur.fetchall()
         
@@ -187,10 +185,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'guest_id must be a valid integer'})
                 }
             
-            cur.execute(
-                "SELECT id FROM t_p9202093_hotel_design_site.scratch_cards WHERE booking_id = %s",
-                (booking_id,)
-            )
+            # Escape single quotes in booking_id by doubling them
+            booking_id_escaped = booking_id.replace("'", "''")
+            
+            cur.execute(f"SELECT id FROM t_p9202093_hotel_design_site.scratch_cards WHERE booking_id = '{booking_id_escaped}'")
             
             existing = cur.fetchone()
             
@@ -207,15 +205,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cards_data = generate_scratch_cards(booking_id)
             chosen_card = random.choice(cards_data)
             
-            cur.execute(
-                """
+            cur.execute(f"""
                 INSERT INTO t_p9202093_hotel_design_site.scratch_cards
                 (guest_id, booking_id, bonus_points)
-                VALUES (%s, %s, %s)
+                VALUES ({guest_id_int}, '{booking_id_escaped}', {chosen_card['bonus_points']})
                 RETURNING id
-                """,
-                (guest_id_int, booking_id, chosen_card['bonus_points'])
-            )
+                """)
             
             card_id = cur.fetchone()['id']
             
@@ -260,14 +255,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'guest_id and booking_id are required'})
                 }
             
-            cur.execute(
-                """
+            # Escape single quotes in booking_id by doubling them
+            booking_id_escaped = booking_id.replace("'", "''")
+            
+            cur.execute(f"""
                 SELECT id, bonus_points, is_scratched
                 FROM t_p9202093_hotel_design_site.scratch_cards
-                WHERE guest_id = %s AND booking_id = %s
-                """,
-                (guest_id_int, booking_id)
-            )
+                WHERE guest_id = {guest_id_int} AND booking_id = '{booking_id_escaped}'
+                """)
             
             card = cur.fetchone()
             
@@ -292,34 +287,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             bonus_points = card['bonus_points']
+            card_id = card['id']
             
-            cur.execute(
-                """
+            # Get current timestamp for scratched_at
+            scratched_at = datetime.now().isoformat()
+            
+            cur.execute(f"""
                 UPDATE t_p9202093_hotel_design_site.scratch_cards
-                SET is_scratched = true, scratched_at = %s
-                WHERE id = %s
-                """,
-                (datetime.now(), card['id'])
-            )
+                SET is_scratched = true, scratched_at = '{scratched_at}'
+                WHERE id = {card_id}
+                """)
             
             if bonus_points > 0:
-                cur.execute(
-                    """
+                cur.execute(f"""
                     UPDATE t_p9202093_hotel_design_site.guests
-                    SET bonus_points = bonus_points + %s
-                    WHERE id = %s
+                    SET bonus_points = bonus_points + {bonus_points}
+                    WHERE id = {guest_id_int}
                     RETURNING bonus_points
-                    """,
-                    (bonus_points, guest_id_int)
-                )
+                    """)
                 
                 updated_guest = cur.fetchone()
                 new_total = updated_guest['bonus_points'] if updated_guest else bonus_points
             else:
-                cur.execute(
-                    "SELECT bonus_points FROM t_p9202093_hotel_design_site.guests WHERE id = %s",
-                    (guest_id_int,)
-                )
+                cur.execute(f"SELECT bonus_points FROM t_p9202093_hotel_design_site.guests WHERE id = {guest_id_int}")
                 guest_data = cur.fetchone()
                 new_total = guest_data['bonus_points'] if guest_data else 0
             

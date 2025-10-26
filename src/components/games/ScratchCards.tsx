@@ -196,7 +196,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
             {wonPoints && wonPoints > 0 ? (
               <div className="text-center">
                 <Icon name="Trophy" size={48} className="text-white mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{wonPoints}</p>
+                <p className="text-2xl font-bold text-white">{(wonPoints || 0).toLocaleString('ru-RU')}</p>
               </div>
             ) : (
               <Icon name="X" size={64} className="text-white" />
@@ -204,7 +204,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
           </div>
           <p className="text-xl font-bold text-white mb-2">
             {wonPoints && wonPoints > 0
-              ? `Вы выиграли ${wonPoints.toLocaleString('ru-RU')} баллов!`
+              ? `Вы выиграли ${(wonPoints || 0).toLocaleString('ru-RU')} баллов!`
               : 'К сожалению, эта карта без выигрыша'}
           </p>
           <p className="text-white/60 text-sm">
