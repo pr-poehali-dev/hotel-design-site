@@ -223,7 +223,6 @@ const GuestDashboardPage = () => {
             )}
           </div>
         )}
-        </div>
 
         <div className="mb-4 md:mb-6">
           <div className="flex flex-col gap-3 md:gap-4 mb-4">
