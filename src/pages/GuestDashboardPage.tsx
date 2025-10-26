@@ -8,11 +8,13 @@ import ScratchCards from '@/components/games/ScratchCards';
 
 interface Booking {
   id: string;
-  apartment: string;
+  apartment_id?: string;
+  apartment?: string;
   check_in: string;
   check_out: string;
   status: string;
-  total_price: number;
+  total_price?: number;
+  total_amount?: number;
 }
 
 const GuestDashboardPage = () => {
@@ -79,9 +81,9 @@ const GuestDashboardPage = () => {
       if (data.bookings && Array.isArray(data.bookings)) {
         const now = new Date();
         const completed = data.bookings.filter((b: Booking) => {
-          if (!b.check_out || !b.status) return false;
+          if (!b.check_out) return false;
           const checkOut = new Date(b.check_out);
-          return checkOut < now && b.status === 'completed';
+          return checkOut < now;
         });
         
         setBookings(data.bookings);
@@ -388,7 +390,7 @@ const GuestDashboardPage = () => {
                   <div className="flex items-center gap-2 text-sm pt-3 border-t border-white/10">
                     <Icon name="DollarSign" size={16} className="text-gold-400" />
                     <span className="text-white/60">Стоимость:</span>
-                    <span className="text-gold-400 font-bold">{(booking.total_price || 0).toLocaleString('ru-RU')} ₽</span>
+                    <span className="text-gold-400 font-bold">{(booking.total_amount || booking.total_price || 0).toLocaleString('ru-RU')} ₽</span>
                   </div>
                 </div>
               </Card>

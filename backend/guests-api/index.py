@@ -62,10 +62,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 bookings_query = f"""
-                    SELECT * FROM t_p9202093_hotel_design_site.bookings 
-                    WHERE guest_email = '{guest['email'].replace("'", "''")}' 
-                       OR guest_phone = '{guest['phone'].replace("'", "''")}'
-                    ORDER BY check_in DESC
+                    SELECT b.*, r.number as apartment
+                    FROM t_p9202093_hotel_design_site.bookings b
+                    LEFT JOIN t_p9202093_hotel_design_site.rooms r ON b.apartment_id = r.id
+                    WHERE b.guest_email = '{guest['email'].replace("'", "''")}' 
+                       OR b.guest_phone = '{guest['phone'].replace("'", "''")}'
+                    ORDER BY b.check_in DESC
                 """
                 cursor.execute(bookings_query)
                 bookings = cursor.fetchall()
