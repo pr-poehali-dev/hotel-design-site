@@ -176,16 +176,16 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: Scr
   }
 
   return (
-    <Card className="bg-gradient-to-br from-orange-900/20 to-red-900/20 backdrop-blur-xl border-white/10 p-6">
+    <Card className="bg-white border-gray-200 p-6">
       <div className="flex items-start gap-4 mb-6">
         <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
           <Icon name="Gift" size={28} className="text-white" />
         </div>
         <div className="flex-1">
-          <h3 className="text-2xl font-bold text-white mb-1">
-            Scratch-карты{apartmentName && ` - ${apartmentName}`}
+          <h3 className="text-2xl font-bold text-black mb-1">
+            Выбери карту и получи возможность пополнить свой кошелек баллами!
           </h3>
-          <p className="text-white/60 text-sm">
+          <p className="text-gray-600 text-sm">
             {isScratched
               ? 'Вы уже использовали свою карту'
               : 'Выберите одну карту из 30 и сотрите её!'}
@@ -205,12 +205,12 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: Scr
               <Icon name="X" size={64} className="text-white" />
             )}
           </div>
-          <p className="text-xl font-bold text-white mb-2">
+          <p className="text-xl font-bold text-black mb-2">
             {wonPoints && wonPoints > 0
               ? `Вы выиграли ${(wonPoints || 0).toLocaleString('ru-RU')} баллов!`
               : 'К сожалению, эта карта без выигрыша'}
           </p>
-          <p className="text-white/60 text-sm">
+          <p className="text-gray-600 text-sm">
             Получите новую карту после следующего выезда
           </p>
         </div>
@@ -266,8 +266,8 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: Scr
             )}
           </Button>
 
-          <div className="mt-4 p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl">
-            <p className="text-white text-xs text-center font-medium">
+          <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <p className="text-black text-xs text-center font-medium">
               💡 Шансы: 10 пустых • 10 по 1000 баллов • 5 по 2000 баллов • 4 по 3000 баллов • 1 по 5000 баллов
             </p>
           </div>
