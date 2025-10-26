@@ -296,7 +296,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
           {showHistory && (
             <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gold-500/30 scrollbar-track-transparent">
               {spinHistory.map((spin, index) => {
-                if (!spin || !spin.bonus_points || !spin.spin_date) return null;
+                if (!spin || spin.bonus_points === undefined || spin.bonus_points === null || !spin.spin_date) return null;
                 return (
                   <div
                     key={index}

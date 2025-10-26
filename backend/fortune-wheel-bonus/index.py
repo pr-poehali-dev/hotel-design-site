@@ -37,6 +37,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     conn = psycopg2.connect(database_url)
+    conn.set_session(autocommit=False)
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     
     if method == 'GET':
@@ -67,16 +68,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         if action == 'history':
-            cur.execute(
-                """
+            cur.execute(f"""
                 SELECT bonus_points, spin_date
                 FROM t_p9202093_hotel_design_site.fortune_wheel_bonus_spins
-                WHERE guest_id = %s
+                WHERE guest_id = {guest_id_int}
                 ORDER BY spin_date DESC
                 LIMIT 50
-                """,
-                (guest_id_int,)
-            )
+            """)
             
             history = cur.fetchall()
             
@@ -101,16 +99,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 })
             }
         
-        cur.execute(
-            """
+        cur.execute(f"""
             SELECT next_spin_available, bonus_points, spin_date
             FROM t_p9202093_hotel_design_site.fortune_wheel_bonus_spins
-            WHERE guest_id = %s
+            WHERE guest_id = {guest_id_int}
             ORDER BY spin_date DESC
             LIMIT 1
-            """,
-            (guest_id_int,)
-        )
+        """)
         
         last_spin = cur.fetchone()
         
@@ -171,16 +166,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'guest_id must be a valid integer'})
             }
         
-        cur.execute(
-            """
+        cur.execute(f"""
             SELECT next_spin_available
             FROM t_p9202093_hotel_design_site.fortune_wheel_bonus_spins
-            WHERE guest_id = %s
+            WHERE guest_id = {guest_id_int}
             ORDER BY spin_date DESC
             LIMIT 1
-            """,
-            (guest_id_int,)
-        )
+        """)
         
         last_spin = cur.fetchone()
         now = datetime.now()
@@ -205,28 +197,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         bonus_points = random.choice(wheel_config)
         next_spin_time = now + timedelta(weeks=1)
+        next_spin_time_str = next_spin_time.strftime('%Y-%m-%d %H:%M:%S.%f')
         
-        cur.execute(
-            """
+        cur.execute(f"""
             INSERT INTO t_p9202093_hotel_design_site.fortune_wheel_bonus_spins
             (guest_id, bonus_points, next_spin_available)
-            VALUES (%s, %s, %s)
+            VALUES ({guest_id_int}, {bonus_points}, '{next_spin_time_str}')
             RETURNING id
-            """,
-            (guest_id_int, bonus_points, next_spin_time)
-        )
+        """)
         
         spin_id = cur.fetchone()['id']
         
-        cur.execute(
-            """
+        cur.execute(f"""
             UPDATE t_p9202093_hotel_design_site.guests
-            SET bonus_points = bonus_points + %s
-            WHERE id = %s
+            SET bonus_points = bonus_points + {bonus_points}
+            WHERE id = {guest_id_int}
             RETURNING bonus_points
-            """,
-            (bonus_points, guest_id_int)
-        )
+        """)
         
         updated_guest = cur.fetchone()
         new_total = updated_guest['bonus_points'] if updated_guest else bonus_points
