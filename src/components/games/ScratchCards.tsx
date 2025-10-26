@@ -266,9 +266,9 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: Scr
             )}
           </Button>
 
-          <div className="mt-4 p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl">
-            <p className="text-white/60 text-xs text-center">
-              💡 Шансы: 10 пустых • 10 по 1000₽ • 5 по 2000₽ • 4 по 3000₽ • 1 по 5000₽
+          <div className="mt-4 p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl">
+            <p className="text-white text-xs text-center font-medium">
+              💡 Шансы: 10 пустых • 10 по 1000 баллов • 5 по 2000 баллов • 4 по 3000 баллов • 1 по 5000 баллов
             </p>
           </div>
         </>

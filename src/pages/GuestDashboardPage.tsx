@@ -207,7 +207,7 @@ const GuestDashboardPage = () => {
                   <Icon name="Star" size={20} className="text-yellow-600 md:w-6 md:h-6" />
                   <div>
                     <p className="text-gray-600 text-xs">Ваши бонусные баллы</p>
-                    <p className="text-xl md:text-2xl font-bold text-gray-900">{(bonusPoints || 0).toLocaleString('ru-RU')} ₽</p>
+                    <p className="text-xl md:text-2xl font-bold text-gray-900">{(bonusPoints || 0).toLocaleString('ru-RU')} баллов</p>
                   </div>
                 </div>
               </div>
