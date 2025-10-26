@@ -195,7 +195,7 @@ const GuestDashboardPage = () => {
                   <Icon name="Star" size={20} className="text-yellow-600 md:w-6 md:h-6" />
                   <div>
                     <p className="text-gray-600 text-xs">Ваши бонусные баллы</p>
-                    <p className="text-xl md:text-2xl font-bold text-gray-900">{bonusPoints.toLocaleString('ru-RU')} ₽</p>
+                    <p className="text-xl md:text-2xl font-bold text-gray-900">{(bonusPoints || 0).toLocaleString('ru-RU')} ₽</p>
                   </div>
                 </div>
               </div>
@@ -384,7 +384,7 @@ const GuestDashboardPage = () => {
                   <div className="flex items-center gap-2 text-sm pt-3 border-t border-white/10">
                     <Icon name="DollarSign" size={16} className="text-gold-400" />
                     <span className="text-white/60">Стоимость:</span>
-                    <span className="text-gold-400 font-bold">{booking.total_price ? booking.total_price.toLocaleString('ru-RU') : '0'} ₽</span>
+                    <span className="text-gold-400 font-bold">{(booking.total_price || 0).toLocaleString('ru-RU')} ₽</span>
                   </div>
                 </div>
               </Card>

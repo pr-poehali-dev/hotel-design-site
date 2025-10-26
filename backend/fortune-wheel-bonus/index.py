@@ -53,6 +53,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'guest_id is required'})
             }
         
+        try:
+            guest_id_int = int(guest_id)
+        except ValueError:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': 'guest_id must be a valid integer'})
+            }
+        
         cur.execute(
             """
             SELECT next_spin_available, bonus_points, spin_date
@@ -61,7 +73,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             ORDER BY spin_date DESC
             LIMIT 1
             """,
-            (guest_id,)
+            (guest_id_int,)
         )
         
         last_spin = cur.fetchone()
@@ -111,6 +123,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'guest_id is required'})
             }
         
+        try:
+            guest_id_int = int(guest_id)
+        except ValueError:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': 'guest_id must be a valid integer'})
+            }
+        
         cur.execute(
             """
             SELECT next_spin_available
@@ -119,7 +143,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             ORDER BY spin_date DESC
             LIMIT 1
             """,
-            (guest_id,)
+            (guest_id_int,)
         )
         
         last_spin = cur.fetchone()
@@ -153,7 +177,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             VALUES (%s, %s, %s)
             RETURNING id
             """,
-            (guest_id, bonus_points, next_spin_time)
+            (guest_id_int, bonus_points, next_spin_time)
         )
         
         spin_id = cur.fetchone()['id']
@@ -165,7 +189,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             WHERE id = %s
             RETURNING bonus_points
             """,
-            (bonus_points, guest_id)
+            (bonus_points, guest_id_int)
         )
         
         updated_guest = cur.fetchone()
