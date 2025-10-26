@@ -23,6 +23,15 @@ const PromotionsSection = () => {
 
   const promotions: Promotion[] = [
     {
+      id: '1',
+      title: 'Стирай билетики\nи получай баллы',
+      description: 'После каждого выезда в личном кабинете появятся билеты — выбирай и выигрывай!',
+      discount: '1 балл = 1₽',
+      icon: 'Ticket',
+      type: 'new',
+      color: 'from-orange-500 to-red-500'
+    },
+    {
       id: '2',
       title: 'Приведи гостей\nи получи 10% вознаграждение',
       description: '',
