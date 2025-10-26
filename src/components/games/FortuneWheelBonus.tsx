@@ -159,7 +159,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
 
           toast({
             title: '🎉 Поздравляем!',
-            description: `Вы выиграли ${data.bonus_points.toLocaleString('ru-RU')} баллов!`,
+            description: `Вы выиграли ${(data.bonus_points || 0).toLocaleString('ru-RU')} баллов!`,
           });
 
           onPointsUpdate(data.total_bonus_points);
@@ -275,7 +275,7 @@ const FortuneWheelBonus = ({ guestId, onPointsUpdate }: FortuneWheelBonusProps) 
             <p className="text-base md:text-lg font-bold text-white mb-2">{timeLeft}</p>
             {lastBonus && (
               <p className="text-white/40 text-xs">
-                Последний выигрыш: {lastBonus.toLocaleString('ru-RU')} баллов
+                Последний выигрыш: {(lastBonus || 0).toLocaleString('ru-RU')} баллов
               </p>
             )}
           </div>

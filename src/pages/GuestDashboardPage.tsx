@@ -20,7 +20,7 @@ const GuestDashboardPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [guestName, setGuestName] = useState('');
-  const [guestId, setGuestId] = useState('');
+  const [guestId, setGuestId] = useState<string | null>(null);
   const [isVip, setIsVip] = useState(false);
   const [bonusPoints, setBonusPoints] = useState(0);
   const [bookings, setBookings] = useState<Booking[]>([]);
