@@ -11,9 +11,10 @@ interface ScratchCardsProps {
   bookingId: string;
   onPointsUpdate: (newPoints: number) => void;
   apartmentName?: string;
+  hideAfterScratch?: boolean;
 }
 
-const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: ScratchCardsProps) => {
+const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName, hideAfterScratch = false }: ScratchCardsProps) => {
   const { toast } = useToast();
   const [hasCard, setHasCard] = useState(false);
   const [isScratched, setIsScratched] = useState(false);
@@ -171,7 +172,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: Scr
     );
   }
 
-  if (!hasCard) {
+  if (!hasCard || (hideAfterScratch && isScratched)) {
     return null;
   }
 

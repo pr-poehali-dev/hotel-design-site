@@ -183,6 +183,40 @@ const GuestDashboardPage = () => {
         </div>
       </div>
 
+      <div className="fixed top-20 right-4 z-40 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-2xl">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Icon name={isVip ? "Crown" : "User"} className={`${isVip ? 'text-yellow-400' : 'text-white/60'} w-5 h-5`} />
+            <div>
+              <p className="text-white/60 text-xs">Статус</p>
+              <p className={`text-sm font-bold ${isVip ? 'text-yellow-400' : 'text-white'}`}>
+                {isVip ? 'VIP' : 'Обычный'}
+              </p>
+            </div>
+          </div>
+          
+          {!isVip && (
+            <div className="flex items-center gap-2 opacity-40">
+              <Icon name="Crown" className="text-white/40 w-5 h-5" />
+              <div>
+                <p className="text-white/40 text-xs">VIP</p>
+                <p className="text-white/40 text-sm font-bold">Не активирован</p>
+              </div>
+            </div>
+          )}
+          
+          <div className="pt-3 border-t border-white/20">
+            <div className="flex items-center gap-2">
+              <Icon name="Star" className="text-yellow-400 w-5 h-5" />
+              <div>
+                <p className="text-white/60 text-xs">Баллы</p>
+                <p className="text-white text-sm font-bold">{(bonusPoints || 0).toLocaleString('ru-RU')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
         {isVip && (
           <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200 p-4 sm:p-6 mb-6">
@@ -223,6 +257,7 @@ const GuestDashboardPage = () => {
                 bookingId={booking.id}
                 onPointsUpdate={handlePointsUpdate}
                 apartmentName={booking.apartment || 'Апартаменты'}
+                hideAfterScratch={true}
               />
             ))}
           </div>
