@@ -44,8 +44,15 @@ const GuestDashboardPage = () => {
     setGuestName(name || 'Гость');
     setGuestId(id);
     setIsVip(vip);
-    loadGuestData(id);
-    loadBookings(id);
+    
+    const loadData = async () => {
+      await Promise.all([
+        loadGuestData(id),
+        loadBookings(id)
+      ]);
+    };
+    
+    loadData();
   }, [navigate]);
 
   const loadGuestData = async (guestId: string) => {
@@ -203,16 +210,19 @@ const GuestDashboardPage = () => {
           </Card>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-8">
-          {guestId && <FortuneWheelBonus guestId={guestId} onPointsUpdate={handlePointsUpdate} />}
-          
-          {guestId && completedBookings.length > 0 && completedBookings[0]?.id && (
-            <ScratchCards
-              guestId={guestId}
-              bookingId={completedBookings[0].id}
-              onPointsUpdate={handlePointsUpdate}
-            />
-          )}
+        {!isLoading && guestId && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-8">
+            <FortuneWheelBonus guestId={guestId} onPointsUpdate={handlePointsUpdate} />
+            
+            {completedBookings.length > 0 && completedBookings[0]?.id && (
+              <ScratchCards
+                guestId={guestId}
+                bookingId={completedBookings[0].id}
+                onPointsUpdate={handlePointsUpdate}
+              />
+            )}
+          </div>
+        )}
         </div>
 
         <div className="mb-4 md:mb-6">
