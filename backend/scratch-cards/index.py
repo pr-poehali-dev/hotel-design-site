@@ -295,7 +295,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cur.execute(f"""
                 UPDATE t_p9202093_hotel_design_site.scratch_cards
                 SET is_scratched = true, scratched_at = '{scratched_at}'
-                WHERE id = {card_id}
+                WHERE id = '{card_id}'
                 """)
             
             if bonus_points > 0:
