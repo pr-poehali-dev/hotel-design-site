@@ -211,13 +211,17 @@ const GuestDashboardPage = () => {
           </Card>
         )}
 
-        {!isLoading && guestId && completedBookings.length > 0 && completedBookings[0]?.id && (
-          <div className="mb-4 md:mb-8">
-            <ScratchCards
-              guestId={guestId}
-              bookingId={completedBookings[0].id}
-              onPointsUpdate={handlePointsUpdate}
-            />
+        {!isLoading && guestId && completedBookings.length > 0 && (
+          <div className="mb-4 md:mb-8 space-y-4">
+            {completedBookings.map((booking) => (
+              <ScratchCards
+                key={booking.id}
+                guestId={guestId}
+                bookingId={booking.id}
+                onPointsUpdate={handlePointsUpdate}
+                apartmentName={booking.apartment || 'Апартаменты'}
+              />
+            ))}
           </div>
         )}
 

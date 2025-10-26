@@ -10,9 +10,10 @@ interface ScratchCardsProps {
   guestId: string;
   bookingId: string;
   onPointsUpdate: (newPoints: number) => void;
+  apartmentName?: string;
 }
 
-const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps) => {
+const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: ScratchCardsProps) => {
   const { toast } = useToast();
   const [hasCard, setHasCard] = useState(false);
   const [isScratched, setIsScratched] = useState(false);
@@ -181,7 +182,9 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate }: ScratchCardsProps)
           <Icon name="Gift" size={28} className="text-white" />
         </div>
         <div className="flex-1">
-          <h3 className="text-2xl font-bold text-white mb-1">Scratch-карты</h3>
+          <h3 className="text-2xl font-bold text-white mb-1">
+            Scratch-карты{apartmentName && ` - ${apartmentName}`}
+          </h3>
           <p className="text-white/60 text-sm">
             {isScratched
               ? 'Вы уже использовали свою карту'
