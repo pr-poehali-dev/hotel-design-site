@@ -403,7 +403,7 @@ export default function CalendarPage() {
                   <div>
                     <p className="text-xs text-gray-400 mb-1">Сумма</p>
                     <p className="text-gold-400 font-bold text-lg">
-                      {selectedBooking.total_amount ? `${selectedBooking.total_amount.toLocaleString('ru-RU')} ₽` : 'Не указано'}
+                      {selectedBooking.total_amount ? `${(selectedBooking.total_amount || 0).toLocaleString('ru-RU')} ₽` : 'Не указано'}
                     </p>
                   </div>
                 </div>

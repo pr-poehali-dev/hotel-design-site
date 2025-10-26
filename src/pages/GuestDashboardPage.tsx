@@ -163,7 +163,7 @@ const GuestDashboardPage = () => {
               </div>
               <div>
                 <h1 className="text-base md:text-xl font-bold text-white">Личный кабинет</h1>
-                <p className="text-xs md:text-sm text-white/60">{guestName}</p>
+                <p className="text-xs md:text-sm text-white/60">{guestName || 'Гость'}</p>
               </div>
             </div>
             <Button

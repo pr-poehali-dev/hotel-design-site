@@ -71,7 +71,7 @@ const PaymentsReport = ({ records, onUpdatePaymentStatus }: PaymentsReportProps)
             <Icon name="CheckCircle2" size={20} className="text-green-500" />
             <span className="text-gray-400 text-sm">Выплачено</span>
           </div>
-          <p className="text-3xl font-bold text-green-500">{totalPaid.toLocaleString()} ₽</p>
+          <p className="text-3xl font-bold text-green-500">{(totalPaid || 0).toLocaleString()} ₽</p>
         </div>
 
         <div className="bg-charcoal-900 rounded-lg p-4 border border-gray-700">
@@ -79,7 +79,7 @@ const PaymentsReport = ({ records, onUpdatePaymentStatus }: PaymentsReportProps)
             <Icon name="AlertCircle" size={20} className="text-red-500" />
             <span className="text-gray-400 text-sm">К оплате</span>
           </div>
-          <p className="text-3xl font-bold text-red-500">{totalUnpaid.toLocaleString()} ₽</p>
+          <p className="text-3xl font-bold text-red-500">{(totalUnpaid || 0).toLocaleString()} ₽</p>
         </div>
 
         <div className="bg-charcoal-900 rounded-lg p-4 border border-gray-700">
@@ -87,7 +87,7 @@ const PaymentsReport = ({ records, onUpdatePaymentStatus }: PaymentsReportProps)
             <Icon name="DollarSign" size={20} className="text-gold-500" />
             <span className="text-gray-400 text-sm">Общая сумма</span>
           </div>
-          <p className="text-3xl font-bold text-gold-500">{grandTotal.toLocaleString()} ₽</p>
+          <p className="text-3xl font-bold text-gold-500">{(grandTotal || 0).toLocaleString()} ₽</p>
         </div>
       </div>
 
@@ -127,17 +127,17 @@ const PaymentsReport = ({ records, onUpdatePaymentStatus }: PaymentsReportProps)
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-green-500 font-semibold">
-                        {hk.totalPaid.toLocaleString()} ₽
+                        {(hk.totalPaid || 0).toLocaleString()} ₽
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-red-500 font-semibold">
-                        {hk.totalUnpaid.toLocaleString()} ₽
+                        {(hk.totalUnpaid || 0).toLocaleString()} ₽
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-white font-bold">
-                        {total.toLocaleString()} ₽
+                        {(total || 0).toLocaleString()} ₽
                       </span>
                     </td>
                     <td className="px-6 py-4">

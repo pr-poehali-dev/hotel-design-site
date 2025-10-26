@@ -208,7 +208,7 @@ const TicketOrderModal = ({ activity, isOpen, onClose }: TicketOrderModalProps) 
             <div className="bg-gradient-to-r from-gold-50 to-gold-100 rounded-xl p-4 border-2 border-gold-200">
               <div className="flex items-center justify-between">
                 <span className="text-lg font-semibold text-gray-700">Итого к оплате:</span>
-                <span className="text-3xl font-bold text-charcoal-900">{totalPrice.toLocaleString()}₽</span>
+                <span className="text-3xl font-bold text-charcoal-900">{(totalPrice || 0).toLocaleString()}₽</span>
               </div>
             </div>
 

@@ -359,13 +359,13 @@ export default function BookingPage() {
                   {pricePerNight > 0 && (
                     <>
                       <div className="flex justify-between text-gray-400 text-sm">
-                        <span>{pricePerNight.toLocaleString()} ₽ × {totalNights} ночей</span>
-                        <span>{totalPrice.toLocaleString()} ₽</span>
+                        <span>{(pricePerNight || 0).toLocaleString()} ₽ × {totalNights} ночей</span>
+                        <span>{(totalPrice || 0).toLocaleString()} ₽</span>
                       </div>
                       <div className="pt-3 border-t border-gold-500/20">
                         <div className="flex justify-between text-gold-400 font-bold text-lg">
                           <span>Итого:</span>
-                          <span>{totalPrice.toLocaleString()} ₽</span>
+                          <span>{(totalPrice || 0).toLocaleString()} ₽</span>
                         </div>
                       </div>
                     </>
