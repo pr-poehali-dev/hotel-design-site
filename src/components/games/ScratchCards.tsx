@@ -216,7 +216,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: Scr
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-6 gap-3 mb-6">
+          <div className="grid grid-cols-10 gap-2 mb-6">
             {Array.from({ length: 30 }, (_, i) => (
               <button
                 key={i}
@@ -235,7 +235,7 @@ const ScratchCards = ({ guestId, bookingId, onPointsUpdate, apartmentName }: Scr
               >
                 <Icon
                   name="Gift"
-                  size={20}
+                  size={12}
                   className={selectedCard === i ? 'text-white' : 'text-white/80'}
                 />
               </button>
