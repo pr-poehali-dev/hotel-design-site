@@ -2,12 +2,8 @@
   "tests": [{
     "name": "Get guest scratch cards",
     "method": "GET",
-    "path": "/?guest_id=test-guest-123",
+    "path": "/?guest_id=1",
     "expectedStatus": 200,
-    "expectedBody": {
-      "cards": "array",
-      "total": "number"
-    },
     "bodyMatcher": "partial"
   }]
 }

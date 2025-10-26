@@ -49,7 +49,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             action = query_params.get('action', '')
             
             if guest_id and action == 'bookings':
-                guest_query = f"SELECT * FROM guests WHERE id = {guest_id}"
+                guest_query = f"SELECT * FROM t_p9202093_hotel_design_site.guests WHERE id = {guest_id}"
                 cursor.execute(guest_query)
                 guest = cursor.fetchone()
                 
@@ -62,7 +62,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 bookings_query = f"""
-                    SELECT * FROM bookings 
+                    SELECT * FROM t_p9202093_hotel_design_site.bookings 
                     WHERE guest_email = '{guest['email'].replace("'", "''")}' 
                        OR guest_phone = '{guest['phone'].replace("'", "''")}'
                     ORDER BY check_in DESC
@@ -90,7 +90,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             if guest_id:
-                guest_query = f"SELECT * FROM guests WHERE id = {guest_id}"
+                guest_query = f"SELECT * FROM t_p9202093_hotel_design_site.guests WHERE id = {guest_id}"
                 cursor.execute(guest_query)
                 guest = cursor.fetchone()
                 
@@ -103,7 +103,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 bookings_query = f"""
-                    SELECT * FROM bookings 
+                    SELECT * FROM t_p9202093_hotel_design_site.bookings 
                     WHERE guest_email = '{guest['email'].replace("'", "''")}' 
                        OR guest_phone = '{guest['phone'].replace("'", "''")}'
                     ORDER BY check_in DESC
@@ -139,8 +139,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     COUNT(DISTINCT b.id) as bookings_count,
                     COALESCE(SUM(b.total_amount), 0) as total_revenue,
                     MAX(b.check_out) as last_visit
-                FROM guests g
-                LEFT JOIN bookings b ON (
+                FROM t_p9202093_hotel_design_site.guests g
+                LEFT JOIN t_p9202093_hotel_design_site.bookings b ON (
                     b.guest_email = g.email 
                     OR b.guest_phone = g.phone
                 )
@@ -213,7 +213,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 password_part = 'NULL'
             
             insert_query = f"""
-                INSERT INTO guests (name, email, phone, is_vip, notes, login, password, bonus_points, created_at, updated_at)
+                INSERT INTO t_p9202093_hotel_design_site.guests (name, email, phone, is_vip, notes, login, password, bonus_points, created_at, updated_at)
                 VALUES ('{name}', '{email}', '{phone}', {is_vip}, '{notes}', {login_part}, {password_part}, {bonus_points}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 RETURNING *
             """
@@ -272,7 +272,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 password_part = 'password = NULL'
             
             update_query = f"""
-                UPDATE guests 
+                UPDATE t_p9202093_hotel_design_site.guests 
                 SET name = '{name}', 
                     email = '{email}', 
                     phone = '{phone}', 
@@ -326,7 +326,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            delete_query = f"DELETE FROM guests WHERE id = {guest_id} RETURNING id"
+            delete_query = f"DELETE FROM t_p9202093_hotel_design_site.guests WHERE id = {guest_id} RETURNING id"
             cursor.execute(delete_query)
             conn.commit()
             deleted = cursor.fetchone()

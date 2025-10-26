@@ -62,7 +62,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cursor = conn.cursor()
     
     try:
-        query = f"SELECT * FROM guests WHERE login = '{login}' AND password = '{password}' LIMIT 1"
+        query = f"SELECT * FROM t_p9202093_hotel_design_site.guests WHERE login = '{login}' AND password = '{password}' LIMIT 1"
         cursor.execute(query)
         guest = cursor.fetchone()
         

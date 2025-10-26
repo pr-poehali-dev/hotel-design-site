@@ -71,6 +71,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'guest_id is required'})
             }
         
+        try:
+            guest_id_int = int(guest_id)
+        except ValueError:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': 'guest_id must be a valid integer'})
+            }
+        
         if booking_id:
             cur.execute(
                 """
@@ -78,7 +90,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 FROM t_p9202093_hotel_design_site.scratch_cards
                 WHERE guest_id = %s AND booking_id = %s
                 """,
-                (guest_id, booking_id)
+                (guest_id_int, booking_id)
             )
             
             card = cur.fetchone()
@@ -116,7 +128,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             WHERE guest_id = %s
             ORDER BY created_at DESC
             """,
-            (guest_id,)
+            (guest_id_int,)
         )
         
         cards = cur.fetchall()
@@ -163,6 +175,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'guest_id and booking_id are required'})
                 }
             
+            try:
+                guest_id_int = int(guest_id)
+            except ValueError:
+                cur.close()
+                conn.close()
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'error': 'guest_id must be a valid integer'})
+                }
+            
             cur.execute(
                 "SELECT id FROM t_p9202093_hotel_design_site.scratch_cards WHERE booking_id = %s",
                 (booking_id,)
@@ -190,7 +214,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 VALUES (%s, %s, %s)
                 RETURNING id
                 """,
-                (guest_id, booking_id, chosen_card['bonus_points'])
+                (guest_id_int, booking_id, chosen_card['bonus_points'])
             )
             
             card_id = cur.fetchone()['id']
@@ -224,13 +248,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'guest_id and booking_id are required'})
                 }
             
+            try:
+                guest_id_int = int(guest_id)
+            except ValueError:
+                cur.close()
+                conn.close()
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'error': 'guest_id and booking_id are required'})
+                }
+            
             cur.execute(
                 """
                 SELECT id, bonus_points, is_scratched
                 FROM t_p9202093_hotel_design_site.scratch_cards
                 WHERE guest_id = %s AND booking_id = %s
                 """,
-                (guest_id, booking_id)
+                (guest_id_int, booking_id)
             )
             
             card = cur.fetchone()
@@ -274,7 +310,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     WHERE id = %s
                     RETURNING bonus_points
                     """,
-                    (bonus_points, guest_id)
+                    (bonus_points, guest_id_int)
                 )
                 
                 updated_guest = cur.fetchone()
@@ -282,7 +318,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             else:
                 cur.execute(
                     "SELECT bonus_points FROM t_p9202093_hotel_design_site.guests WHERE id = %s",
-                    (guest_id,)
+                    (guest_id_int,)
                 )
                 guest_data = cur.fetchone()
                 new_total = guest_data['bonus_points'] if guest_data else 0

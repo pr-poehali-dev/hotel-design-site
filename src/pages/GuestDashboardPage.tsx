@@ -204,9 +204,9 @@ const GuestDashboardPage = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-8">
-          <FortuneWheelBonus guestId={guestId} onPointsUpdate={handlePointsUpdate} />
+          {guestId && <FortuneWheelBonus guestId={guestId} onPointsUpdate={handlePointsUpdate} />}
           
-          {completedBookings.length > 0 && (
+          {guestId && completedBookings.length > 0 && completedBookings[0]?.id && (
             <ScratchCards
               guestId={guestId}
               bookingId={completedBookings[0].id}
