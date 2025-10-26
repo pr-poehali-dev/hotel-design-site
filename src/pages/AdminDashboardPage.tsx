@@ -19,6 +19,7 @@ const AdminDashboardPage = () => {
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<GuestFilter>('all');
+  const [sortOrder, setSortOrder] = useState<'name' | 'revenue' | 'visits'>('name');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -191,19 +192,29 @@ const AdminDashboardPage = () => {
     };
   };
 
-  const filteredGuests = guests.filter(guest => {
-    const matchesSearch = 
-      guest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      guest.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      guest.phone.includes(searchQuery);
-    
-    const matchesFilter = 
-      filter === 'all' ? true :
-      filter === 'vip' ? guest.is_vip :
-      !guest.is_vip;
+  const filteredGuests = guests
+    .filter(guest => {
+      const matchesSearch = 
+        guest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        guest.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        guest.phone.includes(searchQuery);
+      
+      const matchesFilter = 
+        filter === 'all' ? true :
+        filter === 'vip' ? guest.is_vip :
+        !guest.is_vip;
 
-    return matchesSearch && matchesFilter;
-  });
+      return matchesSearch && matchesFilter;
+    })
+    .sort((a, b) => {
+      if (sortOrder === 'name') {
+        return a.name.localeCompare(b.name);
+      } else if (sortOrder === 'revenue') {
+        return b.total_revenue - a.total_revenue;
+      } else {
+        return b.total_visits - a.total_visits;
+      }
+    });
 
   const stats = calculateStats();
 
@@ -334,21 +345,65 @@ const AdminDashboardPage = () => {
               </Button>
             </div>
 
-            <div className="flex gap-2">
-              {(['all', 'vip', 'regular'] as GuestFilter[]).map((f) => (
-                <Button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  size="sm"
-                  className={`flex-1 ${
-                    filter === f
-                      ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {f === 'all' ? 'Все' : f === 'vip' ? 'VIP' : 'Обычные'}
-                </Button>
-              ))}
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                {(['all', 'vip', 'regular'] as GuestFilter[]).map((f) => (
+                  <Button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    size="sm"
+                    className={`flex-1 ${
+                      filter === f
+                        ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {f === 'all' ? 'Все' : f === 'vip' ? 'VIP' : 'Обычные'}
+                  </Button>
+                ))}
+              </div>
+              
+              <div className="flex gap-2 items-center">
+                <span className="text-xs text-gray-500 font-medium">Сортировка:</span>
+                <div className="flex gap-1 flex-1">
+                  <Button
+                    onClick={() => setSortOrder('name')}
+                    size="sm"
+                    className={`flex-1 text-xs ${
+                      sortOrder === 'name'
+                        ? 'bg-gray-800 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    <Icon name="User" size={14} className="mr-1" />
+                    Имя
+                  </Button>
+                  <Button
+                    onClick={() => setSortOrder('revenue')}
+                    size="sm"
+                    className={`flex-1 text-xs ${
+                      sortOrder === 'revenue'
+                        ? 'bg-gray-800 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    <Icon name="DollarSign" size={14} className="mr-1" />
+                    Доход
+                  </Button>
+                  <Button
+                    onClick={() => setSortOrder('visits')}
+                    size="sm"
+                    className={`flex-1 text-xs ${
+                      sortOrder === 'visits'
+                        ? 'bg-gray-800 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    <Icon name="CalendarCheck" size={14} className="mr-1" />
+                    Визиты
+                  </Button>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-3 max-h-[calc(100vh-400px)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
