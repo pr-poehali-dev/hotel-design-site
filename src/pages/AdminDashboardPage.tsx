@@ -66,6 +66,8 @@ const AdminDashboardPage = () => {
           setDialogOpen(true);
           setEditingGuest(null);
         }}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       />
 
       <div className="max-w-7xl mx-auto px-4 py-6 relative z-10">
