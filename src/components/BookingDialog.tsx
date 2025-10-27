@@ -10,9 +10,17 @@ interface BookingDialogProps {
   onSave: (booking: BookingRecord) => void;
   booking?: BookingRecord;
   commissionRate?: number;
+  onCommissionRateChange?: (rate: number) => void;
+  apartmentId?: string;
 }
 
-const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20 }: BookingDialogProps) => {
+const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20, onCommissionRateChange, apartmentId }: BookingDialogProps) => {
+  const [isEditingRate, setIsEditingRate] = useState(false);
+  const [tempRate, setTempRate] = useState(commissionRate);
+
+  useEffect(() => {
+    setTempRate(commissionRate);
+  }, [commissionRate]);
   const [formData, setFormData] = useState<Partial<BookingRecord>>({
     checkIn: '',
     checkOut: '',
@@ -245,18 +253,53 @@ const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20 }: 
                     min="0"
                     max="100"
                     step="0.1"
-                    value={commissionRate}
-                    readOnly
-                    className="w-24 px-4 py-2 bg-gray-100 border border-purple-300 rounded-lg text-center font-bold text-lg"
+                    value={isEditingRate ? tempRate : commissionRate}
+                    onChange={(e) => setTempRate(Number(e.target.value))}
+                    readOnly={!isEditingRate}
+                    className={`w-24 px-4 py-2 border border-purple-300 rounded-lg text-center font-bold text-lg ${
+                      isEditingRate ? 'bg-white' : 'bg-gray-100'
+                    }`}
                   />
                   <span className="text-purple-900 font-semibold">%</span>
                   <div className="flex-1 text-sm text-purple-700">
                     = {calculated.managementCommission.toLocaleString('ru')} ₽
                   </div>
                 </div>
-                <p className="text-xs text-purple-600 mt-2">
-                  Изменить можно в настройках собственников
-                </p>
+                {onCommissionRateChange && apartmentId && (
+                  <div className="mt-2">
+                    {isEditingRate ? (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={async () => {
+                            if (onCommissionRateChange) {
+                              await onCommissionRateChange(tempRate);
+                              setIsEditingRate(false);
+                            }
+                          }}
+                          className="text-xs px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold"
+                        >
+                          Сохранить
+                        </button>
+                        <button
+                          onClick={() => {
+                            setTempRate(commissionRate);
+                            setIsEditingRate(false);
+                          }}
+                          className="text-xs px-3 py-1 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg font-semibold"
+                        >
+                          Отмена
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setIsEditingRate(true)}
+                        className="text-xs text-purple-600 hover:text-purple-800 font-semibold underline"
+                      >
+                        Изменить комиссию
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

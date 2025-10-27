@@ -28,7 +28,8 @@ const ReportsPage = () => {
     setLoading,
     commissionRate,
     loadBookings,
-    loadMonthlyReports
+    loadMonthlyReports,
+    updateCommissionRate
   } = useReportsData(isAuthenticated);
 
   const {
@@ -127,6 +128,10 @@ const ReportsPage = () => {
         onSave={onSaveBooking}
         booking={editingBooking}
         commissionRate={commissionRate}
+        apartmentId={selectedApartment}
+        onCommissionRateChange={async (rate) => {
+          await updateCommissionRate(selectedApartment, rate);
+        }}
       />
     </div>
   );

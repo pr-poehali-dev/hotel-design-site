@@ -65,6 +65,31 @@ export const useReportsData = (isAuthenticated: boolean) => {
     }
   };
 
+  const updateCommissionRate = async (apartmentId: string, rate: number) => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/d54660a1-bb13-44aa-a3f9-09772059a519', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apartment_id: apartmentId,
+          commission_rate: rate
+        })
+      });
+
+      if (response.ok) {
+        setCommissionRate(rate);
+        setOwners(prev => prev.map(owner => 
+          owner.apartmentId === apartmentId 
+            ? { ...owner, commissionRate: rate }
+            : owner
+        ));
+      }
+    } catch (error) {
+      console.error('Failed to update commission rate:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       loadOwners();
@@ -124,6 +149,7 @@ export const useReportsData = (isAuthenticated: boolean) => {
     setLoading,
     commissionRate,
     loadBookings,
-    loadMonthlyReports
+    loadMonthlyReports,
+    updateCommissionRate
   };
 };
