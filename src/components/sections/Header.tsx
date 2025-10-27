@@ -33,13 +33,20 @@ const Header = ({ navigation = [], currentSection = '', onNavigate = () => {} }:
               onNavigate('home');
             }}
           >
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-2xl font-playfair font-bold text-charcoal-900">P9</span>
+            <div className="relative flex-shrink-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-xl sm:text-2xl font-playfair font-bold text-charcoal-900">P9</span>
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gold-300 rounded-full opacity-80"></div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-gold-300 rounded-full opacity-80"></div>
             </div>
-            <h1 className="font-playfair font-bold text-gold-400 py-0 px-0 text-sm md:text-lg hidden sm:block">Premium Apartments</h1>
+            <div className="flex flex-col leading-tight">
+              <h1 className="font-playfair font-bold text-gold-400 text-xs sm:text-sm md:text-base lg:text-lg whitespace-nowrap">
+                Premium Apartments
+              </h1>
+              <p className="font-playfair font-semibold text-gold-400/70 text-[10px] sm:text-xs md:text-sm whitespace-nowrap">
+                Moscow
+              </p>
+            </div>
           </a>
           <div className="flex items-center space-x-2 md:space-x-4">
             <Button
