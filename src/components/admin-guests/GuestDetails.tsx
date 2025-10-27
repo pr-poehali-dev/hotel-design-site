@@ -29,6 +29,9 @@ const GuestDetails = ({ guest, onEdit, onDelete, onUpdate }: GuestDetailsProps) 
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
   const [showBookingDialog, setShowBookingDialog] = useState(false);
+  const [showCommissionDialog, setShowCommissionDialog] = useState(false);
+  const [commissionAmount, setCommissionAmount] = useState<string>('');
+  const [commissionProcessing, setCommissionProcessing] = useState(false);
   
   const loadGuestBookings = async () => {
     setLoadingBookings(true);
@@ -65,6 +68,45 @@ const GuestDetails = ({ guest, onEdit, onDelete, onUpdate }: GuestDetailsProps) 
   const handleBookingClick = (booking: any) => {
     setSelectedBooking(booking);
     setShowBookingDialog(true);
+  };
+
+  const handleUpdateCommission = async () => {
+    if (!selectedBooking || !commissionAmount) return;
+    
+    setCommissionProcessing(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/161fad1a-0c6f-4c29-8baf-f3b052e62b5c', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          booking_id: selectedBooking.id,
+          commission_amount: parseFloat(commissionAmount)
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: 'Комиссия обновлена',
+          description: `Комиссия по апартаменту ${selectedBooking.apartment_id} установлена: ${commissionAmount} ₽`,
+        });
+        
+        setShowCommissionDialog(false);
+        setCommissionAmount('');
+        loadGuestBookings();
+      } else {
+        throw new Error(data.error || 'Ошибка обновления комиссии');
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка',
+        description: 'Не удалось обновить комиссию',
+      });
+    } finally {
+      setCommissionProcessing(false);
+    }
   };
 
   const handleBonusChange = async (amount: number) => {
@@ -379,6 +421,72 @@ const GuestDetails = ({ guest, onEdit, onDelete, onUpdate }: GuestDetailsProps) 
               <div className="border-t pt-4">
                 <Label className="text-xs text-gray-500">ID бронирования</Label>
                 <p className="font-mono text-sm text-gray-600">{selectedBooking.id}</p>
+              </div>
+
+              <div className="border-t pt-4">
+                <Button
+                  onClick={() => {
+                    setShowBookingDialog(false);
+                    setCommissionAmount(selectedBooking.commission_amount?.toString() || '');
+                    setShowCommissionDialog(true);
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <Icon name="DollarSign" size={16} className="mr-2" />
+                  Изменить комиссию по апартаменту
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showCommissionDialog} onOpenChange={setShowCommissionDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Изменить комиссию по апартаменту</DialogTitle>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm text-gray-600">Апартаменты</Label>
+                <p className="font-semibold text-lg">{selectedBooking.apartment_id}</p>
+              </div>
+              
+              <div>
+                <Label className="text-sm text-gray-600">Период</Label>
+                <p className="text-gray-900">{formatDate(selectedBooking.check_in)} — {formatDate(selectedBooking.check_out)}</p>
+              </div>
+
+              <div>
+                <Label className="text-sm text-gray-600 mb-2 block">Сумма комиссии (₽)</Label>
+                <Input
+                  type="number"
+                  placeholder="Введите сумму комиссии"
+                  value={commissionAmount}
+                  onChange={(e) => setCommissionAmount(e.target.value)}
+                  className="text-lg"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button
+                  onClick={() => {
+                    setShowCommissionDialog(false);
+                    setCommissionAmount('');
+                  }}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Отмена
+                </Button>
+                <Button
+                  onClick={handleUpdateCommission}
+                  disabled={!commissionAmount || commissionProcessing}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {commissionProcessing ? 'Сохранение...' : 'Сохранить'}
+                </Button>
               </div>
             </div>
           )}
