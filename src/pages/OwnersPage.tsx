@@ -8,6 +8,8 @@ const AUTH_KEY = 'premium_apartments_admin_auth';
 
 interface Owner {
   apartmentId: string;
+  apartmentNumber?: string;
+  apartmentName?: string;
   ownerEmail: string;
   ownerName: string;
   commissionRate: number;

@@ -4,6 +4,8 @@ import OwnerList from './OwnerList';
 
 interface Owner {
   apartmentId: string;
+  apartmentNumber?: string;
+  apartmentName?: string;
   ownerEmail: string;
   ownerName: string;
   commissionRate: number;

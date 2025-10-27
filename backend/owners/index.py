@@ -66,13 +66,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps(owner_info)
                 }
             else:
-                cursor.execute("SELECT apartment_id, owner_email, owner_name, commission_rate FROM apartment_owners ORDER BY apartment_id")
+                cursor.execute("""
+                    SELECT ao.apartment_id, ao.owner_email, ao.owner_name, ao.commission_rate, r.number, r.bnovo_name
+                    FROM apartment_owners ao
+                    LEFT JOIN rooms r ON ao.apartment_id = r.id
+                    ORDER BY r.number
+                """)
                 rows = cursor.fetchall()
                 
                 owners = []
                 for row in rows:
+                    apartment_display = row[4] if row[4] else row[0]
                     owners.append({
                         'apartmentId': row[0],
+                        'apartmentNumber': apartment_display,
+                        'apartmentName': row[5] or f'Апартамент {apartment_display}',
                         'ownerEmail': row[1],
                         'ownerName': row[2],
                         'commissionRate': float(row[3]) if row[3] else 20.0

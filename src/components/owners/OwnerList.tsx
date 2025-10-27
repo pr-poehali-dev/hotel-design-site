@@ -4,6 +4,8 @@ import OwnerForm from './OwnerForm';
 
 interface Owner {
   apartmentId: string;
+  apartmentNumber?: string;
+  apartmentName?: string;
   ownerEmail: string;
   ownerName: string;
   commissionRate: number;
@@ -53,7 +55,7 @@ export default function OwnerList({
           >
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-white">
-                Апартамент {owner.apartmentId}
+                {owner.apartmentNumber ? `Апартамент ${owner.apartmentNumber}` : `Апартамент ${owner.apartmentId}`}
               </h3>
               <div className="flex gap-2">
                 <Button
