@@ -125,6 +125,19 @@ const AdminDashboardPage = () => {
               onSave={handleSaveGuest}
               guest={editingGuest}
             />
+
+            <button
+              onClick={() => {
+                setDialogOpen(true);
+                setEditingGuest(null);
+              }}
+              className="lg:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full shadow-lg flex items-center justify-center z-50 active:scale-95 transition-transform"
+              aria-label="Добавить гостя"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
           </>
         )}
       </div>
