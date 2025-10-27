@@ -10,7 +10,7 @@ export default function OwnerReportsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
-  const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string } | null>(null);
+  const [ownerInfo, setOwnerInfo] = useState<{ ownerName: string; ownerEmail: string; apartmentName?: string } | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null);
@@ -134,7 +134,7 @@ export default function OwnerReportsPage() {
                 <span className="text-xl font-bold text-charcoal-900">P9</span>
               </div>
               <div>
-                <h1 className="text-lg font-bold text-white">Апартамент {apartmentId}</h1>
+                <h1 className="text-lg font-bold text-white">{ownerInfo?.apartmentName || `Апартамент ${apartmentId}`}</h1>
                 {ownerInfo && <p className="text-xs text-gray-400">{ownerInfo.ownerName}</p>}
               </div>
             </div>
