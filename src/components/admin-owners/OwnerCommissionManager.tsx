@@ -29,8 +29,11 @@ const OwnerCommissionManager = () => {
   const loadOwners = async () => {
     setLoading(true);
     try {
+      console.log('Loading owners from API...');
       const response = await fetch('https://functions.poehali.dev/d54660a1-bb13-44aa-a3f9-09772059a519');
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Received data:', data);
       setOwners(data.owners || []);
       
       const initialRates: Record<string, number> = {};
@@ -38,6 +41,7 @@ const OwnerCommissionManager = () => {
         initialRates[owner.apartment_id] = owner.commission_rate;
       });
       setEditingRates(initialRates);
+      console.log('Loaded owners:', data.owners?.length || 0);
     } catch (error) {
       console.error('Error loading owners:', error);
       toast({
