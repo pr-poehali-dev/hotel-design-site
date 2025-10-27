@@ -4,6 +4,8 @@ import { FizzyButton } from '@/components/ui/fizzy-button';
 
 interface Owner {
   apartmentId: string;
+  apartmentNumber?: string;
+  apartmentName?: string;
   ownerEmail: string;
   ownerName: string;
   commissionRate: number;
@@ -74,7 +76,7 @@ const ReportsHeader = ({
               ) : (
                 owners.map(owner => (
                   <option key={owner.apartmentId} value={owner.apartmentId}>
-                    Апартамент {owner.apartmentId}
+                    {owner.apartmentNumber ? `Апартамент ${owner.apartmentNumber}` : `Апартамент ${owner.apartmentId}`}
                   </option>
                 ))
               )}

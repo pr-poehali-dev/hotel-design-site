@@ -4,6 +4,8 @@ import { bookingsAPI } from '@/api/bookings';
 
 interface Owner {
   apartmentId: string;
+  apartmentNumber?: string;
+  apartmentName?: string;
   ownerEmail: string;
   ownerName: string;
   commissionRate: number;
