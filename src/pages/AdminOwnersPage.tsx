@@ -243,7 +243,9 @@ export default function AdminOwnersPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Icon name="Building" size={14} />
-                        Апартамент {owner.apartment_number}
+                        {owner.apartment_number === 'ALL' ? 'Все апартаменты' : 
+                         owner.apartment_number === 'pending' ? 'Не назначен' : 
+                         `Апартамент ${owner.apartment_number}`}
                       </div>
                       {owner.email && (
                         <div className="flex items-center gap-2">
