@@ -8,6 +8,7 @@ import GuestCard from '@/components/admin-guests/GuestCard';
 import GuestDetails from '@/components/admin-guests/GuestDetails';
 import GuestDialog from '@/components/admin-guests/GuestDialog';
 import AdminLogin from '@/components/AdminLogin';
+import OwnerCommissionManager from '@/components/admin-owners/OwnerCommissionManager';
 import { Guest, GuestStats, GuestFilter } from '@/types/guest';
 import { useToast } from '@/hooks/use-toast';
 
@@ -25,6 +26,7 @@ const AdminDashboardPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showMobileDetails, setShowMobileDetails] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [activeTab, setActiveTab] = useState<'guests' | 'commission'>('guests');
 
   useEffect(() => {
     const authKey = localStorage.getItem('adminAuthenticated');
@@ -241,11 +243,35 @@ const AdminDashboardPage = () => {
                 <Icon name="Users" size={24} className="text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Управление гостями</h1>
+                <h1 className="text-xl font-bold text-gray-900">
+                  {activeTab === 'guests' ? 'Управление гостями' : 'Управление комиссией'}
+                </h1>
                 <p className="text-sm text-gray-600">Админ-панель</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setActiveTab('guests')}
+                className={activeTab === 'guests' 
+                  ? 'bg-gold-500 hover:bg-gold-600 text-white' 
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                }
+                size="sm"
+              >
+                <Icon name="Users" size={16} />
+                <span className="ml-1 hidden sm:inline">Гости</span>
+              </Button>
+              <Button
+                onClick={() => setActiveTab('commission')}
+                className={activeTab === 'commission' 
+                  ? 'bg-gold-500 hover:bg-gold-600 text-white' 
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                }
+                size="sm"
+              >
+                <Icon name="Percent" size={16} />
+                <span className="ml-1 hidden sm:inline">Комиссия</span>
+              </Button>
               <Button
                 onClick={handleSyncBnovo}
                 disabled={isRefreshing}
@@ -295,34 +321,38 @@ const AdminDashboardPage = () => {
       )}
 
       <div className="max-w-7xl mx-auto px-4 py-6 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatsCard
-            title="Всего гостей"
-            value={stats.total_guests}
-            icon="Users"
-            gradient="bg-gradient-to-br from-blue-500/20 to-cyan-500/20"
-          />
-          <StatsCard
-            title="VIP гостей"
-            value={stats.vip_guests}
-            icon="Crown"
-            gradient="bg-gradient-to-br from-yellow-500/20 to-orange-500/20"
-          />
-          <StatsCard
-            title="Активных"
-            value={stats.active_guests}
-            icon="TrendingUp"
-            gradient="bg-gradient-to-br from-green-500/20 to-emerald-500/20"
-          />
-          <StatsCard
-            title="Общий доход"
-            value={`${(stats.total_revenue / 1000).toFixed(0)}k ₽`}
-            icon="DollarSign"
-            gradient="bg-gradient-to-br from-purple-500/20 to-pink-500/20"
-          />
-        </div>
+        {activeTab === 'commission' ? (
+          <OwnerCommissionManager />
+        ) : (
+          <>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <StatsCard
+                title="Всего гостей"
+                value={stats.total_guests}
+                icon="Users"
+                gradient="bg-gradient-to-br from-blue-500/20 to-cyan-500/20"
+              />
+              <StatsCard
+                title="VIP гостей"
+                value={stats.vip_guests}
+                icon="Crown"
+                gradient="bg-gradient-to-br from-yellow-500/20 to-orange-500/20"
+              />
+              <StatsCard
+                title="Активных"
+                value={stats.active_guests}
+                icon="TrendingUp"
+                gradient="bg-gradient-to-br from-green-500/20 to-emerald-500/20"
+              />
+              <StatsCard
+                title="Общий доход"
+                value={`${(stats.total_revenue / 1000).toFixed(0)}k ₽`}
+                icon="DollarSign"
+                gradient="bg-gradient-to-br from-purple-500/20 to-pink-500/20"
+              />
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1 space-y-4">
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -463,17 +493,19 @@ const AdminDashboardPage = () => {
             )}
           </div>
         </div>
-      </div>
 
-      <GuestDialog
-        open={dialogOpen}
-        onClose={() => {
-          setDialogOpen(false);
-          setEditingGuest(null);
-        }}
-        onSave={handleSaveGuest}
-        guest={editingGuest}
-      />
+        <GuestDialog
+          open={dialogOpen}
+          onClose={() => {
+            setDialogOpen(false);
+            setEditingGuest(null);
+          }}
+          onSave={handleSaveGuest}
+          guest={editingGuest}
+        />
+        </>
+        )}
+      </div>
     </div>
   );
 };

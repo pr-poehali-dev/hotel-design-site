@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "name": "Get all owners with commission rates",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "owners": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Update commission rate",
+      "method": "PUT",
+      "path": "/",
+      "body": {
+        "apartment_id": "test-apartment-123",
+        "commission_rate": 25.5
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
