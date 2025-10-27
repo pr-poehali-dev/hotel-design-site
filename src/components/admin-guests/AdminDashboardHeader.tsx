@@ -47,25 +47,25 @@ const AdminDashboardHeader = ({
           <div className="flex items-center gap-2">
             <Button
               onClick={() => onTabChange('guests')}
-              className={`${activeTab === 'guests' 
+              className={activeTab === 'guests' 
                 ? 'bg-gold-500 hover:bg-gold-600 text-white' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} hidden md:flex`
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
               }
               size="sm"
             >
               <Icon name="Users" size={16} />
-              <span className="ml-2">Гости</span>
+              <span className="ml-2 hidden sm:inline">Гости</span>
             </Button>
             <Button
               onClick={() => onTabChange('commission')}
-              className={`${activeTab === 'commission' 
+              className={activeTab === 'commission' 
                 ? 'bg-gold-500 hover:bg-gold-600 text-white' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} hidden md:flex`
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
               }
               size="sm"
             >
               <Icon name="Percent" size={16} />
-              <span className="ml-2">Комиссия</span>
+              <span className="ml-2 hidden sm:inline">Комиссия</span>
             </Button>
             <Button
               onClick={onSyncBnovo}
