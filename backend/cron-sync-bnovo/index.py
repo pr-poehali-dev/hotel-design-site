@@ -168,13 +168,40 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         synced_bookings = 0
         skipped_bookings = 0
         updated_calendar = 0
+        synced_rooms = 0
         
-        # Временная отладка: собираем все уникальные room_name из Bnovo
-        unique_room_names = set()
-        for b in all_bookings:
-            if isinstance(b, dict) and b.get('room_name'):
-                unique_room_names.add(str(b.get('room_name')))
-        print(f"[DEBUG] Unique room_name values from Bnovo: {sorted(unique_room_names)}")
+        # Синхронизируем комнаты из бронирований
+        cur.execute("SELECT bnovo_id FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_id IS NOT NULL")
+        existing_room_bnovo_ids = set(row['bnovo_id'] for row in cur.fetchall())
+        
+        unique_room_ids = set()
+        for booking in all_bookings:
+            if isinstance(booking, dict):
+                room_id = booking.get('room_id')
+                if room_id and room_id not in existing_room_bnovo_ids:
+                    unique_room_ids.add(room_id)
+        
+        for bnovo_room_id in unique_room_ids:
+            room_id = f'apt-{bnovo_room_id}'
+            try:
+                cur.execute("""
+                    INSERT INTO t_p9202093_hotel_design_site.rooms (id, bnovo_id, number, floor)
+                    VALUES (%s, %s, %s, 1)
+                    ON CONFLICT (id) DO UPDATE SET bnovo_id = EXCLUDED.bnovo_id
+                """, (room_id, bnovo_room_id, str(bnovo_room_id)))
+                synced_rooms += 1
+            except Exception as e:
+                print(f'Failed to insert room {bnovo_room_id}: {str(e)}')
+        
+        conn.commit()
+        
+        # Получаем маппинг bnovo_id -> internal room id
+        cur.execute("SELECT id, bnovo_id FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_id IS NOT NULL")
+        bnovo_to_room_id = {row['bnovo_id']: row['id'] for row in cur.fetchall()}
+        
+        # Получаем существующие бронирования
+        cur.execute("SELECT bnovo_id FROM t_p9202093_hotel_design_site.bookings WHERE bnovo_id IS NOT NULL")
+        existing_bnovo_ids = set(row['bnovo_id'] for row in cur.fetchall())
         
         # Синхронизируем бронирования  
         for booking in all_bookings:
@@ -182,42 +209,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 continue
             
             bnovo_booking_id = booking.get('id')
-            if not bnovo_booking_id:
+            if not bnovo_booking_id or bnovo_booking_id in existing_bnovo_ids:
                 skipped_bookings += 1
                 continue
             
-            # Получаем room_name из Bnovo (это номер апартамента, например: "1401", "906")
-            room_name_raw = booking.get('room_name', '')
-            room_number_original = str(room_name_raw) if room_name_raw else ''
+            # Используем room_id из BНОВО и преобразуем через маппинг
+            bnovo_room_id = booking.get('room_id')
+            apartment_id = bnovo_to_room_id.get(bnovo_room_id, f'apt-{bnovo_room_id}') if bnovo_room_id else ''
             
-            # Маппинг для разных форматов названий из Bnovo
-            room_number = room_number_original
-            if 'Поклонная 9-816' in room_number_original:
-                room_number = '816'
-            elif 'Апартамент студия Матч Поинт' in room_number_original:
-                room_number = '1157'  # или другой номер если известен
-            elif 'Мат Поинт 1157' in room_number_original:
-                room_number = '1157'
-            elif 'Энитэо-193' in room_number_original:
-                room_number = '193'
-            
-            room_number_escaped = room_number.replace("'", "''")
-            
-            # Находим наш апартамент по номеру
-            cur.execute(
-                f"SELECT id, number, bnovo_name FROM t_p9202093_hotel_design_site.rooms WHERE number = '{room_number_escaped}'"
-            )
-            room = cur.fetchone()
-            
-            if not room:
-                if skipped_bookings == 0:
-                    print(f"[DEBUG] Room not found for room_number='{room_number}', booking fields: {list(booking.keys())[:20]}")
+            if not apartment_id:
                 skipped_bookings += 1
                 continue
             
-            # Используем номер апартамента как ID (как в отчетности для собственников)
-            apartment_id = str(room['number'])
-            room_id = str(room['id'])  # UUID для availability_calendar
+            room_id = apartment_id
             
             # Извлекаем даты из dates объекта
             dates = booking.get('dates', {})
