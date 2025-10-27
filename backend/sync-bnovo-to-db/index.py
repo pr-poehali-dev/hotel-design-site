@@ -212,6 +212,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         )
         existing_bnovo_ids = set(row['bnovo_id'] for row in cur.fetchall())
         
+        # Создаем маппинг bnovo_id -> internal room id
+        cur.execute(
+            "SELECT id, bnovo_id FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_id IS NOT NULL"
+        )
+        bnovo_to_room_id = {row['bnovo_id']: row['id'] for row in cur.fetchall()}
+        
         # Создаём гостей для ВСЕХ бронирований из Bnovo (новых и существующих)
         print(f'Processing {len(bookings_list)} bookings from Bnovo to create/update guests')
         
@@ -251,7 +257,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if bnovo_booking_id in existing_bnovo_ids:
                 continue
                 
-            room_id = str(booking.get('room_id', ''))
+            bnovo_room_id = booking.get('room_id')
+            room_id = bnovo_to_room_id.get(bnovo_room_id, str(bnovo_room_id)) if bnovo_room_id else ''
             check_in = booking.get('check_in') or booking.get('arrival') or booking.get('check_in_date')
             check_out = booking.get('check_out') or booking.get('departure') or booking.get('check_out_date')
             
