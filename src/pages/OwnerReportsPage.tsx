@@ -332,7 +332,7 @@ export default function OwnerReportsPage() {
                 
                 <div className="flex justify-between items-center text-red-400">
                   <span>Комиссия агрегатора</span>
-                  <span>- {selectedBooking.aggregatorCommission?.toLocaleString('ru') || 0} ₽</span>
+                  <span>- {selectedBooking.aggregatorCommission || 0}%</span>
                 </div>
 
                 {selectedBooking.expenses && (
