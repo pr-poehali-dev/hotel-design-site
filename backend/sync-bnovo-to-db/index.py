@@ -206,6 +206,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         updated_calendar = 0
         created_guests = 0
         
+        # Извлекаем уникальные room_id из бронирований и создаем комнаты
+        cur.execute("SELECT bnovo_id FROM t_p9202093_hotel_design_site.rooms WHERE bnovo_id IS NOT NULL")
+        existing_room_bnovo_ids = set(row['bnovo_id'] for row in cur.fetchall())
+        
+        unique_room_ids = set()
+        for booking in bookings_list:
+            if isinstance(booking, dict):
+                room_id = booking.get('room_id')
+                if room_id and room_id not in existing_room_bnovo_ids:
+                    unique_room_ids.add(room_id)
+        
+        for bnovo_room_id in unique_room_ids:
+            room_id = f'apt-{bnovo_room_id}'
+            try:
+                cur.execute("""
+                    INSERT INTO t_p9202093_hotel_design_site.rooms (id, bnovo_id)
+                    VALUES (%s, %s)
+                    ON CONFLICT (id) DO UPDATE SET bnovo_id = EXCLUDED.bnovo_id
+                """, (room_id, bnovo_room_id))
+                synced_rooms += 1
+            except Exception as e:
+                print(f'Failed to insert room {bnovo_room_id}: {str(e)}')
+        
+        conn.commit()
+        
         # Получаем все существующие bnovo_id за один запрос
         cur.execute(
             "SELECT bnovo_id FROM t_p9202093_hotel_design_site.bookings WHERE bnovo_id IS NOT NULL"
