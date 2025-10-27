@@ -56,7 +56,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 owner_info = {
                     'ownerEmail': row[0],
                     'ownerName': row[1],
-                    'apartmentName': row[1],
                     'commissionRate': float(row[2]) if row[2] else 20.0
                 }
                 
