@@ -197,7 +197,7 @@ export const rooms: Room[] = [
   {
     name: '2х комнатный',
     subtitle: 'Vista Point',
-    price: 'от 16 000 ₽',
+    price: 'от 20 000 ₽',
     features: ['55 кв.м', '13 этаж', 'Для 1-4 гостей'],
     image: 'https://cdn.poehali.dev/files/3aa03ad6-b466-43c8-a2d0-f3306e62bd71.jpeg',
     gallery: [
@@ -233,7 +233,7 @@ export const rooms: Room[] = [
   {
     name: '3х комнатный',
     subtitle: 'Family Joy',
-    price: '35 000 ₽',
+    price: 'от 22 000 ₽',
     features: ['76 кв.м', '21 этаж', 'Для 1-7 гостей'],
     image: 'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
     gallery: [
