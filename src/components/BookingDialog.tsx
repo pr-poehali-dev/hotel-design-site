@@ -17,10 +17,6 @@ interface BookingDialogProps {
 const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20, onCommissionRateChange, apartmentId }: BookingDialogProps) => {
   const [isEditingRate, setIsEditingRate] = useState(false);
   const [tempRate, setTempRate] = useState(commissionRate);
-
-  useEffect(() => {
-    setTempRate(commissionRate);
-  }, [commissionRate]);
   const [formData, setFormData] = useState<Partial<BookingRecord>>({
     checkIn: '',
     checkOut: '',
@@ -41,6 +37,10 @@ const BookingDialog = ({ open, onClose, onSave, booking, commissionRate = 20, on
     guestPhone: '',
     showToGuest: true,
   });
+
+  useEffect(() => {
+    setTempRate(commissionRate);
+  }, [commissionRate]);
 
   useEffect(() => {
     if (booking) {
