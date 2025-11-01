@@ -269,7 +269,7 @@ export const rooms: Room[] = [
   {
     name: '2х комнатный',
     subtitle: 'Cyber Space',
-    price: 'от 16 000 ₽',
+    price: 'от 18 000 ₽',
     features: ['62 кв.м', '9 этаж', 'Для 1-4 гостей'],
     image: 'https://cdn.poehali.dev/files/6c3840e0-1758-453e-bc73-a2d331c5e2af.jpeg',
     video: 'https://rutube.ru/play/embed/8525880a7f5c4da9d07a627dfb178e19',
@@ -301,7 +301,7 @@ export const rooms: Room[] = [
   {
     name: '3х комнатный',
     subtitle: 'Panorama Suite',
-    price: 'от 25 000 ₽',
+    price: 'от 30 000 ₽',
     features: ['103 кв.м.', '8 этаж', 'Для 1-6 гостей'],
     image: 'https://cdn.poehali.dev/files/e4d338dd-73ef-4be0-bde4-9fb69a695b70.jpeg',
     video: 'https://rutube.ru/play/embed/c9906210eb879cd9705a0ac9ba69e079',
