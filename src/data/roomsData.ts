@@ -43,7 +43,7 @@ export const rooms: Room[] = [
   {
     name: '2х комнатный',
     subtitle: 'Bearbrick Studio',
-    price: 'от 15 000 ₽',
+    price: 'от 22 000 ₽',
     features: ['55 кв.м', '21 этаж', 'Для 1-3 гостей'],
     roomId: '1759775530117',
     image: 'https://cdn.poehali.dev/files/a4100017-9df0-4397-92e6-d2aeaa753c75.JPG',
