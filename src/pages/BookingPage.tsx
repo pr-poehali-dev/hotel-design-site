@@ -161,8 +161,8 @@ export default function BookingPage() {
     }
 
     let bgColor = 'bg-charcoal-800/30';
-    if (isPast) bgColor = 'bg-charcoal-900/50 cursor-not-allowed';
-    else if (!isAvailable) bgColor = 'bg-red-900/20 cursor-not-allowed';
+    if (isPast) bgColor = 'bg-charcoal-900/50 cursor-not-allowed opacity-40';
+    else if (!isAvailable) bgColor = 'bg-red-500/80 cursor-not-allowed relative';
     else if (isSelected) bgColor = 'bg-gold-500 text-white';
     else if (isInRange) bgColor = 'bg-gold-500/30';
     else if (isAvailable) bgColor = 'bg-green-500/20 hover:bg-green-500/30 cursor-pointer';
@@ -310,17 +310,29 @@ export default function BookingPage() {
               </div>
 
               <div className="grid grid-cols-7 gap-1">
-                {days.map((day, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => handleDateClick(day)}
-                    className={getDayCellStyle(day)}
-                  >
-                    <div className="text-sm text-white font-medium">
-                      {format(day, 'd')}
+                {days.map((day, idx) => {
+                  const isAvailable = isDateAvailable(day);
+                  const dateStr = format(day, 'yyyy-MM-dd');
+                  const dayData = calendar?.days.find(d => d.date === dateStr);
+                  
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => handleDateClick(day)}
+                      className={getDayCellStyle(day)}
+                      title={!isAvailable && dayData?.guest_name ? `Занято: ${dayData.guest_name}` : ''}
+                    >
+                      <div className="text-sm text-white font-medium">
+                        {format(day, 'd')}
+                      </div>
+                      {!isAvailable && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Icon name="X" size={24} className="text-white drop-shadow-lg" />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="mt-6 space-y-2 text-sm">
@@ -329,7 +341,9 @@ export default function BookingPage() {
                   <span className="text-gray-400">Доступно</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-red-900/20 rounded"></div>
+                  <div className="w-4 h-4 bg-red-500/80 rounded flex items-center justify-center">
+                    <Icon name="X" size={12} className="text-white" />
+                  </div>
                   <span className="text-gray-400">Занято</span>
                 </div>
                 <div className="flex items-center gap-2">
