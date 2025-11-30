@@ -86,6 +86,14 @@ const Header = ({ navigation = [], currentSection = '', onNavigate = () => {} }:
                   {item.label}
                 </FizzyButton>
               ))}
+              <FizzyButton
+                onClick={() => window.location.href = '/guest-login'}
+                variant="secondary"
+                icon={<Icon name="User" size={16} />}
+                className="text-sm"
+              >
+                Личный кабинет
+              </FizzyButton>
             </nav>
           </div>
         </div>
