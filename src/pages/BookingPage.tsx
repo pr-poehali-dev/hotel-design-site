@@ -243,6 +243,8 @@ export default function BookingPage() {
         <Header />
         <div className="container mx-auto px-4 py-20 text-center">
           <h1 className="text-2xl text-white mb-4">Апартамент не найден</h1>
+          <p className="text-gold-400 mb-2">Искомый ID: {roomId}</p>
+          <p className="text-gray-400 text-sm">Проверьте консоль браузера (F12) для списка доступных апартаментов</p>
           <Button onClick={() => window.location.href = '/'}>Вернуться на главную</Button>
         </div>
       </div>
