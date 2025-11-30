@@ -1,30 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-
-import Icon from '@/components/ui/icon';
+import { format, eachDayOfInterval, isBefore, startOfDay } from 'date-fns';
 import Header from '@/components/sections/Header';
-import { 
-  startOfMonth, 
-  endOfMonth, 
-  eachDayOfInterval, 
-  format, 
-  isSameDay,
-  addMonths,
-  isWithinInterval,
-  startOfWeek,
-  endOfWeek,
-  isBefore,
-  startOfDay,
-  differenceInDays
-} from 'date-fns';
-import { ru } from 'date-fns/locale';
+import BookingCalendar from '@/components/booking/BookingCalendar';
+import BookingForm from '@/components/booking/BookingForm';
+import BookingList from '@/components/booking/BookingList';
 
 interface AvailabilityDay {
   date: string;
   is_available: boolean;
   price?: number;
+  booking_id?: string;
+  guest_name?: string;
 }
 
 interface Calendar {
@@ -100,18 +87,10 @@ export default function BookingPage() {
     fetchRoomDetails();
   }, [roomId]);
 
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
-  const calendarStart = startOfWeek(monthStart, { locale: ru });
-  const calendarEnd = endOfWeek(monthEnd, { locale: ru });
-  const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
-  const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
   const isDateAvailable = (date: Date): boolean => {
     if (!calendar) return false;
     const dateStr = format(date, 'yyyy-MM-dd');
     const dayData = calendar.days.find(d => d.date === dateStr);
-    // Если дня нет в календаре - он свободен, если есть - проверяем is_available
     return dayData ? dayData.is_available : true;
   };
 
@@ -142,37 +121,6 @@ export default function BookingPage() {
       setCheckInDate(date);
       setCheckOutDate(null);
     }
-  };
-
-  const getDayCellStyle = (day: Date) => {
-    const today = startOfDay(new Date());
-    const isPast = isBefore(day, today);
-    const isAvailable = isDateAvailable(day);
-    const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
-    const isToday = isSameDay(day, today);
-    
-    let isSelected = false;
-    let isInRange = false;
-
-    if (checkInDate && isSameDay(day, checkInDate)) isSelected = true;
-    if (checkOutDate && isSameDay(day, checkOutDate)) isSelected = true;
-    if (checkInDate && checkOutDate && isWithinInterval(day, { start: checkInDate, end: checkOutDate })) {
-      isInRange = true;
-    }
-
-    let bgColor = 'bg-charcoal-800/30';
-    if (isPast) bgColor = 'bg-charcoal-900/50 cursor-not-allowed opacity-40';
-    else if (!isAvailable) bgColor = 'bg-red-500/80 cursor-not-allowed relative';
-    else if (isSelected) bgColor = 'bg-gold-500 text-white';
-    else if (isInRange) bgColor = 'bg-gold-500/30';
-    else if (isAvailable) bgColor = 'bg-green-500/20 hover:bg-green-500/30 cursor-pointer';
-
-    return `
-      min-h-[60px] p-2 rounded transition-all
-      ${bgColor}
-      ${!isCurrentMonth ? 'opacity-30' : ''}
-      ${isToday ? 'ring-2 ring-blue-500' : ''}
-    `;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -222,10 +170,6 @@ export default function BookingPage() {
     }
   };
 
-  const totalNights = checkInDate && checkOutDate ? differenceInDays(checkOutDate, checkInDate) : 0;
-  const pricePerNight = roomDetails?.price_per_night || 0;
-  const totalPrice = totalNights * pricePerNight;
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
@@ -243,9 +187,14 @@ export default function BookingPage() {
         <Header />
         <div className="container mx-auto px-4 py-20 text-center">
           <h1 className="text-2xl text-white mb-4">Апартамент не найден</h1>
-          <p className="text-gold-400 mb-2">Искомый ID: {roomId}</p>
-          <p className="text-gray-400 text-sm">Проверьте консоль браузера (F12) для списка доступных апартаментов</p>
-          <Button onClick={() => window.location.href = '/'}>Вернуться на главную</Button>
+          <p className="text-gray-400 mb-6">Календарь для данного апартамента не найден. Возможно, roomId указан неверно.</p>
+          <p className="text-gray-500 text-sm mb-4">Искали roomId: {roomId}</p>
+          <button
+            onClick={() => window.location.href = '/'}
+            className="px-6 py-3 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-semibold transition-colors"
+          >
+            Вернуться на главную
+          </button>
         </div>
       </div>
     );
@@ -254,267 +203,44 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900">
       <Header />
-      
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-8">
-            <Button 
-              variant="outline" 
-              onClick={() => window.location.href = '/'}
-              className="mb-4 bg-charcoal-800 border-gold-500/20 text-white hover:bg-charcoal-700"
-            >
-              <Icon name="ArrowLeft" size={18} className="mr-2" />
-              Назад
-            </Button>
-            
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-              Бронирование апартамента
-            </h1>
-            <p className="text-gray-400">{calendar.room_name}</p>
-          </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Бронирование апартамента
+          </h1>
+          <p className="text-gold-400 text-lg">
+            {calendar.room_name}
+          </p>
+        </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="p-6 bg-charcoal-800/50 border-gold-500/20">
-              <h2 className="text-xl font-bold text-gold-400 mb-4">
-                Выберите даты
-              </h2>
+        <div className="grid lg:grid-cols-2 gap-6">
+          <BookingCalendar
+            calendar={calendar}
+            currentMonth={currentMonth}
+            setCurrentMonth={setCurrentMonth}
+            checkInDate={checkInDate}
+            checkOutDate={checkOutDate}
+            handleDateClick={handleDateClick}
+          />
 
-              <div className="flex items-center justify-between mb-6">
-                <Button
-                  onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}
-                  variant="outline"
-                  size="sm"
-                  className="bg-charcoal-800 border-gold-500/20 hover:bg-charcoal-700"
-                >
-                  <Icon name="ChevronLeft" size={20} className="text-white" />
-                </Button>
-                <h3 className="text-lg font-bold text-white">
-                  {format(currentMonth, 'LLLL yyyy', { locale: ru })}
-                </h3>
-                <Button
-                  onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                  variant="outline"
-                  size="sm"
-                  className="bg-charcoal-800 border-gold-500/20 hover:bg-charcoal-700"
-                >
-                  <Icon name="ChevronRight" size={20} className="text-white" />
-                </Button>
-              </div>
+          <div>
+            <BookingForm
+              checkInDate={checkInDate}
+              checkOutDate={checkOutDate}
+              roomDetails={roomDetails}
+              guestName={guestName}
+              setGuestName={setGuestName}
+              guestEmail={guestEmail}
+              setGuestEmail={setGuestEmail}
+              guestPhone={guestPhone}
+              setGuestPhone={setGuestPhone}
+              adults={adults}
+              setAdults={setAdults}
+              submitting={submitting}
+              handleSubmit={handleSubmit}
+            />
 
-              <div className="grid grid-cols-7 gap-1 mb-2">
-                {weekDays.map(day => (
-                  <div key={day} className="text-center text-xs font-semibold text-gray-400 py-2">
-                    {day}
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-7 gap-1">
-                {days.map((day, idx) => {
-                  const isAvailable = isDateAvailable(day);
-                  const dateStr = format(day, 'yyyy-MM-dd');
-                  const dayData = calendar?.days.find(d => d.date === dateStr);
-                  
-                  return (
-                    <div
-                      key={idx}
-                      onClick={() => handleDateClick(day)}
-                      className={getDayCellStyle(day)}
-                      title={!isAvailable && dayData?.guest_name ? `Занято: ${dayData.guest_name}` : ''}
-                    >
-                      <div className="text-sm text-white font-medium">
-                        {format(day, 'd')}
-                      </div>
-                      {!isAvailable && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Icon name="X" size={24} className="text-white drop-shadow-lg" />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-6 space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500/20 rounded"></div>
-                  <span className="text-gray-400">Доступно</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-red-500/80 rounded flex items-center justify-center">
-                    <Icon name="X" size={12} className="text-white" />
-                  </div>
-                  <span className="text-gray-400">Занято</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-gold-500 rounded"></div>
-                  <span className="text-gray-400">Выбрано</span>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-charcoal-800/50 border-gold-500/20">
-              <h2 className="text-xl font-bold text-gold-400 mb-4">
-                Детали бронирования
-              </h2>
-
-              {checkInDate && checkOutDate ? (
-                <div className="mb-6 p-4 bg-charcoal-900/50 rounded-lg space-y-3">
-                  <div className="flex justify-between text-white mb-2">
-                    <span>Заезд:</span>
-                    <span className="font-semibold">{format(checkInDate, 'dd MMM yyyy', { locale: ru })}</span>
-                  </div>
-                  <div className="flex justify-between text-white mb-2">
-                    <span>Выезд:</span>
-                    <span className="font-semibold">{format(checkOutDate, 'dd MMM yyyy', { locale: ru })}</span>
-                  </div>
-                  <div className="flex justify-between text-white mb-2">
-                    <span>Ночей:</span>
-                    <span className="font-semibold">{totalNights}</span>
-                  </div>
-                  {pricePerNight > 0 && (
-                    <>
-                      <div className="flex justify-between text-gray-400 text-sm">
-                        <span>{(pricePerNight || 0).toLocaleString()} ₽ × {totalNights} ночей</span>
-                        <span>{(totalPrice || 0).toLocaleString()} ₽</span>
-                      </div>
-                      <div className="pt-3 border-t border-gold-500/20">
-                        <div className="flex justify-between text-gold-400 font-bold text-lg">
-                          <span>Итого:</span>
-                          <span>{(totalPrice || 0).toLocaleString()} ₽</span>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ) : (
-                <div className="mb-6 p-4 bg-charcoal-900/50 rounded-lg text-center text-gray-400">
-                  Выберите даты заезда и выезда
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Ваше имя *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={guestName}
-                    onChange={(e) => setGuestName(e.target.value)}
-                    className="w-full px-4 py-2 bg-charcoal-900/50 border border-gold-500/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                    placeholder="Иван Иванов"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={guestEmail}
-                    onChange={(e) => setGuestEmail(e.target.value)}
-                    className="w-full px-4 py-2 bg-charcoal-900/50 border border-gold-500/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                    placeholder="ivan@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Телефон *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={guestPhone}
-                    onChange={(e) => setGuestPhone(e.target.value)}
-                    className="w-full px-4 py-2 bg-charcoal-900/50 border border-gold-500/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                    placeholder="+7 (999) 123-45-67"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Количество гостей
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={adults}
-                    onChange={(e) => setAdults(parseInt(e.target.value))}
-                    className="w-full px-4 py-2 bg-charcoal-900/50 border border-gold-500/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full bg-gold-500 hover:bg-gold-600 text-white font-semibold"
-                  disabled={!checkInDate || !checkOutDate || submitting}
-                >
-                  <Icon name="Calendar" size={18} className="mr-2" />
-                  {submitting ? 'Отправка...' : 'Забронировать'}
-                </Button>
-              </form>
-            </Card>
-
-            {/* Список текущих бронирований */}
-            {calendar && calendar.days.some(d => !d.is_available && d.guest_name) && (
-              <Card className="p-6 bg-charcoal-800/50 border-gold-500/20 mt-6">
-                <h2 className="text-xl font-bold text-gold-400 mb-4 flex items-center gap-2">
-                  <Icon name="Users" size={20} />
-                  Текущие бронирования
-                </h2>
-                <div className="space-y-3">
-                  {Array.from(new Map(
-                    calendar.days
-                      .filter(d => !d.is_available && d.guest_name)
-                      .map(d => [d.booking_id, d])
-                  ).values())
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                    .map((booking, idx) => {
-                      const bookingDays = calendar.days.filter(
-                        d => d.booking_id === booking.booking_id && !d.is_available
-                      );
-                      const checkIn = bookingDays[0].date;
-                      const checkOut = bookingDays[bookingDays.length - 1].date;
-                      
-                      return (
-                        <div 
-                          key={booking.booking_id || idx}
-                          className="p-4 bg-charcoal-900/50 rounded-lg border border-red-500/20"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Icon name="User" size={16} className="text-gold-400" />
-                                <span className="text-white font-semibold">
-                                  {booking.guest_name}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2 text-sm text-gray-400">
-                                <Icon name="Calendar" size={14} />
-                                <span>
-                                  {format(new Date(checkIn), 'dd MMM', { locale: ru })} - {format(new Date(checkOut), 'dd MMM yyyy', { locale: ru })}
-                                </span>
-                                <span className="text-gray-500">•</span>
-                                <span>{bookingDays.length} {bookingDays.length === 1 ? 'ночь' : bookingDays.length < 5 ? 'ночи' : 'ночей'}</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-1 text-red-400 text-sm">
-                              <Icon name="X" size={14} />
-                              <span>Занято</span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </Card>
-            )}
+            <BookingList calendar={calendar} />
           </div>
         </div>
       </div>
