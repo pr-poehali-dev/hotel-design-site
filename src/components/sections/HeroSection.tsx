@@ -97,7 +97,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
 
       <div className="relative z-10 text-center text-white px-6 max-w-4xl -mt-20 md:mt-0">
         <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 mb-4 text-sm md:text-xl font-inter text-gold-300 animate-fade-in">
-          <span className="uppercase tracking-wider">Зима близко - А у нас уютно и тепло</span>
+          <span className="uppercase tracking-wider">Зимняя сказка для вас</span>
           {weather && (
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
               <span className="font-semibold">{weather.temp}°C</span>
