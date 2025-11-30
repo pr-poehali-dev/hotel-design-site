@@ -6,10 +6,10 @@ import RoomsSection from '@/components/sections/RoomsSection';
 import BookingSection from '@/components/sections/BookingSection';
 import ContactsSection from '@/components/sections/ContactsSection';
 import ProfileSection from '@/components/sections/ProfileSection';
-import PromotionsSection from '@/components/sections/PromotionsSection';
+
 import CulturalActivitiesSection from '@/components/sections/CulturalActivitiesSection';
 import CulturalSliderSection from '@/components/sections/CulturalSliderSection';
-import BookingPromoSection from '@/components/sections/BookingPromoSection';
+
 import Footer from '@/components/sections/Footer';
 import FallingLeaves from '@/components/effects/FallingLeaves';
 import ShareButtons from '@/components/ShareButtons';
@@ -25,7 +25,6 @@ const Index = () => {
   const navigation = [
     { id: 'home', label: 'Главная', icon: 'Home' },
     { id: 'rooms', label: 'Апартаменты', icon: 'Bed' },
-    { id: 'promotions', label: 'Акции', icon: 'Gift' },
     { id: 'contacts', label: 'Контакты', icon: 'Phone' },
   ];
 
@@ -52,7 +51,6 @@ const Index = () => {
         <>
           <HeroSection onNavigate={setCurrentSection} />
           <ApartmentsSlider onNavigate={setCurrentSection} />
-          <BookingPromoSection onNavigate={setCurrentSection} />
           <CulturalSliderSection />
         </>
       )}
@@ -65,8 +63,6 @@ const Index = () => {
           onHoverChange={setIsHovering}
         />
       )}
-
-      {currentSection === 'promotions' && <PromotionsSection />}
 
       {currentSection === 'culture' && <CulturalActivitiesSection />}
 
