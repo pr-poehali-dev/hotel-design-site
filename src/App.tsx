@@ -61,14 +61,7 @@ const App = () => {
           onDismiss={() => setShowUpdateNotification(false)}
         />
         <BrowserRouter>
-        <React.Suspense fallback={
-          <div className="min-h-screen bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <div className="text-white text-xl">Загрузка...</div>
-            </div>
-          </div>
-        }>
+        <React.Suspense fallback={<div style={{ display: 'none' }} />}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/reports" element={<ReportsPage />} />
