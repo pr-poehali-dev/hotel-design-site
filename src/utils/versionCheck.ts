@@ -5,7 +5,18 @@ const VERSION_CHECK_INTERVAL = 5 * 60 * 1000;
 export const checkForUpdates = async (): Promise<boolean> => {
   try {
     const response = await fetch('/version.json?' + Date.now());
-    const data = await response.json();
+    
+    if (!response.ok) {
+      return false;
+    }
+    
+    const text = await response.text();
+    
+    if (!text || text.includes('Preview not found')) {
+      return false;
+    }
+    
+    const data = JSON.parse(text);
     const serverVersion = data.version;
     const storedVersion = localStorage.getItem(VERSION_KEY);
 
@@ -16,7 +27,6 @@ export const checkForUpdates = async (): Promise<boolean> => {
     localStorage.setItem(VERSION_KEY, serverVersion);
     return false;
   } catch (error) {
-    console.error('Version check failed:', error);
     return false;
   }
 };
