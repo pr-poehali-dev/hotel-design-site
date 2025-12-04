@@ -6,6 +6,44 @@ import urllib.parse
 import urllib.error
 from datetime import datetime, timedelta, date
 
+def calculate_booking_finances(apartment_id: str, total_amount: float, cur) -> Dict[str, float]:
+    '''Расчёт финансовых показателей бронирования для инвестора'''
+    
+    # Получаем ставку комиссии собственника (по умолчанию 20%)
+    cur.execute(f"""
+        SELECT commission_rate 
+        FROM t_p9202093_hotel_design_site.apartment_owners 
+        WHERE apartment_id = '{apartment_id}'
+    """)
+    owner_data = cur.fetchone()
+    management_commission_rate = owner_data['commission_rate'] if owner_data else 20.0
+    
+    # Расчёт показателей
+    aggregator_commission_rate = 25.0
+    aggregator_commission = total_amount * (aggregator_commission_rate / 100)
+    
+    # Налог и банковская комиссия (7% от суммы после комиссии агрегатора)
+    tax_rate = 7.0
+    tax_and_bank = (total_amount - aggregator_commission) * (tax_rate / 100)
+    
+    remainder_before_management = total_amount - aggregator_commission - tax_and_bank
+    management_commission = remainder_before_management * (management_commission_rate / 100)
+    remainder_before_expenses = remainder_before_management - management_commission
+    
+    # Операционные расходы по умолчанию
+    operating_expenses = 3500.0
+    owner_funds = max(0, remainder_before_expenses - operating_expenses)
+    
+    return {
+        'aggregator_commission': round(aggregator_commission_rate, 2),
+        'tax_and_bank_commission': round(tax_and_bank, 2),
+        'remainder_before_management': round(remainder_before_management, 2),
+        'management_commission': round(management_commission, 2),
+        'remainder_before_expenses': round(remainder_before_expenses, 2),
+        'operating_expenses': round(operating_expenses, 2),
+        'owner_funds': round(owner_funds, 2)
+    }
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Автоматическая синхронизация бронирований из Bnovo (запускается по расписанию)
@@ -266,14 +304,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 guest_phone_escaped = str(guest_phone).replace("'", "''")
                 notes_escaped = json.dumps(booking, ensure_ascii=False)[:500].replace("'", "''")
                 
+                # Расчёт финансовых показателей
+                total_amount = booking.get('amount', 0)
+                finances = calculate_booking_finances(apartment_id, total_amount, cur)
+                
                 cur.execute(f"""
                     INSERT INTO t_p9202093_hotel_design_site.bookings 
                     (id, bnovo_id, apartment_id, check_in, check_out, guest_name, guest_email, 
-                     guest_phone, guests_count, accommodation_amount, total_amount, status, source, notes)
+                     guest_phone, guests_count, accommodation_amount, total_amount, 
+                     aggregator_commission, tax_and_bank_commission, remainder_before_management,
+                     management_commission, remainder_before_expenses, operating_expenses, owner_funds,
+                     status, source, notes, show_to_guest)
                     VALUES ('{booking_id}', '{bnovo_booking_id}', '{apartment_id}', '{check_in}', '{check_out}', 
                             '{guest_name_escaped}', '{guest_email_escaped}', '{guest_phone_escaped}', 
-                            {adults + children}, {booking.get('amount', 0)}, {booking.get('amount', 0)}, 
-                            'confirmed', 'bnovo', '{notes_escaped}')
+                            {adults + children}, {total_amount}, {total_amount}, 
+                            {finances['aggregator_commission']}, {finances['tax_and_bank_commission']},
+                            {finances['remainder_before_management']}, {finances['management_commission']},
+                            {finances['remainder_before_expenses']}, {finances['operating_expenses']},
+                            {finances['owner_funds']},
+                            'confirmed', 'bnovo', '{notes_escaped}', true)
                     ON CONFLICT (id) DO NOTHING
                 """)
                 synced_bookings += 1
