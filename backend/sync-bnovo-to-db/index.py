@@ -7,17 +7,11 @@ from typing import Dict, Any, Tuple
 from datetime import datetime, timedelta
 import requests
 
-def calculate_booking_finances(apartment_id: str, total_amount: float, cur) -> dict:
+def calculate_booking_finances(apartment_id: str, total_amount: float) -> dict:
     '''Расчёт финансовых показателей бронирования для инвестора'''
     
-    # Получаем ставку комиссии собственника (по умолчанию 20%)
-    cur.execute(f"""
-        SELECT commission_rate 
-        FROM t_p9202093_hotel_design_site.apartment_owners 
-        WHERE apartment_id = '{apartment_id}'
-    """)
-    owner_data = cur.fetchone()
-    management_commission_rate = owner_data['commission_rate'] if owner_data else 20.0
+    # Используем стандартную ставку 20% (можно расширить логику позже)
+    management_commission_rate = 20.0
     
     # Расчёт показателей
     aggregator_commission_rate = 25.0
@@ -343,7 +337,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             total_amount = booking.get('amount', booking.get('total', 0))
             
             # Расчёт финансов для инвестора
-            finances = calculate_booking_finances(room_id, total_amount, cur)
+            finances = calculate_booking_finances(room_id, total_amount)
             
             bookings_to_insert.append((
                 booking_id, bnovo_booking_id, room_id, check_in, check_out,

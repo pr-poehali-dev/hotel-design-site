@@ -6,17 +6,11 @@ import urllib.parse
 import urllib.error
 from datetime import datetime, timedelta, date
 
-def calculate_booking_finances(apartment_id: str, total_amount: float, cur) -> Dict[str, float]:
+def calculate_booking_finances(apartment_id: str, total_amount: float) -> Dict[str, float]:
     '''Расчёт финансовых показателей бронирования для инвестора'''
     
-    # Получаем ставку комиссии собственника (по умолчанию 20%)
-    cur.execute(f"""
-        SELECT commission_rate 
-        FROM t_p9202093_hotel_design_site.apartment_owners 
-        WHERE apartment_id = '{apartment_id}'
-    """)
-    owner_data = cur.fetchone()
-    management_commission_rate = owner_data['commission_rate'] if owner_data else 20.0
+    # Используем стандартную ставку 20% (можно расширить логику позже)
+    management_commission_rate = 20.0
     
     # Расчёт показателей
     aggregator_commission_rate = 25.0
@@ -306,7 +300,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 # Расчёт финансовых показателей
                 total_amount = booking.get('amount', 0)
-                finances = calculate_booking_finances(apartment_id, total_amount, cur)
+                finances = calculate_booking_finances(apartment_id, total_amount)
                 
                 cur.execute(f"""
                     INSERT INTO t_p9202093_hotel_design_site.bookings 
@@ -329,12 +323,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         # Обновляем новый календарь для всех существующих бронирований из Bnovo
         print("[CRON] Updating NEW calendar_bnovo for existing Bnovo bookings...")
-        
-        # Сначала очищаем старые записи из нового календаря
-        cur.execute("""
-            DELETE FROM t_p9202093_hotel_design_site.calendar_bnovo 
-            WHERE booking_id IN (SELECT id FROM t_p9202093_hotel_design_site.bookings WHERE source = 'bnovo')
-        """)
         
         # Получаем все бронирования и заполняем новый календарь
         cur.execute("""
@@ -379,18 +367,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     INSERT INTO t_p9202093_hotel_design_site.calendar_bnovo 
                     (apartment_id, date, is_available, booking_id, bnovo_id, guest_name, price)
                     VALUES {','.join(batch)}
+                    ON CONFLICT (apartment_id, date) 
+                    DO UPDATE SET 
+                        is_available = EXCLUDED.is_available,
+                        booking_id = EXCLUDED.booking_id,
+                        bnovo_id = EXCLUDED.bnovo_id,
+                        guest_name = EXCLUDED.guest_name,
+                        price = EXCLUDED.price
                 """)
         
         print(f"[CRON] NEW calendar_bnovo updated: {len(unique_inserts)} date entries created")
         
         # Обновляем availability_calendar для фронтенда
         print("[CRON] Updating availability_calendar for frontend...")
-        
-        # Сначала очищаем старые записи из availability_calendar для Bnovo бронирований
-        cur.execute("""
-            DELETE FROM t_p9202093_hotel_design_site.availability_calendar 
-            WHERE booking_id IN (SELECT id FROM t_p9202093_hotel_design_site.bookings WHERE source = 'bnovo')
-        """)
         
         # Получаем room_id из rooms по apartment_id (number)
         cur.execute("""
