@@ -99,8 +99,7 @@
   }
 
   body {
-    @apply bg-background;
-    color: #1a1a1a;
+    @apply bg-background text-card-foreground;
   }
 
   /* Поднимаем весь текст на мобильных устройствах */
