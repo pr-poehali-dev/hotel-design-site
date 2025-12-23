@@ -10,10 +10,6 @@ import { startVersionChecking, reloadApp } from "@/utils/versionCheck";
 const Index = React.lazy(() => import("./pages/Index"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 const ReportsPage = React.lazy(() => import("./pages/ReportsPage"));
-const OwnersPage = React.lazy(() => import("./pages/OwnersPage"));
-const OwnerReportsPage = React.lazy(() => import("./pages/OwnerReportsPage"));
-const OwnerLoginPage = React.lazy(() => import("./pages/OwnerLoginPage"));
-const OwnerDashboardPage = React.lazy(() => import("./pages/OwnerDashboardPage"));
 const HousekeepingTable = React.lazy(() => import("./pages/HousekeepingTable"));
 const CheckInInstructionsPage = React.lazy(() => import("./pages/CheckInInstructionsPage"));
 const InstructionsListPage = React.lazy(() => import("./pages/InstructionsListPage"));
@@ -33,7 +29,6 @@ const TestAPI = React.lazy(() => import("./pages/TestAPI"));
 const PayrollPage = React.lazy(() => import("./pages/PayrollPage"));
 const HousekeeperLoginPage = React.lazy(() => import("./pages/HousekeeperLoginPage"));
 const CalendarPage = React.lazy(() => import("./pages/CalendarPage"));
-const AdminOwnersPage = React.lazy(() => import("./pages/AdminOwnersPage"));
 const HashTestPage = React.lazy(() => import("./pages/HashTestPage"));
 const BookingPage = React.lazy(() => import("./pages/BookingPage"));
 const PushNotificationsPage = React.lazy(() => import("./pages/PushNotificationsPage"));
@@ -65,10 +60,6 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/owners" element={<OwnersPage />} />
-            <Route path="/owner/:apartmentId" element={<OwnerReportsPage />} />
-            <Route path="/owner-login" element={<OwnerLoginPage />} />
-            <Route path="/owner-dashboard" element={<OwnerDashboardPage />} />
             <Route path="/housekeeping" element={<HousekeepingTable />} />
             <Route path="/check-in-instructions" element={<CheckInInstructionsPage />} />
             <Route path="/instructions-list" element={<InstructionsListPage />} />
@@ -88,7 +79,6 @@ const App = () => {
             <Route path="/payroll" element={<PayrollPage />} />
             <Route path="/housekeeper-login" element={<HousekeeperLoginPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/admin/owners" element={<AdminOwnersPage />} />
             <Route path="/hash-test" element={<HashTestPage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/push-notifications" element={<PushNotificationsPage />} />
