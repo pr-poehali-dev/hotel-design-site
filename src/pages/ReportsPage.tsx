@@ -3,7 +3,6 @@ import BookingDialog from '@/components/BookingDialog';
 import AdminLogin from '@/components/AdminLogin';
 import { BookingRecord } from '@/types/booking';
 import ReportsHeader from '@/components/reports/ReportsHeader';
-import EmptyOwnersState from '@/components/reports/EmptyOwnersState';
 import PendingPaymentsSection from '@/components/reports/PendingPaymentsSection';
 import PaymentHistorySection from '@/components/reports/PaymentHistorySection';
 import { useReportsData } from '@/components/reports/useReportsData';
@@ -96,9 +95,7 @@ const ReportsPage = () => {
       />
 
       <main className="container mx-auto px-6 py-12">
-        {owners.length === 0 ? (
-          <EmptyOwnersState />
-        ) : selectedApartment ? (
+        {selectedApartment ? (
           <>
             <PendingPaymentsSection
               bookings={bookings}
@@ -119,7 +116,11 @@ const ReportsPage = () => {
               onDeleteBooking={handleDeleteBooking}
             />
           </>
-        ) : null}
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">Выберите квартиру для просмотра отчетов</p>
+          </div>
+        )}
       </main>
 
       <BookingDialog

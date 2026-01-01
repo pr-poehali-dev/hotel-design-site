@@ -1,5 +1,4 @@
 import GuestDialog from '@/components/admin-guests/GuestDialog';
-import OwnerCommissionManager from '@/components/admin-owners/OwnerCommissionManager';
 import AdminDashboardHeader from '@/components/admin-guests/AdminDashboardHeader';
 import MobileMenu from '@/components/admin-guests/MobileMenu';
 import GuestsStatsGrid from '@/components/admin-guests/GuestsStatsGrid';
@@ -71,77 +70,73 @@ const AdminDashboardPage = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 py-6 relative z-10">
-        {activeTab === 'commission' ? (
-          <OwnerCommissionManager />
-        ) : (
-          <>
-            <GuestsStatsGrid stats={stats} />
+        <>
+          <GuestsStatsGrid stats={stats} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-1 space-y-4">
-                <GuestsToolbar
-                  searchQuery={searchQuery}
-                  onSearchChange={setSearchQuery}
-                  filter={filter}
-                  onFilterChange={setFilter}
-                  sortOrder={sortOrder}
-                  onSortChange={setSortOrder}
-                  onAddGuest={() => {
-                    setDialogOpen(true);
-                    setEditingGuest(null);
-                  }}
-                />
-
-                <GuestsList
-                  guests={filteredGuests}
-                  selectedGuest={selectedGuest}
-                  onSelectGuest={(guest) => {
-                    setSelectedGuest(guest);
-                    setShowMobileDetails(true);
-                  }}
-                />
-              </div>
-
-              <GuestsDetailsPanel
-                selectedGuest={selectedGuest}
-                showMobileDetails={showMobileDetails}
-                onCloseMobileDetails={() => setShowMobileDetails(false)}
-                onEdit={() => {
-                  setEditingGuest(selectedGuest);
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1 space-y-4">
+              <GuestsToolbar
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                filter={filter}
+                onFilterChange={setFilter}
+                sortOrder={sortOrder}
+                onSortChange={setSortOrder}
+                onAddGuest={() => {
                   setDialogOpen(true);
+                  setEditingGuest(null);
                 }}
-                onDelete={handleDeleteGuest}
-                onUpdate={(updatedGuest) => {
-                  setGuests(prev => prev.map(g => g.id === updatedGuest.id ? updatedGuest : g));
-                  setSelectedGuest(updatedGuest);
+              />
+
+              <GuestsList
+                guests={filteredGuests}
+                selectedGuest={selectedGuest}
+                onSelectGuest={(guest) => {
+                  setSelectedGuest(guest);
+                  setShowMobileDetails(true);
                 }}
               />
             </div>
 
-            <GuestDialog
-              open={dialogOpen}
-              onClose={() => {
-                setDialogOpen(false);
-                setEditingGuest(null);
-              }}
-              onSave={handleSaveGuest}
-              guest={editingGuest}
-            />
-
-            <button
-              onClick={() => {
+            <GuestsDetailsPanel
+              selectedGuest={selectedGuest}
+              showMobileDetails={showMobileDetails}
+              onCloseMobileDetails={() => setShowMobileDetails(false)}
+              onEdit={() => {
+                setEditingGuest(selectedGuest);
                 setDialogOpen(true);
-                setEditingGuest(null);
               }}
-              className="lg:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full shadow-lg flex items-center justify-center z-50 active:scale-95 transition-transform"
-              aria-label="Добавить гостя"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
-          </>
-        )}
+              onDelete={handleDeleteGuest}
+              onUpdate={(updatedGuest) => {
+                setGuests(prev => prev.map(g => g.id === updatedGuest.id ? updatedGuest : g));
+                setSelectedGuest(updatedGuest);
+              }}
+            />
+          </div>
+
+          <GuestDialog
+            open={dialogOpen}
+            onClose={() => {
+              setDialogOpen(false);
+              setEditingGuest(null);
+            }}
+            onSave={handleSaveGuest}
+            guest={editingGuest}
+          />
+
+          <button
+            onClick={() => {
+              setDialogOpen(true);
+              setEditingGuest(null);
+            }}
+            className="lg:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full shadow-lg flex items-center justify-center z-50 active:scale-95 transition-transform"
+            aria-label="Добавить гостя"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
+        </>
       </div>
     </div>
   );
