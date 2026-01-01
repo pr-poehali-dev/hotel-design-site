@@ -47,30 +47,23 @@ const Index = () => {
         onNavigate={setCurrentSection}
       />
 
-      {currentSection === 'home' && (
-        <>
-          <HeroSection onNavigate={setCurrentSection} />
-          <ApartmentsSlider onNavigate={setCurrentSection} />
-          <CulturalSliderSection />
-        </>
-      )}
-
-      {currentSection === 'rooms' && (
+      <HeroSection onNavigate={setCurrentSection} />
+      <ApartmentsSlider onNavigate={setCurrentSection} />
+      
+      <div id="rooms">
         <RoomsSection 
           rooms={rooms}
           currentImageIndex={currentImageIndex}
           onImageChange={handleImageChange}
           onHoverChange={setIsHovering}
         />
-      )}
+      </div>
 
-      {currentSection === 'culture' && <CulturalActivitiesSection />}
+      <CulturalSliderSection />
 
-      {currentSection === 'booking' && <BookingSection />}
-
-      {currentSection === 'profile' && <ProfileSection />}
-
-      {currentSection === 'contacts' && <ContactsSection />}
+      <div id="contacts">
+        <ContactsSection />
+      </div>
 
       <section className="py-12 px-4 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-[1fr,400px] gap-6">
