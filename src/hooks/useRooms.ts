@@ -131,7 +131,7 @@ export const useRooms = () => {
     const updatedRoom = {
       ...room,
       status: newStatus,
-      lastCleaned: newStatus === 'clean' ? new Date().toLocaleString('ru-RU') : room.lastCleaned
+      // Дата уборки НЕ меняется автоматически - только если администратор сам укажет
     };
 
     try {
@@ -176,7 +176,7 @@ export const useRooms = () => {
       floor: newRoom.floor || 1,
       status: newRoom.status || 'dirty',
       assignedTo: newRoom.assignedTo || '',
-      lastCleaned: new Date().toLocaleString('ru-RU'),
+      lastCleaned: '', // Пустая дата - администратор сам укажет когда нужно
       checkOut: newRoom.checkOut || '',
       checkIn: newRoom.checkIn || '',
       priority: newRoom.priority || 'normal',
