@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import Header from '@/components/sections/Header';
 import HeroSection from '@/components/sections/HeroSection';
+import RoomsSection from '@/components/sections/RoomsSection';
 import Footer from '@/components/sections/Footer';
+import { rooms } from '@/data/roomsData';
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState('home');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
 
   const navigation = [
     { id: 'home', label: 'Главная', icon: 'Home' },
@@ -33,6 +37,15 @@ const Index = () => {
     }
   };
 
+  const handleImageChange = (delta: number, galleryLength: number) => {
+    setCurrentImageIndex((prevIndex) => {
+      const newIndex = prevIndex + delta;
+      if (newIndex < 0) return galleryLength - 1;
+      if (newIndex >= galleryLength) return 0;
+      return newIndex;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-charcoal-50 to-white">
       <Header 
@@ -42,19 +55,14 @@ const Index = () => {
       />
       <HeroSection onNavigate={handleNavigate} />
       
-      <section id="rooms" className="py-20 px-6">
-        <div className="container mx-auto">
-          <h2 className="text-4xl md:text-5xl font-playfair font-bold text-center text-charcoal-900 mb-4">
-            Наши Апартаменты
-          </h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Выберите идеальное место для вашего отдыха
-          </p>
-          <div className="text-center text-gray-500">
-            Каталог апартаментов в разработке
-          </div>
-        </div>
-      </section>
+      <div id="rooms">
+        <RoomsSection 
+          rooms={rooms}
+          currentImageIndex={currentImageIndex}
+          onImageChange={handleImageChange}
+          onHoverChange={setIsHovering}
+        />
+      </div>
 
       <section id="contacts" className="py-20 px-6 bg-charcoal-50">
         <div className="container mx-auto">
