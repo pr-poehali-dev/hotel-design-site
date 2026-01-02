@@ -140,22 +140,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 room = body_data.get('room', {})
                 room_id = room.get('id')
                 
-                # Обновляем last_cleaned если статус стал clean
-                last_cleaned_sql = ", last_cleaned = CURRENT_TIMESTAMP" if room.get('status') == 'clean' else ""
+                # Принимаем last_cleaned из фронтенда (администратор сам указывает дату)
+                last_cleaned = room.get('lastCleaned', '')
                 
-                cur.execute(f'''
-                    UPDATE rooms 
-                    SET number = %s, floor = %s, status = %s, assigned_to = %s,
-                        urgent = %s, notes = %s, payment = %s, payment_status = %s, 
-                        updated_at = CURRENT_TIMESTAMP
-                        {last_cleaned_sql}
-                    WHERE id = %s
-                ''', (
-                    room['number'], room['floor'], room['status'],
-                    room.get('assignedTo', ''), room.get('urgent', False), 
-                    room.get('notes', ''), room.get('payment', 0), 
-                    room.get('paymentStatus', 'unpaid'), room_id
-                ))
+                if last_cleaned:
+                    cur.execute('''
+                        UPDATE rooms 
+                        SET number = %s, floor = %s, status = %s, assigned_to = %s,
+                            urgent = %s, notes = %s, payment = %s, payment_status = %s,
+                            last_cleaned = %s, updated_at = CURRENT_TIMESTAMP
+                        WHERE id = %s
+                    ''', (
+                        room['number'], room['floor'], room['status'],
+                        room.get('assignedTo', ''), room.get('urgent', False), 
+                        room.get('notes', ''), room.get('payment', 0), 
+                        room.get('paymentStatus', 'unpaid'), last_cleaned, room_id
+                    ))
+                else:
+                    cur.execute('''
+                        UPDATE rooms 
+                        SET number = %s, floor = %s, status = %s, assigned_to = %s,
+                            urgent = %s, notes = %s, payment = %s, payment_status = %s,
+                            updated_at = CURRENT_TIMESTAMP
+                        WHERE id = %s
+                    ''', (
+                        room['number'], room['floor'], room['status'],
+                        room.get('assignedTo', ''), room.get('urgent', False), 
+                        room.get('notes', ''), room.get('payment', 0), 
+                        room.get('paymentStatus', 'unpaid'), room_id
+                    ))
+                
                 conn.commit()
                 return {
                     'statusCode': 200,
