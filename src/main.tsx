@@ -1,11 +1,11 @@
-import * as React from 'react';
+import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client'
 import './index.css'
 
-const App = React.lazy(() => import('./App'));
+const App = lazy(() => import('./App'));
 
 createRoot(document.getElementById("root")!).render(
-  <React.Suspense fallback={
+  <Suspense fallback={
     <div style={{
       display: 'flex',
       alignItems: 'center',
@@ -25,5 +25,5 @@ createRoot(document.getElementById("root")!).render(
     </div>
   }>
     <App />
-  </React.Suspense>
+  </Suspense>
 );
