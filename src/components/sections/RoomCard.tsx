@@ -37,9 +37,14 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
   const [imageSheetOpen, setImageSheetOpen] = useState(false);
 
   const handleBooking = () => {
+    console.log('🎯 Клик на бронирование, roomId:', room.roomId);
+    console.log('🎯 Апартамент:', room.subtitle);
     if (room.roomId) {
-      window.location.href = `/booking?room=${room.roomId}`;
+      const bookingUrl = `/booking?room=${room.roomId}`;
+      console.log('✅ Переход на:', bookingUrl);
+      window.location.href = bookingUrl;
     } else {
+      console.log('❌ Нет roomId для апартамента:', room.subtitle);
       alert('Для бронирования этого апартамента свяжитесь с нами по телефону или в Telegram: @apartamentsmsk');
     }
   };
