@@ -160,7 +160,7 @@ export const rooms: Room[] = [
     subtitle: 'Cozy Corner',
     price: 'от 25 000 ₽',
     features: ['67 кв.м', '28 этаж', 'Для 1-6 гостей'],
-    roomId: '1759773745026',
+    roomId: '1762292616072',
     image: 'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
@@ -275,7 +275,7 @@ export const rooms: Room[] = [
     subtitle: 'Cyber Space',
     price: 'от 18 000 ₽',
     features: ['62 кв.м', '9 этаж', 'Для 1-4 гостей'],
-    roomId: '1759775297513',
+    roomId: '1761554411765',
     image: 'https://cdn.poehali.dev/files/6c3840e0-1758-453e-bc73-a2d331c5e2af.jpeg',
     video: 'https://rutube.ru/play/embed/8525880a7f5c4da9d07a627dfb178e19',
     gallery: [
