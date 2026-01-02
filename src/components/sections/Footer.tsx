@@ -35,13 +35,6 @@ const Footer = () => {
               <h5 className="text-sm md:text-base text-gold-400 font-playfair font-semibold mb-3">Для партнёров</h5>
               <div className="space-y-2">
                 <a 
-                  href="/owner-login" 
-                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
-                >
-                  <Icon name="LogIn" size={14} />
-                  Вход для инвесторов
-                </a>
-                <a 
                   href="/housekeeping" 
                   className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
                 >
