@@ -103,16 +103,28 @@ const ApartmentsSlider = ({ onNavigate }: ApartmentsSliderProps) => {
                             </span>
                           ))}
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onNavigate('rooms');
-                          }}
-                          className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
-                        >
-                          <Icon name="Info" size={18} />
-                          Подробнее
-                        </button>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onNavigate('rooms');
+                            }}
+                            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105 border border-white/20"
+                          >
+                            <Icon name="Info" size={18} />
+                            Подробнее
+                          </button>
+                          {room.roomId && (
+                            <a
+                              href={`/booking?room=${room.roomId}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
+                            >
+                              <Icon name="Calendar" size={18} />
+                              Забронировать
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
