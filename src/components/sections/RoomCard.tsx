@@ -11,7 +11,6 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import BnovoBookingWidget from '@/components/BnovoBookingWidget';
 
 interface Room {
   name: string;
@@ -36,13 +35,10 @@ interface RoomCardProps {
 const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: RoomCardProps) => {
   const [open, setOpen] = useState(false);
   const [imageSheetOpen, setImageSheetOpen] = useState(false);
-  const [showBookingWidget, setShowBookingWidget] = useState(false);
 
   const handleBooking = () => {
     if (room.roomId) {
       window.location.href = `/booking?room=${room.roomId}`;
-    } else {
-      setShowBookingWidget(true);
     }
   };
   
@@ -220,10 +216,6 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
       </Sheet>
 
     </Card>
-    
-    {showBookingWidget && (
-      <BnovoBookingWidget onClose={() => setShowBookingWidget(false)} />
-    )}
     </>
   );
 };
