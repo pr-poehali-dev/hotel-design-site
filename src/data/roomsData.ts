@@ -238,6 +238,7 @@ export const rooms: Room[] = [
     subtitle: 'Family Joy',
     price: 'от 22 000 ₽',
     features: ['76 кв.м', '21 этаж', 'Для 1-7 гостей'],
+    roomId: '1759773745026',
     image: 'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/012948d6-e165-48b8-af95-926a9c5ede43.jpeg',
@@ -274,6 +275,7 @@ export const rooms: Room[] = [
     subtitle: 'Cyber Space',
     price: 'от 18 000 ₽',
     features: ['62 кв.м', '9 этаж', 'Для 1-4 гостей'],
+    roomId: '1759775297513',
     image: 'https://cdn.poehali.dev/files/6c3840e0-1758-453e-bc73-a2d331c5e2af.jpeg',
     video: 'https://rutube.ru/play/embed/8525880a7f5c4da9d07a627dfb178e19',
     gallery: [
@@ -306,6 +308,7 @@ export const rooms: Room[] = [
     subtitle: 'Panorama Suite',
     price: 'от 30 000 ₽',
     features: ['103 кв.м.', '8 этаж', 'Для 1-6 гостей'],
+    roomId: '1759775640034',
     image: 'https://cdn.poehali.dev/files/e4d338dd-73ef-4be0-bde4-9fb69a695b70.jpeg',
     video: 'https://rutube.ru/play/embed/c9906210eb879cd9705a0ac9ba69e079',
     gallery: [

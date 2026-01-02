@@ -39,6 +39,8 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
   const handleBooking = () => {
     if (room.roomId) {
       window.location.href = `/booking?room=${room.roomId}`;
+    } else {
+      alert('Для бронирования этого апартамента свяжитесь с нами по телефону или в Telegram: @apartamentsmsk');
     }
   };
   
