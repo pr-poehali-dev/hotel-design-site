@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UpdateNotification from "@/components/UpdateNotification";
 import { startVersionChecking, reloadApp } from "@/utils/versionCheck";
+import BookingPage from "./pages/BookingPage";
 
 const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -24,7 +25,6 @@ const PayrollPage = lazy(() => import("./pages/PayrollPage"));
 const HousekeeperLoginPage = lazy(() => import("./pages/HousekeeperLoginPage"));
 const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const HashTestPage = lazy(() => import("./pages/HashTestPage"));
-const BookingPage = lazy(() => import("./pages/BookingPage"));
 const PushNotificationsPage = lazy(() => import("./pages/PushNotificationsPage"));
 
 
