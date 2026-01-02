@@ -124,6 +124,25 @@ const RoomCardMobile = memo(({
           </div>
         </div>
 
+        <div className="flex items-center gap-3">
+          <div className="bg-purple-500/20 p-2 rounded-lg">
+            <Icon name="Calendar" size={18} className="text-purple-400" />
+          </div>
+          <div className="flex-1">
+            <div className="text-gray-400 text-xs mb-0.5">Дата уборки</div>
+            {isEditing ? (
+              <input
+                type="date"
+                value={room.lastCleaned}
+                onChange={(e) => onUpdateField(room.id, 'lastCleaned', e.target.value)}
+                className="w-full bg-charcoal-600 text-white px-3 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gold-500 text-sm"
+              />
+            ) : (
+              <div className="text-white font-semibold text-base">{room.lastCleaned || '—'}</div>
+            )}
+          </div>
+        </div>
+
         <div className="flex items-start gap-3 pt-2 border-t border-gray-600">
           <div className="bg-blue-500/20 p-2 rounded-lg">
             <Icon name="FileText" size={18} className="text-blue-400" />

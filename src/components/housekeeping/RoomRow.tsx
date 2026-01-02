@@ -119,7 +119,18 @@ const RoomRow = memo(({
           </span>
         )}
       </td>
-      <td className="px-3 py-3 text-gray-300 text-xs">{room.lastCleaned}</td>
+      <td className="px-3 py-3 text-gray-300 text-xs">
+        {isEditing ? (
+          <input
+            type="date"
+            value={room.lastCleaned}
+            onChange={(e) => onUpdateField(room.id, 'lastCleaned', e.target.value)}
+            className="bg-charcoal-700 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-gold-500 text-xs"
+          />
+        ) : (
+          room.lastCleaned
+        )}
+      </td>
       <td className="px-3 py-3 text-gray-400 text-xs max-w-[120px]">
         {isEditing ? (
           <input
