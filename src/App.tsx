@@ -16,12 +16,6 @@ const InstructionsListPage = lazy(() => import("./pages/InstructionsListPage"));
 
 const AdminLoginPage = lazy(() => import("./pages/AdminLoginPage"));
 const AdminDashboardPage = lazy(() => import("./pages/AdminDashboardPage"));
-const GuestLoginPage = lazy(() => import("./pages/GuestLoginPage"));
-const GuestDashboardPage = lazy(() => import("./pages/GuestDashboardPage"));
-const GuestResetPasswordPage = lazy(() => import("./pages/GuestResetPasswordPage"));
-const FortuneWheelPage = lazy(() => import("./pages/FortuneWheelPage"));
-const MyPromoCodesPage = lazy(() => import("./pages/MyPromoCodesPage"));
-const LoyaltyProgram = lazy(() => import("./pages/LoyaltyProgram"));
 const Location = lazy(() => import("./pages/Location"));
 const Reviews = lazy(() => import("./pages/Reviews"));
 const GoogleBusiness = lazy(() => import("./pages/GoogleBusiness"));
@@ -66,12 +60,6 @@ const App = () => {
 
             <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
-            <Route path="/guest-login" element={<GuestLoginPage />} />
-            <Route path="/guest-dashboard" element={<GuestDashboardPage />} />
-            <Route path="/guest-reset-password" element={<GuestResetPasswordPage />} />
-            <Route path="/fortune-wheel" element={<FortuneWheelPage />} />
-            <Route path="/my-promo-codes" element={<MyPromoCodesPage />} />
-            <Route path="/loyalty-program" element={<LoyaltyProgram />} />
             <Route path="/location" element={<Location />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/google-business" element={<GoogleBusiness />} />
