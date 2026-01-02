@@ -36,11 +36,12 @@ export const useCleaningRecords = () => {
     loadRecords();
   }, []);
 
-  const addCleaningRecord = async (roomNumber: string, housekeeperName: string, payment: number) => {
+  const addCleaningRecord = async (roomNumber: string, housekeeperName: string, payment: number, cleanedAt?: string) => {
     console.log('🔔 addCleaningRecord called:', { 
       roomNumber,
       housekeeperName,
-      payment
+      payment,
+      cleanedAt
     });
     
     try {
@@ -50,7 +51,8 @@ export const useCleaningRecords = () => {
         body: JSON.stringify({
           roomNumber,
           housekeeperName,
-          payment
+          payment,
+          cleanedAt
         })
       });
       

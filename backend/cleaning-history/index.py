@@ -76,6 +76,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             room_number = body_data.get('roomNumber')
             housekeeper_name = body_data.get('housekeeperName')
             payment = body_data.get('payment', 0)
+            cleaned_at = body_data.get('cleanedAt')  # Дата уборки из апартамента
             
             if not room_number or not housekeeper_name:
                 return {
@@ -86,12 +87,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             escaped_room = room_number.replace("'", "''")
             escaped_name = housekeeper_name.replace("'", "''")
-            cur.execute(f'''
-                INSERT INTO t_p9202093_hotel_design_site.cleaning_history 
-                (room_number, housekeeper_name, payment_amount)
-                VALUES ('{escaped_room}', '{escaped_name}', {payment})
-                RETURNING id
-            ''')
+            
+            # Используем дату из апартамента, если она указана, иначе текущую
+            if cleaned_at:
+                escaped_cleaned = cleaned_at.replace("'", "''")
+                cur.execute(f'''
+                    INSERT INTO t_p9202093_hotel_design_site.cleaning_history 
+                    (room_number, housekeeper_name, payment_amount, cleaned_at)
+                    VALUES ('{escaped_room}', '{escaped_name}', {payment}, '{escaped_cleaned}')
+                    RETURNING id
+                ''')
+            else:
+                cur.execute(f'''
+                    INSERT INTO t_p9202093_hotel_design_site.cleaning_history 
+                    (room_number, housekeeper_name, payment_amount)
+                    VALUES ('{escaped_room}', '{escaped_name}', {payment})
+                    RETURNING id
+                ''')
             
             record_id = cur.fetchone()[0]
             conn.commit()

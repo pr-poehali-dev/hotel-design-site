@@ -203,8 +203,8 @@ const HousekeepingTable = () => {
       });
       
       if (shouldRecord) {
-        console.log('✨ Creating cleaning record:', room.number, room.assignedTo, room.payment);
-        addCleaningRecord(room.number, room.assignedTo, room.payment || 0);
+        console.log('✨ Creating cleaning record:', room.number, room.assignedTo, room.payment, room.lastCleaned);
+        addCleaningRecord(room.number, room.assignedTo, room.payment || 0, room.lastCleaned);
         
         if (isAdmin) {
           const notificationMessage = `✅ Уборка апартамента ${room.number} подтверждена! Начислено ${room.payment || 0} ₽`;
