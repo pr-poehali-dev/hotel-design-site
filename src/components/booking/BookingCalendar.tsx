@@ -144,11 +144,6 @@ export default function BookingCalendar({
               <div className="text-sm text-white font-medium">
                 {format(day, 'd')}
               </div>
-              {!isAvailable && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Icon name="X" size={24} className="text-white drop-shadow-lg" />
-                </div>
-              )}
             </div>
           );
         })}
@@ -160,9 +155,7 @@ export default function BookingCalendar({
           <span className="text-gray-400">Доступно</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-red-500/80 rounded flex items-center justify-center">
-            <Icon name="X" size={12} className="text-white" />
-          </div>
+          <div className="w-4 h-4 bg-red-500/80 rounded"></div>
           <span className="text-gray-400">Занято</span>
         </div>
         <div className="flex items-center gap-2">
