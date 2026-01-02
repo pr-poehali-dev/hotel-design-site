@@ -1,10 +1,23 @@
+import Header from '@/components/sections/Header';
+import HeroSection from '@/components/sections/HeroSection';
+import Footer from '@/components/sections/Footer';
+
 const Index = () => {
+  const navigation = [
+    { id: 'home', label: 'Главная', icon: 'Home' },
+    { id: 'rooms', label: 'Апартаменты', icon: 'Bed' },
+    { id: 'contacts', label: 'Контакты', icon: 'Phone' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Premium Apartments</h1>
-        <p className="text-xl text-gray-600">Загрузка...</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-charcoal-50 to-white">
+      <Header 
+        navigation={navigation}
+        currentSection="home"
+        onNavigate={() => {}}
+      />
+      <HeroSection onNavigate={() => {}} />
+      <Footer />
     </div>
   );
 };
