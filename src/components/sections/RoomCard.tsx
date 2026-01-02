@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Sheet,
   SheetContent,
@@ -35,6 +36,7 @@ interface RoomCardProps {
 const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: RoomCardProps) => {
   const [open, setOpen] = useState(false);
   const [imageSheetOpen, setImageSheetOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleBooking = () => {
     console.log('🎯 Клик на бронирование, roomId:', room.roomId);
@@ -42,7 +44,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
     if (room.roomId) {
       const bookingUrl = `/booking?room=${room.roomId}`;
       console.log('✅ Переход на:', bookingUrl);
-      window.location.href = bookingUrl;
+      navigate(bookingUrl);
     } else {
       console.log('❌ Нет roomId для апартамента:', room.subtitle);
       alert('Для бронирования этого апартамента свяжитесь с нами по телефону или в Telegram: @apartamentsmsk');
