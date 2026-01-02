@@ -17,7 +17,22 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-charcoal-700 mt-8 pt-8">
-          <div className="text-center pt-6">
+          <div className="flex justify-center mb-8">
+            <div className="text-center">
+              <h5 className="text-sm md:text-base text-gold-400 font-playfair font-semibold mb-3">Для партнёров</h5>
+              <div className="space-y-2">
+                <a 
+                  href="/housekeeping" 
+                  className="inline-flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors text-sm font-inter"
+                >
+                  <Icon name="ClipboardList" size={14} />
+                  Система клинеров
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center pt-6 border-t border-charcoal-800">
             <p className="text-gray-500 font-inter text-sm">
               © 2024 Premium Apartments. Все права защищены.
             </p>
