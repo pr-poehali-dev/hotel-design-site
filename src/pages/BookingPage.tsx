@@ -4,7 +4,6 @@ import { format, eachDayOfInterval, isBefore, startOfDay } from 'date-fns';
 import Header from '@/components/sections/Header';
 import BookingCalendar from '@/components/booking/BookingCalendar';
 import BookingForm from '@/components/booking/BookingForm';
-import BookingList from '@/components/booking/BookingList';
 
 interface AvailabilityDay {
   date: string;
@@ -239,8 +238,6 @@ export default function BookingPage() {
               submitting={submitting}
               handleSubmit={handleSubmit}
             />
-
-            <BookingList calendar={calendar} />
           </div>
         </div>
       </div>
