@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,39 +7,39 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UpdateNotification from "@/components/UpdateNotification";
 import { startVersionChecking, reloadApp } from "@/utils/versionCheck";
 
-const Index = React.lazy(() => import("./pages/Index"));
-const NotFound = React.lazy(() => import("./pages/NotFound"));
-const ReportsPage = React.lazy(() => import("./pages/ReportsPage"));
-const HousekeepingTable = React.lazy(() => import("./pages/HousekeepingTable"));
-const CheckInInstructionsPage = React.lazy(() => import("./pages/CheckInInstructionsPage"));
-const InstructionsListPage = React.lazy(() => import("./pages/InstructionsListPage"));
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const ReportsPage = lazy(() => import("./pages/ReportsPage"));
+const HousekeepingTable = lazy(() => import("./pages/HousekeepingTable"));
+const CheckInInstructionsPage = lazy(() => import("./pages/CheckInInstructionsPage"));
+const InstructionsListPage = lazy(() => import("./pages/InstructionsListPage"));
 
-const AdminLoginPage = React.lazy(() => import("./pages/AdminLoginPage"));
-const AdminDashboardPage = React.lazy(() => import("./pages/AdminDashboardPage"));
-const GuestLoginPage = React.lazy(() => import("./pages/GuestLoginPage"));
-const GuestDashboardPage = React.lazy(() => import("./pages/GuestDashboardPage"));
-const GuestResetPasswordPage = React.lazy(() => import("./pages/GuestResetPasswordPage"));
-const FortuneWheelPage = React.lazy(() => import("./pages/FortuneWheelPage"));
-const MyPromoCodesPage = React.lazy(() => import("./pages/MyPromoCodesPage"));
-const LoyaltyProgram = React.lazy(() => import("./pages/LoyaltyProgram"));
-const Location = React.lazy(() => import("./pages/Location"));
-const Reviews = React.lazy(() => import("./pages/Reviews"));
-const GoogleBusiness = React.lazy(() => import("./pages/GoogleBusiness"));
-const TestAPI = React.lazy(() => import("./pages/TestAPI"));
-const PayrollPage = React.lazy(() => import("./pages/PayrollPage"));
-const HousekeeperLoginPage = React.lazy(() => import("./pages/HousekeeperLoginPage"));
-const CalendarPage = React.lazy(() => import("./pages/CalendarPage"));
-const HashTestPage = React.lazy(() => import("./pages/HashTestPage"));
-const BookingPage = React.lazy(() => import("./pages/BookingPage"));
-const PushNotificationsPage = React.lazy(() => import("./pages/PushNotificationsPage"));
+const AdminLoginPage = lazy(() => import("./pages/AdminLoginPage"));
+const AdminDashboardPage = lazy(() => import("./pages/AdminDashboardPage"));
+const GuestLoginPage = lazy(() => import("./pages/GuestLoginPage"));
+const GuestDashboardPage = lazy(() => import("./pages/GuestDashboardPage"));
+const GuestResetPasswordPage = lazy(() => import("./pages/GuestResetPasswordPage"));
+const FortuneWheelPage = lazy(() => import("./pages/FortuneWheelPage"));
+const MyPromoCodesPage = lazy(() => import("./pages/MyPromoCodesPage"));
+const LoyaltyProgram = lazy(() => import("./pages/LoyaltyProgram"));
+const Location = lazy(() => import("./pages/Location"));
+const Reviews = lazy(() => import("./pages/Reviews"));
+const GoogleBusiness = lazy(() => import("./pages/GoogleBusiness"));
+const TestAPI = lazy(() => import("./pages/TestAPI"));
+const PayrollPage = lazy(() => import("./pages/PayrollPage"));
+const HousekeeperLoginPage = lazy(() => import("./pages/HousekeeperLoginPage"));
+const CalendarPage = lazy(() => import("./pages/CalendarPage"));
+const HashTestPage = lazy(() => import("./pages/HashTestPage"));
+const BookingPage = lazy(() => import("./pages/BookingPage"));
+const PushNotificationsPage = lazy(() => import("./pages/PushNotificationsPage"));
 
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [showUpdateNotification, setShowUpdateNotification] = React.useState(false);
+  const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     startVersionChecking(() => {
       setShowUpdateNotification(true);
     });
@@ -56,7 +56,7 @@ const App = () => {
           onDismiss={() => setShowUpdateNotification(false)}
         />
         <BrowserRouter>
-        <React.Suspense fallback={<div style={{ display: 'none' }} />}>
+        <Suspense fallback={<div style={{ display: 'none' }} />}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/reports" element={<ReportsPage />} />
@@ -86,7 +86,7 @@ const App = () => {
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </React.Suspense>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
