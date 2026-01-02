@@ -123,6 +123,7 @@ export const rooms: Room[] = [
     subtitle: 'Mirror Studio',
     price: 'от 20 000 ₽',
     features: ['55 кв.м', '14 этаж', 'Для 1-4 гостей'],
+    roomId: '1759774889950',
     image: 'https://cdn.poehali.dev/files/8f879dcd-c984-4f0f-ac55-29ca3680453e.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/8f879dcd-c984-4f0f-ac55-29ca3680453e.jpeg',
@@ -159,6 +160,7 @@ export const rooms: Room[] = [
     subtitle: 'Cozy Corner',
     price: 'от 25 000 ₽',
     features: ['67 кв.м', '28 этаж', 'Для 1-6 гостей'],
+    roomId: '1759773745026',
     image: 'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/e934d488-eb41-474b-87f8-42cc10c4787f.jpeg',
@@ -199,6 +201,7 @@ export const rooms: Room[] = [
     subtitle: 'Vista Point',
     price: 'от 20 000 ₽',
     features: ['55 кв.м', '13 этаж', 'Для 1-4 гостей'],
+    roomId: '1759775039895',
     image: 'https://cdn.poehali.dev/files/3aa03ad6-b466-43c8-a2d0-f3306e62bd71.jpeg',
     gallery: [
       'https://cdn.poehali.dev/files/3aa03ad6-b466-43c8-a2d0-f3306e62bd71.jpeg',

@@ -27,6 +27,8 @@ export default function BookingPage() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get('room');
   
+  console.log('📍 BookingPage загружена, roomId:', roomId);
+  
   const [calendar, setCalendar] = useState<Calendar | null>(null);
   const [roomDetails, setRoomDetails] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,22 +49,26 @@ export default function BookingPage() {
 
     const fetchCalendar = async () => {
       try {
+        console.log('🔄 Загрузка календаря для roomId:', roomId);
         const response = await fetch(`https://functions.poehali.dev/cb06df00-bb06-4e01-a02d-f31057ae60af`);
+        console.log('📡 Ответ сервера, status:', response.status);
         const data = await response.json();
-        console.log('Все календари:', data.calendars);
-        console.log('Ищем roomId:', roomId);
+        console.log('📊 Все календари:', data.calendars);
+        console.log('🔍 Ищем roomId:', roomId);
         const roomCalendar = data.calendars.find((cal: Calendar) => cal.room_id === roomId);
-        console.log('Найденный календарь:', roomCalendar);
+        console.log('✅ Найденный календарь:', roomCalendar);
         
         if (roomCalendar) {
+          console.log('✨ Календарь установлен успешно');
           setCalendar(roomCalendar);
         } else {
-          console.error('Календарь для данного апартамента не найден');
-          console.log('Доступные room_id:', data.calendars.map((c: Calendar) => c.room_id));
+          console.error('❌ Календарь для данного апартамента не найден');
+          console.log('📋 Доступные room_id:', data.calendars.map((c: Calendar) => c.room_id));
         }
       } catch (error) {
-        console.error('Ошибка загрузки календаря:', error);
+        console.error('💥 Ошибка загрузки календаря:', error);
       } finally {
+        console.log('⏹️ Загрузка завершена, loading = false');
         setLoading(false);
       }
     };
