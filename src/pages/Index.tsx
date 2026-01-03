@@ -5,7 +5,7 @@ import RoomsSection from '@/components/sections/RoomsSection';
 import Footer from '@/components/sections/Footer';
 import { rooms } from '@/data/roomsData';
 
-const Index = () => {
+export default function Index() {
   const [currentSection, setCurrentSection] = useState('home');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -88,6 +88,4 @@ const Index = () => {
       <Footer />
     </div>
   );
-};
-
-export default Index;
+}

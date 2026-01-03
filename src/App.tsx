@@ -6,15 +6,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UpdateNotification from "@/components/UpdateNotification";
 import { startVersionChecking, reloadApp } from "@/utils/versionCheck";
-import BookingPage from "./pages/BookingPage";
-
-const Index = lazy(() => import("./pages/Index"));
+import Index from "./pages/Index";
+const BookingPage = lazy(() => import("./pages/BookingPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ReportsPage = lazy(() => import("./pages/ReportsPage"));
 const HousekeepingTable = lazy(() => import("./pages/HousekeepingTable"));
 const CheckInInstructionsPage = lazy(() => import("./pages/CheckInInstructionsPage"));
 const InstructionsListPage = lazy(() => import("./pages/InstructionsListPage"));
-
 const AdminLoginPage = lazy(() => import("./pages/AdminLoginPage"));
 const AdminDashboardPage = lazy(() => import("./pages/AdminDashboardPage"));
 const Location = lazy(() => import("./pages/Location"));
@@ -27,10 +25,8 @@ const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const HashTestPage = lazy(() => import("./pages/HashTestPage"));
 const PushNotificationsPage = lazy(() => import("./pages/PushNotificationsPage"));
 
-
-const queryClient = new QueryClient();
-
 const App = () => {
+  const [queryClient] = useState(() => new QueryClient());
   const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
   useEffect(() => {
@@ -50,7 +46,24 @@ const App = () => {
           onDismiss={() => setShowUpdateNotification(false)}
         />
         <BrowserRouter>
-        <Suspense fallback={<div style={{ display: 'none' }} />}>
+        <Suspense fallback={
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100vh',
+            background: 'linear-gradient(to bottom, #0a0a0a, #1a1a1a)'
+          }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              border: '4px solid rgba(212, 175, 55, 0.2)',
+              borderTop: '4px solid #d4af37',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+          </div>
+        }>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/reports" element={<ReportsPage />} />
