@@ -3,6 +3,7 @@ import Header from '@/components/sections/Header';
 import HeroSection from '@/components/sections/HeroSection';
 import RoomsSection from '@/components/sections/RoomsSection';
 import Footer from '@/components/sections/Footer';
+import ShareButton from '@/components/ShareButton';
 import { rooms } from '@/data/roomsData';
 
 export default function Index() {
@@ -72,7 +73,7 @@ export default function Index() {
           <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
             Свяжитесь с нами удобным способом
           </p>
-          <div className="text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a 
               href="https://t.me/apartamentsmsk"
               target="_blank"
@@ -81,6 +82,7 @@ export default function Index() {
             >
               Написать в Telegram
             </a>
+            <ShareButton />
           </div>
         </div>
       </section>
