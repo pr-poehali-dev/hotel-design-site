@@ -6,6 +6,8 @@ import urllib.parse
 import urllib.error
 from datetime import datetime, timedelta, date
 
+# Force redeploy
+
 def calculate_booking_finances(apartment_id: str, total_amount: float) -> Dict[str, float]:
     '''Расчёт финансовых показателей бронирования для инвестора'''
     

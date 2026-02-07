@@ -5,6 +5,8 @@ from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
 from datetime import datetime
 
+# Force redeploy
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Управление инструкциями по заселению (сохранение и получение)

@@ -3,6 +3,8 @@ import os
 from typing import Dict, Any
 from datetime import datetime, timedelta
 
+# Force redeploy
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Получение календаря доступности апартамента

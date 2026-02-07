@@ -3,6 +3,8 @@ import os
 import psycopg2
 from typing import Dict, Any
 
+# Force redeploy
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Manage owner commission rates for apartments

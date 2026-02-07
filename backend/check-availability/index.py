@@ -4,6 +4,8 @@ import psycopg2
 from datetime import datetime, timedelta
 from typing import Dict, Any
 
+# Force redeploy
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Check apartment availability based on bookings

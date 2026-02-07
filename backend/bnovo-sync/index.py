@@ -7,6 +7,8 @@ import urllib.error as url_error
 import base64
 from datetime import datetime, timedelta
 
+# Force redeploy
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Тестирование подключения к Bnovo API и получение бронирований

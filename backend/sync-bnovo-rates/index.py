@@ -5,6 +5,8 @@ import urllib.request
 import urllib.parse
 from datetime import datetime, timedelta
 
+# Force redeploy
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Синхронизация тарифов и доступности из Bnovo в availability_calendar

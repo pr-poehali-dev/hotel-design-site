@@ -6,6 +6,8 @@ import random
 import string
 from typing import Dict, Any
 
+# Force redeploy
+
 def generate_promo_code(discount: int) -> str:
     random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     return f"WHEEL{discount}-{random_part}"

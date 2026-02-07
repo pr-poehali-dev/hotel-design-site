@@ -6,6 +6,8 @@ from datetime import datetime
 import random
 from typing import Dict, Any, List
 
+# Force redeploy
+
 def generate_scratch_cards(booking_id: str) -> List[Dict[str, Any]]:
     cards = []
     

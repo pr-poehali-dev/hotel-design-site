@@ -8,6 +8,8 @@ import os
 import psycopg2
 from typing import Dict, Any
 from datetime import datetime, timedelta
+
+# Force redeploy
 from psycopg2.extras import RealDictCursor
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
