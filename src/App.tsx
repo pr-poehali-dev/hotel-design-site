@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UpdateNotification from "@/components/UpdateNotification";
 import { startVersionChecking, reloadApp } from "@/utils/versionCheck";
 import Index from "./pages/Index";
-const BookingPage = lazy(() => import("./pages/BookingPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ReportsPage = lazy(() => import("./pages/ReportsPage"));
 const HousekeepingTable = lazy(() => import("./pages/HousekeepingTable"));
@@ -81,7 +80,6 @@ const App = () => {
             <Route path="/housekeeper-login" element={<HousekeeperLoginPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/hash-test" element={<HashTestPage />} />
-            <Route path="/booking" element={<BookingPage />} />
             <Route path="/push-notifications" element={<PushNotificationsPage />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
