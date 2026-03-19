@@ -68,8 +68,8 @@ const FizzyButton = React.forwardRef<HTMLButtonElement, FizzyButtonProps>(
             size === "sm" && "text-sm px-3 py-1.5",
             size === "lg" && "text-lg px-6 py-4"
           )}
-          onClick={handleClick}
           {...props}
+          onClick={handleClick}
         >
           <div className="fizzy-button-inner">
             {icon && <span className="fizzy-icon">{icon}</span>}
