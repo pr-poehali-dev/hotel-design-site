@@ -39,16 +39,7 @@ const RoomCard = ({ room, currentImageIndex, onImageChange, onHoverChange }: Roo
   const navigate = useNavigate();
 
   const handleBooking = () => {
-    console.log('🎯 Клик на бронирование, roomId:', room.roomId);
-    console.log('🎯 Апартамент:', room.subtitle);
-    if (room.roomId) {
-      const bookingUrl = `/booking?room=${room.roomId}`;
-      console.log('✅ Переход на:', bookingUrl);
-      navigate(bookingUrl);
-    } else {
-      console.log('❌ Нет roomId для апартамента:', room.subtitle);
-      alert('Для бронирования этого апартамента свяжитесь с нами по телефону или в Telegram: @apartamentsmsk');
-    }
+    window.open('https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&scroll_to_rooms=1&is_auto_search=1', '_blank');
   };
   
   return (

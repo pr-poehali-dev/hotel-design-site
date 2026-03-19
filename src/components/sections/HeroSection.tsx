@@ -119,7 +119,7 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
           <FizzyButton
-            onClick={() => onNavigate('rooms')}
+            onClick={() => window.open('https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&scroll_to_rooms=1&is_auto_search=1', '_blank')}
             icon={<Icon name="Calendar" size={20} />}
           >
             Забронировать апартаменты
