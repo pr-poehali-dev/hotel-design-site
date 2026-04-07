@@ -14,6 +14,26 @@ export interface Room {
 export const rooms: Room[] = [
   {
     name: '3х комнатный',
+    subtitle: 'Big Panorama City',
+    price: 'от 30 000 ₽',
+    features: ['85 кв.м', 'Высокий этаж', 'Для 1-6 гостей'],
+    image: 'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/4f40377d-723f-4625-a6b2-48a4ff79baaf.jpeg',
+    gallery: [
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/4f40377d-723f-4625-a6b2-48a4ff79baaf.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/0364942b-d4e0-4148-bc63-531661a62694.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/9a811e97-1e75-4574-b950-828dcf434da3.jpeg',
+    ],
+    description: `Роскошные апартаменты премиум-класса с панорамными окнами и видом на город. Светлый дизайнерский интерьер в белых тонах с мраморными столешницами и фартуком, техникой SMEG, электрическим камином и большим Smart TV.
+
+Апартаменты включают:
+• Просторную гостиную с электрическим камином и Smart TV
+• Современную кухню с мраморной отделкой и техникой SMEG
+• Обеденную зону с мраморным столом на 4 персоны
+• Панорамные окна с видом на город
+• Высокоскоростной Wi-Fi и Smart TV`
+  },
+  {
+    name: '3х комнатный',
     subtitle: 'Gold Suite',
     price: 'от 30 000 ₽',
     features: ['103 кв.м', '11 этаж', 'Для 1-8 гостей'],
