@@ -16,7 +16,7 @@ export const rooms: Room[] = [
     name: '3х комнатный',
     subtitle: 'Big Panorama City',
     price: 'от 30 000 ₽',
-    features: ['85 кв.м', 'Высокий этаж', 'Для 1-6 гостей'],
+    features: ['87 кв.м', 'Высокий этаж', 'Для 1-4 гостей'],
     image: 'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/4f40377d-723f-4625-a6b2-48a4ff79baaf.jpeg',
     gallery: [
       'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/4f40377d-723f-4625-a6b2-48a4ff79baaf.jpeg',
