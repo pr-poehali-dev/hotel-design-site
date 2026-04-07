@@ -31,6 +31,9 @@ export const rooms: Room[] = [
       'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/dfa826f3-1f7b-41b8-b8a1-6e9c00619e58.jpeg',
       'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/75268e9e-207f-4b3a-b9d2-dbde5cb48ec4.jpeg',
       'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/5880f660-cf09-4369-aa57-a7a069ff4290.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/bd21a0bd-b6e4-418c-95ff-2c9fbc26c7db.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/b9ce896b-7de2-451e-a921-95d38838f161.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/2c82ce9f-83c9-42a7-9901-f472066da452.jpeg',
     ],
     description: `Роскошные апартаменты премиум-класса с панорамными окнами и видом на город. Светлый дизайнерский интерьер в белых тонах с мраморными столешницами и фартуком, техникой SMEG, электрическим камином и большим Smart TV.
 
