@@ -377,6 +377,7 @@ export const rooms: Room[] = [
     subtitle: 'Апартамент 2318',
     price: 'от 20 000 ₽',
     features: ['67 кв.м', '23 этаж', 'Для 1-6 гостей'],
+    bookingUrl: 'https://reservationsteps.ru/rooms/index/c47ec0f6-fcf8-4ff4-85b4-5e4a67dc2981?lang=ru&scroll_to_rooms=1&is_auto_search=1&colorSchemePreview=0&onlyrooms=&name=&surname=&email=&phone=&orderid=&servicemode=0&firstroom=0&vkapp=&insidePopup=0&exval=project12_A%7Cdev10318_B&dfrom=17-07-2026&dto=18-07-2026&adults=2&promoEmail=&promoCode=',
     image: 'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/176d169e-ce5f-4468-80f0-b18d5d63b765.jpeg',
     gallery: [
       'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/176d169e-ce5f-4468-80f0-b18d5d63b765.jpeg',
