@@ -377,10 +377,31 @@ export const rooms: Room[] = [
     subtitle: 'Апартамент 2318',
     price: 'от 20 000 ₽',
     features: ['67 кв.м', '23 этаж', 'Для 1-6 гостей'],
-    image: 'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/441ccf9d-5313-45d8-b1be-3cf8ef62cf6f.jpg',
+    image: 'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/176d169e-ce5f-4468-80f0-b18d5d63b765.jpeg',
     gallery: [
-      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/files/441ccf9d-5313-45d8-b1be-3cf8ef62cf6f.jpg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/176d169e-ce5f-4468-80f0-b18d5d63b765.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/7bd188a3-a067-4531-9bbd-52d26cc6b84c.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/11d355c7-aae7-4282-bf78-a815cb22a653.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/5b91c3c1-726b-4e9b-a2ed-cc5b98e030c0.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/0e655276-b6ff-43e9-a1f0-6da158564a9e.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/f1356d7d-209b-4662-b920-b9288ff75242.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/144e568e-2e78-4d02-9867-ea4a3001df6e.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/a1353e98-0c36-4f3a-81c1-78f14a6f9541.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/f5b9b1ce-43c9-4de0-b656-be585dd57820.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/a1744bf0-5dfc-4739-a141-da1dd3fd7a9a.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/312cf43d-7e27-4d4d-af1e-f19e0b343ae7.jpeg',
+      'https://cdn.poehali.dev/projects/71cc1cad-d51c-42e2-a128-9fd9502921a6/bucket/02652313-0383-4993-9cc3-f662c5f2c7de.jpeg',
     ],
-    description: `Описание апартамента будет добавлено позже.`
+    description: `Стильные апартаменты площадью 67 кв.м на 23 этаже с панорамными окнами и видом на город.
+
+Апартаменты включают:
+• Просторную гостиную с обеденной зоной и кухней-студией
+• Современную кухню с встроенной техникой Haier
+• Отдельные спальни с комфортными кроватями и шкафами
+• Ванную комнату с душевой кабиной, золотыми акцентами и стильной плиткой "елочка"
+• Панорамные окна с видом на город
+• Высокоскоростной Wi-Fi и Smart TV
+
+Светлый современный интерьер и продуманная планировка создают атмосферу комфорта. Идеально подходит для отдыха большой компанией.`
   }
 ];
