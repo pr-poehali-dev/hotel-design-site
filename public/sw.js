@@ -1,4 +1,4 @@
-const CACHE_NAME = 'p9-apartments-v6';
+const CACHE_NAME = 'p9-apartments-v7';
 const urlsToCache = [
   '/',
   '/index.html',
