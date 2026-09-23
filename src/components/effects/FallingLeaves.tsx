@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import Icon from '@/components/ui/icon';
 
-interface Snowflake {
+interface Leaf {
   id: number;
   left: number;
   animationDuration: number;
@@ -8,88 +9,66 @@ interface Snowflake {
   size: number;
   swayAmount: number;
   opacity: number;
+  color: string;
 }
 
+const LEAF_COLORS = ['#d97706', '#ea580c', '#b45309', '#ca8a04', '#9a3412', '#eab308'];
+
 const FallingLeaves = () => {
-  const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
+  const [leaves, setLeaves] = useState<Leaf[]>([]);
 
   useEffect(() => {
-    const generateSnowflakes = () => {
-      const newSnowflakes: Snowflake[] = [];
-      for (let i = 0; i < 50; i++) {
-        newSnowflakes.push({
-          id: i,
-          left: Math.random() * 100,
-          animationDuration: 10 + Math.random() * 20,
-          animationDelay: Math.random() * 10,
-          size: 10 + Math.random() * 20,
-          swayAmount: 20 + Math.random() * 30,
-          opacity: 0.3 + Math.random() * 0.7,
-        });
-      }
-      setSnowflakes(newSnowflakes);
-    };
-
-    generateSnowflakes();
+    const newLeaves: Leaf[] = [];
+    for (let i = 0; i < 28; i++) {
+      newLeaves.push({
+        id: i,
+        left: Math.random() * 100,
+        animationDuration: 9 + Math.random() * 12,
+        animationDelay: Math.random() * 10,
+        size: 14 + Math.random() * 16,
+        swayAmount: 20 + Math.random() * 40,
+        opacity: 0.5 + Math.random() * 0.5,
+        color: LEAF_COLORS[Math.floor(Math.random() * LEAF_COLORS.length)],
+      });
+    }
+    setLeaves(newLeaves);
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
-      {snowflakes.map((snowflake) => (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-[5]">
+      {leaves.map((leaf) => (
         <div
-          key={snowflake.id}
-          className="absolute animate-fall"
+          key={leaf.id}
+          className="absolute animate-leaf-fall"
           style={{
-            left: `${snowflake.left}%`,
+            left: `${leaf.left}%`,
             top: '-10%',
-            animationDuration: `${snowflake.animationDuration}s`,
-            animationDelay: `${snowflake.animationDelay}s`,
-            '--sway-amount': `${snowflake.swayAmount}px`,
+            animationDuration: `${leaf.animationDuration}s`,
+            animationDelay: `${leaf.animationDelay}s`,
+            '--sway-amount': `${leaf.swayAmount}px`,
           } as React.CSSProperties}
         >
           <div
-            className="animate-sway-leaf"
+            className="animate-leaf-sway"
             style={{
-              animationDuration: `${snowflake.animationDuration / 3}s`,
-              animationDelay: `${snowflake.animationDelay}s`,
+              animationDuration: `${leaf.animationDuration / 3}s`,
+              animationDelay: `${leaf.animationDelay}s`,
             }}
           >
-            <svg
-              width={snowflake.size}
-              height={snowflake.size}
-              viewBox="0 0 24 24"
-              fill="none"
+            <Icon
+              name="Leaf"
+              size={leaf.size}
               style={{
-                filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.8))',
+                color: leaf.color,
+                opacity: leaf.opacity,
+                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.35))',
               }}
-            >
-              <path
-                d="M12 2L12 22M12 2L9 5M12 2L15 5M12 22L9 19M12 22L15 19"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                opacity={snowflake.opacity}
-              />
-              <path
-                d="M4.93 7L19.07 17M4.93 7L7.5 5.5M4.93 7L6 10M19.07 17L16.5 18.5M19.07 17L18 14"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                opacity={snowflake.opacity}
-              />
-              <path
-                d="M4.93 17L19.07 7M4.93 17L7.5 18.5M4.93 17L6 14M19.07 7L16.5 5.5M19.07 7L18 10"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                opacity={snowflake.opacity}
-              />
-            </svg>
+            />
           </div>
         </div>
       ))}
       <style>{`
-        @keyframes fall {
+        @keyframes leaf-fall {
           0% {
             transform: translateY(0) rotate(0deg);
             opacity: 0;
@@ -98,15 +77,15 @@ const FallingLeaves = () => {
             opacity: 1;
           }
           90% {
-            opacity: 0.8;
+            opacity: 0.9;
           }
           100% {
-            transform: translateY(110vh) rotate(360deg);
+            transform: translateY(110vh) rotate(540deg);
             opacity: 0;
           }
         }
-        
-        @keyframes sway-leaf {
+
+        @keyframes leaf-sway {
           0%, 100% {
             transform: translateX(0);
           }
@@ -117,13 +96,13 @@ const FallingLeaves = () => {
             transform: translateX(calc(var(--sway-amount, 30px) * -1));
           }
         }
-        
-        .animate-fall {
-          animation: fall linear infinite;
+
+        .animate-leaf-fall {
+          animation: leaf-fall linear infinite;
         }
-        
-        .animate-sway-leaf {
-          animation: sway-leaf ease-in-out infinite;
+
+        .animate-leaf-sway {
+          animation: leaf-sway ease-in-out infinite;
         }
       `}</style>
     </div>

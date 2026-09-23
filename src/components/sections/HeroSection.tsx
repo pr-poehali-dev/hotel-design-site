@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FizzyButton } from '@/components/ui/fizzy-button';
 import Icon from '@/components/ui/icon';
+import FallingLeaves from '@/components/effects/FallingLeaves';
 
 interface HeroSectionProps {
   onNavigate: (section: string) => void;
@@ -94,6 +95,8 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
       ))}
       
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-transparent to-charcoal-900/40"></div>
+
+      <FallingLeaves />
 
       <div className="relative z-10 text-center text-white px-6 max-w-4xl -mt-20 md:mt-0">
         <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 mb-4 text-sm md:text-xl font-inter text-gold-300 animate-fade-in">
